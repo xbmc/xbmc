@@ -12,11 +12,15 @@
 #include "ServiceBroker.h"
 #include "WebPlayerDefs.h"
 #include "WebVideoBuffer.h"
+#include "addons/AddonManager.h"
+#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -27,11 +31,14 @@
 #include "input/keyboard/Key.h"
 #include "input/keyboard/XBMC_keyboard.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "kodi-web-video.h"
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -48,6 +55,9 @@
 
 #include <cmath>
 #include <mutex>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include <linux/input-event-codes.h>
 
@@ -174,6 +184,30 @@ FilterListWait NextFilterListWait(const CWebClientManager& manager,
   return wait;
 }
 
+// inputstreamhelper's Widevine check, run to its end
+class CCdmCheck : public IRunnable
+{
+public:
+  explicit CCdmCheck(ADDON::AddonPtr helper)
+    : m_helper(std::move(helper)),
+      m_script(m_helper->LibPath()),
+      m_arguments{URIUtils::GetFileName(m_script), "check_inputstream", "mpd", "com.widevine.alpha"}
+  {
+  }
+
+  void Run() override
+  {
+    CScriptInvocationManager::GetInstance().ExecuteSync(m_script, m_helper, m_arguments);
+  }
+
+  void Cancel() override { CScriptInvocationManager::GetInstance().Stop(m_script); }
+
+private:
+  ADDON::AddonPtr m_helper;
+  std::string m_script;
+  std::vector<std::string> m_arguments;
+};
+
 } // unnamed namespace
 
 CWebPlayer::CWebPlayer(IPlayerCallback& callback)
@@ -229,6 +263,8 @@ bool CWebPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   m_opening = true;
   m_openFailed = false;
   playLock.unlock();
+
+  CheckCdm();
 
   if (!m_manager->RequestView(m_profile, *this) || !AwaitFilterLists())
   {
@@ -882,6 +918,28 @@ bool CWebPlayer::ConfigureRenderer(const VideoPicture& picture)
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
   m_callback.OnAVStarted(*m_item);
   return true;
+}
+
+// inputstreamhelper offers to install the Widevine CDM a web app needs before
+// the client starts with it; the app opens whatever the user decides
+void CWebPlayer::CheckCdm()
+{
+  ADDON::AddonPtr helper;
+  if (m_manager->WantsCdm(m_profile) &&
+      CServiceBroker::GetAddonMgr().GetAddon(INPUTSTREAMHELPER, helper, ADDON::AddonType::SCRIPT,
+                                             ADDON::OnlyEnabled::CHOICE_YES))
+  {
+    CLog::Log(LOGINFO, "CWebPlayer::{}: {} checks the Widevine CDM for {}", __FUNCTION__,
+              INPUTSTREAMHELPER, m_profile);
+
+    // the busy dialog keeps Kodi drawing and steps back for the script's own dialogs
+    CCdmCheck check(std::move(helper));
+    if (!CGUIDialogBusy::Wait(&check, 0, true))
+      CLog::Log(LOGINFO, "CWebPlayer::{}: the Widevine CDM check was cancelled", __FUNCTION__);
+  }
+
+  // a CDM may also have come or gone since the client started
+  m_manager->UseCdm();
 }
 
 // a web app never opens without its shared content filter lists; the user

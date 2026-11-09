@@ -24,6 +24,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <string_view>
 
 namespace ADDON
 {
@@ -129,6 +130,18 @@ public:
   bool ShowsVideoOnPlane() const;
 
   /*!
+   * \brief Whether a web app wants the Widevine CDM installed before it
+   * opens: it imports inputstreamhelper and pages have no CDM yet
+   */
+  bool WantsCdm(const std::string& profile) const;
+
+  /*!
+   * \brief Restart a running client that started without the CDM pages
+   * can use now
+   */
+  void UseCdm();
+
+  /*!
    * \brief Send the frames of pages' video to the observer, none with nullptr
    */
   void SetVideoObserver(IWebVideoObserver* observer);
@@ -222,7 +235,7 @@ private:
   void UpdateVideo();
   void Spawn();
   void SpawnIfPreloaded();
-  void RestartClientForVideo();
+  void RestartClient(std::string_view reason);
   void ConfigureView(const std::string& profile);
   bool ConfigureViewFromAddon(const std::string& profile);
   std::string UplinkOf(const std::string& profile) const;
@@ -250,6 +263,8 @@ private:
   bool m_respawned{false};
   bool m_restarting{false};
   bool m_restartWhenIdle{false};
+  // the directory the running client loads its Widevine CDM from, if any
+  std::string m_clientCdm;
   IWebViewObserver* m_observer{nullptr};
   int m_observerCalls{0};
   XbmcThreads::ConditionVariable m_observerCallsDone;

@@ -27,5 +27,8 @@ constexpr const char* PROPERTY_PROFILE = "web.profile";
 //! \brief The profile of plain browsing
 constexpr const char* DEFAULT_PROFILE = "default";
 
+//! \brief The add-on that installs the Widevine CDM for a web app importing it
+constexpr const char* INPUTSTREAMHELPER = "script.module.inputstreamhelper";
+
 } // namespace WEB
 } // namespace KODI

@@ -13,6 +13,7 @@
 #include "GUIDialogWebKeyboard.h"
 #include "ServiceBroker.h"
 #include "WebApp.h"
+#include "WebPlayerDefs.h"
 #include "addons/Addon.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
@@ -146,6 +147,20 @@ std::string CdmDirectory()
 
   const std::string path = addon->GetSetting("DECRYPTERPATH");
   return path.empty() ? path : CSpecialProtocol::TranslatePath(path);
+}
+
+// the directory if it holds a CDM the client loads, the names it looks for
+std::string CdmIn(const std::string& directory)
+{
+  if (directory.empty())
+    return {};
+
+  for (const char* name : {"libwidevinecdm-vendor.so", "libwidevinecdm.so"})
+  {
+    if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(directory, name)))
+      return directory;
+  }
+  return {};
 }
 
 void NotifyOpenError(const std::string& profile, const std::string& reason)
@@ -602,14 +617,14 @@ void CWebClientManager::OnSettingChanged(const std::shared_ptr<const CSetting>& 
     m_restartWhenIdle = true;
     return;
   }
-  RestartClientForVideo();
+  RestartClient("the video setting");
 }
 
 // m_lock held
-void CWebClientManager::RestartClientForVideo()
+void CWebClientManager::RestartClient(std::string_view reason)
 {
-  CLog::Log(LOGINFO, "CWebClientManager::{}: restarting the web client for the video setting",
-            __FUNCTION__);
+  CLog::Log(LOGINFO, "CWebClientManager::{}: restarting the web client for {}", __FUNCTION__,
+            reason);
   m_restartWhenIdle = false;
   m_restarting = true;
   m_host->TerminateClients();
@@ -678,8 +693,10 @@ void CWebClientManager::Spawn()
   if (m_video)
     env.emplace(KODI_WEB_VIDEO_ENV, m_video->GetPath());
   // pages decrypt with the CDM that inputstream.adaptive installed
-  if (const std::string cdm = CdmDirectory(); !cdm.empty())
+  const std::string cdm = CdmDirectory();
+  if (!cdm.empty())
     env.emplace("KODI_WEB_CDM_DIR", cdm);
+  m_clientCdm = CdmIn(cdm);
   m_host->SpawnClient({command}, std::move(env));
 }
 
@@ -724,6 +741,14 @@ bool CWebClientManager::RequestView(const std::string& profile, IWebViewObserver
   m_shown = ViewState{};
   m_shown.profile = profile;
   m_wantPending = false;
+
+  // the client restarting asks for the view once it is up again
+  if (m_restarting)
+  {
+    m_uplinks[profile] = uplink;
+    m_wantPending = true;
+    return true;
+  }
 
   const auto view = m_views.find(profile);
   if (view != m_views.end() && view->second && m_uplinks[profile] == uplink)
@@ -776,7 +801,7 @@ void CWebClientManager::ReleaseView(IWebViewObserver& observer)
   m_observerCallsDone.wait(lock, [this] { return m_observerCalls == 0; });
   CloseView(m_observedProfile);
   if (m_restartWhenIdle && m_state == State::READY && (m_video != nullptr) != VideoOnPlane())
-    RestartClientForVideo();
+    RestartClient("the video setting");
 }
 
 // the client destroys the view later; a request for the profile waits for that
@@ -927,7 +952,12 @@ void CWebClientManager::OnClientExited(pid_t pid, int status)
   {
     m_restarting = false;
     m_state = State::ABSENT;
-    m_wantPending = false;
+    if (m_wantPending)
+    {
+      m_respawned = false;
+      Spawn();
+      return;
+    }
     SpawnIfPreloaded();
     return;
   }
@@ -976,6 +1006,36 @@ std::string CWebClientManager::UplinkOf(const std::string& profile) const
     return {};
 
   return addon->GetSetting("uplinkaddress");
+}
+
+bool CWebClientManager::WantsCdm(const std::string& profile) const
+{
+  ADDON::AddonPtr webapp;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(profile, webapp, ADDON::AddonType::WEBAPP,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return false;
+
+  const auto& dependencies = webapp->GetDependencies();
+  if (std::none_of(dependencies.begin(), dependencies.end(),
+                   [](const auto& dependency) { return dependency.id == INPUTSTREAMHELPER; }))
+    return false;
+
+  ADDON::AddonPtr helper;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(INPUTSTREAMHELPER, helper,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return false;
+
+  return CdmIn(CdmDirectory()).empty();
+}
+
+void CWebClientManager::UseCdm()
+{
+  std::unique_lock lock(m_lock);
+  if (!m_host || m_restarting || (m_state != State::READY && m_state != State::STARTING))
+    return;
+
+  if (CdmIn(CdmDirectory()) != m_clientCdm)
+    RestartClient("the Widevine CDM");
 }
 
 void CWebClientManager::SendSoftwareVideoDecoding(const std::string& profile)
