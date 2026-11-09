@@ -42,6 +42,7 @@
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -682,19 +683,30 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     if (!m_database.Open())
       return false;
 
-    if (VIDEO::IsVideoDb(*m_vecItems))
+    // the filter path holds the library path a smart playlist was listed from
+    const std::string dbPath{VIDEO::IsVideoDb(*m_vecItems) ? m_vecItems->GetPath()
+                                                           : m_strFilterPath};
+    if (URIUtils::IsVideoDb(dbPath))
     {
+      // a query by id finds the movie even when a limit leaves it out of the listing
+      const CURL dbUrl{dbPath};
+      PLAYLIST::CSmartPlaylist xsp;
+      const bool hasLimit{dbUrl.HasOption("xsp") && xsp.LoadFromJson(dbUrl.GetOption("xsp")) &&
+                          xsp.GetLimit() > 0};
+
       // the refresh adds the movie again with a new id, query it the way the listing did
       const CDatabase::Filter filter{
           StringUtils::Format("movie_view.idMovie = {}", item.GetVideoInfoTag()->m_iDbId)};
       CFileItemList items;
-      if (CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath()) ==
-              NodeType::TITLE_MOVIES &&
-          m_database.GetMoviesByWhere(m_vecItems->GetPath(), filter, items) && items.Size() == 1)
+      if (!hasLimit &&
+          CVideoDatabaseDirectory::GetDirectoryChildType(dbPath) == NodeType::TITLE_MOVIES &&
+          m_database.GetMoviesByWhere(dbPath, filter, items) && items.Size() == 1)
       {
         newItem = items.Get(0);
         newItem->SetProperty(ITEM::PROPERTY::PARENT_PATH,
                              listItem->GetProperty(ITEM::PROPERTY::PARENT_PATH));
+        // the program count holds the order of a smart playlist
+        newItem->SetProgramCount(listItem->GetProgramCount());
       }
     }
     else
