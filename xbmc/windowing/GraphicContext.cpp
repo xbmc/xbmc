@@ -305,6 +305,13 @@ const CRect CGraphicContext::GetViewWindow() const
     rect.y1 = (float)info.Overscan.top;
     rect.x2 = (float)info.Overscan.right;
     rect.y2 = (float)info.Overscan.bottom;
+#if defined(TARGET_DARWIN_OSX)
+    // The area macOS reports as inset (the notch) is outside of the window there.
+    rect.x1 += info.guiInsets.left;
+    rect.y1 += info.guiInsets.top;
+    rect.x2 -= info.guiInsets.right;
+    rect.y2 -= info.guiInsets.bottom;
+#endif
     return rect;
   }
   return m_videoRect;
