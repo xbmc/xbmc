@@ -494,6 +494,7 @@ protected:
   CacheInfo GetCachingTimes();
 
   void FlushBuffers(double pts, bool accurate, bool sync);
+  bool SeekToLiveEdge();
 
   void HandleMessages();
   void HandlePlaySpeed();
@@ -711,4 +712,7 @@ protected:
   std::atomic<bool> m_displayLost;
 
   double m_messageQueueTimeSize{0.0};
+
+  std::optional<double> m_liveLag;
+  XbmcThreads::EndTime<> m_liveLagTimer;
 };

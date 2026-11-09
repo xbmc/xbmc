@@ -68,11 +68,13 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <mutex>
 #include <ranges>
+#include <string>
 #include <string_view>
 #include <utility>
 
@@ -92,6 +94,11 @@ using namespace std::chrono_literals;
 
 namespace
 {
+bool HasValidLiveRange(const CDVDInputStream::ITimes::Times& times)
+{
+  return std::isfinite(times.ptsEnd) && times.ptsEnd > 0.0 && times.ptsEnd > times.ptsBegin;
+}
+
 bool IsKnownLanguage(const CLanguageTag& language)
 {
   return !language.IsUndetermined();
@@ -2199,8 +2206,33 @@ bool CVideoPlayer::ShouldWaitForSync(std::chrono::steady_clock::time_point now)
   return now - *m_syncWait < NAV_SYNC_WAIT_MAX;
 }
 
+bool CVideoPlayer::SeekToLiveEdge()
+{
+  if (!m_pDemuxer || !m_pInputStream || !m_State.canseek)
+    return false;
+
+  CDVDInputStream::ITimes::Times times{};
+  CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
+  if (!pTimes || !pTimes->GetTimes(times) || !HasValidLiveRange(times))
+    return false;
+
+  const double liveTime =
+      m_pInputStream->GetIPosTime() != nullptr ? times.ptsEnd - times.ptsStart : times.ptsEnd;
+  const double liveMs = DVD_TIME_TO_MSEC(liveTime);
+
+  double startpts = DVD_NOPTS_VALUE;
+  const bool ok = m_pDemuxer->SeekTime(liveMs, true, &startpts);
+
+  CLog::Log(LOGDEBUG, "CVideoPlayer::SeekToLiveEdge - seek to {:.3f}s {}", liveMs / 1000.0,
+            ok ? "succeeded" : "failed");
+  return ok;
+}
+
 void CVideoPlayer::HandlePlaySpeed()
 {
+  if (m_playSpeed != DVD_PLAYSPEED_NORMAL)
+    m_liveLag.reset();
+
   const bool isInMenu = IsInMenuInternal();
   const bool tolerateStall =
       isInMenu || (m_CurrentVideo.hint.flags & StreamFlags::FLAG_STILL_IMAGES);
@@ -2284,10 +2316,61 @@ void CVideoPlayer::HandlePlaySpeed()
   {
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !tolerateStall)
     {
+      const bool stalled = (m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.inited) ||
+                           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.inited);
+
+      // A clock far behind the newest packet holds audio and video until it catches up, while
+      // the input keeps buffering, which shows up as lag behind live.
+      bool clockBehindStream = false;
+      double clockLead = 0.0;
+      if (m_pInputStream->IsRealtime() &&
+          (m_CurrentAudio.id < 0 || m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC) &&
+          (m_CurrentVideo.id < 0 || m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
+      {
+        // DVD_NOPTS_VALUE is a large positive double, so std::max() cannot be used here
+        double newestDts = DVD_NOPTS_VALUE;
+        for (const double dts : {m_CurrentAudio.dts, m_CurrentVideo.dts})
+        {
+          if (dts != DVD_NOPTS_VALUE && (newestDts == DVD_NOPTS_VALUE || dts > newestDts))
+            newestDts = dts;
+        }
+
+        if (newestDts != DVD_NOPTS_VALUE)
+        {
+          clockLead = newestDts - m_clock.GetClock();
+          clockBehindStream = clockLead > DVD_SEC_TO_TIME(m_messageQueueTimeSize + 5.0);
+        }
+      }
+
+      if (!stalled && !clockBehindStream && m_pInputStream->IsRealtime() &&
+          m_liveLagTimer.IsTimePast())
+      {
+        CDVDInputStream::ITimes::Times times{};
+        if (CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
+            pTimes && pTimes->GetTimes(times) && HasValidLiveRange(times))
+          m_liveLag = times.ptsEnd - (m_clock.GetClock() + m_offset_pts);
+        else
+          m_liveLag.reset();
+        m_liveLagTimer.Set(500ms);
+      }
+
+      if (clockBehindStream && m_syncTimer.IsTimePast())
+      {
+        CLog::Log(LOGWARNING,
+                  "CVideoPlayer::HandlePlaySpeed - stream is {:.1f}s ahead of the clock (clock: "
+                  "{:.3f}s, audio dts: {:.3f}s, video dts: {:.3f}s, offset: {:.3f}s), "
+                  "resyncing to live",
+                  clockLead / DVD_TIME_BASE, m_clock.GetClock() / DVD_TIME_BASE,
+                  m_CurrentAudio.dts / DVD_TIME_BASE, m_CurrentVideo.dts / DVD_TIME_BASE,
+                  m_offset_pts / DVD_TIME_BASE);
+
+        const bool seeked = SeekToLiveEdge();
+        FlushBuffers(DVD_NOPTS_VALUE, false, true);
+        if (!seeked && m_pDemuxer)
+          m_pDemuxer->Flush();
+      }
       // take action if audio or video stream is stalled
-      if (((m_VideoPlayerAudio->IsStalled() && m_CurrentAudio.inited) ||
-           (m_VideoPlayerVideo->IsStalled() && m_CurrentVideo.inited)) &&
-          m_syncTimer.IsTimePast())
+      else if (stalled && m_syncTimer.IsTimePast())
       {
         if (m_pInputStream->IsRealtime())
         {
@@ -2296,13 +2379,39 @@ void CVideoPlayer::HandlePlaySpeed()
               (m_CurrentVideo.id >= 0 && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
                m_processInfo->GetLevelVQ() == 0))
           {
-            CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: {} - Video: {}",
-                      m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ());
+            // unknown lag counts as live; only a measured lag above the queue time is an offset
+            const bool wasLive =
+                !m_liveLag || *m_liveLag <= DVD_SEC_TO_TIME(m_messageQueueTimeSize);
+            const std::string lagText =
+                m_liveLag ? std::to_string(DVD_TIME_TO_MSEC(*m_liveLag)) + " ms" : "unknown";
 
-            if (m_VideoPlayerAudio->AcceptsData() && m_VideoPlayerVideo->AcceptsData())
-              SetCaching(CACHESTATE_FULL);
-            else
+            if (wasLive)
+            {
+              CLog::Log(LOGDEBUG,
+                        "Stream stalled, resyncing to live. Audio: {} - Video: {} - Behind live "
+                        "before stall: {}",
+                        m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ(), lagText);
+
+              const bool seeked = SeekToLiveEdge();
+              if (!seeked)
+                CLog::Log(LOGDEBUG, "Stream stalled, live edge seek not possible, flushing only");
+
               FlushBuffers(DVD_NOPTS_VALUE, false, true);
+              if (!seeked && m_pDemuxer)
+                m_pDemuxer->Flush();
+            }
+            else
+            {
+              CLog::Log(LOGDEBUG,
+                        "Stream stalled, start buffering. Audio: {} - Video: {} - Behind live "
+                        "before stall: {}",
+                        m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ(), lagText);
+
+              if (m_VideoPlayerAudio->AcceptsData() && m_VideoPlayerVideo->AcceptsData())
+                SetCaching(CACHESTATE_FULL);
+              else
+                FlushBuffers(DVD_NOPTS_VALUE, false, true);
+            }
           }
         }
         else
@@ -2395,7 +2504,7 @@ void CVideoPlayer::HandlePlaySpeed()
     }
     else if (video && audio && !deferNoPts)
     {
-      double clock = 0;
+      double clock = m_pInputStream->IsRealtime() ? m_clock.GetClock() : 0.0;
       if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
         CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Audio - pts: {:f}, cache: {:f}, totalcache: {:f}",
                   m_CurrentAudio.starttime, m_CurrentAudio.cachetime, m_CurrentAudio.cachetotal);
@@ -4878,6 +4987,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     startpts = DVD_NOPTS_VALUE;
 
   m_SpeedState.Reset(pts);
+  m_liveLag.reset();
 
   if (sync)
   {
