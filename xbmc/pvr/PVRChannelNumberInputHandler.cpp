@@ -62,7 +62,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 
 void CPVRChannelNumberInputHandler::ExecuteAction()
 {
-  m_timer.Stop(true /* wait until worker thread ended */);
+  m_timer.Stop(true);
   OnTimeout();
 }
 
@@ -128,11 +128,13 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
       // no alternatives; complete the number and fire immediately
       m_inputBuffer = channel;
       SetLabel(m_inputBuffer);
+      lock.unlock();
       ExecuteAction();
       return;
     }
   }
 
+  lock.unlock();
   if (!m_timer.IsRunning())
     m_timer.Start(std::chrono::milliseconds(m_delay));
   else

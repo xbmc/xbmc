@@ -113,7 +113,11 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
             m_gestureState == TouchGestureMultiTouchDone)
         {
           result = OnMultiTouchDown(x, y, pointer);
+
+          // OnTimeout() takes m_critical
+          lock.unlock();
           m_holdTimer->Stop(true);
+          lock.lock();
 
           if (m_gestureState == TouchGestureSingleTouch ||
               m_gestureState == TouchGestureSingleTouchHold)
@@ -330,6 +334,10 @@ void CGenericTouchInputHandler::OnTimeout()
   switch (m_gestureState)
   {
     case TouchGestureSingleTouch:
+      // A second pointer went down while HandleTouchInput() waited for this callback
+      if (m_pointers[1].valid())
+        break;
+
       setGestureState(TouchGestureSingleTouchHold);
 
       OnSingleTouchHold(m_pointers[0].down.x, m_pointers[0].down.y);

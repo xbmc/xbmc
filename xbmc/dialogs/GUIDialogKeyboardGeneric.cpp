@@ -699,7 +699,7 @@ int CGUIDialogKeyboardGeneric::GetWindowId() const
 void CGUIDialogKeyboardGeneric::Cancel()
 {
   m_bIsConfirmed = false;
-  Close();
+  Close(false, 0, true, false);
 }
 
 bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
