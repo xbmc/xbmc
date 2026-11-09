@@ -192,6 +192,15 @@ const ADDON::CAddonType* WebAppType(const std::shared_ptr<ADDON::CAddon>& webapp
   return webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
 }
 
+// an app that can do without encrypted media gets it only if the user allows it
+bool EncryptedMediaWithheld(const ADDON::AddonPtr& webapp)
+{
+  const ADDON::CAddonType* type = WebAppType(std::dynamic_pointer_cast<ADDON::CAddon>(webapp));
+  bool allowed = false;
+  return type && KODI::WEB::WebAppEncryptedMediaOptional(*type) &&
+         !(webapp->GetSettingBool(SETTING_ENCRYPTED_MEDIA, allowed) && allowed);
+}
+
 struct WebAppFile
 {
   std::string path;
@@ -1016,7 +1025,8 @@ bool CWebClientManager::WantsCdm(const std::string& profile) const
     return false;
 
   const auto& dependencies = webapp->GetDependencies();
-  if (std::none_of(dependencies.begin(), dependencies.end(),
+  if (EncryptedMediaWithheld(webapp) ||
+      std::none_of(dependencies.begin(), dependencies.end(),
                    [](const auto& dependency) { return dependency.id == INPUTSTREAMHELPER; }))
     return false;
 
@@ -1091,6 +1101,8 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
     }
   }
 
+  if (EncryptedMediaWithheld(addon))
+    SendProfileFile(profile, NO_ENCRYPTED_MEDIA_SCRIPT, "kodi-no-encrypted-media.js", true);
   for (const WebAppFile& file : files)
     SendProfileFile(profile, file.path, file.name, file.script);
   return true;

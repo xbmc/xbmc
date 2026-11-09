@@ -31,6 +31,12 @@ inline std::string WebAppElement(const ADDON::CAddonType& type,
   return {};
 }
 
+//! \brief Whether a web app's manifest leaves the use of encrypted media to the user
+inline bool WebAppEncryptedMediaOptional(const ADDON::CAddonType& type)
+{
+  return type.GetValue("encryptedmedia@optional").asString() == "true";
+}
+
 //! \brief Whether a web app's manifest names the query parameters of its red button
 inline bool WebAppHasRedButton(const ADDON::CAddonType& type)
 {

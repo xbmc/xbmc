@@ -20,6 +20,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="encryptedmedia" type="boolean" label="40269" help="40270">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="hbbtv" label="40265" help="40266">

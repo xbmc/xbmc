@@ -26171,7 +26171,19 @@ msgctxt "#40268"
 msgid "On a television, the red button hides an HbbTV application so that the broadcast behind it shows. Kodi shows no broadcast behind a web app, so with this off the red button stays inside the app."
 msgstr ""
 
-#empty strings from id 40269 to 40399
+#. Label of the setting that lets a web app use a DRM module such as Widevine
+#: system/settings/webapp.xml
+msgctxt "#40269"
+msgid "Allow DRM-protected video"
+msgstr ""
+
+#. Help text of the setting that lets a web app use a DRM module such as Widevine
+#: system/settings/webapp.xml
+msgctxt "#40270"
+msgid "Let the app play protected video through the DRM module, such as Widevine. Off offers the app no DRM, and a service such as YouTube then serves its free video in the clear, which the hardware decodes. On also plays protected video, but the DRM module decodes it in software, which on small devices may be too slow for high resolutions."
+msgstr ""
+
+#empty strings from id 40271 to 40399
 
 # Video versions
 

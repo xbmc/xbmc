@@ -32,7 +32,7 @@ protected:
                               AddonInstanceId id) override;
 
 private:
-  void DropUnusedKodiCategories(TiXmlElement& section) const;
+  void DropUnusedKodiSettings(TiXmlElement& section) const;
 };
 
 } // namespace ADDON

@@ -13,4 +13,5 @@ system/peripherals.xml
 system/playercorefactory.xml
 system/settings/*
 system/shaders/*
+system/webapp/*
 userdata/*

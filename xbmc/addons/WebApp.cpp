@@ -71,18 +71,38 @@ bool CWebApp::LeavesKodiSettingsToKodi() const
                      { return dependency.id == "kodi.webapp" && dependency.version >= version; });
 }
 
-// the red button settings are for apps whose manifest names its query parameters
-void CWebApp::DropUnusedKodiCategories(TiXmlElement& section) const
+namespace
+{
+void DropSetting(TiXmlElement& category, const std::string& id)
+{
+  for (TiXmlElement* group = category.FirstChildElement("group"); group;
+       group = group->NextSiblingElement("group"))
+  {
+    for (TiXmlElement* setting = group->FirstChildElement("setting"); setting;)
+    {
+      TiXmlElement* next = setting->NextSiblingElement("setting");
+      if (XMLUtils::GetAttribute(setting, "id") == id)
+        group->RemoveChild(setting);
+      setting = next;
+    }
+  }
+}
+} // namespace
+
+// the red button and encrypted media settings are for apps whose manifest asks for them
+void CWebApp::DropUnusedKodiSettings(TiXmlElement& section) const
 {
   const CAddonType* type = Type(AddonType::WEBAPP);
-  if (type && KODI::WEB::WebAppHasRedButton(*type))
-    return;
+  const bool redButton = type && KODI::WEB::WebAppHasRedButton(*type);
+  const bool encryptedMedia = type && KODI::WEB::WebAppEncryptedMediaOptional(*type);
 
   for (TiXmlElement* category = section.FirstChildElement("category"); category;)
   {
     TiXmlElement* next = category->NextSiblingElement("category");
-    if (XMLUtils::GetAttribute(category, "id") == KODI::WEB::RED_BUTTON_CATEGORY)
+    if (!redButton && XMLUtils::GetAttribute(category, "id") == KODI::WEB::RED_BUTTON_CATEGORY)
       section.RemoveChild(category);
+    else if (!encryptedMedia)
+      DropSetting(*category, KODI::WEB::SETTING_ENCRYPTED_MEDIA);
     category = next;
   }
 }
@@ -106,7 +126,7 @@ bool CWebApp::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc,
     doc.Clear();
     doc.InsertEndChild(*kodiDoc.RootElement());
     SectionOf(doc)->SetAttribute("id", ID());
-    DropUnusedKodiCategories(*SectionOf(doc));
+    DropUnusedKodiSettings(*SectionOf(doc));
     return true;
   }
 
@@ -134,6 +154,6 @@ bool CWebApp::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc,
   for (const TiXmlElement* category = kodiSection->FirstChildElement("category"); category;
        category = category->NextSiblingElement("category"))
     section->InsertEndChild(*category);
-  DropUnusedKodiCategories(*section);
+  DropUnusedKodiSettings(*section);
   return true;
 }
