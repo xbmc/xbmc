@@ -23,7 +23,7 @@ concurrency:
 jobs:
   audioengine-tests:
     name: Build and run focused AudioEngine tests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 90
 
     steps:
