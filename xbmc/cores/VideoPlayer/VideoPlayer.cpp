@@ -1970,17 +1970,17 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
   CheckStreamChanges(m_CurrentAudio, pStream);
 
-  bool checkcont = CheckContinuity(m_CurrentAudio, pPacket);
-  UpdateTimestamps(m_CurrentAudio, pPacket);
-
-  // Keep the original-media timeline alongside the corrected audio PTS. Some
-  // input streams provide their authoritative timeline through dispTime.
+  // Preserve the original-media timeline before CheckContinuity can invalidate
+  // packet timestamps while waiting to confirm a discontinuity.
   if (pPacket->dispTime > 0)
     pPacket->originalPts = DVD_MSEC_TO_TIME(pPacket->dispTime);
   else if (pPacket->pts != DVD_NOPTS_VALUE)
     pPacket->originalPts = pPacket->pts + m_offset_pts;
   else if (pPacket->dts != DVD_NOPTS_VALUE)
     pPacket->originalPts = pPacket->dts + m_offset_pts;
+
+  bool checkcont = CheckContinuity(m_CurrentAudio, pPacket);
+  UpdateTimestamps(m_CurrentAudio, pPacket);
 
   if (checkcont && (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CHECK))
     m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
