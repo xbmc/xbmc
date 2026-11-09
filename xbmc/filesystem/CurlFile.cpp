@@ -876,8 +876,9 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       filename += CURL::Encode(*it);
     }
 
-    /* make sure we keep slashes */
-    if(StringUtils::EndsWith(url2.GetFileName(), "/"))
+    // make sure we keep slashes, but not as a lone "/" which reaches curl
+    // as "//", the server root, once the credentials are out of m_url
+    if (!filename.empty() && StringUtils::EndsWith(url2.GetFileName(), "/"))
       filename += "/";
 
     url2.SetFileName(filename);
