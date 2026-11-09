@@ -31,5 +31,30 @@ inline std::string WebAppElement(const ADDON::CAddonType& type,
   return {};
 }
 
+//! \brief Whether a web app's manifest names the query parameters of its red button
+inline bool WebAppHasRedButton(const ADDON::CAddonType& type)
+{
+  return !type.GetValue("redbutton@on").empty() || !type.GetValue("redbutton@off").empty();
+}
+
+//! \brief \p url with the query parameter a web app's manifest names for whether the red
+//! button hides the app
+inline std::string WebAppRedButtonUrl(const ADDON::CAddonType& type,
+                                      const std::string& url,
+                                      bool hides)
+{
+  const std::string parameter = type.GetValue(hides ? "redbutton@on" : "redbutton@off").asString();
+  if (parameter.empty())
+    return url;
+
+  const size_t fragment = url.find('#');
+  std::string withParameter = url.substr(0, fragment);
+  withParameter += withParameter.find('?') == std::string::npos ? '?' : '&';
+  withParameter += parameter;
+  if (fragment != std::string::npos)
+    withParameter += url.substr(fragment);
+  return withParameter;
+}
+
 } // namespace WEB
 } // namespace KODI

@@ -26147,7 +26147,31 @@ msgctxt "#40264"
 msgid "Let the app play video that only a software decoder can decode. Off offers the app only the codecs the hardware decodes, so that an app choosing among several picks one of those; on most devices software decoding cannot keep up with high definition video. Video that a DRM module such as Widevine decodes itself is not affected."
 msgstr ""
 
-#empty strings from id 40265 to 40399
+#. Label of the category of the HbbTV settings Kodi gives a web app that names a red button
+#: system/settings/webapp.xml
+msgctxt "#40265"
+msgid "HbbTV"
+msgstr ""
+
+#. Help text of the category of the HbbTV settings Kodi gives a web app that names a red button
+#: system/settings/webapp.xml
+msgctxt "#40266"
+msgid "How the app behaves as a broadcaster's HbbTV application."
+msgstr ""
+
+#. Label of the setting that lets the red button hide an HbbTV web app
+#: system/settings/webapp.xml
+msgctxt "#40267"
+msgid "Red button hides the app to show the TV picture"
+msgstr ""
+
+#. Help text of the setting that lets the red button hide an HbbTV web app
+#: system/settings/webapp.xml
+msgctxt "#40268"
+msgid "On a television, the red button hides an HbbTV application so that the broadcast behind it shows. Kodi shows no broadcast behind a web app, so with this off the red button stays inside the app."
+msgstr ""
+
+#empty strings from id 40269 to 40399
 
 # Video versions
 

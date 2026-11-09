@@ -210,6 +210,11 @@ static int RunAddon(const std::vector<std::string>& params)
               : KODI::WEB::WebAppElement(*type, "starturl", webapp->GetSetting("starturl"));
       if (url.empty())
         url = type->GetValue("@starturl").asString();
+      // a URL given to RunAddon is opened as given
+      bool redButtonHides = false;
+      if (params.size() < 2 &&
+          webapp->GetSettingBool(KODI::WEB::SETTING_RED_BUTTON_HIDES, redButtonHides))
+        url = KODI::WEB::WebAppRedButtonUrl(*type, url, redButtonHides);
       CFileItem item(url, false);
       item.SetLabel(webapp->Name());
       item.SetProperty(KODI::WEB::PROPERTY_PROFILE, addonid);

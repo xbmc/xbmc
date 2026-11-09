@@ -30,5 +30,11 @@ constexpr const char* DEFAULT_PROFILE = "default";
 //! \brief The add-on that installs the Widevine CDM for a web app importing it
 constexpr const char* INPUTSTREAMHELPER = "script.module.inputstreamhelper";
 
+//! \brief The category of the settings Kodi gives only a web app that names a red button
+constexpr const char* RED_BUTTON_CATEGORY = "hbbtv";
+
+//! \brief The setting whether the red button hides the app, as on a television
+constexpr const char* SETTING_RED_BUTTON_HIDES = "redbuttonhides";
+
 } // namespace WEB
 } // namespace KODI

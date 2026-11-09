@@ -11,6 +11,8 @@
 #include "addons/AddonVersion.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
+#include "cores/WebPlayer/WebApp.h"
+#include "cores/WebPlayer/WebPlayerDefs.h"
 #include "filesystem/File.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -69,6 +71,22 @@ bool CWebApp::LeavesKodiSettingsToKodi() const
                      { return dependency.id == "kodi.webapp" && dependency.version >= version; });
 }
 
+// the red button settings are for apps whose manifest names its query parameters
+void CWebApp::DropUnusedKodiCategories(TiXmlElement& section) const
+{
+  const CAddonType* type = Type(AddonType::WEBAPP);
+  if (type && KODI::WEB::WebAppHasRedButton(*type))
+    return;
+
+  for (TiXmlElement* category = section.FirstChildElement("category"); category;)
+  {
+    TiXmlElement* next = category->NextSiblingElement("category");
+    if (XMLUtils::GetAttribute(category, "id") == KODI::WEB::RED_BUTTON_CATEGORY)
+      section.RemoveChild(category);
+    category = next;
+  }
+}
+
 bool CWebApp::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc, AddonInstanceId id)
 {
   if (id != ADDON_SETTINGS_ID || !LeavesKodiSettingsToKodi())
@@ -88,6 +106,7 @@ bool CWebApp::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc,
     doc.Clear();
     doc.InsertEndChild(*kodiDoc.RootElement());
     SectionOf(doc)->SetAttribute("id", ID());
+    DropUnusedKodiCategories(*SectionOf(doc));
     return true;
   }
 
@@ -115,5 +134,6 @@ bool CWebApp::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc,
   for (const TiXmlElement* category = kodiSection->FirstChildElement("category"); category;
        category = category->NextSiblingElement("category"))
     section->InsertEndChild(*category);
+  DropUnusedKodiCategories(*section);
   return true;
 }

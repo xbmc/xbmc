@@ -12,6 +12,8 @@
 
 #include <string>
 
+class TiXmlElement;
+
 namespace ADDON
 {
 
@@ -28,6 +30,9 @@ protected:
   bool LoadSettingsDefinition(const std::string& path,
                               CXBMCTinyXML& doc,
                               AddonInstanceId id) override;
+
+private:
+  void DropUnusedKodiCategories(TiXmlElement& section) const;
 };
 
 } // namespace ADDON

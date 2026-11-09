@@ -22,5 +22,14 @@
         </setting>
       </group>
     </category>
+    <category id="hbbtv" label="40265" help="40266">
+      <group id="1">
+        <setting id="redbuttonhides" type="boolean" label="40267" help="40268">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>
