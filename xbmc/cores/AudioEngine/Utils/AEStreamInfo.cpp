@@ -98,6 +98,8 @@ void CAEStreamParser::Reset()
 {
   m_skipBytes = 0;
   m_bufferSize = 0;
+  m_streamOffset = 0;
+  m_packetOffset = 0;
   m_needBytes = 0;
   m_hasSync = false;
 }
@@ -109,8 +111,48 @@ int CAEStreamParser::AddData(uint8_t* data,
 {
   if (size == 0)
   {
+    const unsigned int bufferCapacity = bufferSize ? *bufferSize : 0;
     if (bufferSize)
       *bufferSize = 0;
+
+    // A previous call may have buffered more than one access unit. Allow the
+    // caller to retrieve the next complete unit without supplying more bytes.
+    if (!m_bufferSize || m_skipBytes || m_needBytes > m_bufferSize)
+      return 0;
+
+    m_needBytes = 0;
+    unsigned int offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
+
+    if (!m_hasSync)
+    {
+      m_syncFunc = &CAEStreamParser::DetectType;
+      m_info.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
+      m_info.m_repeat = 1;
+
+      if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
+      {
+        m_bufferSize -= offset;
+        m_streamOffset += offset;
+        memmove(m_buffer, m_buffer + offset, m_bufferSize);
+      }
+      return 0;
+    }
+
+    if (offset)
+    {
+      m_bufferSize -= offset;
+      m_streamOffset += offset;
+      memmove(m_buffer, m_buffer + offset, m_bufferSize);
+    }
+
+    m_skipBytes = std::max(0, (int)m_fsize - (int)m_bufferSize);
+    if (!m_skipBytes && !m_needBytes)
+    {
+      if (bufferSize)
+        *bufferSize = bufferCapacity;
+      GetPacket(buffer, bufferSize);
+    }
+
     return 0;
   }
 
@@ -175,6 +217,7 @@ int CAEStreamParser::AddData(uint8_t* data,
         if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
         {
           m_bufferSize -= offset;
+          m_streamOffset += offset;
           room += offset;
           memmove(m_buffer, m_buffer + offset, m_bufferSize);
         }
@@ -187,6 +230,7 @@ int CAEStreamParser::AddData(uint8_t* data,
     if (offset)
     {
       m_bufferSize -= offset;
+      m_streamOffset += offset;
       memmove(m_buffer, m_buffer + offset, m_bufferSize);
     }
 
@@ -210,6 +254,8 @@ int CAEStreamParser::AddData(uint8_t* data,
 
 void CAEStreamParser::GetPacket(uint8_t** buffer, unsigned int* bufferSize)
 {
+  m_packetOffset = m_streamOffset;
+
   // if the caller wants the packet
   if (buffer)
   {
@@ -233,6 +279,7 @@ void CAEStreamParser::GetPacket(uint8_t** buffer, unsigned int* bufferSize)
 
   // remove the parsed data from the buffer
   m_bufferSize -= m_fsize;
+  m_streamOffset += m_fsize;
   memmove(m_buffer, m_buffer + m_fsize, m_bufferSize);
   m_fsize = 0;
   m_coreSize = 0;
