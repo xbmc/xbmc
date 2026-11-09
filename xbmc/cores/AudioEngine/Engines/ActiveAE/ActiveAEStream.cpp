@@ -289,8 +289,7 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         m_currentBuffer->timestamp = pts;
         const bool silence = extData && extData->silence;
         if (m_format.m_dataFormat == AE_FMT_RAW)
-          m_currentBuffer->pkt->pause_burst_ms =
-              silence ? m_format.m_streamInfo.GetDuration() : 0;
+          m_currentBuffer->pkt->pause_burst_ms = silence ? m_format.m_streamInfo.GetDuration() : 0;
         m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
 
