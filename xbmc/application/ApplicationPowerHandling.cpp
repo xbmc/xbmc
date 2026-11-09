@@ -14,6 +14,7 @@
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
@@ -75,6 +76,20 @@ void CApplicationPowerHandling::StopScreenSaverTimer()
   m_screenSaverTimer.Stop();
 }
 
+// a player stop request wakes the display, so stop here directly
+void CApplicationPowerHandling::StopVideoWhileDPMS()
+{
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer->IsPlayingVideo() ||
+      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_POWERMANAGEMENT_DPMSSTOPSVIDEO))
+    return;
+
+  CLog::LogF(LOGINFO, "the display switched off, stopping video playback");
+  g_application.StopPlaying();
+}
+
 bool CApplicationPowerHandling::ToggleDPMS(bool manual)
 {
   auto winSystem = CServiceBroker::GetWinSystem();
@@ -104,6 +119,7 @@ bool CApplicationPowerHandling::ToggleDPMS(bool manual)
         m_dpmsIsManual = manual;
         SetRenderGUI(false);
         CheckOSScreenSaverInhibitionSetting();
+        StopVideoWhileDPMS();
         CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnDPMSActivated");
         return true;
       }

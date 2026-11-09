@@ -8638,7 +8638,14 @@ msgctxt "#14128"
 msgid "Allow double refresh rates"
 msgstr ""
 
-#empty strings from id 14129 to 14186
+#empty strings from id 14129 to 14130
+
+#: system/settings/settings.xml
+msgctxt "#14131"
+msgid "Stop video when the display switches off"
+msgstr ""
+
+#empty strings from id 14132 to 14186
 
 #: system/settings/settings.xml
 msgctxt "#14187"
@@ -20496,7 +20503,13 @@ msgctxt "#36059"
 msgid "Step size of the brightness, contrast, hue and saturation sliders in the video settings."
 msgstr ""
 
-#empty strings from id 36060 to 36095
+#. Description of setting with label #14131 "Stop video when the display switches off"
+#: system/settings/settings.xml
+msgctxt "#36060"
+msgid "Stop video playback when the display switches off, after the idle time or from the power menu, as a television does. Music keeps playing."
+msgstr ""
+
+#empty strings from id 36061 to 36095
 
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml
