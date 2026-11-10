@@ -24,7 +24,7 @@ jobs:
   audioengine-tests:
     name: Build and run focused AudioEngine tests
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - name: Check out PR branch
@@ -32,14 +32,18 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Enable Kodi build dependency repository
+      - name: Use reliable Ubuntu package mirrors
+        run: |
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|https://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true
+
+      - name: Enable Kodi build dependency repository and update package indexes
         run: |
           sudo add-apt-repository -y -s ppa:team-xbmc/xbmc-nightly
-          sudo apt-get update
+          sudo timeout 15m apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
 
       - name: Install Kodi build dependencies
         run: |
-          sudo apt-get build-dep -y kodi
+          sudo timeout 30m apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 build-dep -y kodi
 
       - name: Configure Kodi test build
         run: |
