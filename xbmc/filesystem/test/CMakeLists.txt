@@ -10,6 +10,7 @@ set(SOURCES TestAddonsPaths.cpp
             TestFileFactory.cpp
             TestLibraryPaths.cpp
             TestSourcesDirectory.cpp
+            TestVideoDatabaseFile.cpp
             TestCurlHttpClient.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
