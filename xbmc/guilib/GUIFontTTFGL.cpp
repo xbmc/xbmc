@@ -133,12 +133,6 @@ bool CGUIFontTTFGL::FirstBegin()
     m_textureStatus = TEXTURE_READY;
   }
 
-  // Accumulate coverage; the HDR composite shader squares it to compensate for blending in PQ.
-  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, m_nTexture);
-
   return true;
 }
 
@@ -164,6 +158,21 @@ void CGUIFontTTFGL::LastEnd()
   }
 
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+
+  // A texture drawn while the batch was open (a masked group's stencil, a button's background)
+  // leaves its own shader, texture and blending behind, so set them up for the batch here.
+  if (m_scissorClip)
+    renderSystem->EnableShader(m_colorTexture ? ShaderMethodGL::SM_FONTS_RGBA
+                                              : ShaderMethodGL::SM_FONTS);
+  else
+    renderSystem->EnableShader(m_colorTexture ? ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP
+                                              : ShaderMethodGL::SM_FONTS_SHADER_CLIP);
+
+  // Accumulate coverage; the HDR composite shader squares it to compensate for blending in PQ.
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_nTexture);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint colLoc = renderSystem->ShaderGetCol();
