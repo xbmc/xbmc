@@ -340,6 +340,7 @@ struct FakeEGL
   EGLContext clientContext{reinterpret_cast<EGLContext>(6)};
   bool failSurface{false}, failContext{false}, failBind{false}, failRestore{false};
   bool failDestroy{false}, failUnbind{false};
+  EGLenum unsupportedAPI{EGL_NONE};
   EGLConfig failSurfaceConfig{}, failContextConfig{};
   int surfaces{0}, contexts{0}, releases{0};
   std::vector<char> destroyed;
@@ -352,6 +353,8 @@ struct FakeEGL
         []() -> EGLenum { return current->api; },
         [](EGLenum api) -> EGLBoolean
         {
+          if (api == current->unsupportedAPI)
+            return EGL_FALSE;
           current->api = api;
           return EGL_TRUE;
         },
@@ -619,6 +622,18 @@ TEST_F(TestEGLClientContext, ThreadWithoutPreviousContextIsUnboundAfterRestore)
   EXPECT_EQ(egl.context, EGL_NO_CONTEXT);
   EXPECT_EQ(egl.display, EGL_NO_DISPLAY);
   EXPECT_EQ(egl.api, EGL_OPENGL_API);
+}
+
+TEST_F(TestEGLClientContext, UnsupportedDefaultAPIOfIdleThreadDoesNotFailRestore)
+{
+  egl.context = EGL_NO_CONTEXT;
+  egl.display = EGL_NO_DISPLAY;
+  egl.draw = egl.read = EGL_NO_SURFACE;
+  ASSERT_TRUE(Create());
+  egl.unsupportedAPI = EGL_OPENGL_API;
+  ASSERT_TRUE(client.MakeCurrent());
+  EXPECT_TRUE(client.RestoreCurrent());
+  EXPECT_EQ(egl.context, EGL_NO_CONTEXT);
 }
 
 TEST_F(TestEGLClientContext, InvalidSharedContextNeverCreatesSurface)
