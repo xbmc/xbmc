@@ -225,6 +225,18 @@ public:
     Restore,
   };
   size_t GetSerializeSize(SerializeSizeMode mode = SerializeSizeMode::Lazy) const;
+
+  /*!
+   * \brief False once the client has run for a while and still gives no
+   *        savestate size, as it then can't save its state
+   *
+   * Reads what the client last answered to GetSerializeSize(), without asking it.
+   */
+  bool SupportsSavestates() const { return !m_noSerializeSize; }
+
+  // Some clients only give a savestate size once they have booted, so no size
+  // means no savestates only after this many frames, about ten seconds of play
+  static constexpr unsigned int SAVESTATE_SIZE_FRAMES = 600;
   bool Serialize(uint8_t* data, size_t size);
   RestoreResult Deserialize(const uint8_t* data,
                             size_t size,
@@ -412,6 +424,7 @@ private:
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
   std::atomic_bool m_hasFrameRun{false};
+  std::atomic<unsigned int> m_framesRun{0}; // Counted up to SAVESTATE_SIZE_FRAMES
   std::atomic_bool m_speculativeSupported{true};
   // The speed the player is running at, as a multiple of normal speed. Written
   // by the thread that changes the speed and read by the client's own, so it is
@@ -429,6 +442,7 @@ private:
   std::string m_missingFile; // The first file the client reported missing while loading
   bool m_bRequiresGameLoop = false;
   mutable size_t m_serializeSize = 0;
+  mutable std::atomic_bool m_noSerializeSize{false};
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
   std::atomic<double> m_framerate{0.0}; // Video frame rate (fps)
   std::atomic<double> m_samplerate{0.0}; // Audio sample rate (Hz)

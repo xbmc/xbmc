@@ -126,6 +126,7 @@
 							<param name="id" value="1111" />
 							<param name="label" value="$LOCALIZE[35249]" />
 							<param name="icon" value="osd/fullscreen/buttons/saves.png" />
+							<visible>RetroPlayer.SupportsSavestates</visible>
 							<onclick>ActivateWindow(InGameSaves)</onclick>
 						</include>
 						<include content="GameOSDMenuButton">

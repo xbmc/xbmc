@@ -4541,6 +4541,16 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_SupportsCheats `RetroPlayer.SupportsCheats`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.SupportsSavestates`</b>,
+///                  \anchor RetroPlayer_SupportsSavestates
+///                  _boolean_,
+///     @return **True** if the currently-playing game client can save the game's
+///     state\, **False** otherwise. This controls the Save / Load OSD item's
+///     visibility.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link RetroPlayer_SupportsSavestates `RetroPlayer.SupportsSavestates`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.AchievementsHardcore`</b>,
 ///                  \anchor RetroPlayer_AchievementsHardcore
 ///                  _boolean_,
@@ -4679,7 +4689,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 30> retroplayer = {{
+constexpr std::array<InfoMap, 31> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4693,6 +4703,7 @@ constexpr std::array<InfoMap, 30> retroplayer = {{
     {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
     {"hascheats", RETROPLAYER_HAS_CHEATS},
     {"supportscheats", RETROPLAYER_SUPPORTS_CHEATS},
+    {"supportssavestates", RETROPLAYER_SUPPORTS_SAVESTATES},
     {"achievementsprogress", RETROPLAYER_ACHIEVEMENTS_PROGRESS},
     {"achievementschallengetitle", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE},
     {"achievementschallengebadge", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE},

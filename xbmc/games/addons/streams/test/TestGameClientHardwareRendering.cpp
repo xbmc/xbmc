@@ -1603,6 +1603,25 @@ TEST_F(TestGameClientHardwareRendering, PreFrameZeroSizeDoesNotDisableLazyRetry)
   EXPECT_EQ(m_core.sizeQueries, 2U);
 }
 
+TEST_F(TestGameClientHardwareRendering, NoSavestateSizeWhileBootingStillSupportsSavestates)
+{
+  m_core.readyFrame = CGameClient::SAVESTATE_SIZE_FRAMES + 100;
+  m_client->RunFrame(false);
+  EXPECT_EQ(m_client->GetSerializeSize(), 0U);
+  EXPECT_TRUE(m_client->SupportsSavestates());
+
+  while (m_core.frames < CGameClient::SAVESTATE_SIZE_FRAMES)
+    m_client->RunFrame(false);
+  EXPECT_EQ(m_client->GetSerializeSize(), 0U);
+  EXPECT_FALSE(m_client->SupportsSavestates());
+
+  // A client that gives a size later, once it has booted, gets savestates back
+  while (m_core.frames < m_core.readyFrame)
+    m_client->RunFrame(false);
+  EXPECT_EQ(m_client->GetSerializeSize(), 1U);
+  EXPECT_TRUE(m_client->SupportsSavestates());
+}
+
 TEST_F(TestGameClientHardwareRendering, AcceptedHardwarePreservesUnrelatedLoadErrors)
 {
   if (!HARDWARE_API_SUPPORTED)
