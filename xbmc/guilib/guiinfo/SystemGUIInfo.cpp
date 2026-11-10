@@ -425,6 +425,10 @@ bool CSystemGUIInfo::GetInt(int& value,
       value = CServiceBroker::GetCPUInfo()->GetUsedPercentage();
       return true;
     case SYSTEM_BATTERY_LEVEL:
+#if defined(TARGET_WASM)
+      if (!CServiceBroker::GetPowerManager().GetPowerSyscall())
+        return false;
+#endif
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
     default:

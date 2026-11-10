@@ -384,6 +384,10 @@ std::string CSysInfoJob::GetVideoEncoder()
 
 std::string CSysInfoJob::GetBatteryLevel()
 {
+#if defined(TARGET_WASM)
+  if (!CServiceBroker::GetPowerManager().GetPowerSyscall())
+    return {};
+#endif
   return StringUtils::Format("{}%", CServiceBroker::GetPowerManager().BatteryLevel());
 }
 

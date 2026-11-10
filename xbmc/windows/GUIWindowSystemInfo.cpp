@@ -14,6 +14,9 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#if defined(TARGET_WASM)
+#include "powermanagement/PowerManager.h"
+#endif
 #include "pvr/PVRManager.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -130,7 +133,10 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "{} {}", 13283, SYSTEM_OS_VERSION_INFO);
     SetControlLabel(i++, "{}: {}", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "{}: {}", 12394, SYSTEM_TOTALUPTIME);
-    SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
+#if defined(TARGET_WASM)
+    if (CServiceBroker::GetPowerManager().GetPowerSyscall())
+#endif
+      SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
   }
 
   else if (m_section == CONTROL_BT_STORAGE)
