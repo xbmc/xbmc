@@ -141,19 +141,23 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
                "request",
                strerror(errno));
 
-    auto oldRequest = m_atomicRequestQueue.front().get();
-    CDRMAtomicRequest::LogAtomicDiff(m_req, oldRequest);
-    m_req = oldRequest;
+    ret = UseLastRequest() ? 0 : -1;
 
     // update the old atomic request with the new fb id to avoid tearing
-    if (rendered)
+    if (ret == 0 && rendered)
       AddProperty(outputPlane, "FB_ID", fb_id);
   }
 
-  ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+  if (ret == 0)
+  {
+    ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+    if (ret < 0)
+      CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
+  }
+
+  // a failed request is not kept, so a fallback the kernel refused is not tried again
   if (ret < 0)
   {
-    CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
     m_atomicRequestQueue.pop_back();
   }
   else
@@ -165,7 +169,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     // incorrect plane cleanup on subsequent video playback.
     m_req->CacheProperties();
 
-    if (m_atomicRequestQueue.size() > 1)
+    while (m_atomicRequestQueue.size() > 1)
       m_atomicRequestQueue.pop_front();
   }
 
@@ -177,6 +181,19 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
   m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
   m_req = m_atomicRequestQueue.back().get();
+}
+
+bool CDRMAtomic::UseLastRequest()
+{
+  if (m_atomicRequestQueue.size() < 2)
+    return false;
+
+  auto lastRequest = m_atomicRequestQueue.front().get();
+  CDRMAtomicRequest::LogAtomicDiff(m_req, lastRequest);
+
+  m_atomicRequestQueue.pop_back();
+  m_req = lastRequest;
+  return true;
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
