@@ -38,3 +38,5 @@ if(TARGET ${APP_NAME_LC}::Python)
     "SHELL:--preload-file ${PYTHON_STDLIB_VFS_DIR}@${WASM_VFS_PREFIX}/lib")
   set_property(TARGET ${APP_NAME_LC} APPEND PROPERTY LINK_DEPENDS "${PYTHON_STDLIB_ZIP}")
 endif()
+
+include(${CMAKE_SOURCE_DIR}/cmake/scripts/wasm/TizenTargets.cmake)

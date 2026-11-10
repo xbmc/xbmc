@@ -1506,6 +1506,11 @@ void CApplication::WasmRunIteration()
   Cleanup();
   CLog::Log(LOGINFO, "Exiting the application...");
   CAppEnvironment::TearDown();
+  // The page keeps showing the last frame unless it closes itself; see kodi_pre.js.
+  MAIN_THREAD_ASYNC_EM_ASM({
+    if (Module.kodi && Module.kodi.onExit)
+      Module.kodi.onExit();
+  });
 }
 #endif
 
