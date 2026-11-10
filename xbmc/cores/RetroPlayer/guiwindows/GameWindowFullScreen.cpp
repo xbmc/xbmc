@@ -92,15 +92,7 @@ bool CGameWindowFullScreen::OnAction(const CAction& action)
       TriggerOSD();
       return true;
     }
-    case ACTION_MOUSE_MOVE:
-    {
-      if (action.GetAmount(2) || action.GetAmount(3))
-      {
-        TriggerOSD();
-        return true;
-      }
-      break;
-    }
+    // A click, not a move: the OSD pauses the game, and a mouse gets nudged
     case ACTION_MOUSE_LEFT_CLICK:
     {
       TriggerOSD();
