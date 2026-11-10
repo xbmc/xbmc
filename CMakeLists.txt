@@ -640,6 +640,11 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
                         lib${APP_NAME_LC}
                         ${DEPLIBS}
                         ${CMAKE_DL_LIBS})
+  # The main Kodi executable links FFmpeg separately from libkodi. The focused
+  # test links libkodi directly, so add the same FFmpeg target explicitly.
+  if(TARGET ${APP_NAME_LC}::FFMPEG)
+    target_link_libraries(audioengine-focused-test PRIVATE ${APP_NAME_LC}::FFMPEG)
+  endif()
   unset(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES)
 
   gtest_add_tests(audioengine-focused-test "" ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
