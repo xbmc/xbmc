@@ -563,15 +563,20 @@ void CTextureCache::CleanTimer()
   if (IsSleeping())
   {
     CLog::LogF(LOGDEBUG, "Texture cleanup postponed. System is sleeping.");
-    m_cleanTimer.Start(1h);
+    m_cleanTimer.RestartAsync(1h);
     return;
   }
 
   Submit(
       [this]()
       {
-        auto next = m_cleaningInProgress.test_and_set() ? 1h : ScanOldestCache();
-        m_cleaningInProgress.clear();
+        std::chrono::milliseconds next = 1h;
+        if (!m_cleaningInProgress.test_and_set())
+        {
+          next = ScanOldestCache();
+          m_cleaningInProgress.clear();
+        }
+        m_cleanTimer.Stop(true);
         m_cleanTimer.Start(next);
       });
 }

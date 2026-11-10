@@ -11,9 +11,11 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -110,6 +112,23 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
+  if (message.GetMessage() == GUI_MSG_PVR_SELECT_CHANNEL_NUMBER)
+  {
+    const CPVRChannelNumber channelNumber(static_cast<unsigned int>(message.GetParam1()),
+                                          static_cast<unsigned int>(message.GetParam2()));
+    int itemIndex = 0;
+    for (const CFileItemPtr& channel : *m_vecItems)
+    {
+      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
+      {
+        m_viewControl.SetSelectedItem(itemIndex);
+        break;
+      }
+      ++itemIndex;
+    }
+    return true;
+  }
+
   if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
   {
     switch (static_cast<PVREvent>(message.GetParam1()))
@@ -430,17 +449,13 @@ void CGUIDialogPVRChannelsOSD::GetChannelNumbers(std::vector<std::string>& chann
 void CGUIDialogPVRChannelsOSD::OnInputDone()
 {
   const CPVRChannelNumber channelNumber = GetChannelNumber();
-  if (channelNumber.IsValid())
-  {
-    int itemIndex = 0;
-    for (const CFileItemPtr& channel : *m_vecItems)
-    {
-      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
-      {
-        m_viewControl.SetSelectedItem(itemIndex);
-        return;
-      }
-      ++itemIndex;
-    }
-  }
+  if (!channelNumber.IsValid())
+    return;
+
+  CGUIMessage msg(GUI_MSG_PVR_SELECT_CHANNEL_NUMBER, GetID(), 0, channelNumber.GetChannelNumber(),
+                  channelNumber.GetSubChannelNumber());
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+    OnMessage(msg);
+  else
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
 }

@@ -152,3 +152,6 @@ constexpr const int GUI_MSG_PLAYBACK_PAUSED = GUI_MSG_USER + 47;
 constexpr const int GUI_MSG_PLAYBACK_RESUMED = GUI_MSG_USER + 48;
 constexpr const int GUI_MSG_PLAYBACK_SEEKED = GUI_MSG_USER + 49;
 constexpr const int GUI_MSG_PLAYBACK_SPEED_CHANGED = GUI_MSG_USER + 50;
+
+// Sent to PVR windows to select the channel with number param1 and subchannel number param2
+constexpr const int GUI_MSG_PVR_SELECT_CHANNEL_NUMBER = GUI_MSG_USER + 51;

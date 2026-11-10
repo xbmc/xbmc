@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -23,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -309,6 +311,24 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
       break;
     }
 
+    case GUI_MSG_PVR_SELECT_CHANNEL_NUMBER:
+    {
+      const CPVRChannelNumber channelNumber(static_cast<unsigned int>(message.GetParam1()),
+                                            static_cast<unsigned int>(message.GetParam2()));
+      int itemIndex = 0;
+      for (const CFileItemPtr& channel : *m_vecItems)
+      {
+        if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
+        {
+          m_viewControl.SetSelectedItem(itemIndex);
+          break;
+        }
+        ++itemIndex;
+      }
+      bReturn = true;
+      break;
+    }
+
     default:
       break;
   }
@@ -431,19 +451,15 @@ void CGUIWindowPVRChannelsBase::ShowGroupManager() const
 void CGUIWindowPVRChannelsBase::OnInputDone()
 {
   const CPVRChannelNumber channelNumber = GetChannelNumber();
-  if (channelNumber.IsValid())
-  {
-    int itemIndex = 0;
-    for (const CFileItemPtr& channel : *m_vecItems)
-    {
-      if (channel->GetPVRChannelGroupMemberInfoTag()->ChannelNumber() == channelNumber)
-      {
-        m_viewControl.SetSelectedItem(itemIndex);
-        return;
-      }
-      ++itemIndex;
-    }
-  }
+  if (!channelNumber.IsValid())
+    return;
+
+  CGUIMessage msg(GUI_MSG_PVR_SELECT_CHANNEL_NUMBER, GetID(), 0, channelNumber.GetChannelNumber(),
+                  channelNumber.GetSubChannelNumber());
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+    OnMessage(msg);
+  else
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
 }
 
 void CGUIWindowPVRChannelsBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
