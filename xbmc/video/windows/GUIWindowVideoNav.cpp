@@ -932,6 +932,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_EDIT:
     {
+      // the dialogs change the list item, which the loader thread writes
+      const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, item.get()};
       const int ret{CGUIDialogVideoInfo::ManageVideoItem(item)};
 
       // changed art of a movie only needs its own list item updated
@@ -953,6 +955,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     case CONTEXT_BUTTON_SET_ART:
     {
+      const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, item.get()};
       const bool result{
           CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(m_vecItems->Get(itemNumber))};
       Refresh();
