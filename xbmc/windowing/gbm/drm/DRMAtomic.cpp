@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <string.h>
 #include <thread>
+#include <utility>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
@@ -30,12 +31,6 @@ using namespace KODI::WINDOWING::GBM;
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
-  // Declared at function scope so the blob outlives drmModeAtomicCommit.
-  // DRM requires the blob to remain alive for the duration of the commit;
-  // destroying it before the commit returns leaves the atomic request
-  // referencing an invalid id and the kernel rejects with EINVAL.
-  CDRMPropertyBlob modeBlob;
-
   if (m_old_crtc != nullptr)
   {
     if (m_old_crtc->GetId() != m_crtc->GetId())
@@ -77,11 +72,11 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     if (!AddProperty(m_connector, "CRTC_ID", m_crtc->GetCrtcId()))
       return;
 
-    modeBlob = CDRMPropertyBlob(m_fd, m_mode, sizeof(*m_mode));
+    CDRMPropertyBlob modeBlob(m_fd, m_mode, sizeof(*m_mode));
     if (!modeBlob.IsValid())
       return;
 
-    if (!AddProperty(m_crtc, "MODE_ID", modeBlob.Get()))
+    if (!m_req->AddProperty(m_crtc, "MODE_ID", std::move(modeBlob)))
       return;
 
     if (!AddProperty(m_crtc, "ACTIVE", m_active ? 1 : 0))
@@ -360,6 +355,17 @@ bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
     return false;
 
   m_atomicRequestItems[object][propertyId] = value;
+  return true;
+}
+
+bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
+                                                const char* name,
+                                                CDRMPropertyBlob blob)
+{
+  if (!AddProperty(object, name, blob.Get()))
+    return false;
+
+  m_blobs.emplace_back(std::move(blob));
   return true;
 }
 
