@@ -24,6 +24,12 @@
 #include "utils/SystemInfo.h"
 #include "windowing/WinSystem.h"
 
+#if defined(TARGET_WASM)
+#include <atomic>
+
+#include <emscripten/heap.h>
+#endif
+
 constexpr int CONTROL_TEXT_START = 2;
 constexpr int CONTROL_TEXT_END = 13; // 12 lines
 
@@ -250,6 +256,19 @@ void CGUIWindowSystemInfo::FrameMove()
       if (cpuFreq > 0)
         SetControlLabel(i++, "{} {}", 13284, SYSTEM_CPUFREQUENCY);
     }
+#if defined(TARGET_WASM)
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    const auto heapSize = emscripten_get_heap_size();
+    const auto heapMax = emscripten_get_heap_max();
+    // "WASM linear memory: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39222), heapSize / 1048576.0));
+    // "WASM linear memory maximum: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39223), heapMax / 1048576.0));
+    const auto programBreak =
+        std::atomic_ref(*emscripten_get_sbrk_ptr()).load(std::memory_order_relaxed);
+    // "WASM allocator program break: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39224), programBreak / 1048576.0));
+#endif
   }
 
   else if (m_section == CONTROL_BT_PVR)
@@ -280,6 +299,13 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12396));
   }
+#if defined(TARGET_WASM)
+  if (m_section == CONTROL_BT_HARDWARE)
+  {
+    for (; i <= CONTROL_TEXT_END; ++i)
+      SET_CONTROL_LABEL(i, "");
+  }
+#endif
   CGUIWindow::FrameMove();
 }
 
