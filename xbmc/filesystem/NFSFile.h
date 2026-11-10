@@ -17,33 +17,78 @@
 #include <chrono>
 #include <list>
 #include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
+struct nfs_context;
+struct nfsfh;
 struct nfs_stat_64;
 
-class CNfsConnection : public CCriticalSection
+// One mounted nfs_context. Lock it around every libnfs call on GetNfsContext().
+class CNfsContext : public CCriticalSection
 {
 public:
-  struct keepAliveStruct
+  CNfsContext(std::string key,
+              std::string resolvedHostName,
+              std::string exportPath,
+              struct nfs_context* pNfsContext);
+  ~CNfsContext();
+  CNfsContext(const CNfsContext&) = delete;
+  CNfsContext& operator=(const CNfsContext&) = delete;
+
+  struct nfs_context* GetNfsContext() const { return m_pNfsContext; }
+  const std::string& GetConnectedIp() const { return m_resolvedHostName; }
+  const std::string& GetConnectedExport() const { return m_exportPath; }
+  uint64_t GetMaxReadChunkSize() const { return m_readChunkSize; }
+  uint64_t GetMaxWriteChunkSize() const { return m_writeChunkSize; }
+
+  // The keep alive list may only be changed while holding the context lock.
+  //adds the filehandle to the keep alive list or resets
+  //the timeout for this filehandle if already in list
+  void resetKeepAlive(struct nfsfh* pFileHandle);
+  //removes file handle from keep alive list
+  void removeFromKeepAliveList(struct nfsfh* pFileHandle);
+
+private:
+  friend class CNfsConnection;
+
+  enum class MountState
   {
-    std::string exportPath;
-    std::chrono::time_point<std::chrono::steady_clock> refreshTime;
-  };
-  typedef std::map<struct nfsfh  *, struct keepAliveStruct> tFileKeepAliveMap;
-
-  struct contextTimeout
-  {
-    struct nfs_context *pContext;
-    std::chrono::time_point<std::chrono::steady_clock> lastAccessedTime;
+    NONE,
+    MOUNTED,
+    FAILED
   };
 
-  typedef std::map<std::string, struct contextTimeout> tOpenContextMap;
+  void Touch(std::chrono::time_point<std::chrono::steady_clock> now);
+  bool IsExpired(std::chrono::time_point<std::chrono::steady_clock> now) const;
+  std::vector<struct nfsfh*> GetDueKeepAlives(
+      std::chrono::time_point<std::chrono::steady_clock> now) const;
 
+  const std::string m_key; // key in CNfsConnection::m_contexts
+  const std::string m_resolvedHostName;
+  const std::string m_exportPath;
+  struct nfs_context* const m_pNfsContext;
+
+  // written while mounting, under the context lock
+  MountState m_mountState = MountState::NONE;
+  uint64_t m_readChunkSize = 0;
+  uint64_t m_writeChunkSize = 0;
+
+  mutable CCriticalSection m_stateLock; // guards the two members below, never held across I/O
+  std::chrono::time_point<std::chrono::steady_clock> m_lastUsed;
+  std::map<struct nfsfh*, std::chrono::time_point<std::chrono::steady_clock>> m_keepAliveTimeouts;
+};
+
+class CNfsConnection
+{
+public:
   CNfsConnection();
   ~CNfsConnection();
-  bool Connect(const CURL &url, std::string &relativePath);
-  struct nfs_context *GetNfsContext() {return m_pNfsContext;}
-  uint64_t GetMaxReadChunkSize() {return m_readChunkSize;}
-  uint64_t GetMaxWriteChunkSize() {return m_writeChunkSize;}
+  // returns the mounted context to use for url and the path relative to its export
+  std::shared_ptr<CNfsContext> GetContext(const CURL& url, std::string& relativePath);
+  // drops context from the map, holders keep it alive until they release it
+  void RemoveContext(const CNfsContext& context);
   std::list<std::string> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
@@ -58,49 +103,19 @@ public:
   void AddIdleConnection();
   void CheckIfIdle();
   void Deinit();
-  //adds the filehandle to the keep alive list or resets
-  //the timeout for this filehandle if already in list
-  void resetKeepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
-  //removes file handle from keep alive list
-  void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);
-
-  const std::string& GetConnectedIp() const {return m_resolvedHostName;}
-  const std::string& GetConnectedExport() const {return m_exportPath;}
-  const std::string GetContextMapId() const {return m_hostName + m_exportPath;}
 
 private:
-  enum class ContextStatus
-  {
-    INVALID,
-    NEW,
-    CACHED
-  };
-
-  struct nfs_context *m_pNfsContext;//current nfs context
-  std::string m_exportPath;//current connected export path
-  std::string m_hostName;//current connected host
-  std::string m_resolvedHostName;//current connected host - as ip
-  uint64_t m_readChunkSize = 0;//current read chunksize of connected server
-  uint64_t m_writeChunkSize = 0;//current write chunksize of connected server
+  // Guards the members below. Never held across network I/O or while waiting for a context
+  // lock; it may be taken while holding a context lock.
+  CCriticalSection m_lock;
   int m_OpenConnections = 0; //number of open connections
   std::chrono::time_point<std::chrono::steady_clock> m_IdleTimeout;
-  tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
-  tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
-  std::chrono::time_point<std::chrono::steady_clock>
-      m_lastAccessedTime; //last access time for m_pNfsContext
-  std::list<std::string> m_exportList;//list of exported paths of current connected servers
-  CCriticalSection keepAliveLock;
-  CCriticalSection openContextLock;
+  std::map<std::string, std::shared_ptr<CNfsContext>> m_contexts; // host + export -> context
+  std::map<std::string, std::list<std::string>> m_exportLists; // lower case host -> exports
 
-  void clearMembers();
-  struct nfs_context *getContextFromMap(const std::string &exportname, bool forceCacheHit = false);
-
-  // get context for given export and add to open contexts map - sets m_pNfsContext (may return an already mounted cached context)
-  ContextStatus getContextForExport(const std::string& exportname);
-  void destroyOpenContexts();
-  void destroyContext(const std::string &exportName);
-  void resolveHost(const CURL &url);//resolve hostname by dnslookup
-  void keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
+  void mount(CNfsContext& context, const std::string& hostName);
+  static std::string resolveHost(const CURL& url); //resolve hostname by dnslookup
+  static void keepAlive(CNfsContext& context, struct nfsfh* _pFileHandle);
   static void setOptions(struct nfs_context* context);
 };
 
@@ -131,7 +146,7 @@ namespace XFILE
     {
       return request == IOControl::SEEK_POSSIBLE ? 1 : -1;
     }
-    int GetChunkSize() override {return static_cast<int>(gNfsConnection.GetMaxReadChunkSize());}
+    int GetChunkSize() override;
 
     bool OpenForWrite(const CURL& url, bool bOverWrite = false) override;
     bool Delete(const CURL& url) override;
@@ -141,8 +156,7 @@ namespace XFILE
     bool IsValidFile(const std::string& strFileName);
     int64_t m_fileSize = 0;
     struct nfsfh *m_pFileHandle;
-    struct nfs_context *m_pNfsContext;//current nfs context
-    std::string m_exportPath;
+    std::shared_ptr<CNfsContext> m_context;
   };
 }
 
