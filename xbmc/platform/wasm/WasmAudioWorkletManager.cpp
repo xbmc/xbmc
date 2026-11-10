@@ -765,7 +765,35 @@ void CWasmAudioWorkletManager::OnWorkletThreadStarted(int audioContext,
   self->m_stateCv.notify_all();
 }
 
-void CWasmAudioWorkletManager::OnProcessorCreated(int, bool success, void* userData)
+void CWasmAudioWorkletManager::OnProcessorCreated(int audioContext, bool success, void* userData)
+{
+  if (!success)
+  {
+    OnProcessorReady(audioContext, false, userData);
+    return;
+  }
+
+  // Re-adding the cached module publishes message-registered processors on Chromium 85.
+  EM_ASM(
+      {
+        const context = $0;
+        const ctx = emscriptenGetAudioObject(context);
+        if (!ctx)
+          return;
+        const callback = getWasmTableEntry($1);
+        const userData = $2;
+        const done = (success) => {
+          if (emscriptenGetAudioObject(context) === ctx)
+            callback(context, success, userData);
+        };
+        ctx.audioWorklet.addModule(locateFile("kodi.js"))
+            .then(() => done(1), () => done(0));
+      },
+      audioContext, reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorReady),
+      reinterpret_cast<uintptr_t>(userData));
+}
+
+void CWasmAudioWorkletManager::OnProcessorReady(int, bool success, void* userData)
 {
   auto* self = static_cast<CWasmAudioWorkletManager*>(userData);
   if (!self)
