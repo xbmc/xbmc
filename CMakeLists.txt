@@ -627,7 +627,14 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   set(AUDIOENGINE_FOCUSED_TEST_SOURCES
       ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestAEStreamParser.cpp
       ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestPackerMAT.cpp)
-  add_executable(audioengine-focused-test EXCLUDE_FROM_ALL ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
+  add_executable(audioengine-focused-test EXCLUDE_FROM_ALL
+                 ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp
+                 ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
+  # Kodi's FFmpeg linker wrapper recognizes the standard *-test executable
+  # naming convention. Keep this focused target under that convention so the
+  # wrapper appends the FFmpeg libraries required by libkodi.
+  set_target_properties(audioengine-focused-test PROPERTIES
+                        OUTPUT_NAME "${APP_NAME_LC}-test-audioengine")
   add_dependencies(audioengine-focused-test LIBRARY::Gtest)
   if(CORE_USE_PCH)
     core_target_precompile_headers(audioengine-focused-test)
@@ -640,11 +647,6 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
                         lib${APP_NAME_LC}
                         ${DEPLIBS}
                         ${CMAKE_DL_LIBS})
-  # The main Kodi executable links FFmpeg separately from libkodi. The focused
-  # test links libkodi directly, so add the same FFmpeg target explicitly.
-  if(TARGET ${APP_NAME_LC}::FFMPEG)
-    target_link_libraries(audioengine-focused-test PRIVATE ${APP_NAME_LC}::FFMPEG)
-  endif()
   unset(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES)
 
   gtest_add_tests(audioengine-focused-test "" ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
