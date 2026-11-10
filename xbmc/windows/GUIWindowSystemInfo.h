@@ -10,6 +10,10 @@
 
 #include "guilib/GUIWindow.h"
 
+#if defined(TARGET_WASM)
+#include "threads/SystemClock.h"
+#endif
+
 #include <string>
 #include <vector>
 
@@ -26,6 +30,9 @@ private:
   void SetControlLabel(int id, const char *format, int label, int info);
   void LoadPrivacyPolicy();
   std::vector<std::string> m_diskUsage;
+#if defined(TARGET_WASM)
+  XbmcThreads::EndTime<> m_diskUsageRefreshTimer;
+#endif
   bool m_privacyPolicyLoaded{false};
 };
 

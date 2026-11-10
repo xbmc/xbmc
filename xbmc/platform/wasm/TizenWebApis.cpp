@@ -219,6 +219,46 @@ KODI::MEMORY::MemoryStatus CTizenWebApis::GetMemoryStatus()
   return status;
 }
 
+TizenStorageInfo CTizenWebApis::GetStorageInfo()
+{
+  // STORAGE is asynchronous; keep the last snapshot while a refresh is pending.
+  // clang-format off
+  void* json = MAIN_THREAD_EM_ASM_PTR(({
+    try {
+      if (typeof tizen === 'undefined' || !tizen.systeminfo)
+        return 0;
+      const kodi = (Module.kodi = Module.kodi || {});
+      const state = (kodi.storageInfo = kodi.storageInfo ||
+                     {pending: false, nextUpdate: 0, data: null});
+      const now = performance.now();
+      if (!state.pending && now >= state.nextUpdate) {
+        state.pending = true;
+        state.nextUpdate = now + 10000;
+        const failed = () => { state.data = null; state.pending = false; };
+        try {
+          tizen.systeminfo.getPropertyValue('STORAGE', info => {
+            state.data = null;
+            const unit = info.units.find(u => u.type === 'INTERNAL');
+            if (unit && Number.isSafeInteger(unit.capacity) && unit.capacity > 0 &&
+                Number.isSafeInteger(unit.availableCapacity) && unit.availableCapacity >= 0 &&
+                unit.availableCapacity <= unit.capacity)
+              state.data = {capacity: unit.capacity, available: unit.availableCapacity};
+            state.pending = false;
+          }, failed);
+        } catch (e) { failed(); }
+      }
+      return state.data ? stringToNewUTF8(JSON.stringify(state.data)) : 0;
+    } catch (e) {
+      return 0;
+    }
+  }));
+  // clang-format on
+  CVariant data;
+  if (!ParseOwnedJson(json, data))
+    return {};
+  return {data["capacity"].asUnsignedInteger(), data["available"].asUnsignedInteger()};
+}
+
 bool CTizenWebApis::SetScreenSaverEnabled(bool enabled)
 {
   if (CWasmWebApis::GetProvider() != WebApiProvider::TIZEN)

@@ -25423,7 +25423,25 @@ msgctxt "#39227"
 msgid "GUI resolution"
 msgstr ""
 
-#empty strings from id 39228 to 39899
+#. Internal user storage reported by Tizen, excluding system-reserved space; not browser storage quota
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39228"
+msgid "Internal user storage: {0:.2f} GiB free / {1:.2f} GiB total"
+msgstr ""
+
+#. Browser-origin usage and quota estimates, not physical device capacity or free space
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39229"
+msgid "Storage (estimate)"
+msgstr ""
+
+#. Estimated storage limit for this browser origin, not physical device capacity
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39230"
+msgid "Browser quota"
+msgstr ""
+
+#empty strings from id 39231 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

@@ -10,6 +10,7 @@
 
 #include "WasmWebApis.h"
 
+#include <cstdint>
 #include <string>
 
 namespace KODI::MEMORY
@@ -19,6 +20,12 @@ struct MemoryStatus;
 
 namespace KODI::PLATFORM::WASM
 {
+
+struct TizenStorageInfo
+{
+  uint64_t capacity{0};
+  uint64_t availableCapacity{0};
+};
 
 /*!
  * \brief Snapshot of the Samsung Tizen Network API (webapis.network).
@@ -67,6 +74,7 @@ public:
   static TizenNetworkInfo GetNetworkInfo();
   static WasmDeviceInfo GetDeviceInfo();
   static KODI::MEMORY::MemoryStatus GetMemoryStatus();
+  static TizenStorageInfo GetStorageInfo();
 
   /*!
    * \brief Allow or suppress the TV screensaver while this application runs
