@@ -65,6 +65,8 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
 
 bool CLanguageInvokerThread::stop(bool wait)
 {
+  std::unique_lock stopLock(m_stopMutex);
+
   if (m_invoker == NULL)
     return false;
 
