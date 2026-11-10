@@ -73,6 +73,10 @@ using namespace winrt::Windows::System::Profile;
 #include <linux/version.h>
 #elif defined(TARGET_WASM)
 #include "platform/wasm/WasmWebApis.h"
+
+#include <cstdlib>
+
+#include <emscripten/em_asm.h>
 #endif
 
 #include <system_error>
@@ -287,7 +291,11 @@ bool CSysInfoJob::DoWork()
   m_info.videoEncoder      = GetVideoEncoder();
   m_info.cpuFrequency =
       StringUtils::Format("{:4.0f} MHz", CServiceBroker::GetCPUInfo()->GetCPUFrequency());
+#if defined(TARGET_WASM)
+  m_info.osVersionInfo = CSysInfo::GetOsPrettyNameWithVersion();
+#else
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
+#endif
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
   m_info.ipAddress = GetIPAddress();
@@ -841,6 +849,25 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
 #elif defined(TARGET_WASM)
   if (!GetOsName(true).empty())
     osNameVer = GetOsName() + " " + GetOsVersion();
+  else
+  {
+    // Browser platform hints do not identify the OS version or physical hardware.
+    // clang-format off
+    char* platform = static_cast<char*>(MAIN_THREAD_EM_ASM_PTR(({
+      try {
+        const platform = navigator.userAgentData && navigator.userAgentData.platform;
+        if (typeof platform === 'string' && platform.trim())
+          return stringToNewUTF8(platform.trim());
+      } catch (e) {}
+      return stringToNewUTF8('Web browser');
+    })));
+    // clang-format on
+    if (platform)
+    {
+      osNameVer = platform;
+      std::free(platform);
+    }
+  }
 #elif defined(TARGET_LINUX)
   osNameVer = getValueFromOs_release("PRETTY_NAME");
   if (osNameVer.empty())

@@ -25404,7 +25404,13 @@ msgctxt "#39224"
 msgid "WASM allocator program break: {0:.1f} MiB"
 msgstr ""
 
-#empty strings from id 39225 to 39899
+#. Compiler used to build Kodi for WebAssembly, not the device's native kernel. {0} is the technical name and version, e.g. Emscripten 7.0.0.
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39225"
+msgid "WebAssembly toolchain: {0}"
+msgstr ""
+
+#empty strings from id 39226 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

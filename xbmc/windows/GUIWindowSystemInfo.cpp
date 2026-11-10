@@ -31,6 +31,7 @@
 #include <atomic>
 
 #include <emscripten/heap.h>
+#include <emscripten/version.h>
 #endif
 
 constexpr int CONTROL_TEXT_START = 2;
@@ -209,7 +210,13 @@ void CGUIWindowSystemInfo::FrameMove()
                 platform));
     }
 
-    SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
+#if defined(TARGET_WASM)
+    // "Not available"
+    if (CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_GPU_TEMPERATURE,
+                                                            INFO::DEFAULT_CONTEXT) !=
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005))
+#endif
+      SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
 
     const std::string hdrTypes = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
         SYSTEM_SUPPORTED_HDR_TYPES, INFO::DEFAULT_CONTEXT);
@@ -228,9 +235,11 @@ void CGUIWindowSystemInfo::FrameMove()
     auto cpuInfo = CServiceBroker::GetCPUInfo();
     if (cpuInfo)
     {
+#if !defined(TARGET_WASM)
       static std::string model = cpuInfo->GetCPUModel();
       if (!model.empty())
         SET_CONTROL_LABEL(i++, "CPU: " + model);
+#endif
 
       static std::string mips = cpuInfo->GetCPUBogoMips();
       if (!mips.empty())
@@ -252,8 +261,15 @@ void CGUIWindowSystemInfo::FrameMove()
       if (!serial.empty())
         SET_CONTROL_LABEL(i++, "Serial: " + serial);
 
-      // temperature can't really be conditional because of localization units
-      SetControlLabel(i++, "{} {}", 22011, SYSTEM_CPU_TEMPERATURE);
+#if defined(TARGET_WASM)
+      // "Not available"
+      if (CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_CPU_TEMPERATURE,
+                                                              INFO::DEFAULT_CONTEXT) !=
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005))
+#else
+        // temperature can't really be conditional because of localization units
+#endif
+        SetControlLabel(i++, "{} {}", 22011, SYSTEM_CPU_TEMPERATURE);
 
       // we can check if the cpufrequency is not 0 (default if not implemented)
       // but we have to call through CGUIInfoManager -> CSystemGUIInfo -> CSysInfo
@@ -264,6 +280,10 @@ void CGUIWindowSystemInfo::FrameMove()
     }
 #if defined(TARGET_WASM)
     const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    const auto toolchain = StringUtils::Format("Emscripten {}.{}.{}", __EMSCRIPTEN_MAJOR__,
+                                               __EMSCRIPTEN_MINOR__, __EMSCRIPTEN_TINY__);
+    // "WebAssembly toolchain: {0}"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39225), toolchain));
     const auto heapSize = emscripten_get_heap_size();
     const auto heapMax = emscripten_get_heap_max();
     // "WASM linear memory: {0:.1f} MiB"
@@ -306,7 +326,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12396));
   }
 #if defined(TARGET_WASM)
-  if (m_section == CONTROL_BT_HARDWARE)
+  if (m_section == CONTROL_BT_HARDWARE || m_section == CONTROL_BT_VIDEO)
   {
     for (; i <= CONTROL_TEXT_END; ++i)
       SET_CONTROL_LABEL(i, "");
