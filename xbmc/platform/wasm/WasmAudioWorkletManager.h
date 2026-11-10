@@ -23,7 +23,8 @@ public:
 
   static CWasmAudioWorkletManager& GetInstance();
 
-  bool Initialize(unsigned int channels, unsigned int requestedSampleRate);
+  bool Initialize(unsigned int channels);
+  void Suspend();
   void Shutdown();
 
   unsigned int WritePlanar(const float* const* planes,
@@ -41,7 +42,7 @@ public:
   unsigned int GetSampleRate() const;
   unsigned int GetQuantumSize() const;
   unsigned int GetChannels() const;
-  unsigned int GetMaxOutputChannels() const;
+  unsigned int GetMaxOutputChannels();
   bool IsReady() const;
 
   // Returns and resets the number of underrun frames.
@@ -53,7 +54,7 @@ private:
   CWasmAudioWorkletManager(const CWasmAudioWorkletManager&) = delete;
   CWasmAudioWorkletManager& operator=(const CWasmAudioWorkletManager&) = delete;
 
-  bool EnsureContext(unsigned int requestedSampleRate);
+  bool EnsureContext();
   bool EnsureWorkletProcessor();
   bool ConfigureNode(unsigned int channels);
   void InstallResumeHooks() const;
@@ -81,12 +82,17 @@ private:
 
   int m_audioContext{0};
   int m_workletNode{0};
+  std::atomic<uintptr_t> m_nodeGeneration{0};
 
   std::atomic<bool> m_ready{false};
   std::atomic<bool> m_workletThreadCreated{false};
   std::atomic<bool> m_processorCreated{false};
+  std::atomic<bool> m_processorRegistered{false};
   std::atomic<bool> m_asyncResult{false};
   std::atomic<bool> m_asyncDone{false};
+  bool m_workletThreadStarted{false};
+  bool m_processorCreationStarted{false};
+  bool m_shutdown{false};
 
   std::atomic<unsigned int> m_channels{2};
   std::atomic<unsigned int> m_sampleRate{48000};

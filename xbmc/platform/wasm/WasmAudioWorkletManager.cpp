@@ -30,13 +30,13 @@ constexpr unsigned int PREBUFFER_TARGET_MS = 40;
 constexpr unsigned int WORKLET_STALL_LIMIT_MS = 500;
 constexpr auto ASYNC_TIMEOUT = std::chrono::seconds(5);
 
-int CreateAudioContextOnMain(int requestedSampleRate)
+int CreateAudioContextOnMain()
 {
+  // Leaving sampleRate at zero uses the browser's output rate.
   EmscriptenWebAudioCreateAttributes attrs{};
   // The largest output buffer the browser offers; the added latency is part of
   // outputLatency and so of the delay the sink reports.
   attrs.latencyHint = "playback";
-  attrs.sampleRate = static_cast<uint32_t>(std::max(requestedSampleRate, 0));
   attrs.renderSizeHint = AUDIO_CONTEXT_RENDER_SIZE_DEFAULT;
   return emscripten_create_audio_context(&attrs);
 }
@@ -98,6 +98,27 @@ void CreateProcessorOnMain(int audioContext,
       reinterpret_cast<void*>(userData));
 }
 
+void PublishProcessorOnMain(int audioContext, uintptr_t callback, uintptr_t userData)
+{
+  // Re-adding the cached module publishes message-registered processors on Chromium 85.
+  EM_ASM(
+      {
+        const context = $0;
+        const ctx = emscriptenGetAudioObject(context);
+        if (!ctx)
+          return;
+        const callback = getWasmTableEntry($1);
+        const userData = $2;
+        const done = (success) => {
+          if (emscriptenGetAudioObject(context) === ctx)
+            callback(context, success, userData);
+        };
+        ctx.audioWorklet.addModule(locateFile("kodi.js"))
+            .then(() => done(1), () => done(0));
+      },
+      audioContext, callback, userData);
+}
+
 int CreateNodeOnMain(int audioContext,
                      uintptr_t name,
                      uintptr_t options,
@@ -155,23 +176,8 @@ int QueryMaxOutputChannelsOnMain(int audioContext)
 {
   return EM_ASM_INT(
       {
-        let ctx = $0 ? emscriptenGetAudioObject($0) : null;
-        const temporary = !ctx;
-        try
-        {
-          if (!ctx)
-            ctx = new AudioContext();
-          return ctx.destination.maxChannelCount | 0;
-        }
-        catch (e)
-        {
-          return 0;
-        }
-        finally
-        {
-          if (temporary && ctx)
-            ctx.close().catch(() => {});
-        }
+        const ctx = emscriptenGetAudioObject($0);
+        return ctx ? ctx.destination.maxChannelCount | 0 : 0;
       },
       audioContext);
 }
@@ -234,31 +240,34 @@ CWasmAudioWorkletManager& CWasmAudioWorkletManager::GetInstance()
   return instance;
 }
 
-bool CWasmAudioWorkletManager::Initialize(unsigned int channels, unsigned int requestedSampleRate)
+bool CWasmAudioWorkletManager::Initialize(unsigned int channels)
 {
+  if (m_shutdown)
+    return false;
+
   if (channels == 0 || channels > kMaxChannels)
   {
     CLog::Log(LOGERROR, "WASM AudioWorklet: unsupported channel count {}", channels);
     return false;
   }
 
-  m_ready.store(false, std::memory_order_release);
+  Suspend();
 
-  if (!EnsureContext(requestedSampleRate))
+  if (!EnsureContext())
   {
-    Shutdown();
+    Suspend();
     return false;
   }
 
   if (!EnsureWorkletProcessor())
   {
-    Shutdown();
+    Suspend();
     return false;
   }
 
   if (!ConfigureNode(channels))
   {
-    Shutdown();
+    Suspend();
     return false;
   }
 
@@ -289,9 +298,11 @@ void CWasmAudioWorkletManager::ResetBuffer()
   m_prebufferComplete.store(false, std::memory_order_release);
 }
 
-void CWasmAudioWorkletManager::Shutdown()
+void CWasmAudioWorkletManager::Suspend()
 {
+  m_nodeGeneration.fetch_add(1, std::memory_order_seq_cst);
   WaitForWorkletIdle();
+  ClearResumeHooks();
 
   if (m_workletNode != 0)
   {
@@ -299,9 +310,24 @@ void CWasmAudioWorkletManager::Shutdown()
                                                m_workletNode);
     m_workletNode = 0;
   }
+  // Emscripten retains the worklet's pthread record, so its stack cannot be reused.
   if (m_audioContext != 0)
   {
-    ClearResumeHooks();
+    MAIN_THREAD_EM_ASM(
+        {
+          emscriptenGetAudioObject($0).suspend().catch(() => {});
+        },
+        m_audioContext);
+  }
+}
+
+void CWasmAudioWorkletManager::Shutdown()
+{
+  m_shutdown = true;
+  Suspend();
+
+  if (m_audioContext != 0)
+  {
     emscripten_sync_run_in_main_runtime_thread(EM_FUNC_SIG_VI, DestroyAudioContextOnMain,
                                                m_audioContext);
     m_audioContext = 0;
@@ -501,8 +527,11 @@ unsigned int CWasmAudioWorkletManager::GetChannels() const
   return m_channels.load(std::memory_order_relaxed);
 }
 
-unsigned int CWasmAudioWorkletManager::GetMaxOutputChannels() const
+unsigned int CWasmAudioWorkletManager::GetMaxOutputChannels()
 {
+  if (!EnsureContext())
+    return 0;
+
   const int channels = emscripten_sync_run_in_main_runtime_thread(
       EM_FUNC_SIG_II, QueryMaxOutputChannelsOnMain, m_audioContext);
   return channels > 0 ? static_cast<unsigned int>(channels) : 2U;
@@ -513,7 +542,7 @@ unsigned int CWasmAudioWorkletManager::GetMaxOutputChannels() const
 void CWasmAudioWorkletManager::WaitForWorkletIdle()
 {
   m_ready.store(false, std::memory_order_seq_cst);
-  for (unsigned int i = 0; i < 100 && m_activeCallbacks.load(std::memory_order_seq_cst) > 0; ++i)
+  while (m_activeCallbacks.load(std::memory_order_seq_cst) > 0)
     emscripten_thread_sleep(1);
 }
 
@@ -522,13 +551,16 @@ bool CWasmAudioWorkletManager::IsReady() const
   return m_ready.load(std::memory_order_acquire);
 }
 
-bool CWasmAudioWorkletManager::EnsureContext(unsigned int requestedSampleRate)
+bool CWasmAudioWorkletManager::EnsureContext()
 {
+  if (m_shutdown)
+    return false;
+
   if (m_audioContext != 0)
     return true;
 
   m_audioContext = emscripten_sync_run_in_main_runtime_thread(
-      EM_FUNC_SIG_II, CreateAudioContextOnMain, static_cast<int>(requestedSampleRate));
+      EM_FUNC_SIG_I, CreateAudioContextOnMain);
 
   if (m_audioContext == 0)
   {
@@ -559,14 +591,19 @@ bool CWasmAudioWorkletManager::EnsureWorkletProcessor()
 
   if (!m_workletThreadCreated.load(std::memory_order_acquire))
   {
-    m_asyncDone.store(false, std::memory_order_release);
-    m_asyncResult.store(false, std::memory_order_release);
+    // Even failed startup retains the pthread record in this static storage.
+    if (!m_workletThreadStarted)
+    {
+      m_workletThreadStarted = true;
+      m_asyncDone.store(false, std::memory_order_release);
+      m_asyncResult.store(false, std::memory_order_release);
 
-    emscripten_sync_run_in_main_runtime_thread(
-        EM_FUNC_SIG_VIIIII, StartWorkletThreadOnMain, m_audioContext,
-        reinterpret_cast<uintptr_t>(workletStack.data()), static_cast<int>(workletStack.size()),
-        reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnWorkletThreadStarted),
-        reinterpret_cast<uintptr_t>(this));
+      emscripten_sync_run_in_main_runtime_thread(
+          EM_FUNC_SIG_VIIIII, StartWorkletThreadOnMain, m_audioContext,
+          reinterpret_cast<uintptr_t>(workletStack.data()), static_cast<int>(workletStack.size()),
+          reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnWorkletThreadStarted),
+          reinterpret_cast<uintptr_t>(this));
+    }
 
     if (!WaitForState(m_asyncDone, "thread"))
       return false;
@@ -581,16 +618,31 @@ bool CWasmAudioWorkletManager::EnsureWorkletProcessor()
 
   if (!m_processorCreated.load(std::memory_order_acquire))
   {
-    WebAudioWorkletProcessorCreateOptions opts{};
-    opts.name = AUDIO_PROCESSOR_NAME;
+    if (!m_processorCreationStarted)
+    {
+      m_processorCreationStarted = true;
+      WebAudioWorkletProcessorCreateOptions opts{};
+      opts.name = AUDIO_PROCESSOR_NAME;
 
-    m_asyncDone.store(false, std::memory_order_release);
-    m_asyncResult.store(false, std::memory_order_release);
-    emscripten_sync_run_in_main_runtime_thread(
-        EM_FUNC_SIG_VIIII, CreateProcessorOnMain, m_audioContext,
-        reinterpret_cast<uintptr_t>(&opts),
-        reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorCreated),
-        reinterpret_cast<uintptr_t>(this));
+      m_asyncDone.store(false, std::memory_order_release);
+      m_asyncResult.store(false, std::memory_order_release);
+      emscripten_sync_run_in_main_runtime_thread(
+          EM_FUNC_SIG_VIIII, CreateProcessorOnMain, m_audioContext,
+          reinterpret_cast<uintptr_t>(&opts),
+          reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorCreated),
+          reinterpret_cast<uintptr_t>(this));
+    }
+    else if (m_processorRegistered.load(std::memory_order_acquire) &&
+             m_asyncDone.load(std::memory_order_acquire) &&
+             !m_asyncResult.load(std::memory_order_acquire))
+    {
+      // Retry publication only; registering the same processor twice is invalid.
+      m_asyncDone.store(false, std::memory_order_release);
+      emscripten_sync_run_in_main_runtime_thread(
+          EM_FUNC_SIG_VIII, PublishProcessorOnMain, m_audioContext,
+          reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorReady),
+          reinterpret_cast<uintptr_t>(this));
+    }
 
     if (!WaitForState(m_asyncDone, "processor"))
       return false;
@@ -609,6 +661,7 @@ bool CWasmAudioWorkletManager::EnsureWorkletProcessor()
 bool CWasmAudioWorkletManager::ConfigureNode(unsigned int channels)
 {
   m_channels.store(channels, std::memory_order_release);
+  const uintptr_t generation = m_nodeGeneration.load(std::memory_order_seq_cst);
 
   if (m_workletNode != 0)
   {
@@ -631,7 +684,7 @@ bool CWasmAudioWorkletManager::ConfigureNode(unsigned int channels)
       reinterpret_cast<uintptr_t>(AUDIO_PROCESSOR_NAME), reinterpret_cast<uintptr_t>(&options),
       reinterpret_cast<uintptr_t>(reinterpret_cast<EmscriptenWorkletNodeProcessCallback>(
           &CWasmAudioWorkletManager::ProcessAudio)),
-      reinterpret_cast<uintptr_t>(this));
+      generation);
   if (m_workletNode == 0)
   {
     CLog::Log(LOGERROR, "WASM AudioWorklet: failed to create node");
@@ -661,12 +714,14 @@ void CWasmAudioWorkletManager::RefreshPipelineLatency()
 
 void CWasmAudioWorkletManager::InstallResumeHooks() const
 {
-  MAIN_THREAD_ASYNC_EM_ASM(
+  MAIN_THREAD_EM_ASM(
       ({
         const ctx = emscriptenGetAudioObject($0);
         if (!ctx)
           return;
         const tryResume = () => {
+          if (ctx.__kodiArmResume !== armResume)
+            return;
           if (ctx.state !== "running")
             ctx.resume().catch(() => {});
           if (ctx.state === "running")
@@ -679,8 +734,15 @@ void CWasmAudioWorkletManager::InstallResumeHooks() const
             ctx.__kodiResumeHandler = null;
           }
         };
-        ctx.__kodiArmResume = () => {
-          if (ctx.state === "running" || ctx.__kodiResumeHooksInstalled)
+        const armResume = () => {
+          if (ctx.state === "closed")
+            return;
+          if (ctx.state === "running")
+          {
+            tryResume();
+            return;
+          }
+          if (ctx.__kodiResumeHooksInstalled)
             return;
           ctx.__kodiResumeHooksInstalled = true;
           ctx.__kodiResumeHandler = tryResume;
@@ -688,8 +750,10 @@ void CWasmAudioWorkletManager::InstallResumeHooks() const
           window.addEventListener("keydown", tryResume, true);
           window.addEventListener("touchstart", tryResume, true);
           document.addEventListener("visibilitychange", tryResume, true);
+          tryResume();
         };
-        ctx.__kodiArmResume();
+        ctx.__kodiArmResume = armResume;
+        armResume();
       }),
       m_audioContext);
 }
@@ -773,22 +837,12 @@ void CWasmAudioWorkletManager::OnProcessorCreated(int audioContext, bool success
     return;
   }
 
-  // Re-adding the cached module publishes message-registered processors on Chromium 85.
-  EM_ASM(
-      {
-        const context = $0;
-        const ctx = emscriptenGetAudioObject(context);
-        if (!ctx)
-          return;
-        const callback = getWasmTableEntry($1);
-        const userData = $2;
-        const done = (success) => {
-          if (emscriptenGetAudioObject(context) === ctx)
-            callback(context, success, userData);
-        };
-        ctx.audioWorklet.addModule(locateFile("kodi.js"))
-            .then(() => done(1), () => done(0));
-      },
+  auto* self = static_cast<CWasmAudioWorkletManager*>(userData);
+  if (!self)
+    return;
+
+  self->m_processorRegistered.store(true, std::memory_order_release);
+  PublishProcessorOnMain(
       audioContext, reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorReady),
       reinterpret_cast<uintptr_t>(userData));
 }
@@ -810,12 +864,12 @@ void CWasmAudioWorkletManager::OnProcessorReady(int, bool success, void* userDat
 bool CWasmAudioWorkletManager::ProcessAudio(
     int, const void*, int numOutputs, void* outputs, int, const void*, void* userData)
 {
-  auto* self = static_cast<CWasmAudioWorkletManager*>(userData);
-  if (!self)
-    return false;
-
+  auto* self = &GetInstance();
   self->m_activeCallbacks.fetch_add(1, std::memory_order_seq_cst);
-  const bool result = self->ProcessAudioImpl(numOutputs, outputs);
+  // Disconnected processors can still run when their context resumes.
+  const bool result = reinterpret_cast<uintptr_t>(userData) ==
+                          self->m_nodeGeneration.load(std::memory_order_seq_cst) &&
+                      self->ProcessAudioImpl(numOutputs, outputs);
   self->m_activeCallbacks.fetch_sub(1, std::memory_order_seq_cst);
   return result;
 }

@@ -70,7 +70,7 @@ void CAESinkWasmAudioWorklet::EnumerateDevicesEx(AEDeviceInfoList& list, bool)
   info.m_channels =
       ResolveSinkLayout(CWasmAudioWorkletManager::kMaxChannels,
                         CWasmAudioWorkletManager::GetInstance().GetMaxOutputChannels());
-  info.m_sampleRates = {44100, 48000};
+  info.m_sampleRates = {CWasmAudioWorkletManager::GetInstance().GetSampleRate()};
   info.m_dataFormats = {AE_FMT_FLOATP};
   info.m_wantsIECPassthrough = false;
   info.m_onlyPCM = true;
@@ -91,7 +91,7 @@ bool CAESinkWasmAudioWorklet::Initialize(AEAudioFormat& format, std::string& dev
       CAEChannelInfo(ResolveSinkLayout(format.m_channelLayout.Count(), maxOutputChannels));
   const unsigned int channels = format.m_channelLayout.Count();
 
-  if (!CWasmAudioWorkletManager::GetInstance().Initialize(channels, format.m_sampleRate))
+  if (!CWasmAudioWorkletManager::GetInstance().Initialize(channels))
     return false;
 
   device = "default";
@@ -125,7 +125,7 @@ void CAESinkWasmAudioWorklet::Deinitialize()
   if (!m_initialized)
     return;
 
-  CWasmAudioWorkletManager::GetInstance().Shutdown();
+  CWasmAudioWorkletManager::GetInstance().Suspend();
   m_initialized = false;
 }
 
