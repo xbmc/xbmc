@@ -218,6 +218,14 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
     {
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
+#if defined(TARGET_WASM)
+      if (stat.totalPhys == 0)
+      {
+        // "N/A"
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10006);
+        return true;
+      }
+#endif
       int iMemPercentFree =
           100 -
           static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
@@ -395,6 +403,10 @@ bool CSystemGUIInfo::GetInt(int& value,
     {
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
+#if defined(TARGET_WASM)
+      if (stat.totalPhys == 0)
+        return false;
+#endif
       const auto memPercentUsed{
           static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f)};
       if (info.GetInfo() == SYSTEM_FREE_MEMORY)

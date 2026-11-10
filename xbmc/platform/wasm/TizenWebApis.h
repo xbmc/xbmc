@@ -12,6 +12,11 @@
 
 #include <string>
 
+namespace KODI::MEMORY
+{
+struct MemoryStatus;
+}
+
 namespace KODI::PLATFORM::WASM
 {
 
@@ -61,6 +66,7 @@ class CTizenWebApis
 public:
   static TizenNetworkInfo GetNetworkInfo();
   static WasmDeviceInfo GetDeviceInfo();
+  static KODI::MEMORY::MemoryStatus GetMemoryStatus();
 
   /*!
    * \brief Allow or suppress the TV screensaver while this application runs

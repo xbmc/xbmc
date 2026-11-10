@@ -5095,8 +5095,10 @@ msgid "Not available"
 msgstr ""
 
 #. Abbreviation of "Not Available"
+#: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
 #: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
 #: xbmc/utils/SystemInfo.cpp
+#: xbmc/windows/GUIWindowDebugInfo.cpp
 msgctxt "#10006"
 msgid "N/A"
 msgstr ""
