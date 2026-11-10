@@ -106,12 +106,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(outputPlane, "CRTC_Y", 0);
     AddProperty(outputPlane, "CRTC_W", m_mode->hdisplay);
     AddProperty(outputPlane, "CRTC_H", m_mode->vdisplay);
-
-    if (m_inFenceFd != -1)
-    {
-      AddProperty(m_crtc, "OUT_FENCE_PTR", reinterpret_cast<uint64_t>(&m_outFenceFd));
-      AddProperty(outputPlane, "IN_FENCE_FD", m_inFenceFd);
-    }
+    AddFences(outputPlane);
   }
   //! @todo Reaching out to the window manager and application player
   //! singletons from inside the DRM layer is a layering violation. The
@@ -145,7 +140,10 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
     // update the old atomic request with the new fb id to avoid tearing
     if (ret == 0 && rendered)
+    {
       AddProperty(outputPlane, "FB_ID", fb_id);
+      AddFences(outputPlane);
+    }
   }
 
   if (ret == 0)
@@ -193,7 +191,20 @@ bool CDRMAtomic::UseLastRequest()
 
   m_atomicRequestQueue.pop_back();
   m_req = lastRequest;
+
+  // the fences of the frame it was committed with are closed by now
+  m_req->RemoveProperty("IN_FENCE_FD");
+  m_req->RemoveProperty("OUT_FENCE_PTR");
   return true;
+}
+
+void CDRMAtomic::AddFences(CDRMPlane* plane)
+{
+  if (m_inFenceFd == -1)
+    return;
+
+  AddProperty(m_crtc, "OUT_FENCE_PTR", reinterpret_cast<uint64_t>(&m_outFenceFd));
+  AddProperty(plane, "IN_FENCE_FD", m_inFenceFd);
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
@@ -350,6 +361,24 @@ bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
 
   m_atomicRequestItems[object][propertyId] = value;
   return true;
+}
+
+void CDRMAtomic::CDRMAtomicRequest::RemoveProperty(const char* name)
+{
+  bool removed = false;
+  for (auto& [object, properties] : m_atomicRequestItems)
+    removed |= properties.erase(object->GetPropertyId(name)) > 0;
+
+  if (!removed)
+    return;
+
+  // a libdrm request only grows, so it is built again from what is left
+  m_atomicRequest.reset(drmModeAtomicAlloc());
+  for (const auto& [object, properties] : m_atomicRequestItems)
+  {
+    for (const auto& [propertyId, value] : properties)
+      drmModeAtomicAddProperty(m_atomicRequest.get(), object->GetId(), propertyId, value);
+  }
 }
 
 void CDRMAtomic::CDRMAtomicRequest::CacheProperties()
