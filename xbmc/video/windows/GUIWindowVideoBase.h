@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
@@ -138,9 +139,14 @@ protected:
   CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
+  bool m_restartThumbLoader{false}; //!< stopped for playback, restarted if the window stays active
+  KODI::MESSAGING::ThreadMessageCallback m_restartThumbLoaderCallback{
+      [](void* window) { static_cast<CGUIWindowVideoBase*>(window)->RestartThumbLoader(); }, this};
   bool m_stackingAvailable;
 
 private:
+  void RestartThumbLoader();
+
   enum class ShowInfoResult
   {
     RESULT_ERROR, // some error occurred
