@@ -66,6 +66,7 @@ private:
   bool WaitForState(std::atomic<bool>& readyFlag, const char* stageName);
   static void OnWorkletThreadStarted(int audioContext, bool success, void* userData);
   static void OnProcessorCreated(int audioContext, bool success, void* userData);
+  static void OnProcessorReady(int audioContext, bool success, void* userData);
   static bool ProcessAudio(int numInputs,
                            const void* inputs,
                            int numOutputs,

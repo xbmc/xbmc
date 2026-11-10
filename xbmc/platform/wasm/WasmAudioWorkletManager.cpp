@@ -765,7 +765,28 @@ void CWasmAudioWorkletManager::OnWorkletThreadStarted(int audioContext,
   self->m_stateCv.notify_all();
 }
 
-void CWasmAudioWorkletManager::OnProcessorCreated(int, bool success, void* userData)
+void CWasmAudioWorkletManager::OnProcessorCreated(int audioContext, bool success, void* userData)
+{
+  if (!success)
+  {
+    OnProcessorReady(audioContext, false, userData);
+    return;
+  }
+
+  // Older Chromium publishes processors registered by messages only after addModule().
+  EM_ASM(
+      {
+        const context = $0;
+        const callback = getWasmTableEntry($1);
+        const userData = $2;
+        emscriptenGetAudioObject(context).audioWorklet.addModule("data:application/javascript,")
+            .then(() => callback(context, 1, userData), () => callback(context, 0, userData));
+      },
+      audioContext, reinterpret_cast<uintptr_t>(&CWasmAudioWorkletManager::OnProcessorReady),
+      reinterpret_cast<uintptr_t>(userData));
+}
+
+void CWasmAudioWorkletManager::OnProcessorReady(int, bool success, void* userData)
 {
   auto* self = static_cast<CWasmAudioWorkletManager*>(userData);
   if (!self)
