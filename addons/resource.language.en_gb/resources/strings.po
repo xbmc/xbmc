@@ -25410,7 +25410,19 @@ msgctxt "#39225"
 msgid "WebAssembly toolchain: {0}"
 msgstr ""
 
-#empty strings from id 39226 to 39899
+#. Time since the application started, not the device's uptime
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39226"
+msgid "Application uptime"
+msgstr ""
+
+#. Resolution used to render Kodi's GUI, not necessarily the physical display mode
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39227"
+msgid "GUI resolution"
+msgstr ""
+
+#empty strings from id 39228 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

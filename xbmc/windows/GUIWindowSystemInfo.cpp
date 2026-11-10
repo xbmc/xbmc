@@ -130,9 +130,20 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20154));
     SetControlLabel(i++, "{}: {}", 158, SYSTEM_FREE_MEMORY);
     SetControlLabel(i++, "{}: {}", 150, NETWORK_IP_ADDRESS);
+#if defined(TARGET_WASM)
+    // "GUI resolution"
+    SetControlLabel(i++, "{}: {}", 39227, SYSTEM_SCREEN_RESOLUTION);
+#else
     SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
+#endif
     SetControlLabel(i++, "{} {}", 13283, SYSTEM_OS_VERSION_INFO);
+#if defined(TARGET_WASM)
+    // "Application uptime"
+    SetControlLabel(i++, "{}: {}", 39226, SYSTEM_UPTIME);
+#else
     SetControlLabel(i++, "{}: {}", 12390, SYSTEM_UPTIME);
+#endif
+    // "Total uptime"
     SetControlLabel(i++, "{}: {}", 12394, SYSTEM_TOTALUPTIME);
 #if defined(TARGET_WASM)
     if (CServiceBroker::GetPowerManager().GetPowerSyscall())
@@ -171,7 +182,12 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20159));
     SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
                                SYSTEM_VIDEO_ENCODER_INFO, INFO::DEFAULT_CONTEXT));
+#if defined(TARGET_WASM)
+    // "GUI resolution"
+    SetControlLabel(i++, "{}: {}", 39227, SYSTEM_SCREEN_RESOLUTION);
+#else
     SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
+#endif
 
     auto renderingSystem = CServiceBroker::GetRenderSystem();
     if (renderingSystem)

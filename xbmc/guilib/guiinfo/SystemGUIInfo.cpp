@@ -179,6 +179,9 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       {
         const RESOLUTION_INFO& resInfo = winSystem->GetGfxContext().GetResInfo();
 
+#if defined(TARGET_WASM)
+        value = StringUtils::Format("{}x{}", resInfo.iWidth, resInfo.iHeight);
+#else
         if (winSystem->IsFullScreen())
           value = StringUtils::Format(
               "{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
@@ -188,6 +191,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
           value = StringUtils::Format(
               "{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(242));
+#endif
       }
       else
       {
