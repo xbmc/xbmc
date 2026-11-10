@@ -1,0 +1,11 @@
+diff --git a/include/nfsc/libnfs-zdr.h b/include/nfsc/libnfs-zdr.h
+--- a/include/nfsc/libnfs-zdr.h
++++ b/include/nfsc/libnfs-zdr.h
+@@ -99,6 +99,6 @@ typedef uint32_t u_int;
+ typedef uint32_t enum_t;
+ typedef uint32_t bool_t;
+
+-typedef uint32_t (*zdrproc_t) (ZDR *, void *,...);
++typedef uint32_t (*zdrproc_t) (ZDR *, void *);
+
+ #define AUTH_NONE 0
