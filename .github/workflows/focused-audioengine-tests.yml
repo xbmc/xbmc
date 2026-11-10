@@ -51,4 +51,4 @@ jobs:
 
       - name: Run focused parser and MAT packer tests
         run: |
-          ./build/audioengine-focused-test
+          ./build/kodi-test-audioengine
