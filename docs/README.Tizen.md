@@ -5,7 +5,7 @@ This guide covers everything that has to be in place **before** a Kodi WASM buil
 
 Building Kodi itself is covered by the **[WebAssembly (WASM) build guide](README.WASM.md)**, which also documents the `package_tizen`, `package_tizen_wgt` and `install_tizen_wgt` build targets. Do the setup here once, then follow that guide for every build.
 
-This guide has been tested on **macOS** against a **Samsung S95F** running **Tizen 9.0**, with the **Tizen 10.0 SDK** (`tz` 10.0.3). Linux hosts work the same way apart from the installer and the Certificate Manager launcher path.
+This guide has been tested on **macOS** using the **Tizen 10.0 SDK** with a **Samsung S95F** running **Tizen 9.0** (`tz` 10.0.3) and a **Samsung Q60B** (`tz` 10.0.2). Linux hosts work the same way apart from the installer and the Certificate Manager launcher path.
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
@@ -13,7 +13,7 @@ This guide has been tested on **macOS** against a **Samsung S95F** running **Tiz
 3. **[Install the Tizen SDK](#3-install-the-tizen-sdk)**
   3.1. **[Install Tizen Studio](#31-install-tizen-studio)**
   3.2. **[Put the CLI tools on PATH](#32-put-the-cli-tools-on-path)**
-  3.3. **[Install the TV extension and Certificate Manager](#33-install-the-tv-extension-and-certificate-manager)**
+  3.3. **[Install the Certificate Manager](#33-install-the-certificate-manager)**
 4. **[Enable Developer Mode on the TV](#4-enable-developer-mode-on-the-tv)**
 5. **[Connect to the TV with sdb](#5-connect-to-the-tv-with-sdb)**
   5.1. **[Find the TV IP address](#51-find-the-tv-ip-address)**
@@ -44,15 +44,43 @@ This guide uses `$HOME/tizen-studio` as the SDK location, which is the installer
 ## 3. Install the Tizen SDK
 
 ### 3.1. Install Tizen Studio
-Download the installer from **[samsungtizenos.com/tools-download](https://samsungtizenos.com/tools-download/)** (the old `developer.tizen.org` download page now redirects there). Pick **Tizen SDK with CLI**, which is enough for everything in this guide; the full IDE also works.
 
-> [!WARNING]
-> The download page has a **Mirror Location** selector, and the mirror you pick is baked into the installation — every later package fetch goes through it. At the time of writing the **USA** mirror (`usa.sdk-dl.tizen.org`) answered `403` on every path, while **Brazil** (`brazil.sdk-dl.tizen.org`) and Origin (`download.tizen.org`) worked. If package downloads fail, switch mirrors rather than retrying.
+The CLI-only Tizen SDK is sufficient to package, sign and install Kodi on Samsung TVs. The full IDE is not required.
 
-Check which mirror an existing installation uses:
+On **macOS**, download the Tizen SDK 10.0 CLI installer directly from the official Origin repository:
+
+```bash
+cd ~/Downloads
+curl -fLO https://download.tizen.org/sdk/Installer/tizen-sdk_10.0/web-cli_Tizen_SDK_10.0_macos-64.bin
+chmod +x web-cli_Tizen_SDK_10.0_macos-64.bin
 ```
+
+Review the license agreement:
+
+```bash
+./web-cli_Tizen_SDK_10.0_macos-64.bin --show-license
+```
+
+If you agree to the license, install the SDK:
+
+```bash
+./web-cli_Tizen_SDK_10.0_macos-64.bin \
+  --accept-license \
+  "$HOME/tizen-studio"
+```
+
+The installer creates `$HOME/tizen-studio`. Do not create this directory or place the downloaded installer inside it beforehand.
+
+> [!NOTE]
+> The Origin repository (`download.tizen.org`) is preferred over the USA mirror (`usa.sdk-dl.tizen.org`), which has previously returned HTTP 403 errors during package downloads.
+
+Verify the installation:
+
+```bash
 $HOME/tizen-studio/package-manager/package-manager-cli.bin show-info
 ```
+
+Installers for other operating systems are available in the [official Tizen SDK 10.0 repository](https://download.tizen.org/sdk/Installer/tizen-sdk_10.0/).
 
 ### 3.2. Put the CLI tools on PATH
 Two binaries matter, and they live in different directories: `sdb` (device connection) in `tools/`, and `tz` (the tizen-core CLI that packages, signs and installs) in `tools/tizen-core/`. Nothing is added to `PATH` by the installer.
@@ -72,47 +100,59 @@ tz --version
 sdb version
 ```
 
-### 3.3. Install the TV extension and Certificate Manager
-A stock install has neither the Samsung TV profile nor a way to create Samsung certificates. Add them with the package manager CLI:
-```
+### 3.3. Install the Certificate Manager
+
+A stock Tizen SDK installation has no way to create Samsung signing certificates. Install the required components with the package manager CLI:
+
+```bash
 $HOME/tizen-studio/package-manager/package-manager-cli.bin install --accept-license \
-  TV-SAMSUNG-Public,Certificate-Manager,cert-add-on
+  Certificate-Manager,cert-add-on
 ```
 
 | Package | Why it is needed |
 |---|---|
-| `TV-SAMSUNG-Public` | The `tv-samsung` profile that `config.xml` and `tizen_web_project.yaml` target |
 | `Certificate-Manager` | Standalone Certificate Manager application |
 | `cert-add-on` | Samsung Certificate Extension |
 
-These come from extension repositories rather than the base SDK. They are active by default; list them with `package-manager-cli.bin extra --list --detail` if an install cannot find a package.
+> [!NOTE]
+> No Samsung TV package is needed: `tz` packages, signs and installs Kodi without them. In particular, avoid the `TV-SAMSUNG-Public` package group, which pulls in the Tizen IDE and emulator; the emulator installation can fail on Apple Silicon Macs.
+
+`cert-add-on` comes from an extension repository rather than the base SDK. Extension repositories are active by default; list them if an install cannot find the package:
+
+```bash
+$HOME/tizen-studio/package-manager/package-manager-cli.bin extra --list --detail
+```
 
 > [!WARNING]
-> `Certificate-Manager` and `cert-add-on` are **not** interchangeable. The Samsung Certificate Extension on its own only installs an Eclipse plugin, which is unusable in a CLI-only installation — the standalone application is what section **[6](#6-create-the-signing-certificates)** uses.
+> `Certificate-Manager` and `cert-add-on` are **not** interchangeable. The Samsung Certificate Extension on its own only installs an Eclipse plugin, which is unusable in a CLI-only installation. The standalone Certificate Manager application is used in section **6** to create the signing certificates.
 
 Confirm what is installed:
-```
+
+```bash
 $HOME/tizen-studio/package-manager/package-manager-cli.bin show-pkgs --installed
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#3-install-the-tizen-sdk)**
 
 ## 4. Enable Developer Mode on the TV
+
 On the TV:
 
-1. Open **Apps** from the home screen.
-2. Type `12345` on the remote. A **Developer mode** dialog appears.
-3. Switch **Developer mode** to **On**.
-4. Enter the **IP address of the build host** — not the TV's own address.
-5. Restart the TV.
+1. Open **Apps** from the Smart Hub home screen.
+2. On models such as the Samsung Q60B, open **App Settings** (the gear icon at the bottom of the Apps screen). On other models, enter the code directly from the Apps screen.
+3. Enter `12345` using the remote. On Samsung Smart Remotes without a numeric keypad, press the **123** button to bring up the on-screen number pad.
+4. In the **Developer mode** dialog, switch **Developer mode** to **On**.
+5. Enter the **IP address of the build host** (your Mac or PC), **not the TV's own IP address**.
+6. Confirm the settings and restart the TV. Hold the remote's power button for several seconds until the Samsung logo appears to perform a full restart rather than simply putting the TV into standby.
 
-Find the host address to enter (macOS; replace `en0` with the interface actually in use):
-```
+Find the build host's IP address on macOS (replace `en0` with the network interface actually in use):
+
+```bash
 ipconfig getifaddr en0
 ```
 
 > [!WARNING]
-> The host IP entered here is an allowlist of exactly one machine. `sdb connect` fails with a bare "failed to connect" if the host you connect from is not the one the TV has stored — including after your router hands the host a different DHCP lease.
+> The Host PC IP entered in Developer Mode is an allowlist for exactly one machine. `sdb connect` can fail with a bare "failed to connect" if the host's IP address changes, including when the router assigns a different DHCP lease. Update the IP address in Developer Mode and restart the TV if this happens.
 
 **[back to top](#table-of-contents)**
 
@@ -226,7 +266,7 @@ The package was signed with the SDK's built-in Tizen distributor certificate. Cr
 The GUI Package Manager (or Device Manager) holds a lock on the install directory. Quit it and rerun.
 
 **Certificate Manager will not start: "the application ... is missing"**
-Only `cert-add-on` is installed. It is an Eclipse plugin with no launcher of its own; install the `Certificate-Manager` package as shown in **[3.3](#33-install-the-tv-extension-and-certificate-manager)**.
+Only `cert-add-on` is installed. It is an Eclipse plugin with no launcher of its own; install the `Certificate-Manager` package as shown in **[3.3](#33-install-the-certificate-manager)**.
 
 **`tz cert` rejects the password: "the length must be no less than 8"**
 Certificate passwords have an 8 character minimum.
