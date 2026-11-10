@@ -950,7 +950,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // changed art of a movie only needs its own list item updated
       if (ret == CONTEXT_BUTTON_SET_ART && item->HasVideoInfoTag() &&
           UpdateMovieListItem(item->GetPath(), item->GetVideoInfoTag()->m_strFileNameAndPath, *item,
-                              false))
+                              false, nullptr))
         return true;
 
       if (ret >= 0)

@@ -119,7 +119,7 @@ protected:
   bool m_hasUpdatedThumb = false;
   bool m_hasUpdatedUserrating = false;
   int m_startUserrating = -1;
-  bool m_hasUpdatedItems{false};
+  bool m_hasUpdatedItems{false}; //!< Other items changed, or the art of an item moved on from
   bool m_refreshEnabled{false}; //!< May the item be refreshed
 
 private:
