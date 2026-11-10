@@ -24,6 +24,12 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --without-cvs \
                       --disable-shared
 
+ifeq ($(NATIVE_OS), osx)
+  # The bundled libxml always uses iconv, even when configure rejects the
+  # macOS iconv as broken and leaves LIBICONV empty.
+  CONFIGURE+= LIBS=-liconv
+endif
+
 LIBDYLIB=$(PLATFORM)/gettext-tools/src/.libs/libgettextsrc.a
 
 all: .installed-$(PLATFORM)
