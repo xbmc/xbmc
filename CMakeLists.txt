@@ -640,7 +640,8 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
     core_target_precompile_headers(audioengine-focused-test)
   endif()
 
-  whole_archive(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES ${core_DEPENDS} LIBRARY::Gtest)
+  # The focused executable uses Kodi's shared test entry point, whose helpers live in xbmc_test.
+  whole_archive(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES ${core_DEPENDS} xbmc_test LIBRARY::Gtest)
   target_link_libraries(audioengine-focused-test PRIVATE
                         ${SYSTEM_LDFLAGS}
                         ${_AUDIOENGINE_FOCUSED_TEST_LIBRARIES}
