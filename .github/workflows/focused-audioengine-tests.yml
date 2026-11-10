@@ -44,7 +44,6 @@ jobs:
       - name: Install Kodi build dependencies
         run: |
           sudo timeout 30m apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 build-dep -y kodi
-          sudo timeout 5m apt-get -o Acquire::Retries=3 -o Acquire::https::Timeout=30 install -y gdb
 
       - name: Configure Kodi test build
         run: |
@@ -53,10 +52,6 @@ jobs:
       - name: Build focused AudioEngine test executable
         run: |
           cmake --build build --target audioengine-focused-test --parallel 4
-
-      - name: Capture focused test crash backtrace
-        run: |
-          gdb --batch --quiet -ex "set pagination off" -ex run -ex "thread apply all bt full" --args ./build/kodi-test-audioengine || true
 
       - name: Run focused parser and MAT packer tests
         run: |
