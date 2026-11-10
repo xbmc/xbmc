@@ -6250,13 +6250,18 @@ CVideoSettings CVideoPlayer::GetVideoSettings() const
 
 void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
 {
-  m_processInfo->SetVideoSettings(settings);
-  m_renderManager.SetVideoSettings(settings);
-  m_renderManager.SetDelay(static_cast<int>(settings.m_AudioDelay * 1000.0f));
-  m_renderManager.SetSubtitleVerticalPosition(settings.m_subtitleVerticalPosition,
-                                              settings.m_subtitleVerticalPositionSave);
-  m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
-  m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
+  // The subtitle position is established by the overlay renderer and is not stored per file,
+  // so settings loaded for a newly opened file must not overwrite it.
+  CVideoSettings vs{settings};
+  const CVideoSettings current{m_processInfo->GetVideoSettings()};
+  vs.m_subtitleVerticalPosition = current.m_subtitleVerticalPosition;
+  vs.m_subtitleVerticalPositionSave = current.m_subtitleVerticalPositionSave;
+
+  m_processInfo->SetVideoSettings(vs);
+  m_renderManager.SetVideoSettings(vs);
+  m_renderManager.SetDelay(static_cast<int>(vs.m_AudioDelay * 1000.0f));
+  m_VideoPlayerVideo->EnableSubtitle(vs.m_SubtitleOn);
+  m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-vs.m_SubtitleDelay * DVD_TIME_BASE));
 }
 
 void CVideoPlayer::FrameMove()
