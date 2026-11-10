@@ -41,9 +41,10 @@ bool CRenderBufferPoolOpenGL::ConfigureInternal()
     }
     case AV_PIX_FMT_RGB555:
     {
-      m_pixelType = GL_UNSIGNED_SHORT_5_5_5_1;
-      m_internalFormat = GL_RGB;
-      m_pixelFormat = GL_RGB;
+      // 0RGB1555: blue in the low bits, and the top bit is padding, not alpha
+      m_pixelType = GL_UNSIGNED_SHORT_1_5_5_5_REV;
+      m_internalFormat = GL_RGB5;
+      m_pixelFormat = GL_BGRA;
       m_bpp = sizeof(uint16_t);
       return true;
     }

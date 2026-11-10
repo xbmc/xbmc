@@ -43,9 +43,10 @@ bool CRenderBufferDMAOpenGL::UploadFromMemory()
       bytesPerPixel = 4;
       break;
     case DRM_FORMAT_ARGB1555:
-      internalFormat = GL_RGB;
-      pixelFormat = GL_RGB;
-      pixelType = GL_UNSIGNED_SHORT_5_5_5_1;
+      // Blue in the low bits, and the top bit is padding, not alpha
+      internalFormat = GL_RGB5;
+      pixelFormat = GL_BGRA;
+      pixelType = GL_UNSIGNED_SHORT_1_5_5_5_REV;
       bytesPerPixel = 2;
       break;
     case DRM_FORMAT_RGB565:
