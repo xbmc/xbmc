@@ -1,0 +1,19 @@
+diff --git a/Python/emscripten_syscalls.c b/Python/emscripten_syscalls.c
+--- a/Python/emscripten_syscalls.c
++++ b/Python/emscripten_syscalls.c
+@@ -44,6 +44,8 @@ int __syscall_umask(int mask) {
+ #include <errno.h>
+ #include <fcntl.h>
+
++/* JSPI syscall wrappers require reference types even when unused at runtime. */
++#ifdef __wasm_reference_types__
+ // Variant of EM_JS that does C preprocessor substitution on the body
+ #define EM_JS_MACROS(ret, func_name, args, body...)                            \
+   EM_JS(ret, func_name, args, body)
+@@ -270,5 +272,6 @@ int __syscall_poll(intptr_t fds, int nfds, int timeout) {
+     }
+     return __block_for_int(p);
+ }
++#endif
+
+ #include <sys/ioctl.h>
