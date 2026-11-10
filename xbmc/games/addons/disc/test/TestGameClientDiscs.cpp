@@ -81,7 +81,7 @@ template struct TestMemberAccess<ClientFrameRun, &CGameClient::m_hasFrameRun>;
 
 struct ClientSerializeSize
 {
-  using Type = size_t CGameClient::*;
+  using Type = std::atomic<size_t> CGameClient::*;
   friend Type GetMember(ClientSerializeSize);
 };
 template struct TestMemberAccess<ClientSerializeSize, &CGameClient::m_serializeSize>;
