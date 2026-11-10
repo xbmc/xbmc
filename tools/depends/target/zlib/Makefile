@@ -4,7 +4,7 @@ DEPS = ../../Makefile.include Makefile ZLIB-VERSION ../../download-files.include
 # configuration settings
 CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
               -DINSTALL_PKGCONFIG_DIR=$(PREFIX)/lib/pkgconfig \
-              -DZLIB_BUILD_EXAMPLES=OFF \
+              -DZLIB_BUILD_TESTING=OFF \
               -DZLIB_BUILD_SHARED=OFF \
 			  -DZLIB_BUILD_STATIC=ON
 
