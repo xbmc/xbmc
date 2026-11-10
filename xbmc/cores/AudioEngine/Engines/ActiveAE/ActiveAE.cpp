@@ -1615,6 +1615,9 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   if (streamMsg->options & AESTREAM_FORCE_RESAMPLE)
     stream->m_forceResampler = true;
 
+  if (streamMsg->options & AESTREAM_REALTIME)
+    stream->m_realtime = true;
+
   stream->m_pClock = streamMsg->clock;
 
   m_streams.push_back(stream);
@@ -1687,6 +1690,9 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   if (m_streams.size() == 1)
   {
     FlushEngine(true);
+    // Fed just in time, the sink may not time out and pad
+    if (stream->m_realtime)
+      m_stats.SetSinkStarved(true);
   }
 
   m_stats.UpdateStream(stream);
@@ -2231,6 +2237,7 @@ bool CActiveAE::RunStages()
     if (m_mode != MODE_RAW)
     {
       CSampleBuffer *out = NULL;
+      const bool sinkStarved = m_stats.IsSinkStarved();
       if (!m_sounds_playing.empty() && m_streams.empty())
       {
         if (m_silenceBuffers && !m_silenceBuffers->m_freeSamples.empty())
@@ -2269,6 +2276,21 @@ bool CActiveAE::RunStages()
         {
           CSampleBuffer *tmp = SyncStream(*it);
           m_stats.UpdateStream(*it);
+
+          // A real-time stream can't catch up on the sink's silence, so it gets a period of lead
+          if (!tmp && !out && (*it)->m_realtime && sinkStarved && m_silenceBuffers &&
+              !m_silenceBuffers->m_freeSamples.empty())
+          {
+            tmp = m_silenceBuffers->GetFreeBuffer();
+            for (int i = 0; i < tmp->pkt->planes; i++)
+              memset(tmp->pkt->data[i], 0, tmp->pkt->linesize);
+            tmp->pkt->nb_samples = tmp->pkt->max_nb_samples;
+            tmp->pkt->pause_burst_ms = 0;
+            CLog::Log(LOGDEBUG,
+                      "ActiveAE - sink starved, {} ms of silence ahead of real-time stream {}",
+                      tmp->pkt->nb_samples * 1000 / tmp->pkt->config.sample_rate, (*it)->m_id);
+          }
+
           if (tmp)
           {
             if (!out)
@@ -2536,6 +2558,8 @@ bool CActiveAE::RunStages()
         int samples = (m_mode == MODE_TRANSCODE) ? 1 : out->pkt->nb_samples;
         m_stats.AddSamples(samples, m_streams);
         m_sinkBuffers->m_inputSamples.push_back(out);
+        if (sinkStarved)
+          m_stats.SetSinkStarved(false);
       }
     }
     // pass through

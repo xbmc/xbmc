@@ -139,6 +139,7 @@ protected:
   std::chrono::milliseconds m_extSilenceTimeout;
   bool m_extAppFocused;
   bool m_extStreaming;
+  bool m_extPadding{false};
   bool m_extReserved{false};
   std::chrono::duration<double> m_reservedCacheTotal{};
   std::chrono::duration<double> m_reservedLatency{};
