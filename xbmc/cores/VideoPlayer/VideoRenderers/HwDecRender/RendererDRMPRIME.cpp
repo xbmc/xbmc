@@ -81,6 +81,11 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     if (!gui)
       return nullptr;
 
+    auto bridge =
+        std::dynamic_pointer_cast<CVideoLayerBridgeDRMPRIME>(winSystem->GetVideoLayerBridge());
+    if (bridge && bridge->Refuses(width, height))
+      return nullptr;
+
     if (!drm->FindVideoAndGuiPlane(format, modifier, width, height))
       return nullptr;
 
@@ -242,6 +247,7 @@ void CRendererDRMPRIME::RenderUpdate(
   if (m_iLastRenderBuffer == index && m_videoLayerBridge)
   {
     m_videoLayerBridge->UpdateVideoPlane();
+    m_planeRefused = m_videoLayerBridge->Refuses(m_sourceWidth, m_sourceHeight);
     return;
   }
 
@@ -264,6 +270,7 @@ void CRendererDRMPRIME::RenderUpdate(
     m_videoLayerBridge->Configure(buffer);
 
   m_videoLayerBridge->SetVideoPlane(buffer, m_planeDestRect);
+  m_planeRefused = m_videoLayerBridge->Refuses(m_sourceWidth, m_sourceHeight);
 
   m_iLastRenderBuffer = index;
 }
@@ -271,6 +278,9 @@ void CRendererDRMPRIME::RenderUpdate(
 bool CRendererDRMPRIME::ConfigChanged(const VideoPicture& picture)
 {
   if (picture.videoBuffer->GetFormat() != m_format)
+    return true;
+
+  if (m_planeRefused)
     return true;
 
   return false;

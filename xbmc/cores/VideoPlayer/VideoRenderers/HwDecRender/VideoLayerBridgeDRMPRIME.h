@@ -13,7 +13,11 @@
 #include "utils/Geometry.h"
 #include "windowing/gbm/VideoLayerBridge.h"
 
+#include <cstdint>
 #include <memory>
+#include <optional>
+#include <utility>
+#include <vector>
 
 #include <drm_mode.h>
 
@@ -42,6 +46,9 @@ public:
   virtual void SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect);
   virtual void UpdateVideoPlane();
 
+  //! \brief Whether the video plane refused to show pictures of this size
+  bool Refuses(uint32_t width, uint32_t height) const;
+
 protected:
   std::shared_ptr<KODI::WINDOWING::GBM::CDRMAtomic> m_DRM;
 
@@ -60,7 +67,14 @@ private:
   uint32_t m_fb_id{0};
   uint32_t m_prev_fb_id{0};
 
+  using Properties = std::vector<std::pair<const char*, uint64_t>>;
+
   void AddPlaneProperties(KODI::WINDOWING::GBM::CDRMPlane* plane);
+  bool PlaneAccepts(KODI::WINDOWING::GBM::CDRMPlane* plane, const Properties& properties);
 
   CRect m_destRect;
+  std::optional<std::pair<std::pair<uint32_t, uint32_t>, CRect>> m_tested;
+  bool m_accepted{false};
+
+  std::optional<std::pair<uint32_t, uint32_t>> m_refused;
 };

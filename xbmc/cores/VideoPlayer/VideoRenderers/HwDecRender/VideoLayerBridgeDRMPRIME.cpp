@@ -14,6 +14,8 @@
 #include "windowing/WinSystem.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
+#include <cerrno>
+#include <cstring>
 #include <utility>
 
 using namespace KODI::WINDOWING::GBM;
@@ -193,6 +195,8 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
   for (uint32_t doomed : m_fbCache.Reap({m_fb_id, m_prev_fb_id}))
     drmModeRmFB(m_DRM->GetFileDescriptor(), doomed);
 
+  m_tested.reset();
+
   auto plane = m_DRM->GetVideoPlane();
   if (!plane)
     return;
@@ -235,17 +239,56 @@ void CVideoLayerBridgeDRMPRIME::UpdateVideoPlane()
   AddPlaneProperties(plane);
 }
 
+bool CVideoLayerBridgeDRMPRIME::Refuses(uint32_t width, uint32_t height) const
+{
+  return m_refused == std::make_pair(width, height);
+}
+
 // the request that last set up the plane may never have reached the kernel
 void CVideoLayerBridgeDRMPRIME::AddPlaneProperties(CDRMPlane* plane)
 {
-  m_DRM->AddProperty(plane, "FB_ID", m_fb_id);
-  m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->GetCrtcId());
-  m_DRM->AddProperty(plane, "SRC_X", 0);
-  m_DRM->AddProperty(plane, "SRC_Y", 0);
-  m_DRM->AddProperty(plane, "SRC_W", m_buffer->GetWidth() << 16);
-  m_DRM->AddProperty(plane, "SRC_H", m_buffer->GetHeight() << 16);
-  m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(m_destRect.x1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(m_destRect.y1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1);
+  const Properties properties = {
+      {"FB_ID", m_fb_id},
+      {"CRTC_ID", m_DRM->GetCrtc()->GetCrtcId()},
+      {"SRC_X", 0},
+      {"SRC_Y", 0},
+      {"SRC_W", m_buffer->GetWidth() << 16},
+      {"SRC_H", m_buffer->GetHeight() << 16},
+      {"CRTC_X", static_cast<int32_t>(m_destRect.x1) & ~1},
+      {"CRTC_Y", static_cast<int32_t>(m_destRect.y1) & ~1},
+      {"CRTC_W", (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1},
+      {"CRTC_H", (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1},
+  };
+
+  if (!PlaneAccepts(plane, properties))
+    return;
+
+  for (const auto& [name, value] : properties)
+    m_DRM->AddProperty(plane, name, value);
+}
+
+// a new size or place is tested once, as a refused request would fail every frame
+bool CVideoLayerBridgeDRMPRIME::PlaneAccepts(CDRMPlane* plane, const Properties& properties)
+{
+  const auto size = std::make_pair(m_buffer->GetWidth(), m_buffer->GetHeight());
+  const auto setup = std::make_pair(size, m_destRect);
+  if (m_tested == setup)
+    return m_accepted;
+
+  m_tested = setup;
+  m_accepted = m_DRM->TestProperties(plane, properties);
+  if (m_accepted)
+  {
+    if (m_refused == size)
+      m_refused.reset();
+    return true;
+  }
+
+  CLog::Log(LOGINFO,
+            "CVideoLayerBridgeDRMPRIME::{} - the video plane refuses {}x{} at {}x{}: {}, the "
+            "video is left to GL rendering",
+            __FUNCTION__, size.first, size.second, m_destRect.Width(), m_destRect.Height(),
+            strerror(errno));
+  m_refused = size;
+  return false;
 }
