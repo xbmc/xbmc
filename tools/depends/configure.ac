@@ -625,7 +625,9 @@ fi
 
 case $build in
   *darwin*)
-    LDFLAGS=$(echo "$LDFLAGS" | sed "s|$platform_includes||")
+    if test -n "$platform_includes"; then
+      LDFLAGS=$(echo "$LDFLAGS" | sed "s|$platform_includes||")
+    fi
 esac
 
 if test "$ac_cv_search_iconv_open" != "none required"; then
