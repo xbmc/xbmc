@@ -292,9 +292,22 @@ void CSkinInfo::Start()
   {
     // find the closest resolution
     const RESOLUTION_INFO& target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-    const RESOLUTION_INFO& res = *std::ranges::min_element(m_resolutions, closestRes(target));
-    m_currentAspect = res.strId;
+    const auto res = std::ranges::min_element(m_resolutions, closestRes(target));
+    m_currentAspect = res->strId;
+    m_currentResolution = std::ranges::distance(m_resolutions.begin(), res);
   }
+}
+
+bool CSkinInfo::IsResolutionChanged() const
+{
+  if (m_resolutions.empty())
+    return false;
+
+  // compare the entry, resolutions found in the skin directory have no aspect string
+  const RESOLUTION_INFO& target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  return std::ranges::distance(m_resolutions.begin(),
+                               std::ranges::min_element(m_resolutions, closestRes(target))) !=
+         m_currentResolution;
 }
 
 std::string CSkinInfo::GetSkinPath(const std::string& strFile,
