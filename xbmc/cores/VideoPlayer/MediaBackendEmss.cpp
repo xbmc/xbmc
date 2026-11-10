@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <functional>
 #include <mutex>
 #include <utility>
@@ -364,10 +365,15 @@ std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
   int rate = 0;
   int scale = 0;
   FrameRate(video, rate, scale);
+  m_frameDuration = rate > 0 && scale > 0 ? static_cast<double>(scale) / rate : 0.0;
   m_videoMime = VideoMime(video);
+  SetupBitstreamConverter(video);
+  // EMSS needs codec configuration in the same Annex B format as its packets.
+  const uint8_t* extraData = m_bitstream ? m_bitstream->GetExtraData() : video.extradata.GetData();
+  const int extraSize = m_bitstream ? m_bitstream->GetExtraSize()
+                                   : static_cast<int>(video.extradata.GetSize());
   m_videoTrack = tizen_emss_add_video_track(
-      m_handle, m_videoMime.c_str(), video.extradata.GetData(),
-      static_cast<int>(video.extradata.GetSize()), video.width, video.height, rate, scale);
+      m_handle, m_videoMime.c_str(), extraData, extraSize, video.width, video.height, rate, scale);
 
   m_audioMime.clear();
   m_maxAudioAhead = WASM_MEDIA::MAX_FEED_AHEAD;
@@ -429,7 +435,6 @@ std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
   CLog::LogF(LOGINFO, "Video decoder: {}; audio decoder: {}", VideoCodecName(), AudioCodecName());
 
   m_videoCodec = video.codec;
-  SetupBitstreamConverter(video);
   m_demuxerMarksKeyFrames = false;
   m_pcm.clear();
   m_pcmOffset = 0;
@@ -524,7 +529,12 @@ IMediaBackendWasm::AppendResult CMediaBackendEmss::AppendVideo(const Packet& pac
   // A closed track drops packets, while the app is suspended for example.
   if (!Read(m_state.videoOpen))
     return AppendResult::FULL;
-  return Append(m_videoTrack, Read(m_state.videoSessionId), packet);
+  Packet video = packet;
+  // Cover millisecond timestamp rounding: gaps between EMSS packet ranges stall playback.
+  if (video.duration > 0.0 && video.duration <= m_frameDuration &&
+      m_frameDuration - video.duration < 0.001)
+    video.duration = std::ceil(m_frameDuration * 1000.0) / 1000.0;
+  return Append(m_videoTrack, Read(m_state.videoSessionId), video);
 }
 
 IMediaBackendWasm::AppendResult CMediaBackendEmss::AppendAudio(const Packet& packet)

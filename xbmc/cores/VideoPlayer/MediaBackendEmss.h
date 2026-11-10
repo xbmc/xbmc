@@ -82,6 +82,7 @@ private:
   std::string m_videoMime;
   std::string m_audioMime;
   double m_maxAudioAhead{0.0};
+  double m_frameDuration{0.0};
 
   AVCodecID m_videoCodec{AV_CODEC_ID_NONE};
   std::unique_ptr<CBitstreamConverter> m_bitstream;
