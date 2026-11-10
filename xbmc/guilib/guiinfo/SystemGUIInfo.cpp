@@ -354,6 +354,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 #endif
     case SYSTEM_SUPPORTED_HDR_TYPES:
     {
+#if defined(TARGET_WASM)
+      // "Unknown": the browser does not expose the physical display's HDR capabilities.
+      value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205);
+#else
       CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
       if (winSystem->IsHDRDisplay())
       {
@@ -371,6 +375,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 
         value = types;
       }
+#endif
 
       return true;
     }

@@ -6784,6 +6784,7 @@ msgstr ""
 
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
+#: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
 #: xbmc/language/LangInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemux.cpp
