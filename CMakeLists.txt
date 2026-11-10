@@ -628,7 +628,7 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
       ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestAEStreamParser.cpp
       ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestPackerMAT.cpp)
   add_executable(audioengine-focused-test EXCLUDE_FROM_ALL
-                 ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp
+                 ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/AudioEngineTestMain.cpp
                  ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
   # Kodi's FFmpeg linker wrapper recognizes the standard *-test executable
   # naming convention. Keep this focused target under that convention so the
@@ -640,8 +640,9 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
     core_target_precompile_headers(audioengine-focused-test)
   endif()
 
-  # The focused executable uses Kodi's shared test entry point, whose helpers live in xbmc_test.
-  whole_archive(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES ${core_DEPENDS} xbmc_test LIBRARY::Gtest)
+  # Use only the core dependencies and GoogleTest; avoid Kodi's broad xbmc_test
+  # support library so unrelated test helpers cannot break this focused target.
+  whole_archive(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES ${core_DEPENDS} LIBRARY::Gtest)
   target_link_libraries(audioengine-focused-test PRIVATE
                         ${SYSTEM_LDFLAGS}
                         ${_AUDIOENGINE_FOCUSED_TEST_LIBRARIES}
