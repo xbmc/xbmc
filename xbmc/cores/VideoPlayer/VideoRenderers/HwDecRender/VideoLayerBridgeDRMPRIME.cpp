@@ -219,16 +219,8 @@ void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, cons
   if (!PrepareBuffer(buffer))
     return;
 
-  m_DRM->AddProperty(plane, "FB_ID", m_fb_id);
-  m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->GetCrtcId());
-  m_DRM->AddProperty(plane, "SRC_X", 0);
-  m_DRM->AddProperty(plane, "SRC_Y", 0);
-  m_DRM->AddProperty(plane, "SRC_W", buffer->GetWidth() << 16);
-  m_DRM->AddProperty(plane, "SRC_H", buffer->GetHeight() << 16);
-  m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(destRect.x1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(destRect.y1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(destRect.Width()) + 1) & ~1);
-  m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(destRect.Height()) + 1) & ~1);
+  m_destRect = destRect;
+  AddPlaneProperties(plane);
 }
 
 void CVideoLayerBridgeDRMPRIME::UpdateVideoPlane()
@@ -240,6 +232,20 @@ void CVideoLayerBridgeDRMPRIME::UpdateVideoPlane()
   if (!plane)
     return;
 
+  AddPlaneProperties(plane);
+}
+
+// the request that last set up the plane may never have reached the kernel
+void CVideoLayerBridgeDRMPRIME::AddPlaneProperties(CDRMPlane* plane)
+{
   m_DRM->AddProperty(plane, "FB_ID", m_fb_id);
   m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->GetCrtcId());
+  m_DRM->AddProperty(plane, "SRC_X", 0);
+  m_DRM->AddProperty(plane, "SRC_Y", 0);
+  m_DRM->AddProperty(plane, "SRC_W", m_buffer->GetWidth() << 16);
+  m_DRM->AddProperty(plane, "SRC_H", m_buffer->GetHeight() << 16);
+  m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(m_destRect.x1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(m_destRect.y1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1);
 }

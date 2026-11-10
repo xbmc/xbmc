@@ -10,6 +10,7 @@
 
 #include "cores/VideoPlayer/Buffers/DmaBufIdentityCache.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "utils/Geometry.h"
 #include "windowing/gbm/VideoLayerBridge.h"
 
 #include <memory>
@@ -23,6 +24,7 @@ namespace WINDOWING
 namespace GBM
 {
 class CDRMAtomic;
+class CDRMPlane;
 }
 } // namespace WINDOWING
 } // namespace KODI
@@ -57,4 +59,8 @@ private:
   CVideoBufferDRMPRIME* m_prev_buffer = nullptr;
   uint32_t m_fb_id{0};
   uint32_t m_prev_fb_id{0};
+
+  void AddPlaneProperties(KODI::WINDOWING::GBM::CDRMPlane* plane);
+
+  CRect m_destRect;
 };
