@@ -40,6 +40,7 @@ option(ENABLE_WASM_DEV_PROXY "Route cross-origin requests through tools/wasm/ser
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options(
     "SHELL:-sUSE_PTHREADS=1"
+    "SHELL:-sMIN_CHROME_VERSION=85"
     "SHELL:-sPTHREAD_POOL_SIZE=16"
     "SHELL:-sAUDIO_WORKLET"
     "SHELL:-sWASM_WORKERS"
