@@ -380,6 +380,19 @@ What the inspector gives you on a retail TV:
 * **Performance / Memory** — main-thread activity and JS heap. GPU memory is not exposed; infer it from growth in frame time or from the app being killed.
 * **Application → Storage** — the IndexedDB the Emscripten filesystem persists userdata into.
 
+The debug overlay's log path, `/home/web_user/.kodi/temp/kodi.log`, is inside
+the WebAssembly virtual filesystem, not a native TV or host filesystem path.
+The profile is backed by IndexedDB and flushed every five seconds and on normal
+exit; an abrupt termination can lose recent log entries. To retrieve the current
+log, open the app's Web Inspector Console and run:
+
+```javascript
+copy(FS.readFile('/home/web_user/.kodi/temp/kodi.log', {encoding: 'utf8'}))
+```
+
+This copies the log to the development computer's clipboard. The previous run's
+log, when present, is `kodi.old.log` in the same directory.
+
 Configure the build with `-DENABLE_WASM_PROFILING=ON` to preserve wasm function names for profiling in DevTools.
 
 Under the hood the script runs `sdb shell 0 debug kodiplayer.Kodi`, which prints `port: <n>`, followed by `sdb forward tcp:7011 tcp:<n>`. Override the app ID with `KODI_TIZEN_APP_ID` and the local port with `KODI_TIZEN_INSPECT_PORT`.
