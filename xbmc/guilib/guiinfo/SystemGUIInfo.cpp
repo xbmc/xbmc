@@ -422,6 +422,10 @@ bool CSystemGUIInfo::GetInt(int& value,
       return true;
     }
     case SYSTEM_CPU_USAGE:
+#if defined(TARGET_WASM)
+      if (!CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
+        return false;
+#endif
       value = CServiceBroker::GetCPUInfo()->GetUsedPercentage();
       return true;
     case SYSTEM_BATTERY_LEVEL:

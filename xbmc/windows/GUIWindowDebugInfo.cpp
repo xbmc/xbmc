@@ -116,16 +116,16 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
       strCores = "N/A";
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
-#if !defined(TARGET_POSIX)
-    info =
-        StringUtils::Format("LOG: {}{}.log\nMEM: {} - FPS: {:2.1f} fps\nCPU: {}{}",
-                            CSpecialProtocol::TranslatePath("special://logpath"), lcAppName, memory,
-                            CServiceBroker::GetGUI()
-                                ->GetInfoManager()
-                                .GetInfoProviders()
-                                .GetSystemInfoProvider()
-                                .GetFPS(),
-                            strCores, profiling);
+#if !defined(TARGET_POSIX) || defined(TARGET_WASM)
+    info = StringUtils::Format("LOG: {}{}.log\nMEM: {} - FPS: {:2.1f} fps\nCPU: {}{}",
+                               CSpecialProtocol::TranslatePath("special://logpath"), lcAppName,
+                               memory,
+                               CServiceBroker::GetGUI()
+                                   ->GetInfoManager()
+                                   .GetInfoProviders()
+                                   .GetSystemInfoProvider()
+                                   .GetFPS(),
+                               strCores, profiling);
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     std::string ucAppName = lcAppName;
