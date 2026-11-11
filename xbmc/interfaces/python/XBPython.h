@@ -134,6 +134,7 @@ private:
   PyList m_vecPyList;
   PlayerCallbackList m_vecPlayerCallbackList;
   MonitorCallbackList m_vecMonitorCallbackList;
+  std::set<long> m_abortedInvokers;
 
   // any global events that scripts should be using
   CEvent m_globalEvent;
