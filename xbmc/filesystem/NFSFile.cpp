@@ -13,6 +13,7 @@
 #include "NFSFile.h"
 
 #include "ServiceBroker.h"
+#include "jobs/JobManager.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -21,6 +22,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <atomic>
 #include <inttypes.h>
 #include <mutex>
@@ -57,10 +59,12 @@ namespace
 constexpr auto CONTEXT_TIMEOUT = 60s; // 2/3 parts of lease_time
 constexpr auto KEEP_ALIVE_TIMEOUT = 45s; // half of lease_time
 constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active connections
+constexpr int KEEP_ALIVE_READ_TIMEOUT_MS = 1000;
 
 constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
+constexpr int DEFAULT_NFS_VERSION = 3; // libnfs's, when none is set
 constexpr auto SETTING_NFS_CHUNKSIZE = "nfs.chunksize";
 
 // libnfs names a context's NFSv4 client after the process ID and the second it was created in.
@@ -76,7 +80,65 @@ std::string NextClientName()
   static std::atomic<unsigned int> counter{0};
   return StringUtils::Format("Kodi {:016x} {}", processId, ++counter);
 }
+
+// rpc_init_context() seeds each context's xids from an unguarded static. Kodi's own contexts are
+// created under this lock. Those made inside mount_getexports() and nfs_find_local_servers()
+// still race with them, which is harmless: a context only matches replies against its own xids.
+struct nfs_context* InitNfsContext()
+{
+  static std::mutex lock;
+  std::unique_lock initLock(lock);
+  return nfs_init_context();
+}
+
+// Serialises NFSv4 creates. libnfs makes their verifiers from an unguarded static, and two creates
+// of one path that get the same verifier both succeed.
+std::mutex nfs4CreateLock;
 } // unnamed namespace
+
+class CNfsConnection::CMaintenanceJob : public CJob
+{
+public:
+  CMaintenanceJob(CNfsConnection& connection,
+                  std::vector<std::shared_ptr<CNfsContext>> keepAlives,
+                  std::vector<std::shared_ptr<CNfsContext>> released)
+    : m_connection(connection),
+      m_keepAlives(std::move(keepAlives)),
+      m_released(std::move(released))
+  {
+  }
+
+  // also runs when the job is cancelled before it starts
+  ~CMaintenanceJob() override { m_connection.m_maintenancePending = false; }
+
+  bool DoWork() override
+  {
+    for (const auto& context : m_keepAlives)
+    {
+      // A busy context has a call in flight, which keeps its lease. Waiting for it would hold up
+      // the keep alives of every other context, so it is left due for the next pass.
+      std::unique_lock lock(*context, std::try_to_lock);
+      if (!lock.owns_lock())
+        continue;
+
+      // handles closed since CheckIfIdle() are no longer in the list
+      for (struct nfsfh* pFileHandle : context->GetDueKeepAlives(std::chrono::steady_clock::now()))
+      {
+        keepAlive(*context, pFileHandle);
+        context->resetKeepAlive(pFileHandle);
+      }
+    }
+    m_released.clear();
+    return true;
+  }
+
+  const char* GetType() const override { return "nfsmaintenance"; }
+
+private:
+  CNfsConnection& m_connection;
+  std::vector<std::shared_ptr<CNfsContext>> m_keepAlives;
+  std::vector<std::shared_ptr<CNfsContext>> m_released;
+};
 
 CNfsConnection::CNfsConnection() : m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT)
 {
@@ -233,7 +295,167 @@ void CNfsContext::Touch(std::chrono::time_point<std::chrono::steady_clock> now)
 bool CNfsContext::IsExpired(std::chrono::time_point<std::chrono::steady_clock> now) const
 {
   std::unique_lock lock(m_stateLock);
-  return m_keepAliveTimeouts.empty() && now - m_lastUsed > CONTEXT_TIMEOUT;
+  return now - m_lastUsed > CONTEXT_TIMEOUT;
+}
+
+CNfsContextLease::CNfsContextLease(CNfsContextPool& pool, std::shared_ptr<CNfsContext> context)
+  : m_pool(&pool),
+    m_context(std::move(context))
+{
+}
+
+CNfsContextLease::~CNfsContextLease()
+{
+  Reset();
+}
+
+CNfsContextLease::CNfsContextLease(CNfsContextLease&& other) noexcept
+  : m_pool(other.m_pool),
+    m_context(std::move(other.m_context))
+{
+}
+
+CNfsContextLease& CNfsContextLease::operator=(CNfsContextLease&& other) noexcept
+{
+  if (this != &other)
+  {
+    Reset();
+    m_pool = other.m_pool;
+    m_context = std::move(other.m_context);
+  }
+  return *this;
+}
+
+void CNfsContextLease::Reset()
+{
+  if (m_context)
+  {
+    m_pool->Release(*m_context);
+    m_context.reset();
+  }
+}
+
+CNfsContextLease CNfsContextPool::Checkout(const std::string& key, const Factory& create)
+{
+  std::shared_ptr<CNfsContext> expired; // destroyed after m_lock is released
+  std::unique_lock lock(m_lock);
+
+  const auto now = std::chrono::steady_clock::now();
+  auto it = m_contexts.find(key);
+  if (it != m_contexts.end() && it->second->m_users == 0 && it->second->IsExpired(now))
+  {
+    CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
+    expired = std::move(it->second);
+    m_contexts.erase(it);
+    it = m_contexts.end();
+  }
+
+  std::shared_ptr<CNfsContext> context;
+  if (it != m_contexts.end())
+  {
+    context = it->second;
+  }
+  else
+  {
+    context = create();
+    if (!context)
+      return {};
+    m_contexts[key] = context;
+  }
+
+  context->Touch(now);
+  context->m_users++;
+  return CNfsContextLease(*this, std::move(context));
+}
+
+void CNfsContextPool::Release(CNfsContext& context)
+{
+  std::shared_ptr<CNfsContext> retired; // destroyed after m_lock is released
+  std::unique_lock lock(m_lock);
+
+  if (--context.m_users > 0 || !context.m_retired)
+    return;
+
+  const auto it = std::ranges::find_if(m_retired, [&context](const auto& retiredContext)
+                                       { return retiredContext.get() == &context; });
+  if (it != m_retired.end())
+  {
+    retired = std::move(*it);
+    m_retired.erase(it);
+  }
+}
+
+void CNfsContextPool::Retire(const CNfsContext& context)
+{
+  std::shared_ptr<CNfsContext> unused; // destroyed after m_lock is released
+  std::unique_lock lock(m_lock);
+
+  const auto it = m_contexts.find(context.m_key);
+  if (it == m_contexts.end() || it->second.get() != &context)
+    return; // already retired
+
+  if (context.m_users > 0)
+  {
+    it->second->m_retired = true;
+    m_retired.push_back(std::move(it->second));
+  }
+  else
+  {
+    unused = std::move(it->second);
+  }
+  m_contexts.erase(it);
+}
+
+void CNfsContextPool::RetireAll()
+{
+  std::map<std::string, std::shared_ptr<CNfsContext>> contexts; // destroyed after m_lock
+  std::unique_lock lock(m_lock);
+  contexts.swap(m_contexts);
+
+  for (auto& it : contexts)
+  {
+    if (it.second->m_users > 0)
+    {
+      it.second->m_retired = true;
+      m_retired.push_back(std::move(it.second));
+    }
+  }
+}
+
+std::vector<std::shared_ptr<CNfsContext>> CNfsContextPool::TakeUnused(TimePoint now, bool all)
+{
+  std::vector<std::shared_ptr<CNfsContext>> unused;
+  std::unique_lock lock(m_lock);
+
+  for (auto it = m_contexts.begin(); it != m_contexts.end();)
+  {
+    if (it->second->m_users == 0 && (all || it->second->IsExpired(now)))
+    {
+      unused.push_back(std::move(it->second));
+      it = m_contexts.erase(it);
+    }
+    else
+      ++it;
+  }
+  return unused;
+}
+
+std::vector<std::shared_ptr<CNfsContext>> CNfsContextPool::GetKeepAlivesDue(TimePoint now) const
+{
+  std::vector<std::shared_ptr<CNfsContext>> due;
+  std::unique_lock lock(m_lock);
+
+  for (const auto& it : m_contexts)
+  {
+    if (!it.second->GetDueKeepAlives(now).empty())
+      due.push_back(it.second);
+  }
+  for (const auto& context : m_retired)
+  {
+    if (!context->GetDueKeepAlives(now).empty())
+      due.push_back(context);
+  }
+  return due;
 }
 
 std::vector<struct nfsfh*> CNfsContext::GetDueKeepAlives(
@@ -266,7 +488,7 @@ void CNfsContext::removeFromKeepAliveList(struct nfsfh* pFileHandle)
   m_keepAliveTimeouts.erase(pFileHandle);
 }
 
-std::shared_ptr<CNfsContext> CNfsConnection::GetContext(const CURL& url, std::string& relativePath)
+CNfsContextLease CNfsConnection::GetContext(const CURL& url, std::string& relativePath)
 {
   std::string exportPath;
   if (!splitUrlIntoExportAndPath(url, exportPath, relativePath))
@@ -275,40 +497,21 @@ std::shared_ptr<CNfsContext> CNfsConnection::GetContext(const CURL& url, std::st
   const std::string resolvedHostName = resolveHost(url);
   const std::string key = url.GetHostName() + exportPath;
 
-  std::shared_ptr<CNfsContext> context;
-  {
-    std::shared_ptr<CNfsContext> expired; // destroyed after m_lock is released
-    std::unique_lock lock(m_lock);
-
-    const auto now = std::chrono::steady_clock::now();
-    auto it = m_contexts.find(key);
-    if (it != m_contexts.end() && it->second->IsExpired(now))
-    {
-      CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
-      expired = std::move(it->second);
-      m_contexts.erase(it);
-      it = m_contexts.end();
-    }
-
-    if (it != m_contexts.end())
-    {
-      context = it->second;
-      context->Touch(now);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "NFS: Context for {} not open - get a new context.", key);
-      // under m_lock: libnfs seeds rpc xids from an unguarded static in nfs_init_context()
-      struct nfs_context* pNfsContext = nfs_init_context();
-      if (!pNfsContext)
+  CNfsContextLease context = m_pool.Checkout(
+      key,
+      [&]() -> std::shared_ptr<CNfsContext>
       {
-        CLog::Log(LOGERROR, "NFS: Error initcontext in GetContext.");
-        return {};
-      }
-      context = std::make_shared<CNfsContext>(key, resolvedHostName, exportPath, pNfsContext);
-      m_contexts[key] = context;
-    }
-  }
+        CLog::Log(LOGDEBUG, "NFS: Context for {} not open - get a new context.", key);
+        struct nfs_context* pNfsContext = InitNfsContext();
+        if (!pNfsContext)
+        {
+          CLog::Log(LOGERROR, "NFS: Error initcontext in GetContext.");
+          return {};
+        }
+        return std::make_shared<CNfsContext>(key, resolvedHostName, exportPath, pNfsContext);
+      });
+  if (!context)
+    return {};
 
   // Whoever locks a new context first mounts it, later callers wait here for the result.
   std::unique_lock lock(*context);
@@ -325,7 +528,7 @@ std::shared_ptr<CNfsContext> CNfsConnection::GetContext(const CURL& url, std::st
 void CNfsConnection::mount(CNfsContext& context, const std::string& hostName)
 {
   struct nfs_context* pNfsContext = context.GetNfsContext();
-  setOptions(pNfsContext);
+  context.m_nfsVersion = setOptions(pNfsContext);
 
   //we connect to the directory of the path. This will be the "root" path of this connection then.
   //So all fileoperations are relative to this mountpoint...
@@ -337,7 +540,7 @@ void CNfsConnection::mount(CNfsContext& context, const std::string& hostName)
     CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", context.m_exportPath,
               nfs_get_error(pNfsContext));
     context.m_mountState = CNfsContext::MountState::FAILED;
-    RemoveContext(context);
+    RetireContext(context);
     return;
   }
   CLog::Log(LOGDEBUG, "NFS: Connected to server {} and export {}", hostName, context.m_exportPath);
@@ -387,56 +590,51 @@ void CNfsConnection::mount(CNfsContext& context, const std::string& hostName)
   context.m_mountState = CNfsContext::MountState::MOUNTED;
 }
 
-void CNfsConnection::RemoveContext(const CNfsContext& context)
+void CNfsConnection::RetireContext(const CNfsContext& context)
 {
-  std::unique_lock lock(m_lock);
-  const auto it = m_contexts.find(context.m_key);
-  if (it != m_contexts.end() && it->second.get() == &context)
-    m_contexts.erase(it);
+  m_pool.Retire(context);
 }
 
 void CNfsConnection::Deinit()
 {
-  std::map<std::string, std::shared_ptr<CNfsContext>> contexts; // destroyed after m_lock
+  m_pool.RetireAll();
+
   std::unique_lock lock(m_lock);
-  contexts.swap(m_contexts);
+  m_exportLists.clear();
 }
 
 /* This is called from CApplication::ProcessSlow() and is used to tell if nfs have been idle for too long */
 void CNfsConnection::CheckIfIdle()
 {
-  std::map<std::string, std::shared_ptr<CNfsContext>> idleContexts;
-  std::vector<std::shared_ptr<CNfsContext>> contexts;
-  {
-    std::unique_lock lock(m_lock);
-    if (m_OpenConnections == 0 && !m_contexts.empty() &&
-        m_IdleTimeout < std::chrono::steady_clock::now())
-    {
-      CLog::Log(LOGINFO, "NFS is idle. Closing the remaining connections.");
-      idleContexts.swap(m_contexts);
-    }
-
-    for (const auto& it : m_contexts)
-      contexts.push_back(it.second);
-  }
+  // The keep alives and the release of contexts run as a job, as a keep alive waits on the
+  // context lock and the server.
+  const auto jobManager = CServiceBroker::GetJobManager();
+  if (!jobManager || m_maintenancePending)
+    return;
 
   const auto now = std::chrono::steady_clock::now();
-
-  //handle keep alive on opened files
-  for (const auto& context : contexts)
+  bool idle = false;
   {
-    // never block the application thread, a busy context is alive anyway
-    std::unique_lock lock(*context, std::try_to_lock);
-    if (!lock.owns_lock())
-      continue;
-
-    for (struct nfsfh* pFileHandle : context->GetDueKeepAlives(now))
-    {
-      keepAlive(*context, pFileHandle);
-      //reset timeout
-      context->resetKeepAlive(pFileHandle);
-    }
+    std::unique_lock lock(m_lock);
+    idle = m_OpenConnections == 0 && m_IdleTimeout < now;
+    // read again on the next use, so that a new export or a change of NFS version is picked up
+    if (idle)
+      m_exportLists.clear();
   }
+
+  std::vector<std::shared_ptr<CNfsContext>> released = m_pool.TakeUnused(now, idle);
+  std::vector<std::shared_ptr<CNfsContext>> keepAlives = m_pool.GetKeepAlivesDue(now);
+  if (released.empty() && keepAlives.empty())
+    return;
+
+  if (idle && !released.empty())
+    CLog::Log(LOGINFO, "NFS is idle. Closing the remaining connections.");
+
+  // dedicated: the lower priorities share a few workers, which can stay busy past a keep alive's
+  // deadline
+  m_maintenancePending = true;
+  jobManager->AddJob(new CMaintenanceJob(*this, std::move(keepAlives), std::move(released)),
+                     nullptr, CJob::PRIORITY_DEDICATED);
 }
 
 //keep alive the filehandles nfs connection
@@ -454,11 +652,16 @@ void CNfsConnection::keepAlive(CNfsContext& context, struct nfsfh* _pFileHandle)
 
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
 
+  // Bounded, as it holds the context: closing the file, to stop playback or exit, waits for it.
+  const int timeout = nfs_get_timeout(pContext);
+  nfs_set_timeout(pContext, timeout > 0 ? std::min(timeout, KEEP_ALIVE_READ_TIMEOUT_MS)
+                                        : KEEP_ALIVE_READ_TIMEOUT_MS);
 #ifdef LIBNFS_API_V2
   int bytes = nfs_read(pContext, _pFileHandle, buffer, sizeof(buffer));
 #else
   int bytes = nfs_read(pContext, _pFileHandle, sizeof(buffer), buffer);
 #endif
+  nfs_set_timeout(pContext, timeout);
   if (bytes < 0)
   {
     CLog::LogF(LOGERROR, "nfs_read - Error ({}, {})", bytes, nfs_get_error(pContext));
@@ -479,10 +682,7 @@ int CNfsConnection::stat(const CURL& url, nfs_stat_64* statbuff)
 
   if(splitUrlIntoExportAndPath(url, exportPath, relativePath))
   {
-    {
-      std::unique_lock lock(m_lock);
-      pTmpContext = nfs_init_context();
-    }
+    pTmpContext = InitNfsContext();
 
     if(pTmpContext)
     {
@@ -527,16 +727,15 @@ void CNfsConnection::AddIdleConnection()
   m_IdleTimeout = now + IDLE_TIMEOUT;
 }
 
-
-void CNfsConnection::setOptions(struct nfs_context* context)
+int CNfsConnection::setOptions(struct nfs_context* context)
 {
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
-    return;
+    return DEFAULT_NFS_VERSION;
 
   const auto advancedSettings = settingsComponent->GetAdvancedSettings();
   if (!advancedSettings)
-    return;
+    return DEFAULT_NFS_VERSION;
 
   uint32_t timeout = advancedSettings->m_nfsTimeout;
   nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
@@ -546,7 +745,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
 
   const auto settings = settingsComponent->GetSettings();
   if (!settings)
-    return;
+    return DEFAULT_NFS_VERSION;
 
   const int nfsVersion = settings->GetInt(SETTING_NFS_VERSION);
 
@@ -555,7 +754,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
   {
     CLog::Log(LOGERROR, "NFS: Failed to set nfs version: {} ({})", nfsVersion,
               nfs_get_error(context));
-    return;
+    return DEFAULT_NFS_VERSION;
   }
 
   // only NFSv4 uses the name, and libnfs leaks the default name it replaces
@@ -563,6 +762,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
     nfs4_set_client_name(context, NextClientName().c_str());
 
   CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
+  return nfsVersion;
 }
 
 CNfsConnection gNfsConnection;
@@ -634,7 +834,7 @@ bool CNFSFile::Open(const CURL& url)
               nfs_get_error(m_context->GetNfsContext()));
 
     lock.unlock();
-    gNfsConnection.RemoveContext(*m_context);
+    gNfsConnection.RetireContext(*m_context);
     m_context = gNfsConnection.GetContext(url, filename);
     if (!m_context)
       return false;
@@ -649,7 +849,7 @@ bool CNFSFile::Open(const CURL& url)
               nfs_get_error(m_context->GetNfsContext()));
 
     lock.unlock();
-    m_context.reset();
+    m_context.Reset();
     return false;
   }
   lock.unlock();
@@ -692,7 +892,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   int ret = 0;
   std::string filename;
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, filename);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, filename);
   if (!context)
     return -1;
 
@@ -813,7 +1013,7 @@ void CNFSFile::Close()
     m_pFileHandle = NULL;
     m_fileSize = 0;
   }
-  m_context.reset();
+  m_context.Reset();
 }
 
 //this was a bitch!
@@ -877,7 +1077,7 @@ bool CNFSFile::Delete(const CURL& url)
   int ret = 0;
   std::string filename;
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, filename);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, filename);
   if (!context)
     return false;
 
@@ -896,7 +1096,7 @@ bool CNFSFile::Rename(const CURL& url, const CURL& urlnew)
   int ret = 0;
   std::string strFile;
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, strFile);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, strFile);
   if (!context)
     return false;
 
@@ -937,8 +1137,34 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   // nfs_open2 handles both creation and open atomically;
   const int flags = bOverWrite ? O_CREAT | O_RDWR | O_EXCL : O_RDWR;
   const int mode = bOverWrite ? S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH : 0;
+
+  // taken before the context lock, so that a waiting create holds up no other user of its context
+  std::unique_lock createLock(nfs4CreateLock, std::defer_lock);
+  if (bOverWrite && m_context->GetNfsVersion() == 4)
+    createLock.lock();
+
   std::unique_lock lock(*m_context);
   ret = nfs_open2(m_context->GetNfsContext(), filename.c_str(), flags, mode, &m_pFileHandle);
+
+  // client session expired, as when an otherwise idle context waits behind slow creates
+  if (ret == NFS4ERR_EXPIRED)
+  {
+    CLog::LogF(LOGERROR, "Unable to open file - trying again with a new context: error: '{}'",
+               nfs_get_error(m_context->GetNfsContext()));
+
+    lock.unlock();
+    if (createLock.owns_lock())
+      createLock.unlock();
+    gNfsConnection.RetireContext(*m_context);
+    m_context = gNfsConnection.GetContext(url, filename);
+    if (!m_context)
+      return false;
+
+    if (bOverWrite && m_context->GetNfsVersion() == 4)
+      createLock.lock();
+    lock = std::unique_lock(*m_context);
+    ret = nfs_open2(m_context->GetNfsContext(), filename.c_str(), flags, mode, &m_pFileHandle);
+  }
 
   if (ret || m_pFileHandle == NULL)
   {
@@ -946,7 +1172,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file : '{}' error : '{}'", filename,
               nfs_get_error(m_context->GetNfsContext()));
     lock.unlock();
-    m_context.reset();
+    m_context.Reset();
     return false;
   }
   lock.unlock();

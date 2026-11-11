@@ -226,7 +226,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
   std::string strDirName = "";
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, strDirName);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, strDirName);
   if (!context)
   {
     //connect has failed - so try to get the exported filesystems if no path is given to the url
@@ -310,7 +310,7 @@ bool CNFSDirectory::Create(const CURL& url2)
   CURL url(folderName);
   folderName = "";
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, folderName);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
   if (!context)
     return false;
 
@@ -333,7 +333,7 @@ bool CNFSDirectory::Remove(const CURL& url2)
   CURL url(folderName);
   folderName = "";
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, folderName);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
   if (!context)
     return false;
 
@@ -358,7 +358,7 @@ bool CNFSDirectory::Exists(const CURL& url2)
   CURL url(folderName);
   folderName = "";
 
-  const std::shared_ptr<CNfsContext> context = gNfsConnection.GetContext(url, folderName);
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
   if (!context)
     return false;
 
