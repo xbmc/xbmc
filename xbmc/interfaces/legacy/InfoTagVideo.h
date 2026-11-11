@@ -888,7 +888,7 @@ namespace XBMCAddon
     ///
     ///
     ///-------------------------------------------------------------------------
-    /// @python_v22 New class added.
+    /// @python_v23 New class added.
     ///
     class ContentGeometrySection : public AddonClass
     {
@@ -909,7 +909,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getX();
 #else
@@ -926,7 +926,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getY();
 #else
@@ -943,7 +943,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getWidth();
 #else
@@ -960,7 +960,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getHeight();
 #else
@@ -977,7 +977,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getAspect();
 #else
@@ -994,7 +994,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getLabel();
 #else
@@ -1012,7 +1012,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getName();
 #else
@@ -1046,7 +1046,7 @@ namespace XBMCAddon
     ///
     ///
     ///-------------------------------------------------------------------------
-    /// @python_v22 New class added.
+    /// @python_v23 New class added.
     ///
     ///
     /// **Example:**
@@ -1077,7 +1077,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getX();
 #else
@@ -1094,7 +1094,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getY();
 #else
@@ -1111,7 +1111,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getWidth();
 #else
@@ -1128,7 +1128,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getHeight();
 #else
@@ -1145,7 +1145,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getFrameWidth();
 #else
@@ -1162,7 +1162,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getFrameHeight();
 #else
@@ -1179,7 +1179,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getCodedWidth();
 #else
@@ -1196,7 +1196,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getCodedHeight();
 #else
@@ -1214,7 +1214,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getPixelAspect();
 #else
@@ -1231,7 +1231,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getOrientation();
 #else
@@ -1249,7 +1249,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getAspect();
 #else
@@ -1266,7 +1266,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getLabel();
 #else
@@ -1284,7 +1284,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getName();
 #else
@@ -1305,7 +1305,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getSource();
 #else
@@ -1326,7 +1326,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getVaries();
 #else
@@ -1344,7 +1344,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getStale();
 #else
@@ -1362,7 +1362,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getRejected();
 #else
@@ -1380,7 +1380,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       getSections();
 #else
@@ -1804,9 +1804,9 @@ namespace XBMCAddon
       /// @brief \python_func{ getContentGeometry() }
       /// Get where the picture is inside the frame carrying it, for this item.
       ///
-      /// Resolved from what was measured for the file, the same way the player resolves it and
-      /// the same way it is published over JSON-RPC. A ratio the viewer declared is not applied
-      /// here\, living in the per-file settings the library does not read. Use
+      /// Resolved from what was measured for the file, the same way the player resolves it. A
+      /// ratio the viewer declared is not applied here\, living in the per-file settings the
+      /// library does not read. Use
       /// xbmc.Player().getContentGeometry() during playback\, where it is.
       ///
       /// @return [ContentGeometry] A snapshot. When nothing was measured for the item it
@@ -1816,7 +1816,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

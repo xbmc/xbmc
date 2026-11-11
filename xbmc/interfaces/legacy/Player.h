@@ -705,7 +705,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
-      /// @python_v22 New function added.
+      /// @python_v23 New function added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
