@@ -42,10 +42,13 @@ public:
    * @param listingFlags added to the flags the video's folder is listed with to look for subtitles
    * @param[out] probed if given, the file's own streams, without the external subtitles, which
    * another video of the same file (eg. another episode of it) can be given by AddExternalSubtitles()
+   * @param fileFlags added to the flags (XFILE::READ_*) the file, and each part of a stack, is
+   * opened with
    */
   static bool GetFileStreamDetails(CFileItem* pItem,
                                    int listingFlags = 0,
-                                   CStreamDetails* probed = nullptr);
+                                   CStreamDetails* probed = nullptr,
+                                   unsigned int fileFlags = 0);
 
   /*!
    * @brief Store streams probed already in an item's tag, with the item's own external subtitles
@@ -53,13 +56,16 @@ public:
    */
   static void AddExternalSubtitles(CFileItem& item, CStreamDetails streams, int listingFlags = 0);
 
-  static bool GetFileDuration(const std::string& path, int& duration);
+  //! \param fileFlags as for GetFileStreamDetails()
+  static bool GetFileDuration(const std::string& path, int& duration, unsigned int fileFlags = 0);
 
 private:
+  //! \param fileFlags as for GetFileStreamDetails()
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
-                                     const std::string& path = "");
+                                     const std::string& path = "",
+                                     unsigned int fileFlags = 0);
 
   /** \brief Probe the file's internal and external streams and store the info in the StreamDetails parameter.
   *   \param[out] details The file's StreamDetails consisting of internal streams and external subtitle streams.

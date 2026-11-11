@@ -52,12 +52,14 @@ extern "C" {
 
 using namespace KODI;
 
-bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
+bool CDVDFileInfo::GetFileDuration(const std::string& path,
+                                   int& duration,
+                                   unsigned int fileFlags /* = 0 */)
 {
   std::unique_ptr<CDVDDemux> demux;
 
   CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, fileFlags);
   if (!input)
     return false;
 
@@ -289,7 +291,8 @@ bool CDVDFileInfo::IsExtractableLocation(const std::string& path)
  */
 bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
                                         int listingFlags /* = 0 */,
-                                        CStreamDetails* probed /* = nullptr */)
+                                        CStreamDetails* probed /* = nullptr */,
+                                        unsigned int fileFlags /* = 0 */)
 {
   if (!pItem)
     return false;
@@ -310,7 +313,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
 
   CFileItem item(playablePath, false);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, fileFlags);
   if (!pInputStream)
     return false;
 
@@ -324,7 +327,8 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
   {
     // Filled locally and published once, as the item may be shown while its streams are probed
     CStreamDetails details;
-    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath);
+    bool retVal =
+        DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath, fileFlags);
     if (probed)
       *probed = details;
 
@@ -400,7 +404,8 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
 bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                           CDVDDemux* pDemux,
                                           CStreamDetails& details,
-                                          const std::string& path)
+                                          const std::string& path,
+                                          unsigned int fileFlags)
 {
   bool retVal = false;
   details.Reset();
@@ -463,7 +468,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
           for (int i = 1; i < files.Size(); i++)
           {
             int duration = 0;
-            if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration))
+            if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration, fileFlags))
               *otherPartsDuration += duration;
           }
         }
