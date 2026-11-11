@@ -28,7 +28,7 @@ TEST(TestRadioRDSLanguages, EveryAssignedIndexNamesALanguage)
     if (code.empty())
       continue;
 
-    EXPECT_FALSE(CLanguageTag::Parse(std::string{code}).IsUndetermined())
+    EXPECT_TRUE(CLanguageTag::TryParse(std::string{code}).has_value())
         << "index " << index << " holds '" << code << "', which names no language";
   }
 }
@@ -56,6 +56,9 @@ TEST(TestRadioRDSLanguages, HoldsTheCodeOfTheLanguageTheStandardAssignsToAnIndex
   // 0x0E is Faroese, whose ISO 639-2 code is fao
   EXPECT_EQ(KODI::RDS::LanguageCode(0x0E), "fao");
 
+  // 0x23 is Romansh, whose ISO 639-2 code is roh; rom is Romany
+  EXPECT_EQ(KODI::RDS::LanguageCode(0x23), "roh");
+
   // 0x61 is Malay, whose ISO 639-2/B code is may
   EXPECT_EQ(KODI::RDS::LanguageCode(0x61), "may");
 
@@ -64,12 +67,12 @@ TEST(TestRadioRDSLanguages, HoldsTheCodeOfTheLanguageTheStandardAssignsToAnIndex
 }
 
 // The standard prints ISO 639-2/B codes, two of which ISO has since withdrawn. A withdrawn code
-// names nothing, so the table holds the code that survived for the same language.
-TEST(TestRadioRDSLanguages, HoldsTheSurvivingCodeWhereTheStandardPrintsAWithdrawnOne)
+// names nothing, so the table holds the code Kodi reads as the same language.
+TEST(TestRadioRDSLanguages, HoldsTheCodeKodiReadsWhereTheStandardPrintsAWithdrawnOne)
 {
   // 0x54 is Serbo-Croat, printed as scc, withdrawn 2008-06-28. Serbian has its own index at
-  // 0x24, so the survivor is the ISO 639-3 macrolanguage hbs, not srp
-  EXPECT_EQ(KODI::RDS::LanguageCode(0x54), "hbs");
+  // 0x24, so the cell holds scr, Kodi's code for Serbo-Croatian, not srp
+  EXPECT_EQ(KODI::RDS::LanguageCode(0x54), "scr");
   EXPECT_NE(KODI::RDS::LanguageCode(0x54), KODI::RDS::LanguageCode(0x24));
 
   // 0x60 is Moldavian, printed as mol, withdrawn as a language distinct from Romanian
