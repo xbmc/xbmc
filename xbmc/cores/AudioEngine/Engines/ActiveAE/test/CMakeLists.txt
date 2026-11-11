@@ -1,4 +1,5 @@
-set(SOURCES TestActiveAEResampleFFMPEG.cpp
+set(SOURCES TestActiveAEFilter.cpp
+            TestActiveAEResampleFFMPEG.cpp
             TestActiveAEStream.cpp)
 
 core_add_test_library(audioengine_activeae_test)

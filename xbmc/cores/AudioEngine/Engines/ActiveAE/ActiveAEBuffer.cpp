@@ -696,7 +696,8 @@ void CActiveAEBufferPoolAtempo::SetTempo(float tempo)
   else if (tempo < 0.5f)
     tempo = 0.5;
 
-  if (tempo != m_tempo)
+  // Drain and re-create the filter only when the tempo can't be changed in place
+  if (tempo != m_tempo && (m_changeFilter || !m_pTempoFilter->ChangeTempo(tempo)))
     m_changeFilter = true;
 
   m_tempo = tempo;
