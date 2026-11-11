@@ -15,7 +15,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtUtils.h"
-#include "utils/FileUtils.h"
+#include "utils/ScopeGuard.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
@@ -1201,16 +1201,20 @@ INSTANTIATE_TEST_SUITE_P(TestArtUtils, GetTbnTest, testing::ValuesIn(tbn_tests))
 TEST(TestArtUtils, GetTbnStack)
 {
   std::error_code ec;
-  auto path = KODI::PLATFORM::FILESYSTEM::temp_directory_path(ec);
+  const auto root = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
   ASSERT_TRUE(!ec);
+  const UTILS::CScopeGuard<const std::string*, nullptr, void(const std::string*)> cleanup(
+      [](const std::string* path) { XFILE::CDirectory::RemoveRecursive(*path); }, &root);
+  const auto path = URIUtils::AddFileToFolder(root, "tbn_test");
+  ASSERT_TRUE(XFILE::CDirectory::Create(path));
   const auto file_path = URIUtils::AddFileToFolder(path, "foo-cd1.tbn");
   {
     std::ofstream of(file_path, std::ios::out);
+    ASSERT_TRUE(of.is_open());
   }
   const std::string stackPath =
       fmt::format("stack://{} , {}", URIUtils::AddFileToFolder(path, "foo-cd1.avi"),
                   URIUtils::AddFileToFolder(path, "foo-cd2.avi"));
   CFileItem item(stackPath, false);
   EXPECT_EQ(ART::GetTBNFile(item), file_path);
-  CFileUtils::DeleteItem(file_path);
 }
