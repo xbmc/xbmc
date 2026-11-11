@@ -39,6 +39,7 @@
 #include "utils/URIUtils.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -51,6 +52,7 @@
 #include <chrono>
 #include <filesystem>
 #include <functional>
+#include <future>
 #include <map>
 #include <memory>
 #include <optional>
@@ -264,6 +266,7 @@ public:
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using CVideoInfoScanner::FolderSettings;
   using CVideoInfoScanner::SourceName;
+  using CDownloads = CVideoInfoScanner::CDownloads;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
   using ScanSummary = CVideoInfoScanner::ScanSummary;
 
@@ -2267,6 +2270,45 @@ TEST_F(TestVideoInfoScanner, AllTheMoviesOfATreeOfMoreFoldersThanAreLookedUpToge
   EXPECT_EQ(64, CountMovies());
   for (const std::string& movie : movies)
     EXPECT_GT(m_db.GetMovieId(movie), 0) << movie;
+}
+
+// A scraper call waits for a place where as many are being made as a scan may make at once
+TEST(TestVideoInfoScannerDownloads, ACallWaitsForAPlace)
+{
+  TestScanner::CDownloads downloads{1};
+  CVideoInfoDownloader first{nullptr};
+  CVideoInfoDownloader second{nullptr};
+  std::optional<TestScanner::CDownloads::CRegistration> made{std::in_place, downloads, first};
+  auto waiting{
+      std::async(std::launch::async, [&downloads, &second]
+                 { const TestScanner::CDownloads::CRegistration call{downloads, second}; })};
+
+  const bool waited{waiting.wait_for(std::chrono::milliseconds(200)) ==
+                    std::future_status::timeout};
+  made.reset();
+  const bool placed{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Lets it through, should it still be waiting, so that the test ends
+  downloads.CancelAll();
+  EXPECT_TRUE(waited);
+  EXPECT_TRUE(placed);
+}
+
+// A stopped scan lets the calls waiting for a place go ahead, to be given up at once
+TEST(TestVideoInfoScannerDownloads, AStopLetsTheWaitingCallsThrough)
+{
+  TestScanner::CDownloads downloads{1};
+  CVideoInfoDownloader first{nullptr};
+  CVideoInfoDownloader second{nullptr};
+  std::optional<TestScanner::CDownloads::CRegistration> made{std::in_place, downloads, first};
+  auto waiting{
+      std::async(std::launch::async, [&downloads, &second]
+                 { const TestScanner::CDownloads::CRegistration call{downloads, second}; })};
+
+  downloads.CancelAll();
+  const bool through{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Frees its place, should it still be waiting, so that the test ends
+  made.reset();
+  EXPECT_TRUE(through);
 }
 
 // Music videos

@@ -24,6 +24,7 @@
 #include "video/VideoInfoScannerWalk.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <cstdint>
 #include <deque>
 #include <functional>
@@ -696,13 +697,19 @@ namespace KODI::VIDEO
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
 
-    //! \brief The scraper's downloads in flight, which Stop() gives up
+    //! \brief The scraper's downloads in flight, no more at once than a scan has threads looking
+    //! videos up, which Stop() gives up
     class CDownloads
     {
     public:
+      //! \param calls how many downloads may go ahead at once, the others waiting for a place
+      explicit CDownloads(size_t calls) : m_free(calls > 0 ? calls : 1) {}
+
+      //! \brief Gives up the downloads in flight, and lets those waiting go ahead, given up at once
       void CancelAll();
 
-      //! \brief A download the scan waits on, for as long as the registration lives
+      //! \brief A download the scan waits on, for as long as the registration lives, which waits
+      //! for a place
       class CRegistration
       {
       public:
@@ -714,14 +721,18 @@ namespace KODI::VIDEO
       private:
         CDownloads& m_downloads;
         CVideoInfoDownloader& m_downloader;
+        //! Whether it took a place, which one a stop let through doesn't
+        bool m_placed{false};
       };
 
     private:
       std::mutex m_lock;
+      std::condition_variable m_freed;
       std::set<CVideoInfoDownloader*> m_downloaders;
+      size_t m_free;
       bool m_cancelled{false};
     };
-    mutable CDownloads m_downloads;
+    mutable CDownloads m_downloads{LookUpThreads()};
 
     //! The progress of the whole scan, by folder
     CScanProgress m_progress;

@@ -397,10 +397,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::CDownloads::CancelAll()
   {
-    std::unique_lock lock(m_lock);
-    m_cancelled = true;
-    for (CVideoInfoDownloader* downloader : m_downloaders)
-      downloader->Cancel();
+    {
+      std::unique_lock lock(m_lock);
+      m_cancelled = true;
+      for (CVideoInfoDownloader* downloader : m_downloaders)
+        downloader->Cancel();
+    }
+    m_freed.notify_all();
   }
 
   CVideoInfoScanner::CDownloads::CRegistration::CRegistration(CDownloads& downloads,
@@ -409,15 +412,27 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_downloader(downloader)
   {
     std::unique_lock lock(m_downloads.m_lock);
+    m_downloads.m_freed.wait(lock,
+                             [this] { return m_downloads.m_free > 0 || m_downloads.m_cancelled; });
     m_downloads.m_downloaders.insert(&m_downloader);
     if (m_downloads.m_cancelled)
       m_downloader.Cancel();
+    else
+    {
+      --m_downloads.m_free;
+      m_placed = true;
+    }
   }
 
   CVideoInfoScanner::CDownloads::CRegistration::~CRegistration()
   {
-    std::unique_lock lock(m_downloads.m_lock);
-    m_downloads.m_downloaders.erase(&m_downloader);
+    {
+      std::unique_lock lock(m_downloads.m_lock);
+      m_downloads.m_downloaders.erase(&m_downloader);
+      if (m_placed)
+        ++m_downloads.m_free;
+    }
+    m_downloads.m_freed.notify_one();
   }
 
   std::pair<CInfoScanner::ScanComplete, CInfoScanner::ContentFound> CVideoInfoScanner::DoScan(
@@ -4279,12 +4294,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
               continue;
             }
 
-            CVideoInfoDownloader imdb(scraper);
-            const CDownloads::CRegistration downloading{m_downloads, imdb};
             CFileItem scraperItem;
             scraperItem.SetPath(file->strPath);
-            if (!imdb.GetEpisodeDetails(guideEntry->cScraperUrl, *scraperItem.GetVideoInfoTag(),
-                                        pDlgProgress))
+            bool fetched{false};
+            {
+              // A place among the scraper's calls is held for the call, not while the episode is added
+              CVideoInfoDownloader imdb(scraper);
+              const CDownloads::CRegistration downloading{m_downloads, imdb};
+              fetched = imdb.GetEpisodeDetails(guideEntry->cScraperUrl,
+                                               *scraperItem.GetVideoInfoTag(), pDlgProgress);
+            }
+            if (!fetched)
             {
               CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
                         CURL::GetRedacted(file->strPath));
