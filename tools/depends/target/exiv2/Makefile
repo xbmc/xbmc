@@ -1,6 +1,7 @@
 include ../../Makefile.include EXIV2-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile EXIV2-VERSION ../../download-files.include \
-            0001-WIN-lib-postfix.patch
+            0001-WIN-lib-postfix.patch \
+            0002-Include-ctime-for-mktime.patch
 
 # configuration settings
 CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
@@ -26,6 +27,7 @@ all: .installed-$(PLATFORM)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../0001-WIN-lib-postfix.patch
+	cd $(PLATFORM); patch -p1 -i ../0002-Include-ctime-for-mktime.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 

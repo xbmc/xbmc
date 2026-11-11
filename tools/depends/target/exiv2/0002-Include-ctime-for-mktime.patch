@@ -1,0 +1,10 @@
+--- a/src/value.cpp
++++ b/src/value.cpp
+@@ -9,6 +9,7 @@
+ #include "types.hpp"
+
+ // + standard includes
++#include <ctime>
+ #include <sstream>
+
+ // *****************************************************************************

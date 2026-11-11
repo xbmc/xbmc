@@ -1,0 +1,6 @@
+diff --git a/lib/init.c b/lib/init.c
+--- a/lib/init.c
++++ b/lib/init.c
+@@ -67 +67 @@ uint64_t rpc_current_time(void)
+-	clock_gettime(CLOCK_MONOTONIC_COARSE, &tp);
++	clock_gettime(CLOCK_MONOTONIC, &tp);

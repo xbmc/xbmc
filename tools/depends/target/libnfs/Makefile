@@ -2,6 +2,11 @@ include ../../Makefile.include LIBNFS-VERSION ../../download-files.include
 DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.include \
                   01-MSUWP-compat.patch
 
+ifeq ($(OS),wasm)
+DEPS+= 02-wasm-zdr-callback-signature.patch \
+       03-wasm-monotonic-clock.patch
+endif
+
 # configuration settings
 CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
               -DENABLE_TESTS=OFF \
@@ -18,6 +23,10 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); mkdir -p build
 	cd $(PLATFORM); patch -p1 -i ../01-MSUWP-compat.patch
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../02-wasm-zdr-callback-signature.patch
+	cd $(PLATFORM); patch -p1 -i ../03-wasm-monotonic-clock.patch
+endif
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 
