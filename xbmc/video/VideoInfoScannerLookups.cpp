@@ -8,7 +8,11 @@
 
 #include "VideoInfoScannerLookups.h"
 
+#include "FileItem.h"
 #include "URL.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
+#include "filesystem/IFileTypes.h"
+#include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/Episode.h"
@@ -147,6 +151,18 @@ void CVideoLookups::Run(size_t count,
     throw;
   }
   finish();
+}
+
+bool CScanProbe::GetFileStreamDetails(CFileItem* item,
+                                      int listingFlags /* = 0 */,
+                                      CStreamDetails* probed /* = nullptr */)
+{
+  return CDVDFileInfo::GetFileStreamDetails(item, listingFlags, probed, XFILE::READ_NO_CACHE);
+}
+
+bool CScanProbe::GetFileDuration(const std::string& path, int& duration)
+{
+  return CDVDFileInfo::GetFileDuration(path, duration, XFILE::READ_NO_CACHE);
 }
 
 bool IsDiscByName(const std::string& path)

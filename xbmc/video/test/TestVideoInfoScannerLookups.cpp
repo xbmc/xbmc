@@ -6,8 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
+#include "test/TestUtils.h"
+#include "utils/StreamDetails.h"
 #include "video/Episode.h"
 #include "video/VideoInfoScannerLookups.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <atomic>
@@ -529,4 +534,27 @@ TEST(TestVideoInfoScannerLookups, TheDiscsOfAShowAreReadInTheOrderItsEpisodesAre
   EXPECT_EQ((std::vector<std::string>{files[0].strPath, files[3].strPath, files[4].strPath,
                                       files[5].strPath}),
             EpisodeDiscs(toAdd));
+}
+
+// A scan's probe, which opens the file without the file cache, finds what any other probe does
+TEST(TestVideoInfoScannerLookups, AScanProbeFindsTheStreamsAnotherProbeFinds)
+{
+  const std::string file{
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv")};
+  CFileItem plain{file, false};
+  CFileItem scanned{file, false};
+  CStreamDetails probed;
+  ASSERT_TRUE(CDVDFileInfo::GetFileStreamDetails(&plain));
+  ASSERT_TRUE(CScanProbe::GetFileStreamDetails(&scanned, 0, &probed));
+
+  const CStreamDetails& expected{plain.GetVideoInfoTag()->m_streamDetails};
+  EXPECT_EQ(expected.GetVideoCodec(), scanned.GetVideoInfoTag()->m_streamDetails.GetVideoCodec());
+  EXPECT_EQ(expected.GetVideoWidth(), probed.GetVideoWidth());
+  EXPECT_EQ(expected.GetVideoDuration(), probed.GetVideoDuration());
+
+  int plainDuration{0};
+  int scannedDuration{0};
+  ASSERT_TRUE(CDVDFileInfo::GetFileDuration(file, plainDuration));
+  ASSERT_TRUE(CScanProbe::GetFileDuration(file, scannedDuration));
+  EXPECT_EQ(plainDuration, scannedDuration);
 }

@@ -2428,7 +2428,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     for (const size_t part : fileParts)
     {
       int duration{0}; // milliseconds
-      if (CDVDFileInfo::GetFileDuration(paths[part], duration) && duration > 0)
+      if (CScanProbe::GetFileDuration(paths[part], duration) && duration > 0)
       {
         totalDuration += duration / 1000;
         partDurations[part] = std::chrono::milliseconds{duration};
@@ -3879,7 +3879,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                      CURL::GetRedacted(path));
         }
         else if (CStreamDetails probed;
-                 CDVDFileInfo::GetFileStreamDetails(pItem, listingFlags, &probed))
+                 CScanProbe::GetFileStreamDetails(pItem, listingFlags, &probed))
         {
           lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",

@@ -18,6 +18,9 @@
 #include <thread>
 #include <vector>
 
+class CFileItem;
+class CStreamDetails;
+
 namespace KODI::VIDEO
 {
 /*!
@@ -50,6 +53,22 @@ public:
                   const std::function<bool(size_t)>& handBack,
                   const std::atomic<bool>& stop,
                   size_t window = 0);
+};
+
+/*!
+ \brief The probes a scan makes of a video's file. A probe reads the start of a file, and its index
+ where that is elsewhere, so it opens the file without the file cache, whose thread would read on
+ ahead of that into buffers of its own for as long as the file is open.
+ */
+class CScanProbe
+{
+public:
+  //! CDVDFileInfo::GetFileStreamDetails(), as a scan probes
+  static bool GetFileStreamDetails(CFileItem* item,
+                                   int listingFlags = 0,
+                                   CStreamDetails* probed = nullptr);
+  //! CDVDFileInfo::GetFileDuration(), as a scan probes
+  static bool GetFileDuration(const std::string& path, int& duration);
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it
