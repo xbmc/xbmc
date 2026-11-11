@@ -630,6 +630,7 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   avpkt->side_data_elems = packet.iSideDataElems;
   if (packet.m_keyFrame)
   {
+    m_demuxerFlagsKeyFrames = true;
     avpkt->flags |= AV_PKT_FLAG_KEY;
 #if LIBAVCODEC_VERSION_MAJOR >= 60
     avpkt->opaque = this;
@@ -851,6 +852,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   const bool demuxerKeyFrame = false;
 #endif
 
+  if ((m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY) ||
+      m_pDecodedFrame->pict_type != AV_PICTURE_TYPE_NONE)
+    m_decoderTypesFrames = true;
+
   if ((m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY) || demuxerKeyFrame)
   {
     m_started = true;
@@ -863,6 +868,12 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   {
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
+  }
+  // Formats without keyframes, such as roq, have no better place to start: neither the decoder nor
+  // the demuxer has ever told one frame from another.
+  else if (!m_decoderTypesFrames && !m_demuxerFlagsKeyFrames && !m_started)
+  {
+    m_started = true;
   }
   if (m_pDecodedFrame->flags & AV_FRAME_FLAG_INTERLACED)
     m_interlaced = true;

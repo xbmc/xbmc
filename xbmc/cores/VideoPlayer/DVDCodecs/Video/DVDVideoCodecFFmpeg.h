@@ -93,6 +93,8 @@ protected:
   double m_dts = DVD_NOPTS_VALUE;
   bool m_started = false;
   bool m_startedInput = false;
+  bool m_demuxerFlagsKeyFrames = false;
+  bool m_decoderTypesFrames = false;
   std::vector<AVPixelFormat> m_formats;
   double m_decoderPts = DVD_NOPTS_VALUE;
   int m_skippedDeint = 0;
