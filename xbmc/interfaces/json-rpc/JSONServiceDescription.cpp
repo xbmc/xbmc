@@ -1321,12 +1321,32 @@ bool JsonRpcMethod::Parse(const CVariant &value)
   {
     int permissions = 0;
     for (unsigned int index = 0; index < value["permission"].size(); index++)
-      permissions |= StringToPermission(value["permission"][index].asString());
+    {
+      const auto parsed = StringToPermission(value["permission"][index].asString());
+      if (!parsed)
+      {
+        CLog::Log(LOGERROR, "JSONRPC: Unknown permission \"{}\" in method \"{}\"",
+                  value["permission"][index].asString(), name);
+        return false;
+      }
+      permissions |= *parsed;
+    }
 
     permission = (OperationPermission)permissions;
   }
+  else if (value.isMember("permission"))
+  {
+    const auto parsed = StringToPermission(value["permission"].asString());
+    if (!parsed)
+    {
+      CLog::Log(LOGERROR, "JSONRPC: Unknown permission \"{}\" in method \"{}\"",
+                value["permission"].asString(), name);
+      return false;
+    }
+    permission = *parsed;
+  }
   else
-    permission = StringToPermission(value.isMember("permission") ? value["permission"].asString() : "");
+    permission = ReadData;
 
   description = GetString(value["description"], "");
 
