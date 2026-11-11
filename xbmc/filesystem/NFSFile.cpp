@@ -21,8 +21,10 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <atomic>
 #include <inttypes.h>
 #include <mutex>
+#include <random>
 
 #include <nfsc/libnfs-raw-mount.h>
 #include <nfsc/libnfs.h>
@@ -60,6 +62,20 @@ constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time gre
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
 constexpr auto SETTING_NFS_CHUNKSIZE = "nfs.chunksize";
+
+// libnfs names a context's NFSv4 client after the process ID and the second it was created in.
+// The server treats a second context with the same name as that client rebooting and discards
+// the first one's state, so give every context a name of its own.
+std::string NextClientName()
+{
+  static const uint64_t processId = []
+  {
+    std::random_device random;
+    return (static_cast<uint64_t>(random()) << 32) | random();
+  }();
+  static std::atomic<unsigned int> counter{0};
+  return StringUtils::Format("Kodi {:016x} {}", processId, ++counter);
+}
 } // unnamed namespace
 
 CNfsConnection::CNfsConnection() : m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT)
@@ -541,6 +557,10 @@ void CNfsConnection::setOptions(struct nfs_context* context)
               nfs_get_error(context));
     return;
   }
+
+  // only NFSv4 uses the name, and libnfs leaks the default name it replaces
+  if (nfsVersion == 4)
+    nfs4_set_client_name(context, NextClientName().c_str());
 
   CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
 }
