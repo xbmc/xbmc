@@ -47,6 +47,10 @@
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
 
+#if defined(TARGET_WASM)
+#include "platform/wasm/WasmWebApis.h"
+#endif
+
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -153,13 +157,24 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
     case SYSTEM_CPU_USAGE:
       value = GetSystemHeatInfo(info.GetInfo());
       return true;
-    case SYSTEM_VIDEO_ENCODER_INFO:
     case NETWORK_IP_ADDRESS:
     case NETWORK_MAC_ADDRESS:
     case NETWORK_SUBNET_MASK:
     case NETWORK_GATEWAY_ADDRESS:
     case NETWORK_DNS1_ADDRESS:
     case NETWORK_DNS2_ADDRESS:
+#if defined(TARGET_WASM)
+      if (KODI::PLATFORM::WASM::CWasmWebApis::GetProvider() ==
+          KODI::PLATFORM::WASM::WebApiProvider::NONE)
+      {
+        // "Not available"; the browser's loopback interface is only for internal use.
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005);
+        return true;
+      }
+#endif
+      value = g_sysinfo.GetInfo(info.GetInfo());
+      return true;
+    case SYSTEM_VIDEO_ENCODER_INFO:
     case NETWORK_LINK_STATE:
     case SYSTEM_OS_VERSION_INFO:
     case SYSTEM_CPUFREQUENCY:
