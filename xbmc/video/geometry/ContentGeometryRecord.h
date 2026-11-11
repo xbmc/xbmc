@@ -16,6 +16,8 @@
 #include <vector>
 
 class CArchive;
+class TiXmlElement;
+class TiXmlNode;
 
 namespace tinyxml2
 {
@@ -99,6 +101,12 @@ void SaveContentGeometryXML(tinyxml2::XMLNode& movie, const ContentGeometryRecor
 
 //! \brief Read SaveContentGeometryXML() back. Nothing when \p movie names no ratio.
 std::optional<ContentGeometryRecord> LoadContentGeometryXML(const tinyxml2::XMLElement& movie);
+
+//! \brief SaveContentGeometryXML() for a TinyXML document.
+void SaveContentGeometryXML(TiXmlNode& movie, const ContentGeometryRecord& record);
+
+//! \brief LoadContentGeometryXML() for a TinyXML document.
+std::optional<ContentGeometryRecord> LoadContentGeometryXML(const TiXmlElement& movie);
 
 //! \brief What a lookup found.
 enum class ContentGeometryState

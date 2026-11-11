@@ -499,9 +499,10 @@ TEST_F(TestVideoDatabaseContentGeometry, AVersionStoresTheMeasurementItWasAddedW
 
   CFileItem version{"/test/contentgeometry/movie extended.mkv", false};
   version.GetVideoInfoTag()->m_contentGeometry.Set(MakeRecord());
-  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
-                                 m_db.AddOrValidateVideoVersionType("Extended"),
-                                 VideoAssetType::VERSION, version));
+  ASSERT_TRUE(
+      m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
+                         m_db.AddOrValidateVideoVersionType("Extended", VideoAssetType::VERSION),
+                         VideoAssetType::VERSION, version));
 
   const std::optional<ContentGeometryRecord> stored{
       m_db.GetStoredContentGeometry(version.GetVideoInfoTag()->m_iFileId)};
