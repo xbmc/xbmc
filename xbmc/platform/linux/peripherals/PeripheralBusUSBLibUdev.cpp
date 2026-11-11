@@ -240,17 +240,14 @@ bool CPeripheralBusUSB::WaitForUpdate()
   if (m_bStop)
     return false;
 
-  /* we have to read the message from the queue, even though we're not actually using it */
-  struct udev_device *dev = udev_monitor_receive_device(m_udevMon);
-  if (dev)
-    udev_device_unref(dev);
-  else
+  /* the monitor returns NULL once no queued message passes its filter */
+  bool updated = false;
+  struct udev_device* dev;
+  while ((dev = udev_monitor_receive_device(m_udevMon)) != nullptr)
   {
-    CLog::Log(LOGERROR, "{} - failed to get device from udev_monitor_receive_device()",
-              __FUNCTION__);
-    Clear();
-    return false;
+    udev_device_unref(dev);
+    updated = true;
   }
 
-  return true;
+  return updated;
 }
