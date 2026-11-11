@@ -157,6 +157,35 @@ TEST(TestVideoLibraryTvShowFolder, AFolderBeneathAShowIsNotDescribedAsTheShow)
   XFILE::CFile::Delete(TestDatabaseSettings().host + name + ".db");
 }
 
+TEST(TestVideoLibraryTvShowFolder, AShowInTwoFoldersIsDescribedAtTheFolderAskedAbout)
+{
+  const std::string name{"TestVideoLibraryTvShowTwoFolders"};
+  CVideoDatabase db;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+            db.Connect(name, TestDatabaseSettings(), true));
+
+  const std::string firstFolder{"/tv1/Planetes/"};
+  const std::string secondFolder{"/tv2/Planetes/"};
+  const int idFirstPath{db.AddPath(firstFolder)};
+  const int idSecondPath{db.AddPath(secondFolder)};
+  ASSERT_GE(idFirstPath, 0);
+  ASSERT_GT(idSecondPath, idFirstPath);
+  ASSERT_TRUE(db.ExecuteQuery("INSERT INTO tvshow (idShow, c00) VALUES (1, 'Planetes')"));
+  ASSERT_TRUE(db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idFirstPath)));
+  ASSERT_TRUE(db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idSecondPath)));
+
+  CVideoInfoTag show;
+  CFileItem showItem;
+  EXPECT_TRUE(CTestVideoLibrary::GetTvShowOfFolder(db, secondFolder, show, &showItem));
+  EXPECT_EQ("Planetes", show.m_strTitle);
+  EXPECT_EQ(secondFolder, show.GetPath());
+
+  db.Close();
+  XFILE::CFile::Delete(TestDatabaseSettings().host + name + ".db");
+}
+
 namespace
 {
 CVideoInfoTag Show(int playCount, const char* lastPlayed)

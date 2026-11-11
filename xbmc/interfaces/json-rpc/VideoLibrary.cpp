@@ -1219,7 +1219,12 @@ bool CVideoLibrary::GetTvShowOfFolder(CVideoDatabase& videodatabase,
                            { return URIUtils::PathEquals(folder, path, true); }))
     return false;
 
-  return videodatabase.GetTvShowInfo(path, details, idShow, item);
+  if (!videodatabase.GetTvShowInfo(path, details, idShow, item))
+    return false;
+
+  // A show's details carry only the first of its folders
+  details.m_strPath = path;
+  return true;
 }
 
 bool CVideoLibrary::FillFileItem(
