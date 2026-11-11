@@ -198,3 +198,45 @@ TEST(TestActiveAEFilter, BufferedSamplesBeyondIntMax)
 
   EXPECT_EQ(filter.GetBufferedSamples(), 1000);
 }
+
+TEST(TestActiveAEFilter, ChangeTempoAcrossTwoStaysInPlace)
+{
+  // At 2x, sync corrections move the tempo just above and below 2
+  CActiveAEFilter filter;
+  InitStereoFloat(filter);
+  ASSERT_TRUE(filter.SetTempo(1.99f));
+
+  std::vector<OutputFrame> frames;
+  Feed(filter, SAMPLE_RATE / 2, 1.99f, frames);
+
+  EXPECT_TRUE(filter.ChangeTempo(2.01f));
+  EXPECT_TRUE(filter.ChangeTempo(1.99f));
+}
+
+TEST(TestActiveAEFilter, PlaysAtATempoAboveTwo)
+{
+  // Catching up at twice a 2.085x clock. atempo skips input above 2, but keeps the tempo.
+  const float tempo = 4.17f;
+  CActiveAEFilter filter;
+  InitStereoFloat(filter);
+  ASSERT_TRUE(filter.SetTempo(tempo));
+
+  std::vector<OutputFrame> frames;
+  const int fed = Feed(filter, 4 * SAMPLE_RATE, tempo, frames);
+
+  // Drain what the filter holds
+  std::vector<float> dst(2 * MAX_OUTPUT);
+  uint8_t* dstPlanes[] = {reinterpret_cast<uint8_t*>(dst.data())};
+  for (int i = 0; i < 1000 && !filter.IsEof(); ++i)
+  {
+    const int out = filter.ProcessFilter(dstPlanes, MAX_OUTPUT, nullptr, 0, 0);
+    if (out > 0)
+      frames.push_back({out, tempo});
+  }
+
+  int produced = 0;
+  for (const auto& frame : frames)
+    produced += frame.samples;
+  const double expected = fed / static_cast<double>(tempo);
+  EXPECT_NEAR(produced, expected, expected * 0.01);
+}
