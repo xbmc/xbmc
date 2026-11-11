@@ -33,6 +33,7 @@ xbmc/games/controllers/test       test/games/controllers
 xbmc/games/dialogs/disc/test      test/games/dialogs/disc
 xbmc/games/library/test           test/games/library
 xbmc/games/library/naming/test    test/games/library/naming
+xbmc/games/ports/input/test       test/games/ports/input
 xbmc/games/tags/test              test/games/tags
 xbmc/games/test                   test/games
 xbmc/guilib/test                  test/guilib
