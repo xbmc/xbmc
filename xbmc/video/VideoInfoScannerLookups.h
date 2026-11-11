@@ -62,6 +62,8 @@ public:
 
  Where the file is read through a client that makes one network call at a time, the scan's probes
  take turns: several would only queue behind each other's calls there, and hold up playback's.
+ The extraction of a frame for a video's thumbnail, made as the scan's art is cached, takes its
+ turn with them too.
  */
 class CScanProbe
 {
@@ -82,6 +84,18 @@ public:
 
   //! Runs a probe of the file at path, alone among the scan's probes where it ReadsOneAtATime()
   static bool Run(const std::string& path, const std::function<bool()>& probe);
+
+  //! \brief A scan running, for as long as it lives
+  class CScanning
+  {
+  public:
+    CScanning();
+    ~CScanning();
+    CScanning(const CScanning&) = delete;
+    CScanning& operator=(const CScanning&) = delete;
+  };
+  //! Whether a scan is running, whose art is cached as it goes
+  static bool Scanning();
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it

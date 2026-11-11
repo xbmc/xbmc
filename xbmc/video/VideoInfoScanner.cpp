@@ -225,6 +225,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       auto start = std::chrono::steady_clock::now();
+      const CScanProbe::CScanning scanning;
 
       m_database.Open();
 

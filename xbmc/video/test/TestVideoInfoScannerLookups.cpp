@@ -602,6 +602,17 @@ TEST(TestVideoInfoScannerLookups, ProbesOfFilesReadOneCallAtATimeTakeTurns)
   EXPECT_EQ(1, most);
 }
 
+// A thumbnail's frame is taken in turn with a scan's probes only while a scan runs
+TEST(TestVideoInfoScannerLookups, AScanRunsForAsLongAsItsMarkLives)
+{
+  EXPECT_FALSE(CScanProbe::Scanning());
+  {
+    const CScanProbe::CScanning scanning;
+    EXPECT_TRUE(CScanProbe::Scanning());
+  }
+  EXPECT_FALSE(CScanProbe::Scanning());
+}
+
 TEST(TestVideoInfoScannerLookups, ProbesOfOtherFilesRunAtOnce)
 {
   std::mutex lock;

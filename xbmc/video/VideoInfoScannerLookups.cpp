@@ -159,7 +159,23 @@ namespace
 {
 //! Held by a scan's probe of a file read through a client that makes one network call at a time
 std::mutex probeTurn;
+std::atomic<int> scansRunning{0};
 } // namespace
+
+CScanProbe::CScanning::CScanning()
+{
+  ++scansRunning;
+}
+
+CScanProbe::CScanning::~CScanning()
+{
+  --scansRunning;
+}
+
+bool CScanProbe::Scanning()
+{
+  return scansRunning > 0;
+}
 
 bool CScanProbe::GetFileStreamDetails(CFileItem* item,
                                       int listingFlags /* = 0 */,

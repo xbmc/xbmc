@@ -8,9 +8,13 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
-#include "cores/VideoPlayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/VideoDecodeSession.h"
 #include "filesystem/IFileTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -47,35 +51,10 @@ protected:
     m_settings->SetInt(CSettings::SETTING_FILECACHE_BUFFERMODE, m_bufferMode);
   }
 
-  //! Whether a file opened as a probe opens it went through the file cache
-  static bool OpensThroughTheCache(const std::string& path, unsigned int fileFlags)
-  {
-    CFileItem item{path, false};
-    const auto stream{CDVDFactoryInputStream::CreateInputStream(nullptr, item, false, fileFlags)};
-    EXPECT_NE(nullptr, stream);
-    if (!stream || !stream->Open())
-    {
-      ADD_FAILURE() << "can't open " << path;
-      return false;
-    }
-    XFILE::SCacheStatus status{};
-    const bool cached{stream->GetCacheStatus(&status)};
-    stream->Close();
-    return cached;
-  }
-
   std::shared_ptr<CSettings> m_settings;
   int m_bufferMode{0};
 };
 } // namespace
-
-TEST_F(TestDVDFileInfo, AFileIsOpenedWithTheFlagsGiven)
-{
-  const std::string file{TestFile("h264_8bit_320x240.mkv")};
-
-  EXPECT_TRUE(OpensThroughTheCache(file, 0));
-  EXPECT_FALSE(OpensThroughTheCache(file, XFILE::READ_NO_CACHE));
-}
 
 // A probe without the file cache finds the same streams as one through it
 TEST_F(TestDVDFileInfo, AFileProbedWithoutTheCacheHasTheSameStreams)
@@ -114,4 +93,19 @@ TEST_F(TestDVDFileInfo, AStackProbedWithoutTheCacheHasTheSameDuration)
   EXPECT_EQ(2 * duration / 1000, uncached.GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
   EXPECT_EQ(cached.GetVideoInfoTag()->m_streamDetails.GetVideoDuration(),
             uncached.GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+}
+
+// A frame for a thumbnail is decoded from a file opened as the caller asks
+TEST_F(TestDVDFileInfo, AFrameIsDecodedFromAFileOpenedWithTheFlagsGiven)
+{
+  const CFileItem item{TestFile("h264_8bit_320x240.mkv"), false};
+  for (const unsigned int flags : {0U, XFILE::READ_NO_CACHE})
+  {
+    const auto session{OpenVideoDecodeSession(item, CODEC_FORCE_SOFTWARE, "", flags)};
+    ASSERT_TRUE(session) << flags;
+    ASSERT_NE(nullptr, session->inputStream) << flags;
+    XFILE::SCacheStatus status{};
+    EXPECT_EQ(flags == 0, session->inputStream->GetCacheStatus(&status)) << flags;
+    EXPECT_NE(nullptr, session->codec) << flags;
+  }
 }
