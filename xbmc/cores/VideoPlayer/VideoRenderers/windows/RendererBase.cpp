@@ -163,18 +163,22 @@ void CRenderBuffer::QueueCopyFromGPU()
 }
 
 CRendererBase::CRendererBase(CVideoSettings& videoSettings)
-  : m_lut([this](AVColorPrimaries primaries, int& lutSize, ComPtr<ID3D11ShaderResourceView>& view)
-          { return LoadLut(primaries, lutSize, view); },
-          [this](int lutSize, ID3D11ShaderResourceView* view)
+  : m_colorManager(std::make_shared<CColorManager>()),
+    m_lut([colorManager = m_colorManager](AVColorPrimaries primaries)
+          { return LoadLut(*colorManager, primaries); },
+          [this](const CLutLoader::Lut& lut)
           {
+            if (lut.cmsToken)
+              m_cmsToken = *lut.cmsToken;
+            m_lutSize = lut.size;
+            m_pLUTView = lut.view;
             // a picture already rendered with the old LUT cannot be reused
             m_intermediateState = {};
             if (m_outputShader)
-              m_outputShader->SetLUT(lutSize, view);
+              m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
           }),
     m_videoSettings(videoSettings)
 {
-  m_colorManager.reset(new CColorManager());
 }
 
 CRendererBase::~CRendererBase()
@@ -439,25 +443,28 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
   return true;
 }
 
-bool CRendererBase::LoadLut(AVColorPrimaries primaries,
-                            int& lutSize,
-                            ComPtr<ID3D11ShaderResourceView>& view)
+CLutLoader::Lut CRendererBase::LoadLut(CColorManager& colorManager, AVColorPrimaries primaries)
 {
+  CLutLoader::Lut lut;
+
   // load 3DLUT data
-  int dataSize;
+  int lutSize, dataSize;
   if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
-    return false;
+    return lut;
 
   const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
-  bool success =
-      m_colorManager->GetVideo3dLut(primaries, &m_cmsToken, CMS_DATA_FMT_RGBA, lutSize, lutData);
-  if (success)
-    success = COutputShader::CreateLUTView(lutSize, lutData, false, view.ReleaseAndGetAddressOf());
+  int cmsToken;
+  if (colorManager.GetVideo3dLut(primaries, &cmsToken, CMS_DATA_FMT_RGBA, lutSize, lutData))
+  {
+    lut.cmsToken = cmsToken;
+    if (COutputShader::CreateLUTView(lutSize, lutData, false, lut.view.GetAddressOf()))
+      lut.size = lutSize;
+  }
   else
     CLog::LogF(LOGERROR, "unable to load the 3dlut data.");
 
   KODI::MEMORY::AlignedFree(lutData);
-  return success;
+  return lut;
 }
 
 // this is copy from CBaseRenderer::ReorderDrawPoints()
@@ -496,8 +503,8 @@ void CRendererBase::UpdateVideoFilters()
     else
     {
       m_outputShader->SetFinalShader(true);
-      if (m_lut.GetView() && m_lut.GetSize())
-        m_outputShader->SetLUT(m_lut.GetSize(), m_lut.GetView());
+      if (m_pLUTView && m_lutSize)
+        m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
     }
   }
 }
@@ -530,7 +537,11 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  if (m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
+  m_lut.ApplyFinishedLoad();
+
+  // a load in flight has the colour manager to itself
+  if (m_cmsOn && !m_lut.IsLoading() &&
+      !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
     m_lut.Load(buf->primaries);
 }
 

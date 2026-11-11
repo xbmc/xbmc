@@ -18,10 +18,15 @@ CLutLoader::CLutLoader(LoadFunction load, ApplyFunction apply)
 
 void CLutLoader::Load(AVColorPrimaries primaries)
 {
-  int lutSize = 0;
-  if (!m_load(primaries, lutSize, m_view))
-    lutSize = 0;
+  m_task = Concurrency::create_task([load = m_load, primaries] { return load(primaries); });
+}
 
-  m_size = lutSize;
-  m_apply(m_size, m_view.Get());
+void CLutLoader::ApplyFinishedLoad()
+{
+  if (!m_task || !m_task->is_done())
+    return;
+
+  const Lut lut = m_task->get();
+  m_task.reset();
+  m_apply(lut);
 }

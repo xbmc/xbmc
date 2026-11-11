@@ -9,8 +9,10 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 
 #include <d3d11.h>
+#include <ppltasks.h>
 #include <wrl/client.h>
 extern "C"
 {
@@ -18,32 +20,37 @@ extern "C"
 }
 
 /*!
- \brief Loads the colour management 3D LUT for a source's primaries and hands it to the output
- shader.
+ \brief Loads the colour management 3D LUT for a source's primaries on a worker thread, and hands
+ the result over on the thread that owns the output shader.
 
- Loading happens on the calling thread, which must be the render thread: the view is handed to
- the output shader the render thread draws with, and creating it uses the immediate context.
+ A load still in flight when the loader is destroyed is abandoned: it runs to its end on the
+ worker and its result is never applied.
  */
 class CLutLoader
 {
 public:
-  //! Reads the LUT for \p primaries into \p view and sets \p lutSize; false when there is none
-  using LoadFunction = std::function<bool(AVColorPrimaries primaries,
-                                          int& lutSize,
-                                          Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& view)>;
-  //! Hands a LUT to the output shader; a size of 0 is no LUT
-  using ApplyFunction = std::function<void(int lutSize, ID3D11ShaderResourceView* view)>;
+  struct Lut
+  {
+    int size{0}; //!< 0 is no LUT
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> view;
+    std::optional<int> cmsToken; //!< set when the colour manager produced the LUT data
+  };
+
+  //! Runs on a worker thread and can outlive the loader, so it must own everything it uses
+  using LoadFunction = std::function<Lut(AVColorPrimaries primaries)>;
+  //! Runs on the thread that calls ApplyFinishedLoad()
+  using ApplyFunction = std::function<void(const Lut& lut)>;
 
   CLutLoader(LoadFunction load, ApplyFunction apply);
 
+  //! Starts a load on a worker thread. A load still in flight is abandoned.
   void Load(AVColorPrimaries primaries);
-
-  int GetSize() const { return m_size; }
-  ID3D11ShaderResourceView* GetView() const { return m_view.Get(); }
+  bool IsLoading() const { return m_task.has_value(); }
+  //! Hands the result of a load that has finished to the apply function, without waiting for one
+  void ApplyFinishedLoad();
 
 private:
   LoadFunction m_load;
   ApplyFunction m_apply;
-  int m_size{0};
-  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_view;
+  std::optional<Concurrency::task<Lut>> m_task;
 };

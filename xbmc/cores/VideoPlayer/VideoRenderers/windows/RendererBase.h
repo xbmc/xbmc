@@ -154,9 +154,7 @@ protected:
                                 unsigned int height,
                                 bool dynamic = false,
                                 DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
-  bool LoadLut(AVColorPrimaries primaries,
-               int& lutSize,
-               Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& view);
+  static CLutLoader::Lut LoadLut(CColorManager& colorManager, AVColorPrimaries primaries);
   void ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const;
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
@@ -202,6 +200,7 @@ protected:
   int m_iBuffersRequired = 0;
   int m_ditherDepth = 0;
   int m_cmsToken = -1;
+  int m_lutSize = 0;
   unsigned m_sourceWidth = 0;
   unsigned m_sourceHeight = 0;
   unsigned m_viewWidth = 0;
@@ -231,7 +230,9 @@ protected:
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
   CD3DTexture m_IntermediateTarget;
   std::shared_ptr<COutputShader> m_outputShader;
-  std::unique_ptr<CColorManager> m_colorManager;
+  // shared with a LUT load in flight, which can outlive the renderer
+  std::shared_ptr<CColorManager> m_colorManager;
+  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLUTView;
   CLutLoader m_lut;
   CVideoSettings& m_videoSettings;
   std::map<int, CRenderBuffer*> m_renderBuffers;
