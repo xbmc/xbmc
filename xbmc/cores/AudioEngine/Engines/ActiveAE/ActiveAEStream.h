@@ -172,6 +172,14 @@ protected:
    * \return the speed to convert between output time and media time at
    */
   static double ForwardSpeed(double clockSpeed);
+  /*!
+   * \brief Resample ratio for audio to follow the clock.
+   *
+   * \param clockSpeed the speed of the clock, running forward
+   * \param correction how much slower than the clock audio has to play, negative to play faster
+   * \return the resample ratio, the inverse of the speed audio plays at
+   */
+  static double RatioForSpeed(double clockSpeed, double correction);
 
 public:
   unsigned int GetSpace() override;
