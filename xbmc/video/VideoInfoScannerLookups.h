@@ -59,6 +59,9 @@ public:
  \brief The probes a scan makes of a video's file. A probe reads the start of a file, and its index
  where that is elsewhere, so it opens the file without the file cache, whose thread would read on
  ahead of that into buffers of its own for as long as the file is open.
+
+ Where the file is read through a client that makes one network call at a time, the scan's probes
+ take turns: several would only queue behind each other's calls there, and hold up playback's.
  */
 class CScanProbe
 {
@@ -69,6 +72,16 @@ public:
                                    CStreamDetails* probed = nullptr);
   //! CDVDFileInfo::GetFileDuration(), as a scan probes
   static bool GetFileDuration(const std::string& path, int& duration);
+
+  /*!
+   \brief Whether a file, or any file of a stack, is read through a client that makes one network
+   call at a time: Kodi's nfs:// client, and its smb:// client where that is libsmbclient (all but
+   Windows)
+   */
+  static bool ReadsOneAtATime(const std::string& path);
+
+  //! Runs a probe of the file at path, alone among the scan's probes where it ReadsOneAtATime()
+  static bool Run(const std::string& path, const std::function<bool()>& probe);
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it

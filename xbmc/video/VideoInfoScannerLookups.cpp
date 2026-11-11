@@ -12,10 +12,12 @@
 #include "URL.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/IFileTypes.h"
+#include "filesystem/StackDirectory.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/Episode.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <chrono>
@@ -153,16 +155,64 @@ void CVideoLookups::Run(size_t count,
   finish();
 }
 
+namespace
+{
+//! Held by a scan's probe of a file read through a client that makes one network call at a time
+std::mutex probeTurn;
+} // namespace
+
 bool CScanProbe::GetFileStreamDetails(CFileItem* item,
                                       int listingFlags /* = 0 */,
                                       CStreamDetails* probed /* = nullptr */)
 {
-  return CDVDFileInfo::GetFileStreamDetails(item, listingFlags, probed, XFILE::READ_NO_CACHE);
+  if (!item)
+    return false;
+
+  // The file the probe opens
+  std::string path{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strFileNameAndPath : ""};
+  if (path.empty())
+    path = item->GetDynPath();
+
+  return Run(path,
+             [&] {
+               return CDVDFileInfo::GetFileStreamDetails(item, listingFlags, probed,
+                                                         XFILE::READ_NO_CACHE);
+             });
 }
 
 bool CScanProbe::GetFileDuration(const std::string& path, int& duration)
 {
-  return CDVDFileInfo::GetFileDuration(path, duration, XFILE::READ_NO_CACHE);
+  return Run(path,
+             [&] { return CDVDFileInfo::GetFileDuration(path, duration, XFILE::READ_NO_CACHE); });
+}
+
+bool CScanProbe::ReadsOneAtATime(const std::string& path)
+{
+  // A stack of files on a share has no protocol of its own: its files are what are read
+  if (URIUtils::IsStack(path))
+  {
+    std::vector<std::string> files;
+    return XFILE::CStackDirectory::GetPaths(path, files) &&
+           std::ranges::any_of(files,
+                               [](const std::string& file) { return ReadsOneAtATime(file); });
+  }
+
+#if defined(TARGET_POSIX)
+  // libsmbclient takes one call at a time, from any thread
+  if (URIUtils::IsSmb(path))
+    return true;
+#endif
+
+  return URIUtils::IsNfs(path);
+}
+
+bool CScanProbe::Run(const std::string& path, const std::function<bool()>& probe)
+{
+  if (!ReadsOneAtATime(path))
+    return probe();
+
+  std::unique_lock turn(probeTurn);
+  return probe();
 }
 
 bool IsDiscByName(const std::string& path)

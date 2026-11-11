@@ -10,6 +10,7 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "test/TestUtils.h"
 #include "utils/StreamDetails.h"
+#include "utils/URIUtils.h"
 #include "video/Episode.h"
 #include "video/VideoInfoScannerLookups.h"
 #include "video/VideoInfoTag.h"
@@ -17,6 +18,7 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <future>
 #include <iterator>
 #include <mutex>
@@ -557,4 +559,69 @@ TEST(TestVideoInfoScannerLookups, AScanProbeFindsTheStreamsAnotherProbeFinds)
   ASSERT_TRUE(CDVDFileInfo::GetFileDuration(file, plainDuration));
   ASSERT_TRUE(CScanProbe::GetFileDuration(file, scannedDuration));
   EXPECT_EQ(plainDuration, scannedDuration);
+}
+
+// Kodi's nfs:// client, and its smb:// client but on Windows, make one network call at a time
+TEST(TestVideoInfoScannerLookups, AFileReadThroughAClientOfOneCallAtATimeIsKnown)
+{
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime("nfs://server/export/Film.mkv"));
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime(
+      URIUtils::GetBlurayPlaylistPath("nfs://server/export/Film/BDMV/index.bdmv", 800)));
+  // A stack is read through the clients of its files
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime(
+      "stack:///videos/Film CD1.mkv , nfs://server/export/Film CD2.mkv"));
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("stack:///videos/Film CD1.mkv , /videos/Film CD2.mkv"));
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("/videos/Film.mkv"));
+#if defined(TARGET_POSIX)
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime("smb://server/share/Film.mkv"));
+#else
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("smb://server/share/Film.mkv"));
+#endif
+}
+
+TEST(TestVideoInfoScannerLookups, ProbesOfFilesReadOneCallAtATimeTakeTurns)
+{
+  std::atomic<int> inside{0};
+  std::atomic<int> most{0};
+  const auto probe{[&]
+                   {
+                     const int now{++inside};
+                     int seen{most};
+                     while (now > seen && !most.compare_exchange_weak(seen, now))
+                     {
+                     }
+                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                     --inside;
+                     return true;
+                   }};
+
+  std::thread other{[&] { CScanProbe::Run("nfs://server/export/a.mkv", probe); }};
+  CScanProbe::Run("nfs://server/export/b.mkv", probe);
+  other.join();
+
+  EXPECT_EQ(1, most);
+}
+
+TEST(TestVideoInfoScannerLookups, ProbesOfOtherFilesRunAtOnce)
+{
+  std::mutex lock;
+  std::condition_variable changed;
+  int entered{0};
+  // Each waits for the other to be inside too
+  const auto probe{[&]
+                   {
+                     std::unique_lock guard(lock);
+                     ++entered;
+                     changed.notify_all();
+                     return changed.wait_for(guard, std::chrono::seconds(5),
+                                             [&] { return entered == 2; });
+                   }};
+
+  bool otherMet{false};
+  std::thread other{[&] { otherMet = CScanProbe::Run("/videos/a.mkv", probe); }};
+  const bool met{CScanProbe::Run("/videos/b.mkv", probe)};
+  other.join();
+
+  EXPECT_TRUE(met);
+  EXPECT_TRUE(otherMet);
 }
