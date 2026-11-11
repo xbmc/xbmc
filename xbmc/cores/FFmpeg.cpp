@@ -82,12 +82,6 @@ void ff_flush_avutil_log_buffers(void)
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  std::unique_lock lock(m_logSection);
-  const CThread* threadId = CThread::GetCurrentThread();
-  std::string &buffer = g_logbuffer[threadId];
-
-  AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
-
   int maxLevel = AV_LOG_WARNING;
   if (CFFmpegLog::GetLogLevel() > 0)
     maxLevel = AV_LOG_INFO;
@@ -96,6 +90,12 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     return;
   else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel <= LOG_LEVEL_NORMAL)
     return;
+
+  std::unique_lock lock(m_logSection);
+  const CThread* threadId = CThread::GetCurrentThread();
+  std::string& buffer = g_logbuffer[threadId];
+
+  AVClass* avc = ptr ? *(AVClass**)ptr : NULL;
 
   int type;
   switch (level)
