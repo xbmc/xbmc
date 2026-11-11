@@ -2168,8 +2168,11 @@ bool CActiveAE::RunStages()
       {
         AEDelayStatus status;
         m_stats.GetDelay(status);
-        double pts = buf->timestamp - (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate);
-        double delay = status.GetDelay() * 1000;
+        // The offset and delay are output time, which covers media at the clock's speed
+        const double speed = (*it)->GetForwardClockSpeed();
+        double pts =
+            buf->timestamp - (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate) * speed;
+        double delay = status.GetDelay() * 1000 * speed;
         double playingPts = pts - delay;
         double maxError = ((*it)->m_syncState == CAESyncInfo::SYNC_INSYNC) ? 1000 : 5000;
         double error = playingPts - (*it)->m_pClock->GetClock();
@@ -2689,6 +2692,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   }
   else if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_ADJUST)
   {
+    // The error is media time, output frames cover media at the clock's speed
+    const double speed = stream->GetForwardClockSpeed();
     if (error > 0)
     {
       ret = m_silenceBuffers->GetFreeBuffer();
@@ -2696,7 +2701,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       {
         ret->pkt->nb_samples = 0;
         ret->pkt->pause_burst_ms = 0;
-        int framesToDelay = error / 1000 * ret->pkt->config.sample_rate;
+        int framesToDelay = error / speed / 1000 * ret->pkt->config.sample_rate;
         if (framesToDelay > ret->pkt->max_nb_samples)
           framesToDelay = ret->pkt->max_nb_samples;
         if (m_mode == MODE_TRANSCODE)
@@ -2719,8 +2724,9 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         }
         else
         {
-          stream->m_syncError.Correction(-framesToDelay*1000/ret->pkt->config.sample_rate);
-          error -= framesToDelay*1000/ret->pkt->config.sample_rate;
+          const double delayed = framesToDelay * 1000.0 / ret->pkt->config.sample_rate * speed;
+          stream->m_syncError.Correction(-delayed);
+          error -= delayed;
           for(int i=0; i<ret->pkt->planes; i++)
           {
             memset(ret->pkt->data[i], 0, ret->pkt->linesize);
@@ -2737,7 +2743,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     else
     {
       CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
-      int framesToSkip = -error / 1000 * buf->pkt->config.sample_rate;
+      int framesToSkip = -error / speed / 1000 * buf->pkt->config.sample_rate;
       if (framesToSkip > buf->pkt->nb_samples)
         framesToSkip = buf->pkt->nb_samples;
       if (m_mode == MODE_TRANSCODE)
@@ -2765,8 +2771,9 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
         }
         buf->pkt->nb_samples -= framesToSkip;
-        stream->m_syncError.Correction((double)framesToSkip * 1000 / buf->pkt->config.sample_rate);
-        error += (double)framesToSkip * 1000 / buf->pkt->config.sample_rate;
+        const double skipped = framesToSkip * 1000.0 / buf->pkt->config.sample_rate * speed;
+        stream->m_syncError.Correction(skipped);
+        error += skipped;
       }
     }
 
