@@ -628,6 +628,8 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
                    : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
   avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
   avpkt->side_data_elems = packet.iSideDataElems;
+  if (packet.m_keyFrame)
+    avpkt->flags |= AV_PKT_FLAG_KEY;
 
   // FFmpeg doesn't export the AV1 RPU, so keep it for the frame with the same pts
   if (m_exportDoviRpu && m_hints.codec == AV_CODEC_ID_AV1 && avpkt->pts != AV_NOPTS_VALUE)
