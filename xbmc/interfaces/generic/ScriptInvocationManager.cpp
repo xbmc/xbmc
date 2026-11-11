@@ -11,6 +11,7 @@
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
+#include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -24,6 +25,16 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+
+using namespace std::chrono_literals;
+
+namespace
+{
+// how long Uninitialize() waits for scripts it asked to stop
+constexpr auto SCRIPT_STOP_TIMEOUT = 5s;
+// and for those that stop() already gave 5 s and SystemExit
+constexpr auto SCRIPT_STOP_GRACE = 1s;
+} // namespace
 
 CScriptInvocationManager::~CScriptInvocationManager()
 {
@@ -84,7 +95,26 @@ void CScriptInvocationManager::Uninitialize()
                         [](auto& val)
                         {
                           if (!val.done)
-                            val.thread->Stop(true);
+                            val.thread->Stop(false);
+                        });
+
+  // a script that catches SystemExit or blocks in a call that never returns would keep
+  // Kodi from exiting, so don't wait for it forever
+  XbmcThreads::EndTime<> timeout(SCRIPT_STOP_TIMEOUT);
+  XbmcThreads::EndTime<> grace(SCRIPT_STOP_GRACE);
+  std::ranges::for_each(tempList,
+                        [&timeout, &grace](auto& val)
+                        {
+                          const auto& end =
+                              val.thread->GetState() == InvokerStateFailed ? grace : timeout;
+                          if (val.done || val.thread->WaitForExit(end.GetTimeLeft()))
+                            return;
+                          CLog::Log(LOGERROR,
+                                    "CScriptInvocationManager: script {} did not stop, not "
+                                    "waiting for it",
+                                    val.script);
+                          // never released: destroying the thread would join it
+                          new std::shared_ptr<CLanguageInvokerThread>(val.thread);
                         });
 
   lock.lock();

@@ -11,6 +11,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -33,6 +34,16 @@ public:
     return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
   };
   virtual void Release();
+
+  /*!
+   * \brief Wait for the thread to end.
+   * \param timeout How long to wait at most.
+   * \return True if the thread is not running.
+   */
+  bool WaitForExit(std::chrono::milliseconds timeout)
+  {
+    return CThread::Join(timeout) || !CThread::IsRunning();
+  }
 
 protected:
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
