@@ -3928,9 +3928,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (const std::optional<GEOMETRY::FileIdentity> identity{
               GEOMETRY::MeasurableIdentity(*pItem)})
       {
-        const std::optional<GEOMETRY::ContentGeometryRecord> geometry{
-            GEOMETRY::MeasureContentGeometry(*pItem, *identity, GEOMETRY::SamplingDepth::Normal,
-                                             [this]() { return m_bStop.load(); })};
+        // It reads frames from across the file, so takes its turn with the scan's probes
+        std::optional<GEOMETRY::ContentGeometryRecord> geometry;
+        CScanProbe::Run(pItem->GetDynPath(),
+                        [&]
+                        {
+                          geometry = GEOMETRY::MeasureContentGeometry(
+                              *pItem, *identity, GEOMETRY::SamplingDepth::Normal,
+                              [this]() { return m_bStop.load(); });
+                          return geometry.has_value();
+                        });
 
         if (geometry && geometry->HasReading())
           movieDetails.m_contentGeometry.Set(*geometry);
