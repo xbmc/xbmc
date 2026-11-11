@@ -545,9 +545,8 @@ void CPackerMAT::FlushPacket()
   assert(GetCount() == MAT_BUFFER_SIZE);
 
   // push MAT packet to output queue
-  m_outputQueue.push_back({std::move(m_buffer), m_currentOutputPts,
-                           m_currentOutputOriginalPts, m_hasCurrentOutputPts,
-                           m_hasCurrentOutputOriginalPts});
+  m_outputQueue.push_back({std::move(m_buffer), m_currentOutputPts, m_currentOutputOriginalPts,
+                           m_hasCurrentOutputPts, m_hasCurrentOutputOriginalPts});
 
   if (m_hasCurrentOutputPts && m_outputDuration > 0.0)
     m_currentOutputPts += m_outputDuration;
