@@ -342,6 +342,8 @@ struct PendingScreenshot
   unsigned int written{0};
   //! The request gave up, so a delivery removes again whatever it writes from then on
   bool abandoned{false};
+  //! A BOTH request has had its video frame; a stereo GUI delivers one per eye
+  bool hasVideo{false};
 };
 
 // Covers forcing a frame, reading it back and encoding it at the native resolution.
@@ -410,6 +412,13 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
         std::string file;
         {
           std::unique_lock lock(pending->lock);
+          if (videoOfBoth)
+          {
+            if (pending->hasVideo)
+              return;
+            pending->hasVideo = true;
+          }
+
           // Deliveries are handled one at a time, so a number taken here is taken by no other
           if (!pending->abandoned && pending->composite.empty())
           {

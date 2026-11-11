@@ -324,6 +324,24 @@ TEST_F(TestScreenshotTaking, ANamedPairReplacesTheScreenshotsItsNameHeld)
   EXPECT_EQ(2, FileCount());
 }
 
+TEST_F(TestScreenshotTaking, APairDrawnOncePerEyeWritesOneVideoFrame)
+{
+  auto taken = std::async(std::launch::async,
+                          [] { return CScreenShot::TakeScreenshotSync(CaptureContent::BOTH); });
+  // A stereo GUI renders the window manager, and with it the video, once per eye
+  ASSERT_TRUE(Deliver(CaptureContent::VIDEO));
+  ASSERT_TRUE(Deliver(CaptureContent::VIDEO));
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  const CScreenShot::ScreenshotFiles files = taken.get();
+  EXPECT_EQ(Error::NONE, files.error);
+  EXPECT_EQ("special://screenshots/screenshot00000.png", files.composite);
+  EXPECT_EQ("special://screenshots/screenshot00000-video.png", files.video);
+  EXPECT_TRUE(Exists("screenshot00000.png"));
+  EXPECT_TRUE(Exists("screenshot00000-video.png"));
+  EXPECT_EQ(2, FileCount());
+}
+
 TEST_F(TestScreenshotTaking, ANumberItsVideoFrameStillHoldsIsNotTakenAgain)
 {
   Write("screenshot00000-video.png");
