@@ -8,7 +8,7 @@
 
 #include "NoIntroNaming.h"
 
-#include "language/i18n/Iso639_1.h"
+#include "language/i18n/Iso639.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
@@ -163,7 +163,7 @@ bool CNoIntroNaming::IsLanguage(std::string_view code)
       !std::islower(static_cast<unsigned char>(code[1])))
     return false;
   const std::string lower = StringUtils::ToLower(std::string(code));
-  return LANGUAGE::I18N::CIso639_1::LookupByCode(lower).has_value();
+  return LANGUAGE::I18N::CIso639::Alpha2ToAlpha3B(lower).has_value();
 }
 
 bool CNoIntroNaming::IsRevision(std::string_view tag)
