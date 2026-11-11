@@ -222,8 +222,8 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       {
         bool hasPts{false};
         bool hasOriginalPts{false};
-        m_trueHDBuffer = m_packerMAT->GetOutputFrame(
-            m_currentPts, hasPts, m_currentOriginalPts, hasOriginalPts);
+        m_trueHDBuffer =
+            m_packerMAT->GetOutputFrame(m_currentPts, hasPts, m_currentOriginalPts, hasOriginalPts);
         if (!hasPts)
           m_currentPts = DVD_NOPTS_VALUE;
         if (!hasOriginalPts)
@@ -270,27 +270,21 @@ unsigned int CDVDAudioCodecPassthrough::PackTrueHD()
 double CDVDAudioCodecPassthrough::GetPacketTimestampForAccessUnit(bool original)
 {
   const uint64_t packetOffset = m_parser.GetPacketOffset();
-  while (!m_packetTimestampSpans.empty() &&
-         m_packetTimestampSpans.front().end <= packetOffset)
+  while (!m_packetTimestampSpans.empty() && m_packetTimestampSpans.front().end <= packetOffset)
     m_packetTimestampSpans.pop_front();
 
-  const auto span = std::find_if(
-      m_packetTimestampSpans.begin(), m_packetTimestampSpans.end(),
-      [packetOffset](const PacketTimestampSpan& candidate)
-      {
-        return candidate.start <= packetOffset && packetOffset < candidate.end;
-      });
+  const auto span =
+      std::find_if(m_packetTimestampSpans.begin(), m_packetTimestampSpans.end(),
+                   [packetOffset](const PacketTimestampSpan& candidate)
+                   { return candidate.start <= packetOffset && packetOffset < candidate.end; });
 
-  const double packetPts =
-      span == m_packetTimestampSpans.end()
-          ? DVD_NOPTS_VALUE
-          : (original ? span->originalPts : span->pts);
+  const double packetPts = span == m_packetTimestampSpans.end()
+                               ? DVD_NOPTS_VALUE
+                               : (original ? span->originalPts : span->pts);
   uint64_t& lastSpanStart = original ? m_lastOriginalPtsSpanStart : m_lastPtsSpanStart;
-  double& lastAccessUnitPts =
-      original ? m_lastAccessUnitOriginalPts : m_lastAccessUnitPts;
+  double& lastAccessUnitPts = original ? m_lastAccessUnitOriginalPts : m_lastAccessUnitPts;
   uint16_t& lastFrameTime = original ? m_lastOriginalPtsFrameTime : m_lastPtsFrameTime;
-  bool& haveLastFrameTime =
-      original ? m_haveLastOriginalPtsFrameTime : m_haveLastPtsFrameTime;
+  bool& haveLastFrameTime = original ? m_haveLastOriginalPtsFrameTime : m_haveLastPtsFrameTime;
   const uint16_t frameTime =
       static_cast<uint16_t>((static_cast<uint16_t>(m_buffer[2]) << 8) | m_buffer[3]);
   double pts = DVD_NOPTS_VALUE;
@@ -317,8 +311,8 @@ double CDVDAudioCodecPassthrough::GetPacketTimestampForAccessUnit(bool original)
         // A large jump indicates a branch or seek rather than one access-unit duration.
         if (frameTimeDelta == 0 || frameTimeDelta > sampleRate / 20)
           frameTimeDelta = nominalFrameSamples;
-        pts = lastAccessUnitPts +
-              DVD_TIME_BASE * (static_cast<double>(frameTimeDelta) / sampleRate);
+        pts =
+            lastAccessUnitPts + DVD_TIME_BASE * (static_cast<double>(frameTimeDelta) / sampleRate);
       }
     }
     else
@@ -372,8 +366,8 @@ int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
     {
       bool hasPts{false};
       bool hasOriginalPts{false};
-      m_trueHDBuffer = m_packerMAT->GetOutputFrame(
-          m_currentPts, hasPts, m_currentOriginalPts, hasOriginalPts);
+      m_trueHDBuffer =
+          m_packerMAT->GetOutputFrame(m_currentPts, hasPts, m_currentOriginalPts, hasOriginalPts);
       if (!hasPts)
         m_currentPts = DVD_NOPTS_VALUE;
       if (!hasOriginalPts)
