@@ -26,6 +26,14 @@ public:
   void Init(AVSampleFormat fmt, int sampleRate, uint64_t channelLayout);
   int ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, int src_bufsize);
   bool SetTempo(float tempo);
+  /*!
+   * \brief Change the tempo of the running filter, keeping what it has buffered.
+   *
+   * \param tempo the new tempo
+   * \return false if the tempo can't be changed in place and the filter has to be re-created
+   *         with SetTempo, true otherwise
+   */
+  bool ChangeTempo(float tempo);
   bool NeedData() const;
   bool IsEof() const;
   bool IsActive() const;
@@ -56,6 +64,10 @@ protected:
   int m_sampleOffset;
   int64_t m_SamplesIn;
   int64_t m_SamplesOut;
+  // Input samples covered by the output before the current frame, each frame at its own tempo
+  double m_samplesConsumed{0.0};
+  // Tempo the current output frame was produced at
+  float m_frameTempo{1.0f};
 };
 
 }
