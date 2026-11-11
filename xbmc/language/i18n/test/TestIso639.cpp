@@ -22,7 +22,7 @@ TEST(TestIso639, NamesTheAlpha3CodeOfAnAlpha2One)
 }
 
 // ISO withdrew the bibliographic codes scr and scc on 2008-06-28, leaving hrv and srp as both
-// forms of Croatian and Serbian. Neither may be mapped through the Serbo-Croatian entry.
+// forms of Croatian and Serbian
 TEST(TestIso639, ResolvesTheLanguagesWhoseBibliographicCodeWasWithdrawn)
 {
   EXPECT_EQ(CIso639::Alpha3ToAlpha2("hrv"), "hr");
@@ -31,10 +31,6 @@ TEST(TestIso639, ResolvesTheLanguagesWhoseBibliographicCodeWasWithdrawn)
   // and the codes that replaced them are what the language is named by now
   EXPECT_EQ(CIso639::Alpha2ToAlpha3B("hr"), "hrv");
   EXPECT_EQ(CIso639::Alpha2ToAlpha3B("sr"), "srp");
-
-  // Media tagged with a withdrawn code is still read as the language the code named
-  EXPECT_EQ(CIso639::Alpha3ToAlpha2("scr"), "hr");
-  EXPECT_EQ(CIso639::Alpha3ToAlpha2("scc"), "sr");
 }
 
 TEST(TestIso639, NamesTheAlpha3CodeOfAWithdrawnAlpha2One)
@@ -52,10 +48,14 @@ TEST(TestIso639, NamesTheAlpha3CodeOfAWithdrawnAlpha2One)
 TEST(TestIso639, ConvertsAWithdrawnAlpha2CodeWithoutAReplacementBothWays)
 {
   EXPECT_EQ(CIso639::Alpha2ToAlpha3B("bh"), "bih");
-  EXPECT_EQ(CIso639::Alpha2ToAlpha3B("sh"), "hbs");
+  EXPECT_EQ(CIso639::Alpha2ToAlpha3B("sh"), "scr");
 
   EXPECT_EQ(CIso639::Alpha3ToAlpha2("bih"), "bh");
-  EXPECT_EQ(CIso639::Alpha3ToAlpha2("hbs"), "sh");
+  EXPECT_EQ(CIso639::Alpha3ToAlpha2("scr"), "sh");
+
+  // Serbo-Croatian is scr alone: neither Serbian's withdrawn code nor the ISO 639-3 one names it
+  EXPECT_FALSE(CIso639::Alpha3ToAlpha2("scc").has_value());
+  EXPECT_FALSE(CIso639::Alpha3ToAlpha2("hbs").has_value());
 }
 
 TEST(TestIso639, NamesTheCurrentAlpha2CodeOfALanguageNotAWithdrawnOne)

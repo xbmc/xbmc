@@ -154,8 +154,10 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode, std::s
     }
 
     // Any other ISO 639-2 code is already the wanted one - had a differing B form existed, the
-    // conversion above would have found it
-    if (CLanguageTable::GetInstance().NameOf(code).has_value())
+    // conversion above would have found it. So is scr, which ISO 639-2 withdrew but the ISO 639-1
+    // table still gives Serbo-Croatian.
+    if (CIso639::Alpha3ToAlpha2(code).has_value() ||
+        CLanguageTable::GetInstance().NameOf(code).has_value())
     {
       strISO6392B = code;
       return true;

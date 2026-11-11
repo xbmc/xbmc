@@ -23,15 +23,14 @@ struct ISO639_1
   std::string_view alpha2; // alpha-2 code
   std::string_view alpha3B; // ISO 639-2/B code
   std::string_view name; // English name
-  bool withdrawn; // ISO no longer assigns one of the row's codes
+  bool withdrawn; // ISO 639-1 no longer assigns the code
 };
 
 // ISO 639-1 table
 // Source: Library of Congress http://www.loc.gov/standards/iso639-2, sorted by alpha-2
 
 // 4 special-scope ISO 639-2 codes + 183 current ISO 639-1 codes + 1 Kodi addition + 7 withdrawn
-// alpha-2 codes + 2 withdrawn bibliographic codes
-inline constexpr int ISO639_1_COUNT = 197;
+inline constexpr int ISO639_1_COUNT = 195;
 
 // clang-format off
 inline constexpr std::array<ISO639_1, ISO639_1_COUNT> TableISO639_1 = {{
@@ -100,7 +99,6 @@ inline constexpr std::array<ISO639_1, ISO639_1_COUNT> TableISO639_1 = {{
     {"hi", "hin", "Hindi", false},
     {"ho", "hmo", "Hiri Motu", false},
     {"hr", "hrv", "Croatian", false},
-    {"hr", "scr", "Croatian", true}, // the bibliographic code until 2008, still on older media
     {"ht", "hat", "Haitian", false},
     {"hu", "hun", "Hungarian", false},
     {"hy", "arm", "Armenian", false},
@@ -190,7 +188,7 @@ inline constexpr std::array<ISO639_1, ISO639_1_COUNT> TableISO639_1 = {{
     {"sd", "snd", "Sindhi", false},
     {"se", "sme", "Northern Sami", false},
     {"sg", "sag", "Sangho", false},
-    {"sh", "hbs", "Serbo-Croatian", true}, // withdrawn 2000; hbs is ISO 639-3, ISO 639-2 having withdrawn scr
+    {"sh", "scr", "Serbo-Croatian", true}, // withdrawn 2000, with no alpha-2 replacement
     {"si", "sin", "Sinhalese", false},
     {"sk", "slo", "Slovak", false},
     {"sl", "slv", "Slovenian", false},
@@ -199,7 +197,6 @@ inline constexpr std::array<ISO639_1, ISO639_1_COUNT> TableISO639_1 = {{
     {"so", "som", "Somali", false},
     {"sq", "alb", "Albanian", false},
     {"sr", "srp", "Serbian", false},
-    {"sr", "scc", "Serbian", true}, // the bibliographic code until 2008, still on older media
     {"ss", "ssw", "Swati", false},
     {"st", "sot", "Sesotho", false},
     {"su", "sun", "Sundanese", false},
