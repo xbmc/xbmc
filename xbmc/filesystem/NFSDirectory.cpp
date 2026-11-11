@@ -340,7 +340,7 @@ bool CNFSDirectory::Remove(const CURL& url2)
   std::unique_lock lock(*context);
   ret = nfs_rmdir(context->GetNfsContext(), folderName.c_str());
 
-  if (ret != 0 && errno != ENOENT)
+  if (ret != 0 && ret != -ENOENT)
   {
     CLog::LogF(LOGERROR, "Failed to remove '{}' ({})", folderName,
                nfs_get_error(context->GetNfsContext()));
