@@ -310,6 +310,43 @@ TEST(TestConvertMatrix, HueSaturation)
   EXPECT_TRUE(CompareMatrices(yuvMat, rotated, 0.0001f));
 }
 
+TEST(TestConvertMatrix, HueSaturationGBR)
+{
+  CConvertMatrix convMat;
+  convMat.SetSourceRGB(true)
+         .SetSourceColorSpace(AVCOL_SPC_RGB)
+         .SetSourceLimitedRange(false)
+         .SetDestinationLimitedRange(false);
+
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 rgbMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(gbrMat_full, rgbMat, 0.0001f));
+
+  // no chroma left, R, G and B are the BT.709 luma of the G, B and R input
+  convMat.SetDestinationSaturation(0.0f);
+  rgbMat = convMat.GetYuvMat();
+  DebugPrint(rgbMat);
+
+  const std::array<float, 3> luma = {0.7152f, 0.0722f, 0.2126f};
+  for (int i = 0; i < 3; ++i)
+  {
+    for (int j = 0; j < 3; ++j)
+    {
+      EXPECT_NEAR(luma[i], rgbMat[i][j], 0.0001f);
+    }
+  }
+
+  // a half turn of the chroma plane is the same as inverting it
+  convMat.SetDestinationHue(180.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 rotated = convMat.GetYuvMat();
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(-1.0f);
+  rgbMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(rgbMat, rotated, 0.0001f));
+}
+
 TEST(TestConvertMatrix, GammaExponent)
 {
   EXPECT_FLOAT_EQ(1.0f, CConvertMatrix::GetGammaExponent(50.0f));

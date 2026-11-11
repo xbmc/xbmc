@@ -546,11 +546,18 @@ const CGlMatrix& CConvertMatrix::GenMat()
       break;
   }
 
-  CGlMatrix mat(GBRToRGB);
-  if (!m_rgbSrc)
+  const ConversionToRGB toRGB(convYCbCr.Kr, convYCbCr.Kb);
+  CGlMatrix mat(toRGB);
+  mat *= CGlMatrix(HueSaturation(m_hue, m_saturation));
+  if (m_rgbSrc)
   {
-    mat = CGlMatrix(ConversionToRGB(convYCbCr.Kr, convYCbCr.Kb));
-    mat *= CGlMatrix(HueSaturation(m_hue, m_saturation));
+    // hue and saturation act on chroma, so RGB goes through YCbCr first
+    Matrix3 toYCbCr(toRGB.Get());
+    toYCbCr.Invert();
+    mat *= CGlMatrix(toYCbCr * GBRToRGB);
+  }
+  else
+  {
     mat *= CTranslate(0, -0.5, -0.5);
   }
 
