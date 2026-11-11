@@ -7,9 +7,12 @@
  */
 
 #include "ActiveAEFilter.h"
-#include "utils/log.h"
+
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
+#include <cmath>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -20,6 +23,20 @@ extern "C" {
 }
 
 using namespace ActiveAE;
+
+namespace
+{
+// atempo skips input above a tempo of 2, so higher tempos are split across chained instances
+int AtempoStages(float tempo)
+{
+  return std::max(1, static_cast<int>(std::ceil(std::log2(tempo))));
+}
+
+std::string AtempoStageName(int stage)
+{
+  return StringUtils::Format("atempo{}", stage);
+}
+} // namespace
 
 CActiveAEFilter::CActiveAEFilter()
 {
@@ -76,13 +93,16 @@ bool CActiveAEFilter::SetTempo(float tempo)
 
 bool CActiveAEFilter::ChangeTempo(float tempo)
 {
-  if (!IsActive() || m_tempo == 1.0f || tempo == 1.0f)
+  if (!IsActive() || m_tempo == 1.0f || tempo == 1.0f || AtempoStages(tempo) != m_atempoStages)
     return false;
 
-  const std::string arg = StringUtils::Format("{:f}", tempo);
-  if (avfilter_graph_send_command(m_pFilterGraph, "atempo", "tempo", arg.c_str(), nullptr, 0, 0) <
-      0)
-    return false;
+  const std::string arg = StringUtils::Format("{:f}", std::pow(tempo, 1.0f / m_atempoStages));
+  for (int stage = 0; stage < m_atempoStages; ++stage)
+  {
+    if (avfilter_graph_send_command(m_pFilterGraph, AtempoStageName(stage).c_str(), "tempo",
+                                    arg.c_str(), nullptr, 0, 0) < 0)
+      return false;
+  }
 
   m_tempo = tempo;
   return true;
@@ -130,21 +150,31 @@ bool CActiveAEFilter::CreateAtempoFilter()
   const AVFilter *atempo;
 
   atempo = avfilter_get_by_name("atempo");
-  m_pFilterCtxAtempo = avfilter_graph_alloc_filter(m_pFilterGraph, atempo, "atempo");
-  std::string args = StringUtils::Format("tempo={:f}", m_tempo);
-  int ret = avfilter_init_str(m_pFilterCtxAtempo, args.c_str());
+  m_atempoStages = AtempoStages(m_tempo);
+  std::string args = StringUtils::Format("tempo={:f}", std::pow(m_tempo, 1.0f / m_atempoStages));
+  AVFilterContext* previous = m_pFilterCtxIn;
+  int ret{0};
 
-  if (ret < 0)
+  for (int stage = 0; stage < m_atempoStages; ++stage)
   {
-    CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_init_str failed");
-    return false;
-  }
+    m_pFilterCtxAtempo =
+        avfilter_graph_alloc_filter(m_pFilterGraph, atempo, AtempoStageName(stage).c_str());
+    ret = avfilter_init_str(m_pFilterCtxAtempo, args.c_str());
 
-  ret = avfilter_link(m_pFilterCtxIn, 0, m_pFilterCtxAtempo, 0);
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_link failed for in filter");
-    return false;
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_init_str failed");
+      return false;
+    }
+
+    ret = avfilter_link(previous, 0, m_pFilterCtxAtempo, 0);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR,
+                "CActiveAEFilter::CreateAtempoFilter - avfilter_link failed for in filter");
+      return false;
+    }
+    previous = m_pFilterCtxAtempo;
   }
 
   ret = avfilter_link(m_pFilterCtxAtempo, 0, m_pFilterCtxOut, 0);

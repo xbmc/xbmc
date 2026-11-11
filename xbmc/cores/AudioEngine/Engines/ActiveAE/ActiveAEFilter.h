@@ -51,6 +51,7 @@ protected:
   AVFilterContext* m_pFilterCtxIn;
   AVFilterContext* m_pFilterCtxOut;
   AVFilterContext* m_pFilterCtxAtempo;
+  int m_atempoStages{1};
   AVFrame* m_pOutFrame;
   SwrContext* m_pConvertCtx;
   AVFrame* m_pConvertFrame;
