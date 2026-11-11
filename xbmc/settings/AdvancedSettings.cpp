@@ -561,6 +561,7 @@ void CAdvancedSettings::Initialize()
 
   m_nfsTimeout = 30;
   m_nfsRetries = -1;
+  m_nfsMaxConnections = 4;
 
   m_initialized = true;
 }
@@ -985,6 +986,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
     XMLUtils::GetUInt(pElement, "nfstimeout", m_nfsTimeout, 0, 3600);
     XMLUtils::GetInt(pElement, "nfsretries", m_nfsRetries, -1, 30);
+    XMLUtils::GetUInt(pElement, "nfsmaxconnections", m_nfsMaxConnections, 1, 16);
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");

@@ -67,7 +67,8 @@ private:
   };
 
   void Touch(std::chrono::time_point<std::chrono::steady_clock> now);
-  bool IsExpired(std::chrono::time_point<std::chrono::steady_clock> now) const;
+  bool IsExpired(std::chrono::time_point<std::chrono::steady_clock> now,
+                 std::chrono::steady_clock::duration timeout) const;
   std::vector<struct nfsfh*> GetDueKeepAlives(
       std::chrono::time_point<std::chrono::steady_clock> now) const;
 
@@ -122,15 +123,19 @@ public:
   using Factory = std::function<std::shared_ptr<CNfsContext>()>;
   using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
 
-  // Takes a use of the context for key, calling create() under the pool lock if there is none.
-  // An expired context is replaced.
-  CNfsContextLease Checkout(const std::string& key, const Factory& create);
+  // Takes a use of a context for key: one without users, else a new one from create(), called
+  // under the pool lock, while key has fewer than maxContexts, else the one with fewest users.
+  // Expired contexts are replaced.
+  CNfsContextLease Checkout(const std::string& key,
+                            unsigned int maxContexts,
+                            const Factory& create);
 
   // Stops handing context out. It is dropped once its last user releases it.
   void Retire(const CNfsContext& context);
   void RetireAll();
 
   // Removes the contexts without users that have expired, or every one without users if all.
+  // An export's first context expires after CONTEXT_TIMEOUT, its others after IDLE_TIMEOUT.
   std::vector<std::shared_ptr<CNfsContext>> TakeUnused(TimePoint now, bool all);
 
   // Contexts, retired ones included, with a keep alive due.
@@ -141,7 +146,8 @@ private:
   void Release(CNfsContext& context);
 
   mutable CCriticalSection m_lock;
-  std::map<std::string, std::shared_ptr<CNfsContext>> m_contexts; // host + export -> context
+  // host + export -> contexts, oldest first
+  std::map<std::string, std::vector<std::shared_ptr<CNfsContext>>> m_contexts;
   std::vector<std::shared_ptr<CNfsContext>> m_retired; // until their last user leaves
 };
 
