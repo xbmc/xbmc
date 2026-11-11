@@ -9,9 +9,10 @@
 #include "application/AppEnvironment.h"
 #include "application/AppParams.h"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
-#include <memory>
 
 int main(int argc, char** argv)
 {
