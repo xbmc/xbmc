@@ -67,8 +67,7 @@ TEST(TestPackerMAT, PackTrueHD)
     const bool majorSync{i == 0 || i == 16};
     const auto frame{MakeFrame(i * FRAME_SAMPLES, majorSync,
                                i == 0 ? FIRST_OUTPUT_TIMING : BRANCH_OUTPUT_TIMING)};
-    const double pts =
-        FIRST_PTS + i * (static_cast<double>(FRAME_SAMPLES) / 48000.0) * 1000000.0;
+    const double pts = FIRST_PTS + i * (static_cast<double>(FRAME_SAMPLES) / 48000.0) * 1000000.0;
     const double originalPts = FIRST_ORIGINAL_PTS + i * 40.0 / 48000.0 * 1000000.0;
     packer.PackTrueHD(frame.data(), FRAME_SIZE, pts, originalPts, MAT_DURATION, true, true);
 
@@ -76,11 +75,10 @@ TEST(TestPackerMAT, PackTrueHD)
     double outputOriginalPtsValue{0.0};
     bool hasPts{false};
     bool hasOriginalPts{false};
-    for (auto output{packer.GetOutputFrame(outputPtsValue, hasPts, outputOriginalPtsValue,
-                                           hasOriginalPts)};
-         !output.empty();
-         output = packer.GetOutputFrame(outputPtsValue, hasPts, outputOriginalPtsValue,
-                                        hasOriginalPts))
+    for (auto output{
+             packer.GetOutputFrame(outputPtsValue, hasPts, outputOriginalPtsValue, hasOriginalPts)};
+         !output.empty(); output = packer.GetOutputFrame(outputPtsValue, hasPts,
+                                                         outputOriginalPtsValue, hasOriginalPts))
     {
       ++frames;
       bytes += output.size();
