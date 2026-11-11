@@ -629,7 +629,12 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
   avpkt->side_data_elems = packet.iSideDataElems;
   if (packet.m_keyFrame)
+  {
     avpkt->flags |= AV_PKT_FLAG_KEY;
+#if LIBAVCODEC_VERSION_MAJOR >= 60
+    avpkt->opaque = this;
+#endif
+  }
 
   // FFmpeg doesn't export the AV1 RPU, so keep it for the frame with the same pts
   if (m_exportDoviRpu && m_hints.codec == AV_CODEC_ID_AV1 && avpkt->pts != AV_NOPTS_VALUE)
@@ -834,7 +839,19 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   }
   m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
 
-  if (m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY)
+  // Decoders of some formats without reordering, such as qtrle and svq1, flag no keyframes, so a
+  // frame from a demuxer keyframe counts as one unless the decoder calls it inter-coded.
+#if LIBAVCODEC_VERSION_MAJOR >= 60
+  const AVCodecDescriptor* descriptor = m_pCodecContext->codec_descriptor;
+  const bool demuxerKeyFrame = m_pDecodedFrame->opaque == this && descriptor &&
+                               !(descriptor->props & AV_CODEC_PROP_REORDER) &&
+                               (m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_NONE ||
+                                m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I);
+#else
+  const bool demuxerKeyFrame = false;
+#endif
+
+  if ((m_pDecodedFrame->flags & AV_FRAME_FLAG_KEY) || demuxerKeyFrame)
   {
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
