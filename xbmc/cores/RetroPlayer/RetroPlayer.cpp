@@ -50,6 +50,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -241,6 +242,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   std::unique_lock lock(m_mutex);
 
+  const bool unloadingClient = static_cast<bool>(m_gameClient);
+
   if (m_playback)
     m_playback->Quiesce();
 
@@ -287,8 +290,14 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   }
   m_processInfo.reset();
   m_displayClock.reset();
+
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback stopped");
   m_callback.OnPlayBackStopped();
+
+  // The game client freed most of its memory as it unloaded, and the allocator
+  // can keep freed memory instead of returning it to the system
+  if (unloadingClient)
+    KODI::MEMORY::TrimHeap();
 
   return true;
 }

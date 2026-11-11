@@ -36,5 +36,8 @@ void GetMemoryStatus(MemoryStatus* buffer)
   buffer->availPhys = memory.ullAvailPhys;
 }
 
+void TrimHeap()
+{
+}
 }
 }

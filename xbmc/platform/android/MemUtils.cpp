@@ -57,5 +57,9 @@ void GetMemoryStatus(MemoryStatus* buffer)
   }
 }
 
+void TrimHeap()
+{
+}
+
 } // namespace MEMORY
 } // namespace KODI
