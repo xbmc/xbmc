@@ -207,6 +207,16 @@ double CActiveAEStream::CalcResampleRatio(double error)
   return ret;
 }
 
+double CActiveAEStream::GetForwardClockSpeed() const
+{
+  return ForwardSpeed(m_pClock ? m_pClock->GetClockSpeed() : 1.0);
+}
+
+double CActiveAEStream::ForwardSpeed(double clockSpeed)
+{
+  return clockSpeed > 0.0 ? clockSpeed : 1.0;
+}
+
 std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
 {
   std::chrono::milliseconds ret = m_errorInterval;
