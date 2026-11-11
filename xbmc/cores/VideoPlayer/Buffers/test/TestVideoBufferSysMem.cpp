@@ -86,3 +86,23 @@ TEST(TestVideoBufferSysMem, KeepsTheHalfRowOfAnOddHeight)
 
   buffer->Release();
 }
+
+TEST(TestVideoBufferSysMem, SizesTheChromaOfAnOddStride)
+{
+  constexpr int ODD_HEIGHT = 15;
+  const int strides[YuvImage::MAX_PLANES] = {33, 17, 17};
+
+  CVideoBufferManager manager;
+  CVideoBuffer* buffer = manager.Get(AV_PIX_FMT_YUV420P, 3 * 64 * HEIGHT, nullptr);
+  ASSERT_NE(buffer, nullptr);
+
+  buffer->SetDimensions(WIDTH, ODD_HEIGHT, strides);
+
+  uint8_t* planes[YuvImage::MAX_PLANES];
+  buffer->GetPlanes(planes);
+
+  EXPECT_EQ(planes[1] - planes[0], 33 * ODD_HEIGHT);
+  EXPECT_EQ(planes[2] - planes[1], 17 * 8);
+
+  buffer->Release();
+}
