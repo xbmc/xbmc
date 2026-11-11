@@ -15,6 +15,7 @@
 #include "pictures/PictureThumbLoader.h"
 #include "view/GUIViewControl.h"
 
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -93,8 +94,8 @@ protected:
 
   std::vector<CMediaSource> m_shares;
   XFILE::CVirtualDirectory m_rootDir;
-  CFileItemList* m_vecItems;
-  CFileItem* m_Directory;
+  std::unique_ptr<CFileItemList> m_vecItems;
+  std::unique_ptr<CFileItem> m_Directory;
   std::string m_strParentPath;
   std::string m_selectedPath;
   CDirectoryHistory m_history;
