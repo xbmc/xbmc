@@ -8,7 +8,10 @@
 
 #pragma once
 
+#include "utils/SortUtils.h"
 #include "view/GUIViewState.h"
+
+class CSettings;
 
 class CGUIViewStateWindowMusic : public CGUIViewState
 {
@@ -20,6 +23,11 @@ protected:
   bool AutoPlayNextItem() override;
   std::optional<KODI::MEDIA::MediaSection> GetLockType() override;
   std::string GetExtensions() override;
+
+  //! \brief Add the sort methods of a list of albums labelled with \p albumFormat.
+  void AddAlbumSortMethods(const std::string& albumFormat,
+                           SortAttribute sortAttribute,
+                           const CSettings& settings);
 };
 
 class CGUIViewStateMusicSearch : public CGUIViewStateWindowMusic
