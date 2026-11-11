@@ -19,6 +19,10 @@ class IVideoPlayer;
 class CDVDFactoryInputStream
 {
 public:
-  static std::shared_ptr<CDVDInputStream> CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio = false);
+  //! \param fileFlags added to the flags (XFILE::READ_*) a plain file is opened with
+  static std::shared_ptr<CDVDInputStream> CreateInputStream(IVideoPlayer* pPlayer,
+                                                            const CFileItem& fileitem,
+                                                            bool scanforextaudio = false,
+                                                            unsigned int fileFlags = 0);
   static std::shared_ptr<CDVDInputStream> CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames);
 };
