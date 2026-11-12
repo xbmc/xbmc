@@ -12,7 +12,7 @@ precision mediump float;
 varying vec2 v_tex;
 uniform sampler2D u_samp;       // GUI FBO texture (sRGB, rendered by GUI shaders)
 uniform sampler2D u_lutDegamma; // sRGB -> linear LUT (IEC 61966-2-1)
-uniform sampler2D u_lutTF;      // linear -> PQ LUT (1024 entries, sdrPeak baked in)
+uniform sampler2D u_lutTF;      // linear -> PQ LUT (256 entries, sdrPeak baked in)
 uniform float u_ootfGamma;      // HLG: OOTF gamma (1.2 for BT.2100 1000-nit ref)
                                 // PQ: 0.0 (use LUT path instead)
 
@@ -34,10 +34,11 @@ void main()
     discard;
 
   // sRGB -> linear via LUT (IEC 61966-2-1 EOTF, replaces inline pow)
+  vec3 lutCoord = (clamp(gui.rgb, 0.0, 1.0) * 255.0 + 0.5) / 256.0;
   vec3 linear = vec3(
-    texture2D(u_lutDegamma, vec2(gui.r, 0.5)).r,
-    texture2D(u_lutDegamma, vec2(gui.g, 0.5)).r,
-    texture2D(u_lutDegamma, vec2(gui.b, 0.5)).r
+    texture2D(u_lutDegamma, vec2(lutCoord.r, 0.5)).r,
+    texture2D(u_lutDegamma, vec2(lutCoord.g, 0.5)).r,
+    texture2D(u_lutDegamma, vec2(lutCoord.b, 0.5)).r
   );
 
   // BT.709 -> BT.2020 gamut mapping
@@ -71,10 +72,11 @@ void main()
   else
   {
     // PQ path: LUT lookup (sdrPeak baked into LUT range)
+    lutCoord = (clamp(linear, 0.0, 1.0) * 255.0 + 0.5) / 256.0;
     result = vec3(
-      texture2D(u_lutTF, vec2(linear.r, 0.5)).r,
-      texture2D(u_lutTF, vec2(linear.g, 0.5)).r,
-      texture2D(u_lutTF, vec2(linear.b, 0.5)).r
+      texture2D(u_lutTF, vec2(lutCoord.r, 0.5)).r,
+      texture2D(u_lutTF, vec2(lutCoord.g, 0.5)).r,
+      texture2D(u_lutTF, vec2(lutCoord.b, 0.5)).r
     );
   }
 
