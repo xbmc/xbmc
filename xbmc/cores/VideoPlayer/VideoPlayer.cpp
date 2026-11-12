@@ -6481,6 +6481,11 @@ void CVideoPlayer::GetDebugInfo(DEBUG_INFO_PLAYER& info)
     info.contentGeometry += " | " + live;
 }
 
+void CVideoPlayer::GetDebugFrames(DEBUG_INFO_FRAMES& frames)
+{
+  m_processInfo->GetVideoFrameSizes(frames);
+}
+
 void CVideoPlayer::UpdateClockSync(bool enabled)
 {
   m_processInfo->SetRenderClockSync(enabled);

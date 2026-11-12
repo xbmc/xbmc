@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DebugFrameGraph.h"
 #include "DebugInfo.h"
 #include "OverlayRenderer.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
@@ -24,7 +25,7 @@ public:
   virtual ~CDebugRenderer();
   void Initialize();
   void Dispose();
-  void SetInfo(DEBUG_INFO_PLAYER& info);
+  void SetInfo(DEBUG_INFO_PLAYER& info, const DEBUG_INFO_FRAMES& frames);
   void SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render);
   void Render(CRect& src, CRect& dst, CRect& view);
   void Flush();
@@ -45,6 +46,8 @@ protected:
   };
 
   CRenderer m_overlayRenderer;
+  CDebugFrameGraph m_frameGraph;
+  bool m_showFrameGraph{false};
 
 private:
   CSubtitlesAdapter* m_adapter{nullptr};

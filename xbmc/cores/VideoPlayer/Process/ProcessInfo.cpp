@@ -97,6 +97,11 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoQueueLevel(m_videoQueueLevel);
     m_dataCache->SetVideoQueueDataLevel(m_videoQueueDataLevel);
   }
+
+  std::unique_lock framesLock(m_videoFramesSection);
+  m_videoFrames.clear();
+  m_videoFrameCount = 0;
+  m_videoFrameSerial++;
 }
 
 void CProcessInfo::SetVideoDecoderName(const std::string &name, bool isHw)
@@ -294,6 +299,38 @@ bool CProcessInfo::GetVideoInterlaced()
   std::unique_lock lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
+}
+
+void CProcessInfo::AddVideoFrameSize(uint32_t size, bool keyFrame)
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  if (m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX)
+    m_videoFrames.push_back({size, keyFrame});
+  else
+    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, keyFrame};
+
+  m_videoFrameCount++;
+  m_videoFrameSerial++;
+}
+
+void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
+{
+  const float fps = GetVideoFps();
+
+  std::unique_lock lock(m_videoFramesSection);
+
+  if (info.serial == m_videoFrameSerial)
+    return;
+
+  // m_videoFrames is a ring buffer once full, return it oldest first
+  const size_t start =
+      m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX ? 0 : m_videoFrameCount % DEBUG_INFO_FRAMES_MAX;
+  info.frames.assign(m_videoFrames.begin() + start, m_videoFrames.end());
+  info.frames.insert(info.frames.end(), m_videoFrames.begin(), m_videoFrames.begin() + start);
+  info.count = m_videoFrameCount;
+  info.serial = m_videoFrameSerial;
+  info.fps = fps;
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()

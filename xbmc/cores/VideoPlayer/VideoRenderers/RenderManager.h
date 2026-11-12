@@ -56,6 +56,7 @@ protected:
   virtual void VideoParamsChange() = 0;
   //! \brief Fill the player's rows of \p info.
   virtual void GetDebugInfo(DEBUG_INFO_PLAYER& info) = 0;
+  virtual void GetDebugFrames(DEBUG_INFO_FRAMES& frames) = 0;
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
@@ -253,6 +254,7 @@ protected:
   CEvent m_initEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
+  DEBUG_INFO_FRAMES m_debugFrames;
 
   struct CClockSync
   {

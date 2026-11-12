@@ -665,6 +665,7 @@ void CVideoPlayerVideo::Process()
         }
 
         m_videoStats.AddSampleBytes(pPacket->iSize);
+        m_processInfo.AddVideoFrameSize(static_cast<uint32_t>(pPacket->iSize), pPacket->m_keyFrame);
         UpdatePlayerInfo();
 
         if (ProcessDecoderOutput(frametime, pts))

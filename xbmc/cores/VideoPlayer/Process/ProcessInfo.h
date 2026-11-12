@@ -9,6 +9,7 @@
 #pragma once
 
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
+#include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
@@ -56,6 +57,8 @@ public:
   int GetVideoQueueDataLevel();
   void SetVideoInterlaced(bool interlaced);
   bool GetVideoInterlaced();
+  void AddVideoFrameSize(uint32_t size, bool keyFrame);
+  void GetVideoFrameSizes(DEBUG_INFO_FRAMES& info);
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
@@ -163,6 +166,10 @@ protected:
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   mutable CCriticalSection m_videoCodecSection;
+  CCriticalSection m_videoFramesSection;
+  std::vector<DEBUG_INFO_FRAME> m_videoFrames;
+  uint64_t m_videoFrameCount{0};
+  uint64_t m_videoFrameSerial{0};
   CVideoBufferManager m_videoBufferManager;
   std::vector<AVPixelFormat> m_pixFormats;
 
