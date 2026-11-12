@@ -10,7 +10,12 @@
 
 #include "utils/log.h"
 
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
+#include <cstdio>
+#include <utility>
+#include <vector>
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
@@ -44,6 +49,32 @@ bool ReadFramebufferRegion(int x,
   AVPixelFormat avFormat = AV_PIX_FMT_RGBA;
   unsigned int rowBytes = width * 4;
 
+#if HAS_GLES == 3
+  GLint componentType = GL_UNSIGNED_NORMALIZED;
+  unsigned int majorVersion = 0;
+  const auto* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+  if (version)
+    std::sscanf(version, "OpenGL ES %u", &majorVersion);
+  if (majorVersion >= 3)
+  {
+    GLint readBuffer = GL_BACK;
+    glGetIntegerv(GL_READ_BUFFER, &readBuffer);
+    glGetFramebufferAttachmentParameteriv(GL_READ_FRAMEBUFFER, readBuffer,
+                                          GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE, &componentType);
+    if (glGetError() != GL_NO_ERROR)
+    {
+      CLog::LogF(LOGWARNING, "capture readback: framebuffer attachment query failed");
+      return false;
+    }
+  }
+  if (componentType == GL_FLOAT)
+  {
+    glType = GL_FLOAT;
+    avFormat = AV_PIX_FMT_RGBA64LE;
+    rowBytes = width * 8;
+  }
+  else
+#endif
   if (bitDepth <= 8)
   {
 #ifdef HAS_GL
@@ -59,7 +90,7 @@ bool ReadFramebufferRegion(int x,
     avFormat = AV_PIX_FMT_RGBA64LE;
     rowBytes = width * 8;
 #else
-    // GLES guarantees only RGBA/UNSIGNED_BYTE; negotiate the deep readback type
+    // For normalized buffers, negotiate a deep readback before falling back to RGBA8.
     GLint readFormat = GL_RGBA;
     GLint readType = GL_UNSIGNED_BYTE;
     glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
@@ -79,15 +110,32 @@ bool ReadFramebufferRegion(int x,
 #endif
   }
 
-  out.pixels.reset(new uint8_t[static_cast<size_t>(rowBytes) * height]);
+  auto buffer = std::make_unique<uint8_t[]>(static_cast<size_t>(rowBytes) * height);
+  std::vector<float> floatPixels;
+  void* pixels = buffer.get();
+  if (glType == GL_FLOAT)
+  {
+    floatPixels.resize(static_cast<size_t>(width) * height * 4);
+    pixels = floatPixels.data();
+  }
   glReadPixels(x, y, static_cast<GLsizei>(width), static_cast<GLsizei>(height), glFormat, glType,
-               out.pixels.get());
+               pixels);
   if (glGetError() != GL_NO_ERROR)
   {
     CLog::LogF(LOGWARNING, "capture readback: glReadPixels failed");
     return false;
   }
 
+  // FFmpeg's packed RGBA input supports normalized 16-bit channels, not 32-bit floats.
+  for (size_t i = 0; i < floatPixels.size(); ++i)
+  {
+    const float sample = std::isnan(floatPixels[i]) ? 0.0f : std::clamp(floatPixels[i], 0.0f, 1.0f);
+    const uint16_t value = static_cast<uint16_t>(static_cast<double>(sample) * 65535.0 + 0.5);
+    buffer[2 * i] = static_cast<uint8_t>(value & 0xff);
+    buffer[2 * i + 1] = static_cast<uint8_t>(value >> 8);
+  }
+
+  out.pixels = std::move(buffer);
   out.width = width;
   out.height = height;
   out.stride = flipY ? -static_cast<int>(rowBytes) : static_cast<int>(rowBytes);
@@ -110,18 +158,19 @@ bool ReadFramebufferRegion(int x,
     return false;
 
   const unsigned int rowBytes = width * 4;
-  out.pixels.reset(new uint8_t[static_cast<size_t>(rowBytes) * height]);
+  auto buffer = std::make_unique<uint8_t[]>(static_cast<size_t>(rowBytes) * height);
 
   while (glGetError() != GL_NO_ERROR)
     ;
   glReadPixels(x, y, static_cast<GLsizei>(width), static_cast<GLsizei>(height), GL_RGBA,
-               GL_UNSIGNED_BYTE, out.pixels.get());
+               GL_UNSIGNED_BYTE, buffer.get());
   if (glGetError() != GL_NO_ERROR)
   {
     CLog::LogF(LOGWARNING, "capture readback: glReadPixels failed");
     return false;
   }
 
+  out.pixels = std::move(buffer);
   out.width = width;
   out.height = height;
   out.stride = flipY ? -static_cast<int>(rowBytes) : static_cast<int>(rowBytes);

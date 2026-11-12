@@ -363,10 +363,11 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   return true;
 }
 
-EGLint CEGLContextUtils::GetConfigAttrib(EGLint attribute) const
+EGLint CEGLContextUtils::GetConfigAttrib(EGLint attribute, bool hdr) const
 {
   EGLint value{0};
-  if (eglGetConfigAttrib(m_eglDisplay, m_eglConfig, attribute, &value) != EGL_TRUE)
+  if (eglGetConfigAttrib(m_eglDisplay, hdr ? m_eglHDRConfig : m_eglConfig, attribute, &value) !=
+      EGL_TRUE)
     CEGLUtils::Log(LOGERROR, "failed to query EGL attribute");
   return value;
 }
