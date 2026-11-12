@@ -36,7 +36,10 @@ void CGUIQuadDrawerGLES::DrawQuad(const CRect& rect,
 
   if (blending)
   {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (CServiceBroker::GetWinSystem()->IsHdrComposite())
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    else
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
   }
   else
