@@ -256,7 +256,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           {
             bCancelled = true;
           }
-          else
+          else if (scanComplete == ScanComplete::Completed)
           {
             // Skip the individual scans of the sub directories still queued under the path to
             // scan. Not all of them are missing - disc folders are consumed by Stack() and
@@ -409,10 +409,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == ContentType::NONE || ignoreFolder)
-    {
-      RemoveSubDirectories(m_pathsToScan, strDirectory, {});
-      return std::make_pair(ScanComplete::Completed, ContentFound::None);
-    }
+      return std::make_pair(ScanComplete::Skipped, ContentFound::None);
 
     // A video extras folder (eg. "Extras", "Bonus Disc") holds no movie of its own. Skip it and
     // anything below it when video extras are ignored.
