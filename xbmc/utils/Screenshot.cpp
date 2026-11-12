@@ -184,10 +184,16 @@ std::string StagedScreenshotFile(const std::string& file)
   return file + ".tmp.png";
 }
 
+// Held while a number is chosen and while staged screenshots move into place, as a listing made
+// during a move can show neither the staged name nor the final one
+CCriticalSection numberingLock;
+std::function<void()> moveHook;
+
 // The next auto-numbered name in dir that neither it nor its video companion has taken, written
 // or staged; empty when the folder is full.
 std::string NextScreenshotFile(const std::string& dir)
 {
+  std::unique_lock lock(numberingLock);
   CFileItemList items;
   XFILE::CDirectory::GetDirectory(dir, items, ".png",
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_GET_HIDDEN);
@@ -348,6 +354,16 @@ struct PendingScreenshot
 
 // Covers forcing a frame, reading it back and encoding it at the native resolution.
 constexpr std::chrono::milliseconds SCREENSHOT_TIMEOUT{5000};
+
+// The synchronous screenshot being taken, whose result a call arriving meanwhile answers.
+struct InFlightScreenshot
+{
+  CEvent done{true};
+  CScreenShot::ScreenshotFiles files;
+};
+
+CCriticalSection inFlightLock;
+std::shared_ptr<InFlightScreenshot> inFlight;
 } // namespace
 
 bool CScreenShot::IsScreenshotPath(const std::string& path)
@@ -363,6 +379,48 @@ bool CScreenShot::IsScreenshotPath(const std::string& path)
 }
 
 CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
+    KODI::RENDERING::CAPTURE::CaptureContent content, const std::string& target)
+{
+  std::shared_ptr<InFlightScreenshot> screenshot;
+  bool joined = false;
+  {
+    std::unique_lock lock(inFlightLock);
+    joined = inFlight != nullptr;
+    if (!joined)
+      inFlight = std::make_shared<InFlightScreenshot>();
+    screenshot = inFlight;
+  }
+
+  // The call taking the screenshot gives up on its frame after SCREENSHOT_TIMEOUT, so this wait
+  // ends no later than that call does
+  if (joined)
+  {
+    screenshot->done.Wait();
+    return screenshot->files;
+  }
+
+  screenshot->files = TakeOwnScreenshotSync(content, target);
+  {
+    std::unique_lock lock(inFlightLock);
+    inFlight.reset();
+  }
+  screenshot->done.Set();
+  return screenshot->files;
+}
+
+int CScreenShot::JoinedScreenshotCalls()
+{
+  std::unique_lock lock(inFlightLock);
+  return inFlight ? inFlight->done.getNumWaits() : 0;
+}
+
+void CScreenShot::SetMoveHook(std::function<void()> hook)
+{
+  std::unique_lock lock(numberingLock);
+  moveHook = std::move(hook);
+}
+
+CScreenShot::ScreenshotFiles CScreenShot::TakeOwnScreenshotSync(
     KODI::RENDERING::CAPTURE::CaptureContent content, const std::string& target)
 {
   using namespace KODI::RENDERING::CAPTURE;
@@ -471,10 +529,15 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
   }
 
   // Only a complete screenshot replaces what its names held
-  for (auto file = started.begin(); !failed && file != started.end(); ++file)
   {
-    failed = (XFILE::CFile::Exists(*file) && !XFILE::CFile::Delete(*file)) ||
-             !XFILE::CFile::Rename(StagedScreenshotFile(*file), *file);
+    std::unique_lock lock(numberingLock);
+    if (!failed && moveHook)
+      moveHook();
+    for (auto file = started.begin(); !failed && file != started.end(); ++file)
+    {
+      failed = (XFILE::CFile::Exists(*file) && !XFILE::CFile::Delete(*file)) ||
+               !XFILE::CFile::Rename(StagedScreenshotFile(*file), *file);
+    }
   }
 
   if (failed)

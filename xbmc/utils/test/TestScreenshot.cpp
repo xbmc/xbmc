@@ -215,6 +215,7 @@ protected:
 
   void TearDown() override
   {
+    CScreenShot::SetMoveHook({});
     CServiceBroker::UnregisterCaptureService();
     m_service.reset();
     CServiceBroker::GetJobManager()->CancelJobs();
@@ -246,6 +247,30 @@ protected:
         m_service->Complete(active[0], result);
         return true;
       }
+      std::this_thread::sleep_for(5ms);
+    }
+    return false;
+  }
+
+  //! Wait until \p calls calls are waiting for another call's screenshot
+  static bool WaitForJoinedCalls(int calls)
+  {
+    for (int attempt = 0; attempt < 400; ++attempt)
+    {
+      if (CScreenShot::JoinedScreenshotCalls() == calls)
+        return true;
+      std::this_thread::sleep_for(5ms);
+    }
+    return false;
+  }
+
+  //! Wait up to \p attempts x 5ms for a file to appear, read from the disk
+  bool WaitForFile(const std::string& name, int attempts) const
+  {
+    for (int attempt = 0; attempt < attempts; ++attempt)
+    {
+      if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(m_dir, name), false))
+        return true;
       std::this_thread::sleep_for(5ms);
     }
     return false;
@@ -354,23 +379,53 @@ TEST_F(TestScreenshotTaking, ANumberItsVideoFrameStillHoldsIsNotTakenAgain)
   EXPECT_TRUE(Exists("screenshot00000-video.png"));
 }
 
-TEST_F(TestScreenshotTaking, TwoRequestsWaitingTogetherTakeDifferentNames)
+TEST_F(TestScreenshotTaking, ACallWhileOneIsInFlightAnswersThatOnesScreenshot)
 {
   const auto take = [] { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE); };
   auto first = std::async(std::launch::async, take);
   auto second = std::async(std::launch::async, take);
-  std::this_thread::sleep_for(200ms);
+  ASSERT_TRUE(WaitForJoinedCalls(1));
 
-  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
   ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
 
   const CScreenShot::ScreenshotFiles one = first.get();
   const CScreenShot::ScreenshotFiles other = second.get();
   EXPECT_EQ(Error::NONE, one.error);
   EXPECT_EQ(Error::NONE, other.error);
-  EXPECT_NE(one.composite, other.composite);
-  EXPECT_TRUE(Exists("screenshot00000.png"));
-  EXPECT_TRUE(Exists("screenshot00001.png"));
+  EXPECT_EQ("special://screenshots/screenshot00000.png", one.composite);
+  EXPECT_EQ(one.composite, other.composite);
+  EXPECT_EQ(1, FileCount());
+}
+
+TEST_F(TestScreenshotTaking, NoScreenshotIsNumberedWhileAnotherMovesIntoPlace)
+{
+  std::promise<void> moving;
+  std::promise<void> delivered;
+  auto movingStarted = moving.get_future();
+  auto deliveredDone = delivered.get_future();
+  bool numberedDuringMove = false;
+  CScreenShot::SetMoveHook(
+      [&]
+      {
+        moving.set_value();
+        deliveredDone.wait();
+        // a screenshot numbered and written meanwhile would land within this
+        numberedDuringMove = WaitForFile("screenshot00001.png", 50);
+      });
+
+  auto taken = std::async(std::launch::async, []
+                          { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE); });
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+  ASSERT_EQ(std::future_status::ready, movingStarted.wait_for(10s));
+
+  CScreenShot::TakeScreenshot(CaptureContent::COMPOSITE);
+  EXPECT_TRUE(Deliver(CaptureContent::COMPOSITE));
+  delivered.set_value();
+
+  EXPECT_EQ("special://screenshots/screenshot00000.png", taken.get().composite);
+  EXPECT_FALSE(numberedDuringMove);
+  EXPECT_TRUE(WaitForFile("screenshot00001.png", 400));
+  EXPECT_EQ(2, FileCount());
 }
 
 TEST(TestScreenshotPath, OnlyAPlainPngUnderTheScreenshotFolderIsAScreenshot)

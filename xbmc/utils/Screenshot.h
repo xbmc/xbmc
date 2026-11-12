@@ -57,12 +57,19 @@ public:
   };
 
   //! \brief Screenshot of the given content, written before this returns; an unset folder is
-  //!        NO_FOLDER, never a prompt.
+  //!        NO_FOLDER, never a prompt. A call made while another is in flight takes none of its
+  //!        own: it waits for that one and answers its result, whatever it asked for.
   //! \param content what to capture
   //! \param target file name under the configured folder, auto-numbered when empty; the video
   //!               frame takes the matching "-video" name
   static ScreenshotFiles TakeScreenshotSync(KODI::RENDERING::CAPTURE::CaptureContent content,
                                             const std::string& target = "");
+
+  //! \brief How many TakeScreenshotSync() calls are waiting for another call's screenshot.
+  static int JoinedScreenshotCalls();
+
+  //! \brief Have \p hook called as a synchronous screenshot starts moving its files into place.
+  static void SetMoveHook(std::function<void()> hook);
 
   //! \brief Whether a path names a screenshot: the special://screenshots folder and a plain .png
   //!        name. None does while no screenshot folder is configured.
@@ -81,5 +88,8 @@ public:
   static ScreenshotDeletion DeleteScreenshots(const std::string& file = "");
 
 private:
+  static ScreenshotFiles TakeOwnScreenshotSync(KODI::RENDERING::CAPTURE::CaptureContent content,
+                                               const std::string& target);
+
   static std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> m_screenShotSurfaces;
 };
