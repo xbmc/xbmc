@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cerrno>
 #include <inttypes.h>
 #include <mutex>
 #include <random>
@@ -62,8 +63,6 @@ constexpr auto KEEP_ALIVE_TIMEOUT = 45s; // half of lease_time
 constexpr auto IDLE_TIMEOUT = 30s;
 constexpr int KEEP_ALIVE_READ_TIMEOUT_MS = 1000;
 
-constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
-
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
 constexpr int DEFAULT_NFS_VERSION = 3; // libnfs's, when none is set
 constexpr auto SETTING_NFS_CHUNKSIZE = "nfs.chunksize";
@@ -90,6 +89,15 @@ struct nfs_context* InitNfsContext()
   static std::mutex lock;
   std::unique_lock initLock(lock);
   return nfs_init_context();
+}
+
+// Whether a call's result means the server has dropped the context's NFSv4 client, as when its
+// lease expired. libnfs up to 6.0.2 looks NFSv4 errors up in its NFSv3 table, so NFS4ERR_EXPIRED
+// and the other NFSv4-only errors come back as -ERANGE, and NFS4ERR_DELAY as -EAGAIN; later
+// versions return NFS4ERR_EXPIRED as -EAGAIN. Any other error in those groups costs one retry.
+bool ClientDropped(const CNfsContext& context, int ret)
+{
+  return context.GetNfsVersion() == 4 && (ret == -ERANGE || ret == -EAGAIN);
 }
 
 // Serialises NFSv4 creates. libnfs makes their verifiers from an unguarded static, and two creates
@@ -890,7 +898,7 @@ bool CNFSFile::Open(const CURL& url)
   std::unique_lock lock(*m_context);
   int ret = nfs_open(m_context->GetNfsContext(), filename.c_str(), O_RDONLY, &m_pFileHandle);
 
-  if (ret == NFS4ERR_EXPIRED) // client session expired due no activity/keep alive
+  if (ClientDropped(*m_context, ret))
   {
     CLog::Log(LOGERROR,
               "CNFSFile::Open: Unable to open file - trying again with a new context: error: '{}'",
@@ -1208,8 +1216,8 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   std::unique_lock lock(*m_context);
   ret = nfs_open2(m_context->GetNfsContext(), filename.c_str(), flags, mode, &m_pFileHandle);
 
-  // client session expired, as when an otherwise idle context waits behind slow creates
-  if (ret == NFS4ERR_EXPIRED)
+  // as when an otherwise idle context waits behind slow creates until its lease expires
+  if (ClientDropped(*m_context, ret))
   {
     CLog::LogF(LOGERROR, "Unable to open file - trying again with a new context: error: '{}'",
                nfs_get_error(m_context->GetNfsContext()));
