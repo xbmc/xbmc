@@ -100,6 +100,7 @@ private:
   unsigned int m_codedWidth{0};
   unsigned int m_codedHeight{0};
   std::string m_stereoMode;
+  float m_displayAspect{0.0f};
 
   bool m_unreadableLogged{false};
   bool m_reducedLogged{false};

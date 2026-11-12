@@ -336,3 +336,34 @@ TEST_F(TestLiveGeometryMonitor, AResolutionChangeWithdrawsWhatTheOldStreamServed
                           [](const LiveGeometryUpdate& update) { return update.clear; }))
       << "the old stream's shape was left standing over the new one";
 }
+
+/*!
+ * An SD broadcast switches between 16:9 and 4:3 at the same 720x576 coded size, so only the
+ * display aspect says the pixels changed shape. A 2.40 picture in the 4:3 frame is 720x320; read
+ * at the 16:9 frame's pixel aspect it would be 3.20, which no real ratio is.
+ */
+TEST_F(TestLiveGeometryMonitor, ADisplayAspectChangeAtTheSameSizeReadsTheNewPixelAspect)
+{
+  CTestVideoBuffer wide(720, 576);
+  wide.Picture(0, 0, 720, 576);
+
+  VideoPicture first;
+  Describe(first, wide, 720, 576, "mono", 1024, 576);
+
+  OpenStream();
+  ASSERT_FALSE(Feed(first).IsEmpty()) << "nothing was served for the 16:9 frame";
+  Drain();
+
+  CTestVideoBuffer narrow(720, 576);
+  narrow.Picture(0, 128, 720, 448);
+
+  VideoPicture second;
+  Describe(second, narrow, 720, 576, "mono", 768, 576);
+
+  Feed(second);
+
+  const std::optional<LiveGeometryUpdate> posted = LastPosted();
+  ASSERT_TRUE(posted.has_value()) << "the 4:3 frame was read at the 16:9 frame's pixel aspect";
+  EXPECT_EQ(720, posted->rect.Width());
+  EXPECT_NEAR(2.40f, DisplayRatio(posted->rect, 768.0f / 720.0f), 0.01f);
+}

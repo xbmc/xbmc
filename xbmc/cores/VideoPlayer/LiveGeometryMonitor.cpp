@@ -119,15 +119,16 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
   if (picture.iWidth == 0 || picture.iHeight == 0)
     return InForce();
 
+  const float displayAspect =
+      picture.iDisplayWidth > 0 && picture.iDisplayHeight > 0
+          ? static_cast<float>(picture.iDisplayWidth) / static_cast<float>(picture.iDisplayHeight)
+          : 0.0f;
+
   if (picture.iWidth != m_codedWidth || picture.iHeight != m_codedHeight ||
-      picture.stereoMode != m_stereoMode)
+      picture.stereoMode != m_stereoMode || displayAspect != m_displayAspect)
   {
     Withdraw();
 
-    const float displayAspect =
-        picture.iDisplayWidth > 0 && picture.iDisplayHeight > 0
-            ? static_cast<float>(picture.iDisplayWidth) / static_cast<float>(picture.iDisplayHeight)
-            : 0.0f;
     const StreamGeometry stream =
         MeasuredStreamGeometry(picture.stereoMode, picture.iWidth, picture.iHeight, displayAspect);
 
@@ -136,6 +137,7 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
     m_codedWidth = picture.iWidth;
     m_codedHeight = picture.iHeight;
     m_stereoMode = picture.stereoMode;
+    m_displayAspect = displayAspect;
   }
 
   FrameRef frame;
