@@ -604,11 +604,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       (audioframe.originalPts != DVD_NOPTS_VALUE || audioframe.pts != DVD_NOPTS_VALUE) &&
       audioframe.duration > 0)
   {
-    const double originalPts =
-        audioframe.originalPts != DVD_NOPTS_VALUE ? audioframe.originalPts : audioframe.pts;
+    const double originalPts = audioframe.originalPts != DVD_NOPTS_VALUE ? audioframe.originalPts : audioframe.pts;
     const auto frameStart = std::chrono::milliseconds{DVD_TIME_TO_MSEC(originalPts)};
-    const auto frameEnd =
-        std::chrono::milliseconds{DVD_TIME_TO_MSEC(originalPts + audioframe.duration)};
+    const auto frameEnd = std::chrono::milliseconds{DVD_TIME_TO_MSEC(originalPts + audioframe.duration)};
     const auto edits = m_edl.GetRawEditListSnapshot();
     for (const auto& edit : *edits)
     {
