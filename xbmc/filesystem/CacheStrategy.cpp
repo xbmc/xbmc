@@ -27,6 +27,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <mutex>
 
 using namespace XFILE;
 
@@ -122,6 +123,7 @@ size_t CSimpleFileCache::GetMaxWriteSize(const size_t& iRequestSize)
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
 {
+  std::unique_lock lock(m_sync);
   size_t written = 0;
   while (iSize > 0)
   {
@@ -146,11 +148,13 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
 
 int64_t CSimpleFileCache::GetAvailableRead()
 {
+  std::unique_lock lock(m_sync);
   return m_nWritePosition - m_nReadPosition;
 }
 
 int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
+  std::unique_lock lock(m_sync);
   int64_t iAvailable = GetAvailableRead();
   if ( iAvailable <= 0 )
     return m_bEndOfInput ? 0 : CACHE_RC_WOULD_BLOCK;
@@ -188,13 +192,17 @@ int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, std::chrono::milliseco
     return GetAvailableRead();
 
   XbmcThreads::EndTime<> endTime{timeout};
+  std::unique_lock lock(m_sync);
   while (!IsEndOfInput())
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
-    if (!m_hDataAvailEvent->Wait(endTime.GetTimeLeft()))
+    lock.unlock();
+    const bool signaled = m_hDataAvailEvent->Wait(endTime.GetTimeLeft());
+    lock.lock();
+    if (!signaled)
       return CACHE_RC_TIMEOUT;
   }
   return GetAvailableRead();
@@ -202,6 +210,7 @@ int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, std::chrono::milliseco
 
 int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 {
+  std::unique_lock lock(m_sync);
   int64_t iTarget = iFilePosition - m_nStartPosition;
 
   if (iTarget < 0)
@@ -220,12 +229,19 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
     return CACHE_RC_ERROR;
   }
 
-  if (nDiff > 0 &&
-      WaitForData(static_cast<uint32_t>(iTarget - m_nReadPosition), 5s) == CACHE_RC_TIMEOUT)
+  if (nDiff > 0)
   {
-    CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
-              __FUNCTION__, m_filename, iFilePosition, m_nWritePosition);
-    return CACHE_RC_ERROR;
+    const uint32_t minAvail = static_cast<uint32_t>(iTarget - m_nReadPosition);
+    // Release the lock while waiting so the writer can make progress
+    lock.unlock();
+    const auto waitResult = WaitForData(minAvail, 5s);
+    lock.lock();
+    if (waitResult == CACHE_RC_TIMEOUT)
+    {
+      CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
+                __FUNCTION__, m_filename, iFilePosition, m_nWritePosition);
+      return CACHE_RC_ERROR;
+    }
   }
 
   m_nReadPosition = m_cacheFileRead->Seek(iTarget, SEEK_SET);
@@ -243,6 +259,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 
 bool CSimpleFileCache::Reset(int64_t iSourcePosition)
 {
+  std::unique_lock lock(m_sync);
   if (IsCachedPosition(iSourcePosition))
   {
     m_nReadPosition = m_cacheFileRead->Seek(iSourcePosition - m_nStartPosition, SEEK_SET);
@@ -263,6 +280,7 @@ void CSimpleFileCache::EndOfInput()
 
 int64_t CSimpleFileCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 {
+  std::unique_lock lock(m_sync);
   if (iFilePosition >= m_nStartPosition && iFilePosition <= m_nStartPosition + m_nWritePosition)
     return m_nStartPosition + m_nWritePosition;
   return iFilePosition;
@@ -270,16 +288,19 @@ int64_t CSimpleFileCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 
 int64_t CSimpleFileCache::CachedDataStartPos()
 {
+  std::unique_lock lock(m_sync);
   return m_nStartPosition;
 }
 
 int64_t CSimpleFileCache::CachedDataEndPos()
 {
+  std::unique_lock lock(m_sync);
   return m_nStartPosition + m_nWritePosition;
 }
 
 bool CSimpleFileCache::IsCachedPosition(int64_t iFilePosition)
 {
+  std::unique_lock lock(m_sync);
   return iFilePosition >= m_nStartPosition && iFilePosition <= m_nStartPosition + m_nWritePosition;
 }
 

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
 #include <stdint.h>
@@ -96,6 +97,7 @@ protected:
   int64_t m_nStartPosition = 0;
   int64_t m_nWritePosition = 0;
   int64_t m_nReadPosition = 0;
+  CCriticalSection m_sync;
 };
 
 class CDoubleCache : public CCacheStrategy{
