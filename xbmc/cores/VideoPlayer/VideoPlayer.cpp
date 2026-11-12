@@ -2443,10 +2443,7 @@ void CVideoPlayer::HandlePlaySpeed()
       }
       else if (m_CurrentAudio.starttime != DVD_NOPTS_VALUE && m_CurrentAudio.packets > 0)
       {
-        if (m_pInputStream->IsRealtime())
-          clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetotal - DVD_MSEC_TO_TIME(400);
-        else
-          clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
+        clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
 
         if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE && (m_CurrentVideo.packets > 0))
         {
