@@ -291,3 +291,17 @@ TEST(TestGeometryTransforms, FitAspectFitsADisplayRatioToWidePixels)
   EXPECT_NEAR(1253.33f, fitted.x2, 0.01f);
   EXPECT_FLOAT_EQ(940.0f, fitted.y2);
 }
+
+TEST(TestGeometryTransforms, FitAspectFitsAnImageToWidePixels)
+{
+  // A 2400x1000 surround image on 1440x1080 output whose pixels are 4/3 wide: 1920x800 on the
+  // screen, so 1440 output pixels across. Taken at square pixels it would be 600 tall.
+  const CRect output{0.0f, 0.0f, 1440.0f, 1080.0f};
+
+  const CRect fitted = FitAspect(2400.0f / 1000.0f, output, 4.0f / 3.0f);
+
+  EXPECT_FLOAT_EQ(0.0f, fitted.x1);
+  EXPECT_FLOAT_EQ(140.0f, fitted.y1);
+  EXPECT_FLOAT_EQ(1440.0f, fitted.x2);
+  EXPECT_FLOAT_EQ(940.0f, fitted.y2);
+}

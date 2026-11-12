@@ -161,7 +161,9 @@ bool CGUISurroundRenderer::FitImage(const CRect& raster)
   CRect fitted = raster;
   const float textureHeight = m_image->GetTextureHeight();
   if (textureHeight > 0.0f)
-    fitted = KODI::VIDEO::GEOMETRY::FitAspect(m_image->GetTextureWidth() / textureHeight, raster);
+    fitted = KODI::VIDEO::GEOMETRY::FitAspect(
+        m_image->GetTextureWidth() / textureHeight, raster,
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio);
 
   if (fitted.x1 == m_image->GetXPosition() && fitted.y1 == m_image->GetYPosition() &&
       fitted.Width() == m_image->GetWidth() && fitted.Height() == m_image->GetHeight())
