@@ -645,7 +645,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     }
 
     // Never request closer to end than one chunk. Speeds up tag reading
-    m_seekPos = std::min(iTarget, std::max((int64_t)0, m_fileSize - m_chunkSize));
+    m_seekPos = m_fileSize > 0 ? std::min(iTarget, std::max((int64_t)0, m_fileSize - m_chunkSize))
+                               : iTarget;
 
     m_nSeekResult = -1;
     m_seekError = 0;
