@@ -27,8 +27,8 @@ public:
   bool PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts);
 
   //! Re-emit the last complete burst. Returns false when none has been packed
-  //! yet; the caller skips byte-swapping, as the retained burst is already
-  //! swapped.
+  //! yet. The retained burst is not byte-swapped, so the caller swaps it as it
+  //! does a newly packed one.
   bool PackLastBurst();
   //! Start the next packet. The last complete burst is kept: a packer lives as long as the
   //! sink it was opened for.
