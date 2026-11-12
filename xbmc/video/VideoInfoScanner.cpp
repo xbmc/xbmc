@@ -288,8 +288,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if (!bCancelled)
       {
-        // An empty set cleans the whole library, which a scan of part of it must not do
-        if (m_bClean && !(m_scanSubtree && m_pathsToClean.empty()))
+        // An empty set cleans the whole library, including paths skipped by this scan.
+        if (m_bClean && !m_pathsToClean.empty())
           m_database.CleanDatabase(m_handle, m_pathsToClean, false);
         else
         {
@@ -330,7 +330,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
   void CVideoInfoScanner::Start(const std::string& strDirectory, bool scanAll)
   {
     m_scanAll = scanAll;
-    m_scanSubtree = !strDirectory.empty();
     m_pathsToScan.clear();
     m_pathsToClean.clear();
 
@@ -410,7 +409,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == ContentType::NONE || ignoreFolder)
+    {
+      RemoveSubDirectories(m_pathsToScan, strDirectory, {});
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
+    }
 
     // A video extras folder (eg. "Extras", "Bonus Disc") holds no movie of its own. Skip it and
     // anything below it when video extras are ignored.
