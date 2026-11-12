@@ -39,6 +39,11 @@ public:
    *         with SetTempo, true otherwise
    */
   bool ChangeTempo(float tempo);
+  /*!
+   * \brief The tempo the samples ProcessFilter returned last were produced at. It differs from
+   *        the tempo set while the filter drains for a new one.
+   */
+  float GetOutputTempo() const;
   bool NeedData() const;
   bool IsEof() const;
   bool IsActive() const;

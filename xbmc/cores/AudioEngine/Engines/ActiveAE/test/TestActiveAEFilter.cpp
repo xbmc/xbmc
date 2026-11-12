@@ -179,6 +179,7 @@ TEST(TestActiveAEFilter, FrameReturnedAcrossAChangeKeepsItsTempo)
 
   ASSERT_EQ(TakeANewFrame(), PART);
   ASSERT_TRUE(filter.HasFrame());
+  EXPECT_EQ(filter.GetOutputTempo(), 1.5f);
 
   const int buffered = filter.GetBufferedSamples();
   ASSERT_TRUE(filter.ChangeTempo(2.0f));
@@ -186,7 +187,11 @@ TEST(TestActiveAEFilter, FrameReturnedAcrossAChangeKeepsItsTempo)
   while (filter.HasFrame())
     rest += filter.ProcessFilter(dstPlanes, PART, nullptr, 0, 0);
   ASSERT_GT(rest, 0);
+  EXPECT_EQ(filter.GetOutputTempo(), 1.5f);
   EXPECT_NEAR(filter.GetBufferedSamples(), buffered - rest * 1.5, 1.0);
+
+  ASSERT_GT(TakeANewFrame(), 0);
+  EXPECT_EQ(filter.GetOutputTempo(), 2.0f);
 }
 
 TEST(TestActiveAEFilter, BufferedSamplesBeyondIntMax)

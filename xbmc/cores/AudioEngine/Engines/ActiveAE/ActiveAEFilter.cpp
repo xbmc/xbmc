@@ -356,6 +356,11 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
   return 0;
 }
 
+float CActiveAEFilter::GetOutputTempo() const
+{
+  return m_frameTempo;
+}
+
 bool CActiveAEFilter::IsEof() const
 {
   return m_filterEof;

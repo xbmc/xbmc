@@ -55,6 +55,8 @@ public:
   int pkt_start_offset = 0;
   int refCount = 0;
   double centerMixLevel;
+  // Media time the samples cover per output time, the speed they were produced at
+  double mediaSpeed = 1.0;
 };
 
 class CActiveAEBufferPool
@@ -146,6 +148,8 @@ protected:
   bool m_changeFilter;
   float m_tempo;
   int64_t m_lastSamplePts = 0;
+  // Speed the last input was produced at
+  double m_inputSpeed = 1.0;
   bool m_fillPackets;
 };
 
