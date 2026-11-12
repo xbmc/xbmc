@@ -18,8 +18,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include <algorithm>
 #include <string_view>
+#include <unordered_set>
 
 using namespace PVR;
 
@@ -70,14 +70,15 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
     return iCleanedImages;
   }
 
+  const std::unordered_set<std::string_view> urlsToKeep(urlsToCheck.begin(), urlsToCheck.end());
+
   for (unsigned int i = 0; i < items.size(); ++i)
   {
     // Unwrap the image:// URL returned from texture db.
     const std::string textureURL =
         IMAGE_FILES::CImageFileURL(items[i]["url"].asString()).GetTargetFile();
 
-    if (std::ranges::none_of(urlsToCheck,
-                             [&textureURL](std::string_view url) { return url == textureURL; }))
+    if (!urlsToKeep.contains(textureURL))
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Removing stale cached image: '{}'", textureURL);
       CServiceBroker::GetTextureCache()->ClearCachedImage(items[i]["textureid"].asInteger());
