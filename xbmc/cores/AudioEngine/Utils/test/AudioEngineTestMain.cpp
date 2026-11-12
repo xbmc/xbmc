@@ -13,7 +13,6 @@
 
 #include <gtest/gtest.h>
 
-
 int main(int argc, char** argv)
 {
   const auto appParams = std::make_shared<CAppParams>();
