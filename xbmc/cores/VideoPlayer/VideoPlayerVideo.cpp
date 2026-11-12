@@ -236,6 +236,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
 
   m_pVideoCodec = std::move(codec);
   m_hints = hint;
+  OpenFrameTypeParser(hint);
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_rewindStalled = false;
   m_packets.clear();
@@ -243,6 +244,84 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
   ResetSeekDrop();
   m_renderManager.ShowVideo(false);
   m_liveGeometry.OnStreamOpened();
+}
+
+void CVideoPlayerVideo::FrameTypeParserDeleter::operator()(AVCodecParserContext* parser) const
+{
+  av_parser_close(parser);
+}
+
+void CVideoPlayerVideo::FrameTypeParserDeleter::operator()(AVCodecContext* context) const
+{
+  avcodec_free_context(&context);
+}
+
+void CVideoPlayerVideo::OpenFrameTypeParser(const CDVDStreamInfo& hint)
+{
+  m_frameTypeParser.reset();
+  m_frameTypeContext.reset();
+
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDebugGraphFrameTypes)
+    return;
+
+  m_frameTypeParser.reset(av_parser_init(hint.codec));
+  m_frameTypeContext.reset(avcodec_alloc_context3(nullptr));
+  if (!m_frameTypeParser || !m_frameTypeContext)
+  {
+    m_frameTypeParser.reset();
+    m_frameTypeContext.reset();
+    return;
+  }
+
+  m_frameTypeParser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
+  m_frameTypeContext->codec_id = hint.codec;
+  m_frameTypeContext->codec_type = AVMEDIA_TYPE_VIDEO;
+
+  // The parser needs the extradata to read MP4/MKV style length prefixed NAL units
+  if (hint.extradata)
+  {
+    const size_t size = hint.extradata.GetSize();
+    m_frameTypeContext->extradata =
+        static_cast<uint8_t*>(av_mallocz(size + AV_INPUT_BUFFER_PADDING_SIZE));
+    if (m_frameTypeContext->extradata)
+    {
+      std::copy_n(hint.extradata.GetData(), size, m_frameTypeContext->extradata);
+      m_frameTypeContext->extradata_size = static_cast<int>(size);
+    }
+  }
+}
+
+char CVideoPlayerVideo::GetFrameType(const DemuxPacket& packet)
+{
+  // While the graph is hidden only keyframes are parsed, which keeps the in-band
+  // parameter sets the parser needs once the graph is shown again
+  const bool shown = m_frameTypeParser && m_processInfo.IsVideoFrameGraphShown();
+  if (m_frameTypeParser && (shown || packet.m_keyFrame))
+  {
+    uint8_t* data = nullptr;
+    int size = 0;
+    av_parser_parse2(m_frameTypeParser.get(), m_frameTypeContext.get(), &data, &size, packet.pData,
+                     packet.iSize, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
+  }
+
+  if (shown)
+  {
+    switch (m_frameTypeParser->pict_type)
+    {
+      case AV_PICTURE_TYPE_I:
+      case AV_PICTURE_TYPE_SI:
+        return 'I';
+      case AV_PICTURE_TYPE_P:
+      case AV_PICTURE_TYPE_SP:
+        return 'P';
+      case AV_PICTURE_TYPE_B:
+        return 'B';
+      default:
+        break;
+    }
+  }
+
+  return packet.m_keyFrame ? 'I' : 0;
 }
 
 void CVideoPlayerVideo::ResetSeekDrop()
@@ -274,6 +353,8 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   CLog::Log(LOGINFO, "deleting video codec");
   m_pVideoCodec.reset();
+  m_frameTypeParser.reset();
+  m_frameTypeContext.reset();
 
   if (m_picture.videoBuffer)
   {
@@ -665,7 +746,8 @@ void CVideoPlayerVideo::Process()
         }
 
         m_videoStats.AddSampleBytes(pPacket->iSize);
-        m_processInfo.AddVideoFrameSize(static_cast<uint32_t>(pPacket->iSize), pPacket->m_keyFrame);
+        m_processInfo.AddVideoFrameSize(static_cast<uint32_t>(pPacket->iSize),
+                                        GetFrameType(*pPacket));
         UpdatePlayerInfo();
 
         if (ProcessDecoderOutput(frametime, pts))

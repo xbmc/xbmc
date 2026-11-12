@@ -301,14 +301,14 @@ bool CProcessInfo::GetVideoInterlaced()
   return m_videoIsInterlaced;
 }
 
-void CProcessInfo::AddVideoFrameSize(uint32_t size, bool keyFrame)
+void CProcessInfo::AddVideoFrameSize(uint32_t size, char type)
 {
   std::unique_lock lock(m_videoFramesSection);
 
   if (m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX)
-    m_videoFrames.push_back({size, keyFrame});
+    m_videoFrames.push_back({size, type});
   else
-    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, keyFrame};
+    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, type};
 
   m_videoFrameCount++;
   m_videoFrameSerial++;
@@ -319,6 +319,8 @@ void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
   const float fps = GetVideoFps();
 
   std::unique_lock lock(m_videoFramesSection);
+
+  m_videoFramesRead = std::chrono::steady_clock::now();
 
   if (info.serial == m_videoFrameSerial)
     return;
@@ -331,6 +333,13 @@ void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
   info.count = m_videoFrameCount;
   info.serial = m_videoFrameSerial;
   info.fps = fps;
+}
+
+bool CProcessInfo::IsVideoFrameGraphShown()
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  return std::chrono::steady_clock::now() - m_videoFramesRead < std::chrono::seconds(1);
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()

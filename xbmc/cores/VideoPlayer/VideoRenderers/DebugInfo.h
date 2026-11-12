@@ -41,7 +41,7 @@ constexpr unsigned int DEBUG_INFO_FRAMES_MAX = 3840;
 struct DEBUG_INFO_FRAME
 {
   uint32_t size;
-  bool keyFrame;
+  char type; //!< 'I', 'P', 'B', or 0 if unknown
 };
 
 struct DEBUG_INFO_FRAMES

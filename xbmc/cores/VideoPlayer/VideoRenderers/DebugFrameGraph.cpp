@@ -24,7 +24,8 @@ namespace
 constexpr uint32_t COLOR_BACKDROP = 0x66000000;
 constexpr uint32_t COLOR_GRID = 0x50FFFFFF;
 constexpr uint32_t COLOR_FRAME = 0xFF3DDC84;
-constexpr uint32_t COLOR_KEYFRAME = 0xFFFFB547;
+constexpr uint32_t COLOR_I_FRAME = 0xFFFFB547;
+constexpr uint32_t COLOR_B_FRAME = 0xFF3F8CFF;
 constexpr uint32_t COLOR_AVERAGE = 0xFFFFFFFF;
 constexpr uint32_t COLOR_CURSOR = 0xB0FFFFFF;
 
@@ -95,9 +96,13 @@ std::string CDebugFrameGraph::GetLegend() const
                                ? "10 kB / 100 kB / 1 MB"
                                : StringUtils::Format("{:.0f} kB steps", peak * 1.05 / 4 / 1e3);
 
+  const bool frameTypes = std::any_of(frames.begin(), frames.end(), [](const auto& frame)
+                                      { return frame.type == 'P' || frame.type == 'B'; });
+
   return StringUtils::Format(
-      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, grid {}, amber = keyframe",
-      m_logScale ? "log" : "lin", m_sweep ? "sweep" : "scroll", peak / 1e6, rate, grid);
+      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, grid {}, {}",
+      m_logScale ? "log" : "lin", m_sweep ? "sweep" : "scroll", peak / 1e6, rate, grid,
+      frameTypes ? "amber I, green P, blue B" : "amber = keyframe");
 }
 
 void CDebugFrameGraph::Render(const CRect& view)
@@ -195,14 +200,17 @@ void CDebugFrameGraph::Draw()
         put(x, toY(linearMax * step / 4), COLOR_GRID);
   }
 
-  // Keyframes last and larger, so they stay visible on top
-  for (const bool keyFrames : {false, true})
+  // Draw the frequent small frames first so I-frames stay visible on top
+  for (const char type : {'B', 'P', 'I'})
   {
-    const int radius = keyFrames ? 2 : 1;
-    const uint32_t color = keyFrames ? COLOR_KEYFRAME : COLOR_FRAME;
+    const int radius = type == 'I' ? 2 : 1;
+    const uint32_t color =
+        type == 'I' ? COLOR_I_FRAME : (type == 'B' ? COLOR_B_FRAME : COLOR_FRAME);
     for (size_t i = first; i < frames.size(); ++i)
     {
-      if (frames[i].keyFrame != keyFrames)
+      // Frames of unknown type are drawn like P-frames
+      const char frameType = frames[i].type ? frames[i].type : 'P';
+      if (frameType != type)
         continue;
       const int x = toX(i);
       const int y = toY(frames[i].size);

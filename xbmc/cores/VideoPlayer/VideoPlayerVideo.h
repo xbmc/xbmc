@@ -21,10 +21,15 @@
 #include "utils/BitstreamStats.h"
 
 #include <atomic>
+#include <memory>
 
 #define DROP_DROPPED 1
 #define DROP_VERYLATE 2
 #define DROP_BUFFER_LEVEL 4
+
+struct AVCodecContext;
+struct AVCodecParserContext;
+struct DemuxPacket;
 
 class CDemuxStreamVideo;
 
@@ -143,6 +148,17 @@ protected:
   int m_seekDroppedPictures{0};
 
   BitstreamStats m_videoStats;
+
+  void OpenFrameTypeParser(const CDVDStreamInfo& hint);
+  char GetFrameType(const DemuxPacket& packet);
+
+  struct FrameTypeParserDeleter
+  {
+    void operator()(AVCodecParserContext* parser) const;
+    void operator()(AVCodecContext* context) const;
+  };
+  std::unique_ptr<AVCodecParserContext, FrameTypeParserDeleter> m_frameTypeParser;
+  std::unique_ptr<AVCodecContext, FrameTypeParserDeleter> m_frameTypeContext;
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
