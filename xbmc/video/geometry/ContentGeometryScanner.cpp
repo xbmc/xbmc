@@ -61,7 +61,8 @@ std::optional<ContentGeometryRecord> MeasureContentGeometry(const CFileItem& ite
   const SampledGeometry scan{CVideoFileGeometry::ExtractContentGeometry(
       item, ContentGeometrySamplingFromSettings(depth), ContentGeometryCombiningFromSettings(),
       cancelled)};
-  if (scan.cancelled)
+  // Asked as well as read: an open that failed after the cancel returns without consulting it.
+  if (scan.cancelled || (cancelled && cancelled()))
     return std::nullopt;
 
   const ContentGeometryRecord record{MakeContentGeometryRecord(scan, identity)};

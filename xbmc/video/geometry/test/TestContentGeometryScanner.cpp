@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "jobs/JobManager.h"
 #include "settings/Settings.h"
@@ -121,4 +122,27 @@ TEST_F(TestContentGeometryScanner, MeasuringAwayFromPlaybackStartsAndStopsTheSwe
 
   ASSERT_TRUE(settings.SetBool(CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN, false));
   EXPECT_TRUE(m_scanner.IsStopRequested());
+}
+
+// Playback gives up waiting on a slow share by cancelling, and the open that was blocking then
+// fails. Nothing was measured, so nothing may be stored that stops the file being measured again.
+TEST(TestContentGeometryMeasurement, AnOpenThatFailsAfterACancelStoresNothing)
+{
+  const CFileItem unopenable(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/nonexistent.mp4"), false);
+
+  EXPECT_FALSE(
+      MeasureContentGeometry(unopenable, {1, 1}, SamplingDepth::Normal, [] { return true; })
+          .has_value());
+}
+
+TEST(TestContentGeometryMeasurement, AFileThatCouldNotBeReadStillStoresARecord)
+{
+  const CFileItem unopenable(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/nonexistent.mp4"), false);
+
+  const std::optional<ContentGeometryRecord> record = MeasureContentGeometry(unopenable, {1, 1});
+
+  ASSERT_TRUE(record.has_value());
+  EXPECT_FALSE(record->HasReading());
 }
