@@ -118,8 +118,15 @@ bool CSettings::Load(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
   bool updated = false;
-  if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
-      !Load(xmlDoc.RootElement(), updated))
+  const bool loaded = XFILE::CFile::Exists(file) && xmlDoc.LoadFile(file);
+  if (loaded && xmlDoc.RootElement() &&
+      GetSettingsManager()->ParseVersion(xmlDoc.RootElement()) > GetSettingsManager()->GetVersion())
+  {
+    CLog::Log(LOGERROR, "CSettings: refusing to reset newer settings file {}", file);
+    return false;
+  }
+
+  if (!loaded || !Load(xmlDoc.RootElement(), updated))
   {
     CLog::Log(LOGERROR, "CSettings: unable to load settings from {}, creating new default settings",
               file);

@@ -271,6 +271,33 @@ void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
     networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 }
 
+bool CProfileManager::CheckSettingsVersion(unsigned int index) const
+{
+  std::unique_lock lock(m_critical);
+
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string settingsFile =
+      index == MASTER_PROFILE_ID
+          ? "special://masterprofile/guisettings.xml"
+          : URIUtils::AddFileToFolder(GetUserDataFolder(), m_profiles[index].getDirectory(),
+                                      "guisettings.xml");
+  CXBMCTinyXML settingsDoc;
+  if (CFile::Exists(settingsFile) && settingsDoc.LoadFile(settingsFile) &&
+      settingsDoc.RootElement())
+  {
+    const auto* settingsManager = settings->GetSettingsManager();
+    const auto version = settingsManager->ParseVersion(settingsDoc.RootElement());
+    if (version > settingsManager->GetVersion())
+    {
+      CLog::LogF(LOGERROR, "Profile not loaded. Settings file {} has version {}, newer than {}",
+                 settingsFile, version, settingsManager->GetVersion());
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool CProfileManager::LoadProfile(unsigned int index)
 {
   std::unique_lock lock(m_critical);
@@ -281,6 +308,9 @@ bool CProfileManager::LoadProfile(unsigned int index)
     CLog::LogF(LOGERROR, "Profile not loaded. Invalid profile id {}", index);
     return false;
   }
+
+  if (!CheckSettingsVersion(index))
+    return false;
 
   PrepareLoadProfile(index);
 
@@ -449,6 +479,9 @@ void CProfileManager::FinalizeLoadProfile()
 
 void CProfileManager::LogOff()
 {
+  if (!CheckSettingsVersion(MASTER_PROFILE_ID))
+    return;
+
   CNetworkBase &networkManager = CServiceBroker::GetNetwork();
 
   g_application.StopPlaying();
@@ -467,7 +500,8 @@ void CProfileManager::LogOff()
     networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
   }
 
-  LoadMasterProfileForLogin();
+  if (!LoadMasterProfileForLogin())
+    return;
 
   g_passwordManager.bMasterUser = false;
 
@@ -508,6 +542,15 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   CGUIComponent* gui = CServiceBroker::GetGUI();
   const bool deleteFiles = gui && gui->ConfirmDelete(item->GetPath());
 
+  const bool deletingCurrentProfile = (index == m_currentProfile);
+  if (deletingCurrentProfile)
+  {
+    // Switch away from the profile - this also releases open
+    // database and texture-cache handles so the folder can be removed.
+    if (!LoadProfile(MASTER_PROFILE_ID))
+      return false;
+  }
+
   // Keep auto-login and last-used indices consistent with the vector after
   // the erase, regardless of which profile is being removed.
   if (static_cast<int>(index) == m_autoLoginProfile)
@@ -520,15 +563,10 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   else if (index < m_lastUsedProfile)
     --m_lastUsedProfile;
 
-  const bool deletingCurrentProfile = (index == m_currentProfile);
-
   m_profiles.erase(m_profiles.begin() + index);
 
   if (deletingCurrentProfile)
   {
-    // Switch away from the deleted profile - this also releases open
-    // database and texture-cache handles so the folder can be removed.
-    LoadProfile(MASTER_PROFILE_ID);
     m_settings->Save();
   }
   else if (index < m_currentProfile)
@@ -636,9 +674,16 @@ void CProfileManager::UpdateCurrentProfileDate()
   }
 }
 
-void CProfileManager::LoadMasterProfileForLogin()
+bool CProfileManager::LoadMasterProfileForLogin()
 {
   std::unique_lock lock(m_critical);
+  if (!CheckSettingsVersion(MASTER_PROFILE_ID))
+    return false;
+
+  const auto lastUsedProfile = m_lastUsedProfile;
+  const bool profileLoadedForLogin = m_profileLoadedForLogin;
+  const bool previousProfileLoadedForLogin = m_previousProfileLoadedForLogin;
+
   // save the previous user
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != MASTER_PROFILE_ID)
@@ -646,11 +691,18 @@ void CProfileManager::LoadMasterProfileForLogin()
     // determines that the (master) profile has only been loaded for login
     m_profileLoadedForLogin = true;
 
-    LoadProfile(MASTER_PROFILE_ID);
+    if (!LoadProfile(MASTER_PROFILE_ID))
+    {
+      m_lastUsedProfile = lastUsedProfile;
+      m_profileLoadedForLogin = profileLoadedForLogin;
+      m_previousProfileLoadedForLogin = previousProfileLoadedForLogin;
+      return false;
+    }
 
     // remember that the (master) profile has only been loaded for login
     m_previousProfileLoadedForLogin = true;
   }
+  return true;
 }
 
 bool CProfileManager::GetProfileName(const unsigned int profileId, std::string& name) const

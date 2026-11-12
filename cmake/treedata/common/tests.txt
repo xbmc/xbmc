@@ -55,6 +55,7 @@ xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/pictures/test                test/pictures
 xbmc/peripherals/test             test/peripherals
 xbmc/playlists/test               test/playlists
+xbmc/profiles/test                test/profiles
 xbmc/pvr/channels/test            test/pvrchannels
 xbmc/pvr/epg/test                 test/pvrepg
 xbmc/rendering/capture/test       test/rendering_capture
