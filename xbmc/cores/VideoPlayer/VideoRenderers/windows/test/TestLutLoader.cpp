@@ -53,15 +53,16 @@ TEST(TestLutLoader, ALoadRunsOnAWorkerAndIsAppliedByTheThreadThatAsksForIt)
   const std::thread::id consumer = std::this_thread::get_id();
   std::promise<void> release;
   const std::shared_future<void> released = release.get_future().share();
-  std::thread::id loadedOn;
+  // outlives the test, which a load still running when the test gives up does not
+  const auto loadedOn = std::make_shared<std::thread::id>();
   std::vector<std::thread::id> appliedOn;
   CLutLoader::Lut applied;
 
   CLutLoader loader(
-      [&loadedOn, released](AVColorPrimaries)
+      [loadedOn, released](AVColorPrimaries)
       {
         released.wait_for(LOAD_TIMEOUT);
-        loadedOn = std::this_thread::get_id();
+        *loadedOn = std::this_thread::get_id();
         return MakeLut(65);
       },
       [&](const CLutLoader::Lut& lut)
@@ -79,7 +80,7 @@ TEST(TestLutLoader, ALoadRunsOnAWorkerAndIsAppliedByTheThreadThatAsksForIt)
   release.set_value();
   ASSERT_TRUE(ApplyWhenLoaded(loader));
 
-  EXPECT_NE(consumer, loadedOn);
+  EXPECT_NE(consumer, *loadedOn);
   EXPECT_EQ(std::vector<std::thread::id>{consumer}, appliedOn);
   EXPECT_EQ(65, applied.size);
   EXPECT_EQ(65, applied.cmsToken);
