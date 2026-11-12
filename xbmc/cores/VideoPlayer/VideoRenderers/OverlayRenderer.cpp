@@ -654,6 +654,7 @@ void CRenderer::LoadSettings()
   m_subtitleHorizontalAlign = settings->GetHorizontalAlignment();
   m_subtitleAlign = settings->GetAlignment();
   m_subtitleAlignToContent = settings->IsAlignedToContent();
+  m_subtitleKeepAuthoredPositions = settings->IsKeepingAuthoredPositions();
   ResetSubtitlePosition();
 }
 
@@ -673,6 +674,7 @@ SUBTITLES::STYLE::renderOpts CRenderer::GetRenderOptions(const CDVDOverlayLibass
   rOpts.frameWidth = m_rv.Width();
   rOpts.frameHeight = m_rv.Height();
   SetContentRect(rOpts);
+  rOpts.keepAuthoredPositions = m_subtitleKeepAuthoredPositions;
 
   // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
   if (m_stereomode == "left_right" || m_stereomode == "right_left")

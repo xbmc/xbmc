@@ -26573,7 +26573,19 @@ msgctxt "#40854"
 msgid "Frames a smaller picture must persist for before it is reported."
 msgstr ""
 
-#empty strings from id 40855 to 40858
+#. Label for setting "subtitles.keepasspositions"
+#: system/settings/settings.xml
+msgctxt "#40855"
+msgid "Keep authored positions in ASS subtitles"
+msgstr ""
+
+#. Help text for setting with label #40855 "Keep authored positions in ASS subtitles"
+#: system/settings/settings.xml
+msgctxt "#40856"
+msgid "Places ASS subtitles against the whole video they were authored for, so positioned text stays where it was made, unless their positions are overridden. Other subtitles still follow the picture."
+msgstr ""
+
+#empty strings from id 40857 to 40858
 
 #. Spinner format for the live detection frame guard setting
 #: system/settings/settings.xml

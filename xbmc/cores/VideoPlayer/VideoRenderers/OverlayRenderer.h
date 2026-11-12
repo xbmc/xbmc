@@ -258,6 +258,7 @@ namespace OVERLAY {
     KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
     //! \brief Measure alignment against the picture rather than the whole video.
     bool m_subtitleAlignToContent{false};
+    bool m_subtitleKeepAuthoredPositions{false};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};

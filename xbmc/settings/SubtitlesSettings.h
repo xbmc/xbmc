@@ -92,6 +92,10 @@ public:
   //! whole video.
   bool IsAlignedToContent() const;
 
+  //! \brief Whether a native ASS track whose positions are not overridden keeps the video's
+  //! margins while the others follow the picture.
+  bool IsKeepingAuthoredPositions() const;
+
   /*!
    * \brief Get horizontal text alignment
    * \return The alignment

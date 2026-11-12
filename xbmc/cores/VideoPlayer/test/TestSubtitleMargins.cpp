@@ -26,6 +26,18 @@ renderOpts FullScreen()
   return opts;
 }
 
+//! \brief A scope film letterboxed by the player and by its own coded bars, so the video's
+//! margins and the picture's differ.
+renderOpts LetterboxedTwice()
+{
+  renderOpts opts = FullScreen();
+  opts.videoWidth = 1440.0f;
+  opts.videoHeight = 810.0f;
+  opts.contentWidth = 1440.0f;
+  opts.contentHeight = 612.0f;
+  return opts;
+}
+
 } // unnamed namespace
 
 TEST(TestSubtitleMargins, NoInsetWhenTheVideoFillsTheFrame)
@@ -121,4 +133,43 @@ TEST(TestSubtitleMargins, AContentRectMatchingTheVideoChangesNothing)
 
   EXPECT_EQ(margins.top, 0);
   EXPECT_EQ(margins.left, 240);
+}
+
+TEST(TestSubtitleMargins, ANativeTrackFollowsThePictureByDefault)
+{
+  renderOpts opts = LetterboxedTwice();
+  opts.marginsMode = MarginsMode::DISABLED;
+
+  const FrameMargins margins = TrackMargins(opts, true);
+
+  EXPECT_EQ(margins.top, 234);
+  EXPECT_EQ(margins.left, 240);
+}
+
+TEST(TestSubtitleMargins, ANativeTrackKeepingAuthoredPositionsIsInsetToTheVideo)
+{
+  // Positions in a native track are authored against the whole video, coded bars included.
+  renderOpts opts = LetterboxedTwice();
+  opts.marginsMode = MarginsMode::DISABLED;
+  opts.keepAuthoredPositions = true;
+
+  const FrameMargins margins = TrackMargins(opts, true);
+
+  EXPECT_EQ(margins.top, 135);
+  EXPECT_EQ(margins.left, 240);
+}
+
+TEST(TestSubtitleMargins, KeepingAuthoredPositionsLeavesInsideVideoOnThePicture)
+{
+  renderOpts opts = LetterboxedTwice();
+  opts.marginsMode = MarginsMode::INSIDE_VIDEO;
+  opts.keepAuthoredPositions = true;
+
+  for (const bool native : {true, false})
+  {
+    const FrameMargins margins = TrackMargins(opts, native);
+
+    EXPECT_EQ(margins.top, 234) << "native: " << native;
+    EXPECT_EQ(margins.left, 240) << "native: " << native;
+  }
 }

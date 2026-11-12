@@ -133,6 +133,9 @@ struct renderOpts
   // only for bottom alignment, 0 = bottom (no change), 100 = on top
   double position = 0;
   HorizontalAlign horizontalAlignment = HorizontalAlign::DISABLED;
+  // Inset a native ASS track whose positions are not overridden to the video rather than the
+  // picture, keeping the canvas its positions were authored against.
+  bool keepAuthoredPositions = false;
 };
 
 //! \brief Margins insetting the render frame, in frame pixels.
@@ -151,6 +154,20 @@ inline FrameMargins InsideVideoMargins(const renderOpts& opts)
 
   return {static_cast<int>((opts.frameHeight - std::min(height, opts.frameHeight)) / 2),
           static_cast<int>((opts.frameWidth - std::min(width, opts.frameWidth)) / 2)};
+}
+
+//! \brief Margins for a track rendered with frame margins, \p native for a native ASS track.
+inline FrameMargins TrackMargins(const renderOpts& opts, bool native)
+{
+  if (native && opts.marginsMode == MarginsMode::DISABLED && opts.keepAuthoredPositions)
+  {
+    renderOpts video{opts};
+    video.contentWidth = 0.0f;
+    video.contentHeight = 0.0f;
+    return InsideVideoMargins(video);
+  }
+
+  return InsideVideoMargins(opts);
 }
 
 } // namespace STYLE

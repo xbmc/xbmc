@@ -719,6 +719,14 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="subtitles.keepasspositions" parent="subtitles.aligntocontent" type="boolean" label="40855" help="40856">
+          <level>3</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="subtitles.aligntocontent">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="subtitles.fontname" type="string" label="14089" help="36185">
           <level>1</level>
           <default>DEFAULT</default>

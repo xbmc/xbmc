@@ -376,7 +376,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
 
   FrameMargins margins;
   if (useFrameMargins)
-    margins = InsideVideoMargins(opts);
+    margins = TrackMargins(opts, m_subtitleType == NATIVE);
 
   ass_set_margins(m_renderer, margins.top, margins.top, margins.left, margins.left);
   ass_set_use_margins(m_renderer, 0);
