@@ -90,6 +90,8 @@ void CEngineStats::Reset(unsigned int sampleRate, bool pcm)
   m_bufferedSamples = 0;
   m_suspended = false;
   m_pcmOutput = pcm;
+  m_queuedOutput.clear();
+  m_queuedDuration = 0.0;
 }
 
 void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
@@ -102,12 +104,28 @@ void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
   }
   else
     m_bufferedSamples -= samples;
+
+  // Forget the output that has left the sink
+  const double queued = OutputTime(m_bufferedSamples) + m_sinkDelay.delay;
+  while (!m_queuedOutput.empty() && m_queuedDuration - m_queuedOutput.front().m_duration >= queued)
+  {
+    m_queuedDuration -= m_queuedOutput.front().m_duration;
+    m_queuedOutput.pop_front();
+  }
 }
 
-void CEngineStats::AddSamples(int samples, const std::list<CActiveAEStream*>& streams)
+void CEngineStats::AddSamples(int samples,
+                              const std::list<CActiveAEStream*>& streams,
+                              double mediaSpeed)
 {
   std::unique_lock lock(m_lock);
   m_bufferedSamples += samples;
+  if (samples > 0)
+  {
+    const double duration = OutputTime(samples);
+    m_queuedOutput.push_back({duration, mediaSpeed});
+    m_queuedDuration += duration;
+  }
 
   for (auto stream : streams)
   {
@@ -124,6 +142,29 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
   else
     status.delay +=
         static_cast<double>(m_bufferedSamples) * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+}
+
+double CEngineStats::GetQueuedMediaSpeed()
+{
+  std::unique_lock lock(m_lock);
+  double remaining = OutputTime(m_bufferedSamples) + m_sinkDelay.GetDelay();
+  double counted = 0.0;
+  double media = 0.0;
+  for (auto it = m_queuedOutput.rbegin(); it != m_queuedOutput.rend() && remaining > 0.0; ++it)
+  {
+    const double duration = std::min(it->m_duration, remaining);
+    media += duration * it->m_mediaSpeed;
+    counted += duration;
+    remaining -= duration;
+  }
+  return counted > 0.0 ? media / counted : 1.0;
+}
+
+double CEngineStats::OutputTime(int samples) const
+{
+  if (m_pcmOutput)
+    return static_cast<double>(samples) / m_sinkSampleRate;
+  return static_cast<double>(samples) * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 }
 
 void CEngineStats::AddStream(unsigned int streamid)
@@ -2168,11 +2209,11 @@ bool CActiveAE::RunStages()
       {
         AEDelayStatus status;
         m_stats.GetDelay(status);
-        // The offset and delay are output time, which covers media at the clock's speed
-        const double speed = (*it)->GetForwardClockSpeed();
+        // The offset and delay are output time, which covers media at the speed it was produced at
         double pts =
-            buf->timestamp - (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate) * speed;
-        double delay = status.GetDelay() * 1000 * speed;
+            buf->timestamp -
+            (buf->pkt_start_offset * 1000 / buf->pkt->config.sample_rate) * buf->mediaSpeed;
+        double delay = status.GetDelay() * 1000 * m_stats.GetQueuedMediaSpeed();
         double playingPts = pts - delay;
         double maxError = ((*it)->m_syncState == CAESyncInfo::SYNC_INSYNC) ? 1000 : 5000;
         double error = playingPts - (*it)->m_pClock->GetClock();
@@ -2501,6 +2542,7 @@ bool CActiveAE::RunStages()
             // set pts of last sample
             buf->pkt_start_offset = buf->pkt->nb_samples;
             buf->timestamp = out->timestamp;
+            buf->mediaSpeed = out->mediaSpeed;
           }
 
           out->Return();
@@ -2513,7 +2555,7 @@ bool CActiveAE::RunStages()
       if(out)
       {
         int samples = (m_mode == MODE_TRANSCODE) ? 1 : out->pkt->nb_samples;
-        m_stats.AddSamples(samples, m_streams);
+        m_stats.AddSamples(samples, m_streams, out->mediaSpeed);
         m_sinkBuffers->m_inputSamples.push_back(out);
       }
     }
@@ -2703,7 +2745,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   }
   else if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_ADJUST)
   {
-    // The error is media time, output frames cover media at the clock's speed
+    // The error is media time. Silence holds audio back while the clock moves on at its speed,
+    // skipped samples cover media at the speed they were produced at.
     const double speed = stream->GetForwardClockSpeed();
     if (error > 0)
     {
@@ -2712,6 +2755,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       {
         ret->pkt->nb_samples = 0;
         ret->pkt->pause_burst_ms = 0;
+        ret->mediaSpeed = speed;
         int framesToDelay = error / speed / 1000 * ret->pkt->config.sample_rate;
         if (framesToDelay > ret->pkt->max_nb_samples)
           framesToDelay = ret->pkt->max_nb_samples;
@@ -2753,8 +2797,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
     else
     {
-      CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
-      int framesToSkip = -error / speed / 1000 * buf->pkt->config.sample_rate;
+      CSampleBuffer* buf = stream->m_processingBuffers->m_outputSamples.front();
+      int framesToSkip = -error / buf->mediaSpeed / 1000 * buf->pkt->config.sample_rate;
       if (framesToSkip > buf->pkt->nb_samples)
         framesToSkip = buf->pkt->nb_samples;
       if (m_mode == MODE_TRANSCODE)
@@ -2782,7 +2826,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
           memmove(buf->pkt->data[i], buf->pkt->data[i]+bytesToSkip, buf->pkt->linesize - bytesToSkip);
         }
         buf->pkt->nb_samples -= framesToSkip;
-        const double skipped = framesToSkip * 1000.0 / buf->pkt->config.sample_rate * speed;
+        const double skipped =
+            framesToSkip * 1000.0 / buf->pkt->config.sample_rate * buf->mediaSpeed;
         stream->m_syncError.Correction(skipped);
         error += skipped;
       }

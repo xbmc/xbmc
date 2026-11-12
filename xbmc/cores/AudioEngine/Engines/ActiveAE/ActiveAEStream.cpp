@@ -678,6 +678,7 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   {
     buf = m_atempoBuffers->m_outputSamples.front();
     m_atempoBuffers->m_outputSamples.pop_front();
+    buf->mediaSpeed = 1.0 / GetRR();
     m_outputSamples.push_back(buf);
     busy = true;
   }

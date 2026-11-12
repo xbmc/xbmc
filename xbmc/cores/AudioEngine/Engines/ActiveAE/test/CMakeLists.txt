@@ -1,4 +1,5 @@
 set(SOURCES TestActiveAEBuffer.cpp
+            TestActiveAEEngineStats.cpp
             TestActiveAEFilter.cpp
             TestActiveAEResampleFFMPEG.cpp
             TestActiveAEStream.cpp)
