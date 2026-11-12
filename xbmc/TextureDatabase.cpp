@@ -324,14 +324,22 @@ bool CTextureDatabase::SetKeepCachedImages(const std::vector<std::string>& image
   if (imagesToKeep.empty())
     return true;
 
-  std::string sql = "UPDATE texture SET lastlibrarycheck=CURRENT_TIMESTAMP WHERE url IN (";
-  for (const auto& image : imagesToKeep)
+  // Chunk the IN list so that no single statement grows beyond practical SQL
+  // length limits on large libraries. The chunks run in one transaction.
+  constexpr size_t CHUNK_SIZE = 500;
+
+  BeginMultipleExecute();
+  for (size_t offset = 0; offset < imagesToKeep.size(); offset += CHUNK_SIZE)
   {
-    sql += PrepareSQL("'%s',", image.c_str());
+    const size_t end = std::min(offset + CHUNK_SIZE, imagesToKeep.size());
+    std::string sql = "UPDATE texture SET lastlibrarycheck=CURRENT_TIMESTAMP WHERE url IN (";
+    for (size_t i = offset; i < end; ++i)
+      sql += PrepareSQL("'%s',", imagesToKeep[i].c_str());
+    sql.pop_back(); // remove last ','
+    sql += ")";
+    ExecuteQuery(sql);
   }
-  sql.pop_back(); // remove last ','
-  sql += ")";
-  return ExecuteQuery(sql);
+  return CommitMultipleExecute();
 }
 
 bool CTextureDatabase::SetCachedTextureValid(const std::string &url, bool updateable)
