@@ -589,6 +589,14 @@ retry:
       SetLastError(m_seekError != 0 ? m_seekError : EIO);
       return -1;
     }
+    // Some cache strategies (e.g. CCircularCache) return 0 both at end of input and
+    // when WaitForData timed out with no data. Only a real end of input is EOF.
+    if (!m_pCache->IsEndOfInput())
+    {
+      CLog::Log(LOGWARNING, "CFileCache::{} - <{}> timeout waiting for data", __FUNCTION__,
+                m_sourcePath);
+      return -1;
+    }
     return 0;
   }
 
