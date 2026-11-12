@@ -567,7 +567,9 @@ CRendererShaders::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_form
       else
         wmemset(static_cast<wchar_t*>(mapping.pData), uv ? 0x8000 : 0, mapping.RowPitch * h >> 1);
 
-      if (m_textures[i].UnlockRect(0)) {}
+      if (m_textures[i].UnlockRect(0))
+      {
+      }
     }
   }
 }
@@ -637,11 +639,9 @@ ID3D11View* CRendererShaders::CRenderBufferImpl::GetView(unsigned viewIdx)
     if (!textures)
       return nullptr;
 
-    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(
-      D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
-      viewIdx ? textures->others : textures->first,
-      0, 1, arrayIdx, 1
-    );
+    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
+                                             viewIdx ? textures->others : textures->first, 0, 1,
+                                             arrayIdx, 1);
 
     ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
     if (FAILED(pD3DDevice->CreateShaderResourceView(pResource.Get(), &srvDesc, &m_planes[viewIdx])))

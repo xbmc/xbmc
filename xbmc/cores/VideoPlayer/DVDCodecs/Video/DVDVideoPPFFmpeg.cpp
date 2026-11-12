@@ -7,9 +7,10 @@
  */
 
 #include "DVDVideoPPFFmpeg.h"
-#include "utils/log.h"
+
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "utils/log.h"
 
 #include <cstring>
 
