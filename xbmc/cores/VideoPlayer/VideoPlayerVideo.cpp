@@ -672,6 +672,12 @@ void CVideoPlayerVideo::Process()
       {
         SendMessageBack(pMsg);
         onlyPrioMsgs = true;
+
+        // the timeout branch does not take decoder output while paused, without this the
+        // packet would be retried every 1 ms
+        if (m_speed == DVD_PLAYSPEED_PAUSE && !m_processInfo.IsFrameAdvance() &&
+            m_syncState == IDVDStreamPlayer::SYNC_INSYNC && m_outputSate != OUTPUT_AGAIN)
+          ProcessDecoderOutput(frametime, pts);
       }
     }
   }
