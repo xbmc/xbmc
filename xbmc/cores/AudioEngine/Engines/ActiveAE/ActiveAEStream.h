@@ -256,6 +256,7 @@ protected:
   //! Set by CActiveAE when it reinitialises the sink under this stream.
   std::atomic<bool> m_sinkFormatChanged{false};
   bool m_forceResampler;
+  bool m_realtime{false};
   IAEClockCallback *m_pClock;
   CSyncError m_syncError;
   double m_lastSyncError;

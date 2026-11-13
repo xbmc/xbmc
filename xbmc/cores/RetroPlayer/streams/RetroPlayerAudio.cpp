@@ -109,7 +109,8 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   audioFormat.m_sampleRate = iSampleRate;
   audioFormat.m_channelLayout = channelLayout;
   // Resampling follows the game's speed and corrects drift
-  m_pAudioStream = audioEngine->MakeStream(audioFormat, AESTREAM_FORCE_RESAMPLE);
+  m_pAudioStream =
+      audioEngine->MakeStream(audioFormat, AESTREAM_FORCE_RESAMPLE | AESTREAM_REALTIME);
   m_resampleRatio = 1.0;
   m_settledSecs = 0.0;
   m_maxDelay = 0.0;
