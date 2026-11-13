@@ -8,12 +8,15 @@
 
 #include "FileItem.h"
 #include "InfoScanner.h"
+#include "NfoFile.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/Scraper.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "platform/Filesystem.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -313,4 +316,20 @@ TEST(TestVideoTagLoaderNFO, AMoviesEndTagInItsTextOrACommentEndsNothing)
   EXPECT_EQ("2024-02-02 05:38:04", version.m_dateAdded.GetAsDBDateTime());
 
   XFILE::CDirectory::RemoveRecursive(dir);
+}
+
+// An nfo isn't read without a scraper, as when the art held in a video file is looked for, whose
+// tags can name a scraper's url
+TEST(TestVideoTagLoaderNFO, AnNfoIsNotReadWithoutAScraper)
+{
+  const std::string folder{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderNFO/")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(folder));
+  const std::string nfo{URIUtils::AddFileToFolder(folder, "Film.nfo")};
+  std::ofstream(nfo, std::ios::out | std::ios::binary) << "<movie><title>Film</title></movie>";
+
+  CNfoFile reader;
+  EXPECT_EQ(CInfoScanner::InfoType::NONE, reader.Create(nfo, nullptr));
+
+  XFILE::CDirectory::RemoveRecursive(folder);
 }
