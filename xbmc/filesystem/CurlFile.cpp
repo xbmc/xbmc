@@ -1887,7 +1887,14 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
         g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
 
         long timeout = 0;
-        if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1 || timeout < 200)
+        const CURLMcode timeoutResult = g_curlInterface.multi_timeout(m_multiHandle, &timeout);
+
+        // libcurl wants to be called again at once, e.g. it holds HTTP/2 data
+        // it has already read from the socket, which select() cannot report
+        if (timeoutResult == CURLM_OK && timeout == 0)
+          continue;
+
+        if (timeoutResult != CURLM_OK || timeout == -1 || timeout < 200)
           timeout = 200;
 
         XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timeout)};
