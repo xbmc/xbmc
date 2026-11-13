@@ -258,9 +258,13 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(CMAKE_ARGS)
+    # Escape list separators, otherwise ExternalProject splits CMAKE_PREFIX_PATH into separate
+    # arguments and the external project only sees the first prefix path.
+    string(REPLACE ";" "$<SEMICOLON>" _prefix_path "${CMAKE_PREFIX_PATH}")
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
                              -DPROJECTSOURCE=${PROJECTSOURCE}
-                             "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+                             "-DCMAKE_PREFIX_PATH=${_prefix_path}")
+    unset(_prefix_path)
 
     # We dont have a toolchain for windows, so manually add all the cmake
     # build arguments we may want
