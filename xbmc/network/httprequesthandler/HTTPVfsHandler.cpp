@@ -16,6 +16,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/Screenshot.h"
 #include "utils/URIUtils.h"
 
 #include <string_view>
@@ -55,10 +56,10 @@ bool IsInSharedSource(const std::string& realPath)
          removableSources[sourceIndex].m_allowSharing;
 }
 
-//! Whether \p file may be served: an image, or a file in a shared source
+//! Whether \p file may be served: an image, a screenshot, or a file in a shared source
 bool IsAccessible(const std::string& file)
 {
-  if (URIUtils::IsProtocol(file, "image"))
+  if (URIUtils::IsProtocol(file, "image") || CScreenShot::IsScreenshotPath(file))
     return true;
 
   std::string realPath = URIUtils::GetRealPath(file);
