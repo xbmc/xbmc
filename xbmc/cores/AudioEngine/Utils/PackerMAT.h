@@ -30,7 +30,24 @@ public:
   ~CPackerMAT() = default;
 
   bool PackTrueHD(const uint8_t* data, int size);
+  //! @brief Pack an access unit and preserve both timestamp timelines on completed MAT frames.
+  bool PackTrueHD(const uint8_t* data,
+                  int size,
+                  double pts,
+                  double originalPts,
+                  double duration,
+                  bool hasPts,
+                  bool hasOriginalPts);
   std::vector<uint8_t> GetOutputFrame();
+  //! @brief Retrieve the next MAT frame with its corrected and original-media timestamps.
+  std::vector<uint8_t> GetOutputFrame(double& pts,
+                                      bool& hasPts,
+                                      double& originalPts,
+                                      bool& hasOriginalPts);
+  //! @brief Return whether a complete MAT frame is waiting to be retrieved.
+  bool HasOutputFrame() const { return !m_outputQueue.empty(); }
+  //! @brief Discard buffered MAT data and reset its timestamp state.
+  void Reset();
 
 private:
   struct MATState
@@ -73,9 +90,23 @@ private:
   int FillDataBuffer(const uint8_t* data, int size, Type type);
   void FlushPacket();
 
+  struct OutputFrame
+  {
+    std::vector<uint8_t> data;
+    double pts{0.0};
+    double originalPts{0.0};
+    bool hasPts{false};
+    bool hasOriginalPts{false};
+  };
+
   MATState m_state{};
 
   uint32_t m_bufferCount{0};
   std::vector<uint8_t> m_buffer;
-  std::deque<std::vector<uint8_t>> m_outputQueue;
+  std::deque<OutputFrame> m_outputQueue;
+  double m_currentOutputPts{0.0};
+  double m_currentOutputOriginalPts{0.0};
+  double m_outputDuration{0.0};
+  bool m_hasCurrentOutputPts{false};
+  bool m_hasCurrentOutputOriginalPts{false};
 };

@@ -934,15 +934,14 @@ void CActiveAESink::OpenSink()
     dev.driver = m_sink->GetName();
 
   // iec packing or raw
-  if (passthrough)
+  m_needIecPack = passthrough && NeedIECPacking();
+  if (m_needIecPack)
   {
-    m_needIecPack = NeedIECPacking();
-    if (m_needIecPack)
-    {
-      m_packer = std::make_unique<CAEBitstreamPacker>();
-      m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
-      m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
-    }
+    m_packer = std::make_unique<CAEBitstreamPacker>();
+    m_requestedFormat.m_sampleRate =
+        CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
+    m_requestedFormat.m_channelLayout =
+        CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
   }
 
   CLog::LogF(LOGINFO, "initialize sink");
@@ -1089,17 +1088,17 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     bool skipSwap = false;
     if (m_needIecPack)
     {
-      if (frames > 0)
+      if (samples->pkt->pause_burst_ms > 0)
       {
-        m_packer->Reset();
-        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
-      }
-      else if (samples->pkt->pause_burst_ms > 0)
-      {
-        // construct a pause burst if we have already output valid audio
+        // Replace the encoded payload with an IEC61937 pause burst during EDL MUTE.
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
         if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
           skipSwap = true;
+      }
+      else if (frames > 0)
+      {
+        m_packer->Reset();
+        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
       }
       else
         m_packer->Reset();

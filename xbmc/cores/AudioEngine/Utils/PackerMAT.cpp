@@ -157,6 +157,20 @@ CPackerMAT::CPackerMAT()
 // high-bitrate streams can overshoot this size and therefor require proper handling of dynamic padding.
 bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 {
+  return PackTrueHD(data, size, 0.0, 0.0, 0.0, false, false);
+}
+
+bool CPackerMAT::PackTrueHD(const uint8_t* data,
+                            int size,
+                            double pts,
+                            double originalPts,
+                            double duration,
+                            bool hasPts,
+                            bool hasOriginalPts)
+{
+  if (duration > 0.0)
+    m_outputDuration = duration;
+
   // discard too small packets (cannot be valid)
   if (size < 10)
     return false;
@@ -180,6 +194,17 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   {
     // only start streaming on a major sync frame
     return false;
+  }
+
+  if (!m_hasCurrentOutputPts && hasPts)
+  {
+    m_currentOutputPts = pts;
+    m_hasCurrentOutputPts = true;
+  }
+  if (!m_hasCurrentOutputOriginalPts && hasOriginalPts)
+  {
+    m_currentOutputOriginalPts = originalPts;
+    m_hasCurrentOutputOriginalPts = true;
   }
 
   const uint16_t frameTime = AV_RB16(data + 2);
@@ -256,6 +281,11 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
     m_state.init = true;
     m_buffer.clear();
     m_bufferCount = 0;
+    m_hasCurrentOutputPts = false;
+    m_currentOutputPts = 0.0;
+    m_hasCurrentOutputOriginalPts = false;
+    m_currentOutputOriginalPts = 0.0;
+    m_outputDuration = duration;
     return false;
   }
 
@@ -336,13 +366,45 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 
 std::vector<uint8_t> CPackerMAT::GetOutputFrame()
 {
+  double pts{0.0};
+  double originalPts{0.0};
+  bool hasPts{false};
+  bool hasOriginalPts{false};
+  return GetOutputFrame(pts, hasPts, originalPts, hasOriginalPts);
+}
+
+std::vector<uint8_t> CPackerMAT::GetOutputFrame(double& pts,
+                                                bool& hasPts,
+                                                double& originalPts,
+                                                bool& hasOriginalPts)
+{
   if (m_outputQueue.empty())
+  {
+    hasPts = false;
+    hasOriginalPts = false;
     return {};
+  }
 
-  std::vector<uint8_t> buffer = std::move(m_outputQueue.front());
+  OutputFrame output = std::move(m_outputQueue.front());
   m_outputQueue.pop_front();
+  pts = output.pts;
+  originalPts = output.originalPts;
+  hasPts = output.hasPts;
+  hasOriginalPts = output.hasOriginalPts;
+  return std::move(output.data);
+}
 
-  return buffer;
+void CPackerMAT::Reset()
+{
+  m_state = {};
+  m_bufferCount = 0;
+  m_buffer.clear();
+  m_outputQueue.clear();
+  m_currentOutputPts = 0.0;
+  m_currentOutputOriginalPts = 0.0;
+  m_outputDuration = 0.0;
+  m_hasCurrentOutputPts = false;
+  m_hasCurrentOutputOriginalPts = false;
 }
 
 void CPackerMAT::WriteHeader()
@@ -483,7 +545,13 @@ void CPackerMAT::FlushPacket()
   assert(GetCount() == MAT_BUFFER_SIZE);
 
   // push MAT packet to output queue
-  m_outputQueue.emplace_back(std::move(m_buffer));
+  m_outputQueue.push_back({std::move(m_buffer), m_currentOutputPts, m_currentOutputOriginalPts,
+                           m_hasCurrentOutputPts, m_hasCurrentOutputOriginalPts});
+
+  if (m_hasCurrentOutputPts && m_outputDuration > 0.0)
+    m_currentOutputPts += m_outputDuration;
+  if (m_hasCurrentOutputOriginalPts && m_outputDuration > 0.0)
+    m_currentOutputOriginalPts += m_outputDuration;
 
   m_buffer.clear();
   m_bufferCount = 0;

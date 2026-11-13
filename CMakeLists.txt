@@ -620,6 +620,38 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
 
   # Enable unit-test related targets
   enable_testing()
+
+  # Keep focused AudioEngine tests independent of unrelated unit-test sources.
+  # Kodi's regular test target aggregates every test source, so a link failure in
+  # an unrelated test can prevent these tests from running.
+  set(AUDIOENGINE_FOCUSED_TEST_SOURCES
+      ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestAEStreamParser.cpp
+      ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/TestPackerMAT.cpp)
+  add_executable(audioengine-focused-test EXCLUDE_FROM_ALL
+                 ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/test/AudioEngineTestMain.cpp
+                 ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
+  # Kodi's FFmpeg linker wrapper recognizes the standard *-test executable
+  # naming convention. Keep this focused target under that convention so the
+  # wrapper appends the FFmpeg libraries required by libkodi.
+  set_target_properties(audioengine-focused-test PROPERTIES
+                        OUTPUT_NAME "${APP_NAME_LC}-test-audioengine")
+  add_dependencies(audioengine-focused-test LIBRARY::Gtest)
+  if(CORE_USE_PCH)
+    core_target_precompile_headers(audioengine-focused-test)
+  endif()
+
+  # Use only the core dependencies and GoogleTest; avoid Kodi's broad xbmc_test
+  # support library so unrelated test helpers cannot break this focused target.
+  whole_archive(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES ${core_DEPENDS} LIBRARY::Gtest)
+  target_link_libraries(audioengine-focused-test PRIVATE
+                        ${SYSTEM_LDFLAGS}
+                        ${_AUDIOENGINE_FOCUSED_TEST_LIBRARIES}
+                        lib${APP_NAME_LC}
+                        ${DEPLIBS}
+                        ${CMAKE_DL_LIBS})
+  unset(_AUDIOENGINE_FOCUSED_TEST_LIBRARIES)
+
+  gtest_add_tests(audioengine-focused-test "" ${AUDIOENGINE_FOCUSED_TEST_SOURCES})
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
   # Windows permits concurrent servers to bind the listening port these tests share.
   get_property(tcp_server_tests DIRECTORY PROPERTY TESTS)

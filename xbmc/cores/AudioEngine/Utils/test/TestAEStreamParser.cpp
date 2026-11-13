@@ -130,6 +130,62 @@ TEST(TestAEStreamParser, AnExtensionSplitBeforeItsAssetIsStillDetected)
     EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
 }
 
+TEST(TestAEStreamParser, PacketOffsetsFollowAccessUnitsAcrossChunkedInput)
+{
+  std::vector<uint8_t> stream{0x00, 0x11, 0x22, 0x33};
+  constexpr size_t prefixSize = 4;
+  for (int i = 0; i < 4; ++i)
+    Append(stream, MaFrame());
+
+  CAEStreamParser parser;
+  std::vector<uint64_t> offsets;
+  size_t pos = 0;
+  while (pos < stream.size())
+  {
+    uint8_t* out = nullptr;
+    unsigned int outSize = 0;
+    const size_t available = std::min<size_t>(701, stream.size() - pos);
+    const int used =
+        parser.AddData(stream.data() + pos, static_cast<unsigned int>(available), &out, &outSize);
+    if (outSize > 0)
+      offsets.push_back(parser.GetPacketOffset());
+    delete[] out;
+    ASSERT_GT(used, 0);
+    pos += used;
+  }
+
+  ASSERT_EQ(4u, offsets.size());
+  for (size_t i = 0; i < offsets.size(); ++i)
+    EXPECT_EQ(prefixSize + i * (CORE_SIZE + HD_SIZE), offsets[i]);
+}
+
+TEST(TestAEStreamParser, DrainsMultipleAccessUnitsFromOneInputChunk)
+{
+  std::vector<uint8_t> stream{0x00, 0x11, 0x22, 0x33};
+  constexpr size_t prefixSize = 4;
+  for (int i = 0; i < 4; ++i)
+    Append(stream, MaFrame());
+
+  CAEStreamParser parser;
+  uint8_t* out = nullptr;
+  unsigned int outSize = 0;
+  EXPECT_EQ(stream.size(),
+            static_cast<size_t>(parser.AddData(stream.data(), stream.size(), &out, &outSize)));
+  ASSERT_EQ(CORE_SIZE + HD_SIZE, outSize);
+  EXPECT_EQ(prefixSize, parser.GetPacketOffset());
+  delete[] out;
+
+  for (size_t i = 1; i < 4; ++i)
+  {
+    out = nullptr;
+    outSize = 0;
+    EXPECT_EQ(0, parser.AddData(nullptr, 0, &out, &outSize));
+    ASSERT_EQ(CORE_SIZE + HD_SIZE, outSize);
+    EXPECT_EQ(prefixSize + i * (CORE_SIZE + HD_SIZE), parser.GetPacketOffset());
+    delete[] out;
+  }
+}
+
 TEST(TestAEStreamParser, ADtsHdMaStreamIsDetectedFromItsFirstFrame)
 {
   std::vector<uint8_t> stream;

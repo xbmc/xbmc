@@ -55,6 +55,7 @@ public:
   CAEStreamParser();
   ~CAEStreamParser() = default;
 
+  //! @brief Add compressed data, or drain the next buffered access unit when size is zero.
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
 
   void SetCoreOnly(bool value) { m_coreOnly = value; }
@@ -68,6 +69,8 @@ public:
   enum CAEStreamInfo::DataType GetDataType() const { return m_info.m_type; }
   bool IsLittleEndian() const { return m_info.m_dataIsLE; }
   unsigned int GetBufferSize() const { return m_bufferSize; }
+  //! @brief Absolute byte offset of the most recently returned access unit since Reset().
+  uint64_t GetPacketOffset() const { return m_packetOffset; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
   void Reset();
 
@@ -75,6 +78,8 @@ private:
   uint8_t m_buffer[MAX_IEC61937_PACKET];
   unsigned int m_bufferSize = 0;
   unsigned int m_skipBytes = 0;
+  uint64_t m_streamOffset = 0;
+  uint64_t m_packetOffset = 0;
 
   typedef unsigned int (CAEStreamParser::*ParseFunc)(uint8_t *data, unsigned int size);
 

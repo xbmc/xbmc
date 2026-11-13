@@ -12,16 +12,17 @@
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
+#include "Edl.h"
 #include "IVideoPlayer.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
+#include <cstdint>
 #include <list>
 #include <mutex>
 #include <utility>
-
 
 class CVideoPlayer;
 class CDVDAudioCodec;
@@ -33,7 +34,8 @@ public:
   CVideoPlayerAudio(CDVDClock* pClock,
                     CDVDMessageQueue& parent,
                     CProcessInfo& processInfo,
-                    double messageQueueTimeSize);
+                    double messageQueueTimeSize,
+                    CEdl& edl);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
@@ -67,6 +69,10 @@ public:
 
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
+  bool SupportsPassthroughSilence() const override
+  {
+    return m_audioSink.SupportsPassthroughSilence();
+  }
 
 protected:
 
@@ -76,7 +82,12 @@ protected:
 
   bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
   void UpdatePlayerInfo();
-  void OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec);
+  void OpenStream(CDVDStreamInfo& hints,
+                  std::unique_ptr<CDVDAudioCodec> codec,
+                  std::uint64_t codecGeneration);
+  std::uint64_t BeginCodecSelection(bool passthrough);
+  void PublishCodecState(std::uint64_t codecGeneration, bool passthrough);
+  void InvalidateCodecState();
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
@@ -91,8 +102,15 @@ protected:
   double m_audioClock;
 
   CAudioSinkAE m_audioSink; // audio output device
+  CEdl& m_edl; // original-media EDL timeline
   CDVDClock* m_pClock; // dvd master clock
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec; // audio codec
+  // Protects the selected codec state shared by the player and audio threads.
+  mutable std::mutex m_codecStateMutex;
+  std::uint64_t m_codecGeneration{0};
+  bool m_codecIsPassthrough{false};
+  // Audio-thread-only generation for the codec currently being processed.
+  std::uint64_t m_activeCodecGeneration{0};
   BitstreamStats m_audioStats;
 
   int m_speed;

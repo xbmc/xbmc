@@ -19,6 +19,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <mutex>
 
 #ifdef TARGET_RASPBERRY_PI
@@ -34,24 +35,32 @@ using namespace std::chrono_literals;
 class CDVDMsgAudioCodecChange : public CDVDMsg
 {
 public:
-  CDVDMsgAudioCodecChange(const CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec)
-    : CDVDMsg(GENERAL_STREAMCHANGE), m_codec(std::move(codec)), m_hints(hints)
+  CDVDMsgAudioCodecChange(const CDVDStreamInfo& hints,
+                          std::unique_ptr<CDVDAudioCodec> codec,
+                          std::uint64_t codecGeneration)
+    : CDVDMsg(GENERAL_STREAMCHANGE),
+      m_codec(std::move(codec)),
+      m_hints(hints),
+      m_codecGeneration(codecGeneration)
   {}
   ~CDVDMsgAudioCodecChange() override = default;
 
   std::unique_ptr<CDVDAudioCodec> m_codec;
   CDVDStreamInfo  m_hints;
+  std::uint64_t m_codecGeneration;
 };
 
 CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock,
                                      CDVDMessageQueue& parent,
                                      CProcessInfo& processInfo,
-                                     double messageQueueTimeSize)
+                                     double messageQueueTimeSize,
+                                     CEdl& edl)
   : CThread("VideoPlayerAudio"),
     IDVDStreamPlayerAudio(processInfo),
     m_messageQueue("audio"),
     m_messageParent(parent),
-    m_audioSink(pClock)
+    m_audioSink(pClock),
+    m_edl(edl)
 {
   m_pClock = pClock;
   m_audioClock = 0;
@@ -96,11 +105,16 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
     return false;
   }
 
+  // Publish the selected codec mode before the audio thread processes packets.
+  const std::uint64_t codecGeneration = BeginCodecSelection(codec->NeedPassthrough());
+
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put(std::make_shared<CDVDMsgAudioCodecChange>(hints, std::move(codec)), 0);
+    m_messageQueue.Put(
+        std::make_shared<CDVDMsgAudioCodecChange>(hints, std::move(codec), codecGeneration), 0);
   else
   {
-    OpenStream(hints, std::move(codec));
+    m_activeCodecGeneration = codecGeneration;
+    OpenStream(hints, std::move(codec), codecGeneration);
     m_messageQueue.Init();
     CLog::Log(LOGINFO, "Creating audio thread");
     Create();
@@ -108,9 +122,12 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
   return true;
 }
 
-void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec)
+void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints,
+                                   std::unique_ptr<CDVDAudioCodec> codec,
+                                   std::uint64_t codecGeneration)
 {
   m_pAudioCodec = std::move(codec);
+  PublishCodecState(codecGeneration, m_pAudioCodec->NeedPassthrough());
 
   m_processInfo.ResetAudioCodecInfo();
 
@@ -154,6 +171,9 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
 
 void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
+  // Invalidate pending worker updates before shutting down the current stream.
+  InvalidateCodecState();
+
   bool bWait = bWaitForBuffers && m_speed > 0 && !CServiceBroker::GetActiveAE()->IsSuspended();
 
   // wait until buffers are empty
@@ -388,7 +408,8 @@ void CVideoPlayerAudio::Process()
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       auto msg = std::static_pointer_cast<CDVDMsgAudioCodecChange>(pMsg);
-      OpenStream(msg->m_hints, std::move(msg->m_codec));
+      m_activeCodecGeneration = msg->m_codecGeneration;
+      OpenStream(msg->m_hints, std::move(msg->m_codec), msg->m_codecGeneration);
       msg->m_codec = NULL;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
@@ -557,7 +578,25 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     }
   }
 
-  int framesOutput = m_audioSink.AddPackets(audioframe);
+  bool silence = false;
+  if (m_streaminfo.codec == AV_CODEC_ID_TRUEHD && audioframe.passthrough &&
+      (audioframe.originalPts != DVD_NOPTS_VALUE || audioframe.pts != DVD_NOPTS_VALUE) &&
+      audioframe.duration > 0)
+  {
+    const double originalPts = audioframe.originalPts != DVD_NOPTS_VALUE ? audioframe.originalPts : audioframe.pts;
+    const auto frameStart = std::chrono::milliseconds{DVD_TIME_TO_MSEC(originalPts)};
+    const auto frameEnd = std::chrono::milliseconds{DVD_TIME_TO_MSEC(originalPts + audioframe.duration)};
+    const auto edits = m_edl.GetRawEditListSnapshot();
+    for (const auto& edit : *edits)
+    {
+      if (edit.action == EDL::Action::MUTE && frameStart < edit.end && frameEnd > edit.start)
+      {
+        silence = true;
+        break;
+      }
+    }
+  }
+  int framesOutput = m_audioSink.AddPackets(audioframe, silence);
 
   // guess next pts
   m_audioClock += audioframe.duration * ((double)framesOutput / audioframe.nb_frames);
@@ -674,6 +713,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   }
 
   m_pAudioCodec = std::move(codec);
+  PublishCodecState(m_activeCodecGeneration, m_pAudioCodec->NeedPassthrough());
 
   return true;
 }
@@ -689,8 +729,30 @@ int CVideoPlayerAudio::GetAudioChannels()
   return m_streaminfo.channels;
 }
 
+std::uint64_t CVideoPlayerAudio::BeginCodecSelection(bool passthrough)
+{
+  std::lock_guard lock(m_codecStateMutex);
+  ++m_codecGeneration;
+  m_codecIsPassthrough = passthrough;
+  return m_codecGeneration;
+}
+
+void CVideoPlayerAudio::PublishCodecState(std::uint64_t codecGeneration, bool passthrough)
+{
+  std::lock_guard lock(m_codecStateMutex);
+  if (codecGeneration == m_codecGeneration)
+    m_codecIsPassthrough = passthrough;
+}
+
+void CVideoPlayerAudio::InvalidateCodecState()
+{
+  std::lock_guard lock(m_codecStateMutex);
+  ++m_codecGeneration;
+  m_codecIsPassthrough = false;
+}
+
 bool CVideoPlayerAudio::IsPassthrough() const
 {
-  std::unique_lock lock(m_info_section);
-  return m_info.passthrough;
+  std::lock_guard lock(m_codecStateMutex);
+  return m_codecIsPassthrough;
 }
