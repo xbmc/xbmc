@@ -317,8 +317,21 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
   buf.hasDisplayMetadata = picture.hasDisplayMetadata;
   buf.displayMetadata = picture.displayMetadata;
   buf.lightMetadata = picture.lightMetadata;
-  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
-    buf.hasLightMetadata = picture.hasLightMetadata;
+  buf.hasLightMetadata = picture.hasLightMetadata && picture.lightMetadata.MaxCLL;
+}
+
+bool CLinuxRendererGL::SupportsLiveHDRMetadata() const
+{
+  return CServiceBroker::GetWinSystem()->SupportsLiveHDRMetadata();
+}
+
+bool CLinuxRendererGL::UpdateLightMetadata(const VideoPicture& picture)
+{
+  // nothing to push unless the window system applies the metadata live
+  if (!m_passthroughHDR || !SupportsLiveHDRMetadata())
+    return true;
+
+  return CServiceBroker::GetWinSystem()->RefreshHDRLightMetadata(&picture);
 }
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)

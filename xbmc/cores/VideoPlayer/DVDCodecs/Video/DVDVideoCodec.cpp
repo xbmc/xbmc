@@ -93,7 +93,7 @@ bool VideoPicture::IsFullRange(AVColorRange range, AVPixelFormat format)
   return desc && (desc->flags & AV_PIX_FMT_FLAG_RGB);
 }
 
-bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic) const
+bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic, bool presenceOnly) const
 {
   if (this->hasDisplayMetadata != pic.hasDisplayMetadata)
     return false;
@@ -103,6 +103,10 @@ bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic) const
   if (!pic.hasDisplayMetadata)
     return true;
 
+  // The content is pushed live by the renderer, see CompareLightMetadata()
+  if (presenceOnly)
+    return true;
+
   // both this and pic has display metadata
   return this->displayMetadata.max_luminance.num == pic.displayMetadata.max_luminance.num &&
          this->displayMetadata.max_luminance.den == pic.displayMetadata.max_luminance.den &&
@@ -110,11 +114,58 @@ bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic) const
          this->displayMetadata.min_luminance.den == pic.displayMetadata.min_luminance.den;
 }
 
-bool VideoPicture::IsSameParams(const VideoPicture& pic) const
+bool VideoPicture::IsSameParams(const VideoPicture& pic, bool liveHDRMetadata) const
 {
   return this->iWidth == pic.iWidth && this->iHeight == pic.iHeight &&
          this->iDisplayWidth == pic.iDisplayWidth && this->iDisplayHeight == pic.iDisplayHeight &&
          this->stereoMode == pic.stereoMode && this->color_primaries == pic.color_primaries &&
          this->color_transfer == pic.color_transfer && this->hdrType == pic.hdrType &&
-         CompareDisplayMetadata(pic);
+         CompareDisplayMetadata(pic, liveHDRMetadata);
+}
+
+bool VideoPicture::CompareLightMetadata(const VideoPicture& pic) const
+{
+  if (this->hasLightMetadata != pic.hasLightMetadata ||
+      this->hasDisplayMetadata != pic.hasDisplayMetadata)
+    return false;
+
+  if (this->hasLightMetadata && (this->lightMetadata.MaxCLL != pic.lightMetadata.MaxCLL ||
+                                 this->lightMetadata.MaxFALL != pic.lightMetadata.MaxFALL))
+    return false;
+
+  if (!this->hasDisplayMetadata)
+    return true;
+
+  const AVMasteringDisplayMetadata& a = this->displayMetadata;
+  const AVMasteringDisplayMetadata& b = pic.displayMetadata;
+
+  if (a.has_luminance != b.has_luminance || a.has_primaries != b.has_primaries)
+    return false;
+
+  if (a.has_luminance &&
+      (a.max_luminance.num != b.max_luminance.num || a.max_luminance.den != b.max_luminance.den ||
+       a.min_luminance.num != b.min_luminance.num || a.min_luminance.den != b.min_luminance.den))
+    return false;
+
+  if (a.has_primaries)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      for (int j = 0; j < 2; j++)
+      {
+        if (a.display_primaries[i][j].num != b.display_primaries[i][j].num ||
+            a.display_primaries[i][j].den != b.display_primaries[i][j].den)
+          return false;
+      }
+    }
+
+    for (int j = 0; j < 2; j++)
+    {
+      if (a.white_point[j].num != b.white_point[j].num ||
+          a.white_point[j].den != b.white_point[j].den)
+        return false;
+    }
+  }
+
+  return true;
 }
