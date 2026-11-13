@@ -248,6 +248,7 @@ void CAdvancedSettings::Initialize()
   m_videoDebugGraphLogScale = true;
   m_videoDebugGraphSweep = true;
   m_videoDebugGraphFrameTypes = false;
+  m_videoDebugGraphHeight = 35;
   m_gamesPacingMarginMs = 2.5f;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
@@ -871,6 +872,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       if (XMLUtils::GetString(pDebugGraph, "mode", value))
         m_videoDebugGraphSweep = !StringUtils::EqualsNoCase(value, "scroll");
       XMLUtils::GetBoolean(pDebugGraph, "frametypes", m_videoDebugGraphFrameTypes);
+      XMLUtils::GetInt(pDebugGraph, "height", m_videoDebugGraphHeight, 10, 90);
     }
 
     // Store global display latency settings

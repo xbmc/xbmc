@@ -210,6 +210,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_videoDebugGraphLogScale;
     bool m_videoDebugGraphSweep;
     bool m_videoDebugGraphFrameTypes;
+    int m_videoDebugGraphHeight; //!< percent of the video height
     float m_gamesPacingMarginMs;
     float m_maxTempo;
     bool m_videoPreferStereoStream = false;

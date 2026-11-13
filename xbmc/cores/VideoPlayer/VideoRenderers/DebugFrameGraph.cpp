@@ -32,7 +32,6 @@ constexpr uint32_t COLOR_CURSOR = 0xB0FFFFFF;
 constexpr double LOG_MIN = 4e3;
 constexpr double LOG_MAX = 4e6;
 constexpr unsigned int SWEEP_GAP = 16;
-constexpr float GRAPH_HEIGHT = 0.35f;
 constexpr float GRAPH_MARGIN = 0.03f;
 } // namespace
 
@@ -50,6 +49,7 @@ void CDebugFrameGraph::SetFrames(const DEBUG_INFO_FRAMES& frames)
     m_sweep = settings->m_videoDebugGraphSweep;
     m_dirty = true;
   }
+  m_heightPercent = settings->m_videoDebugGraphHeight;
 
   if (frames.serial == m_frames.serial)
     return;
@@ -112,7 +112,8 @@ void CDebugFrameGraph::Render(const CRect& view)
 
   const unsigned int width =
       std::min(static_cast<unsigned int>(std::max(view.Width(), 1.0f)), DEBUG_INFO_FRAMES_MAX);
-  const unsigned int height = std::max(static_cast<unsigned int>(view.Height() * GRAPH_HEIGHT), 1u);
+  const unsigned int height = std::max(
+      static_cast<unsigned int>(view.Height() * static_cast<float>(m_heightPercent) / 100), 1u);
 
   if (width != m_width || height != m_height || !m_texture)
   {

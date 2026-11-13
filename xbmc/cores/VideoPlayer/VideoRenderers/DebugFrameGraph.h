@@ -41,6 +41,7 @@ private:
   DEBUG_INFO_FRAMES m_frames;
   bool m_logScale{true};
   bool m_sweep{true};
+  int m_heightPercent{35};
   bool m_dirty{false};
 
   unsigned int m_width{0};
