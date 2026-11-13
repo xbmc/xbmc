@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ServiceDescription.h"
+#include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
@@ -76,13 +77,15 @@ inline std::set<std::string> EnumValues(const CVariant& schema)
 }
 
 /*!
- \brief Fixture isolating the global schema registry of CJSONServiceDescription.
+ \brief Fixture isolating the global state of CJSONRPC and its schema registry.
  */
 class JSONServiceDescriptionTestBase : public ::testing::Test
 {
 public:
-  void SetUp() override { CJSONServiceDescription::Cleanup(); }
-  void TearDown() override { CJSONServiceDescription::Cleanup(); }
+  // CJSONRPC::Cleanup() also clears the flag that would make a later CJSONRPC::Initialize() return
+  // without registering anything
+  void SetUp() override { CJSONRPC::Cleanup(); }
+  void TearDown() override { CJSONRPC::Cleanup(); }
 };
 
 } // namespace JSONRPC
