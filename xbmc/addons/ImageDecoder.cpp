@@ -8,8 +8,13 @@
 #include "ImageDecoder.h"
 
 #include "guilib/TextureFormats.h"
+#include "pictures/Picture.h"
 #include "pictures/PictureInfoTag.h"
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <memory>
 
 using namespace ADDON;
 using namespace KODI::ADDONS;
@@ -207,9 +212,32 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
     return false;
 
   const ADDON_IMG_FMT addonFmt = it->addonFormat;
-  const size_t size = static_cast<size_t>(pitch) * height;
-  const bool result =
-      m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch, addonFmt);
+  bool result = false;
+  if (format == XB_FMT_A8R8G8B8 && (width < m_width || height < m_height))
+  {
+    // Add-ons decode at the size they reported, so scale that down to the size asked for
+    const unsigned int fullPitch = (m_width + 15) / 16 * 16 * 4;
+    const size_t fullSize = static_cast<size_t>(fullPitch) * m_height;
+    constexpr size_t simdPadding{32};
+    std::unique_ptr<uint8_t, decltype(&KODI::MEMORY::AlignedFree)> full(
+        static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(fullSize + simdPadding, 32)),
+        &KODI::MEMORY::AlignedFree);
+    if (!full)
+    {
+      CLog::Log(LOGERROR, "{} - Could not allocate {} bytes", __func__, fullSize + simdPadding);
+      return false;
+    }
+    result = m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, full.get(), fullSize, m_width, m_height,
+                                                 fullPitch, addonFmt) &&
+             CPicture::ScaleImage(full.get(), m_width, m_height, fullPitch, AV_PIX_FMT_BGRA, pixels,
+                                  width, height, pitch, AV_PIX_FMT_BGRA);
+  }
+  else
+  {
+    const size_t size = static_cast<size_t>(pitch) * height;
+    result = m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch,
+                                                 addonFmt);
+  }
   m_width = width;
   m_height = height;
 
