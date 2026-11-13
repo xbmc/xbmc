@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
@@ -78,7 +79,8 @@ public:
       strParam(std::move(other.strParam)),
       params(std::move(other.params)),
       waitEvent(std::move(other.waitEvent)),
-      result(std::move(other.result))
+      result(std::move(other.result)),
+      callback(std::move(other.callback))
   {
   }
 
@@ -95,6 +97,7 @@ public:
     params = other.params;
     waitEvent = other.waitEvent;
     result = other.result;
+    callback = other.callback;
     return *this;
   }
 
@@ -111,6 +114,7 @@ public:
     params = std::move(other.params);
     waitEvent = std::move(other.waitEvent);
     result = std::move(other.result);
+    callback = std::move(other.callback);
     return *this;
   }
 
@@ -138,6 +142,7 @@ public:
 protected:
   std::shared_ptr<CEvent> waitEvent;
   std::shared_ptr<int> result;
+  std::function<void()> callback;
 };
 }
 }

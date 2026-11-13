@@ -49,6 +49,7 @@ xbmc/language/test                test/language
 xbmc/language/i18n/test           test/language/i18n
 xbmc/language/i18n/Bcp47Registry/test test/language/i18n/Bcp47Registry
 xbmc/media/test                   test/media
+xbmc/messaging/test               test/messaging
 xbmc/music/tags/test              test/music_tags
 xbmc/music/test                   test/music
 xbmc/network/test                 test/network
