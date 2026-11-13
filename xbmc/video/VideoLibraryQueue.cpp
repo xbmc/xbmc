@@ -54,6 +54,9 @@ bool CVideoLibraryQueue::IsScanningLibrary() const
   if (m_cleaning)
     return true;
 
+  // The jobs are added and removed on other threads
+  std::unique_lock lock(m_critical);
+
   // check if the library is being scanned asynchronously
   VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find(CVideoLibraryScanningJob::TYPE);
   if (scanningJobs != m_jobs.end() && !scanningJobs->second.empty())
