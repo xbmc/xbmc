@@ -20,6 +20,7 @@
 
 #include "platform/linux/input/LibInputHandler.h"
 
+#include <atomic>
 #include <utility>
 
 #include <gbm.h>
@@ -36,6 +37,13 @@ namespace WINDOWING
 {
 namespace GBM
 {
+
+enum class ColorRange
+{
+  AUTO = 0, //!< leave it to the graphics driver
+  FULL = 1, //!< output full range (0-255) and signal it
+  LIMITED = 2, //!< output limited range (16-235) and signal it
+};
 
 class CWinSystemGbm : public CWinSystemBase, public ISettingCallback
 {
@@ -105,8 +113,30 @@ protected:
 
 private:
   static void ApplyLimitGuiSize(void* userptr);
+  static void ApplyColorRangeSetting(void* userptr);
 
   KODI::MESSAGING::ThreadMessageCallback m_limitGuiSizeCallback{ApplyLimitGuiSize, this};
+  KODI::MESSAGING::ThreadMessageCallback m_colorRangeCallback{ApplyColorRangeSetting, this};
+
+  void ApplyBroadcastRange(bool retry = false);
+  void RetryBroadcastRange();
+
+  ColorRange GetColorRange() const;
+
+  void MigrateLimitedRangeSetting();
+
+  void UpdateDriverLimitedRange();
+
+  std::atomic<int> m_colorRange{static_cast<int>(ColorRange::AUTO)};
+
+  //! True while "Broadcast RGB" is committed as "Limited 16:235"
+  std::atomic<bool> m_driverLimitedRange{false};
+
+  bool m_migratingColorRange{false};
+
+  bool m_broadcastRangeQueued{false};
+  uint64_t m_broadcastRangeTarget{0};
+  int m_broadcastRangeRetries{0};
 
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;

@@ -517,6 +517,13 @@ void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigne
     return;
   }
 
+  if (const bool fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
+      fullRange != m_fullRange)
+  {
+    m_fullRange = fullRange;
+    m_reloadShaders = true;
+  }
+
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
   {
@@ -590,6 +597,13 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, unsigned int flags, unsig
 {
   if (!m_bConfigured)
     return;
+
+  if (const bool fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
+      fullRange != m_fullRange)
+  {
+    m_fullRange = fullRange;
+    m_reloadShaders = true;
+  }
 
   if (IsGuiLayer())
     return;

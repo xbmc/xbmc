@@ -512,6 +512,15 @@ void CLinuxRendererGL::RenderUpdate(int index, int index2, bool clear, unsigned 
     return;
   }
 
+  if (const bool fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
+      fullRange != m_fullRange)
+  {
+    m_fullRange = fullRange;
+    m_reloadShaders = true;
+    // the CMS output shader bakes in the range
+    m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
+  }
+
   ManageRenderArea();
 
   if (clear)

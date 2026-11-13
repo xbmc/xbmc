@@ -31,6 +31,7 @@ public:
   void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) override;
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) override;
   bool SetActive(bool active) override;
+  void RequestModeset() override { m_need_modeset = true; }
   bool InitDrm() override;
   void DestroyDrm() override;
   bool SupportsFencing() override { return true; }
