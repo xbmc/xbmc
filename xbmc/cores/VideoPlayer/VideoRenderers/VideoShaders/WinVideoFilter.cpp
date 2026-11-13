@@ -459,7 +459,6 @@ bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID
     cData = lutData;
 
   ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
   CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, lutSize, lutSize, lutSize, 1,
                                D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_IMMUTABLE);
 
@@ -482,7 +481,6 @@ bool COutputShader::CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID
   ComPtr<ID3D11ShaderResourceView> lutView;
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
   hr = pDevice->CreateShaderResourceView(pLUTTex.Get(), &srvDesc, &lutView);
-  pContext->Flush();
 
   if (FAILED(hr))
   {

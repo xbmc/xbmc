@@ -162,11 +162,23 @@ void CRenderBuffer::QueueCopyFromGPU()
   }
 }
 
-
 CRendererBase::CRendererBase(CVideoSettings& videoSettings)
-  : m_videoSettings(videoSettings)
+  : m_colorManager(std::make_shared<CColorManager>()),
+    m_lut([colorManager = m_colorManager](AVColorPrimaries primaries)
+          { return LoadLut(*colorManager, primaries); },
+          [this](const CLutLoader::Lut& lut)
+          {
+            if (lut.cmsToken)
+              m_cmsToken = *lut.cmsToken;
+            m_lutSize = lut.size;
+            m_pLUTView = lut.view;
+            // a picture already rendered with the old LUT cannot be reused
+            m_intermediateState = {};
+            if (m_outputShader)
+              m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
+          }),
+    m_videoSettings(videoSettings)
 {
-  m_colorManager.reset(new CColorManager());
 }
 
 CRendererBase::~CRendererBase()
@@ -317,8 +329,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
                                 m_videoSettings.m_Saturation,
                                 m_videoSettings.m_Gamma,
                                 DX::Windowing()->UseLimitedColor(),
-                                m_videoSettings.m_ToneMapParam,
-                                m_lutIsLoading};
+                                m_videoSettings.m_ToneMapParam};
   m_reuseIntermediate = !uploaded && state == m_intermediateState;
   // RenderImpl() clears it if the conversion fails
   m_intermediateState = state;
@@ -446,40 +457,28 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
   return true;
 }
 
-void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
+CLutLoader::Lut CRendererBase::LoadLut(CColorManager& colorManager, AVColorPrimaries primaries)
 {
-  m_lutSize = 0;
-  m_lutIsLoading = true;
+  CLutLoader::Lut lut;
 
-  auto loadLutTask = Concurrency::create_task([this, srcPrimaries] {
-    // load 3DLUT data
-    int lutSize, dataSize;
-    if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
-      return 0;
+  // load 3DLUT data
+  int lutSize, dataSize;
+  if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
+    return lut;
 
-    const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
-    bool success = m_colorManager->GetVideo3dLut(srcPrimaries, &m_cmsToken, CMS_DATA_FMT_RGBA,
-                                                 lutSize, lutData);
-    if (success)
-    {
-      success = COutputShader::CreateLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
-    }
-    else
-      CLog::Log(LOGERROR, "CRendererBase::OnCMSConfigChanged: unable to loading the 3dlut data.");
+  const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
+  int cmsToken;
+  if (colorManager.GetVideo3dLut(primaries, &cmsToken, CMS_DATA_FMT_RGBA, lutSize, lutData))
+  {
+    lut.cmsToken = cmsToken;
+    if (COutputShader::CreateLUTView(lutSize, lutData, false, lut.view.GetAddressOf()))
+      lut.size = lutSize;
+  }
+  else
+    CLog::LogF(LOGERROR, "unable to load the 3dlut data.");
 
-    KODI::MEMORY::AlignedFree(lutData);
-    if (!success)
-      return 0;
-
-    return lutSize;
-  });
-
-  loadLutTask.then([&](const int lutSize) {
-    m_lutSize = lutSize;
-    if (m_outputShader)
-      m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
-    m_lutIsLoading = false;
-  });
+  KODI::MEMORY::AlignedFree(lutData);
+  return lut;
 }
 
 // this is copy from CBaseRenderer::ReorderDrawPoints()
@@ -567,8 +566,12 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  if (m_cmsOn && !m_lutIsLoading && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
-    OnCMSConfigChanged(buf->primaries);
+  m_lut.ApplyFinishedLoad();
+
+  // a load in flight has the colour manager to itself
+  if (m_cmsOn && !m_lut.IsLoading() &&
+      !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
+    m_lut.Load(buf->primaries);
 }
 
 DXGI_FORMAT CRendererBase::GetDXGIFormat(const VideoPicture& picture)
