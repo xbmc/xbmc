@@ -8,9 +8,12 @@
 
 #include "PVREpgFields.h"
 
+#include "JSONServiceDescription.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_STRING_TOKEN_SEPARATOR
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <mutex>
 
 namespace JSONRPC
 {
@@ -33,6 +36,29 @@ CVariant TranslateEpgCast(const std::string& cast)
   }
 
   return result;
+}
+
+std::set<std::string> BroadcastFields()
+{
+  static std::mutex mutex;
+  static JSONSchemaTypeDefinitionPtr cachedType;
+  static std::set<std::string> cachedFields;
+
+  const JSONSchemaTypeDefinitionPtr type{CJSONServiceDescription::GetType("PVR.Fields.Broadcast")};
+
+  std::lock_guard lock(mutex);
+  if (type != cachedType)
+  {
+    cachedFields.clear();
+    if (type && !type->items.empty())
+    {
+      for (const CVariant& field : type->items.front()->enums)
+        cachedFields.insert(field.asString());
+    }
+    cachedType = type;
+  }
+
+  return cachedFields;
 }
 
 } // namespace JSONRPC
