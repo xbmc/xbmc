@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>X Games logo area</description>
+			<top>50</top>
+			<bottom>50</bottom>
+			<left>50</left>
+			<right>50</right>
+			<control type="image">
+				<description>X Games logo</description>
+				<texture>X_Games.png</texture>
+				<aspectratio>keep</aspectratio>
+			</control>
+		</control>
+	</controls>
+</window>

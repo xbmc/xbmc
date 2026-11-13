@@ -20,6 +20,7 @@ namespace
 constexpr CSet supportedTypes{
     // clang-format off
     CGUIControl::GUICONTROL_BORDEREDIMAGE,
+    CGUIControl::GUICONTROL_CAMERA,
     CGUIControl::GUICONTROL_GAME,
     CGUIControl::GUICONTROL_GAMECONTROLLER,
     CGUIControl::GUICONTROL_GAMECONTROLLERLIST,

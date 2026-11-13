@@ -70,6 +70,19 @@ public:
   {
   }
 
+  CGUIInfo(int info,
+           const std::string& data3,
+           const std::string& data5,
+           const std::string& data6,
+           const std::string& data7)
+    : m_info(info),
+      m_data3(data3),
+      m_data5(data5),
+      m_data6(data6),
+      m_data7(data7)
+  {
+  }
+
   bool operator==(const CGUIInfo& right) const = default;
 
   int GetInfo() const { return m_info; }
@@ -80,6 +93,8 @@ public:
   const std::string& GetData3() const { return m_data3; }
   int GetData4() const { return m_data4; }
   const std::string& GetData5() const { return m_data5; }
+  const std::string& GetData6() const { return m_data6; }
+  const std::string& GetData7() const { return m_data7; }
 
 private:
   void SetInfoFlag(uint32_t flag);
@@ -90,6 +105,8 @@ private:
   std::string m_data3;
   int m_data4{0};
   std::string m_data5;
+  std::string m_data6;
+  std::string m_data7;
 };
 
 } // namespace KODI::GUILIB::GUIINFO

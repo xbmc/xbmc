@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+    <include name="OasisWeatherIconMyWeather">
+        <control type="group">
+            <description>Horizontal weather icons with a label below</description>
+            <width>240</width>
+            <control type="image">
+                <height>80</height>
+                <texture colordiffuse="D0FFFFFF">$PARAM[texture]</texture>
+                <aspectratio>keep</aspectratio>
+            </control>
+            <control type="textbox">
+                <top>90</top>
+                <height>110</height>
+                <left>20</left>
+                <right>20</right>
+                <font>font37_narrow</font>
+                <align>center</align>
+                <aligny>center</aligny>
+                <label>$INFO[$PARAM[label]]</label>
+                <shadowcolor>text_shadow</shadowcolor>
+            </control>
+        </control>
+    </include>
+
+    <include name="OasisWeatherWidget">
+        <control type="panel">
+            <description>Weather widget with a horizontal scrollable list of items</description>
+            <height>300</height>
+            <orientation>horizontal</orientation>
+            <scrolltime tween="cubic" easing="out">500</scrolltime>
+            <itemlayout width="$PARAM[item_width]" height="500">
+                <control type="group">
+                    <control type="label">
+                        <align>center</align>
+                        <font>font37_narrow</font>
+                        <label>$INFO[ListItem.Label]</label>
+                        <shadowcolor>text_shadow</shadowcolor>
+                    </control>
+                    <control type="multiimage">
+                        <top>45</top>
+                        <height>128</height>
+                        <imagepath>$INFO[ListItem.Icon]</imagepath>
+                        <aspectratio>keep</aspectratio>
+                        <timeperimage>20</timeperimage>
+                        <fadetime>10</fadetime>
+                        <randomize>false</randomize>
+                    </control>
+                    <control type="label">
+                        <top>168</top>
+                        <align>center</align>
+                        <font>font25_title</font>
+                        <label>$INFO[ListItem.Label2]</label>
+                        <shadowcolor>text_shadow</shadowcolor>
+                    </control>
+                </control>
+            </itemlayout>
+            <focusedlayout width="$PARAM[item_width]" height="500">
+                <control type="group">
+                    <control type="label">
+                        <align>center</align>
+                        <font>font37_narrow</font>
+                        <label>$INFO[ListItem.Label]</label>
+                        <shadowcolor>text_shadow</shadowcolor>
+                    </control>
+                    <control type="multiimage">
+                        <top>45</top>
+                        <height>128</height>
+                        <imagepath>$INFO[ListItem.Icon]</imagepath>
+                        <aspectratio>keep</aspectratio>
+                        <timeperimage>20</timeperimage>
+                        <fadetime>10</fadetime>
+                        <randomize>false</randomize>
+                    </control>
+                    <control type="label">
+                        <top>168</top>
+                        <align>center</align>
+                        <font>font32_narrow</font>
+                        <label>$INFO[ListItem.Label2]</label>
+                        <shadowcolor>text_shadow</shadowcolor>
+                    </control>
+                </control>
+            </focusedlayout>
+            <include>$PARAM[content_include]</include>
+        </control>
+    </include>
+
+    <include name="OasisDailyItems">
+        <content>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="1" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="2" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="3" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="4" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="5" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="6" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="7" />
+            </include>
+            <include content="WeatherDailyItem">
+                <param name="item_index" value="8" />
+            </include>
+        </content>
+    </include>
+
+    <include name="OasisHourlyItems">
+        <content>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="1" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="2" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="3" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="4" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="5" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="6" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="7" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="8" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="9" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="10" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="11" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="12" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="13" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="14" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="15" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="16" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="17" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="18" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="19" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="20" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="21" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="22" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="23" />
+            </include>
+            <include content="OasisWeatherHourlyItem">
+                <param name="item_index" value="24" />
+            </include>
+        </content>
+    </include>
+
+    <include name="OasisWeatherDailyItem">
+        <item>
+            <label>$INFO[Weather.Data(Daily.$PARAM[item_index].ShortDay)]</label>
+            <label2>[COLOR blue]$INFO[Weather.Data(Daily.$PARAM[item_index].LowTemperature)][/COLOR] ∙ [COLOR red]$INFO[Weather.Data(Daily.$PARAM[item_index].HighTemperature)][/COLOR]</label2>
+            <icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Daily.$PARAM[item_index].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+        </item>
+    </include>
+
+    <include name="OasisWeatherHourlyItem">
+        <item>
+            <label>$INFO[Weather.Data(Hourly.$PARAM[item_index].Time)]</label>
+            <label2>$INFO[Weather.Data(Hourly.$PARAM[item_index].Temperature)] ∙ $INFO[Weather.Data(Hourly.$PARAM[item_index].Precipitation)]</label2>
+            <icon>$VAR[WeatherOutlookIconPrefixVar]$INFO[Weather.Data(Hourly.$PARAM[item_index].FanartCode)]$VAR[WeatherOutlookIconPostfixVar]</icon>
+        </item>
+    </include>
+</includes>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="panel">
+			<itemlayout width="480" height="360">
+				<control type="cameraview">
+					<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<bottom>-20</bottom>
+					<height>90</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<bottom>0</bottom>
+					<height>50</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font37</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout width="480" height="360">
+				<control type="cameraview">
+					<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<bottom>-20</bottom>
+					<height>90</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<bottom>0</bottom>
+					<height>50</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font37</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>Hallway Camera</label>
+					<property name="smarthome.cameratopic">/oasis/kinect2/hd/image_color</property>
+				</item>
+				<item>
+					<label>Kitchen Camera</label>
+					<property name="smarthome.cameratopic">/oasis/kitchen/image_raw</property>
+				</item>
+				<item>
+					<label>Bar Camera</label>
+					<property name="smarthome.cameratopic">/oasis/bar/image_raw</property>
+				</item>
+				<item>
+					<label>Doorway Camera</label>
+					<property name="smarthome.cameratopic">/oasis/station/image_raw</property>
+				</item>
+				<item>
+					<label>Hallway Poses</label>
+					<property name="smarthome.cameratopic">/oasis/kinect2/pose_image</property>
+				</item>
+				<item>
+					<label>Kitchen Poses</label>
+					<property name="smarthome.cameratopic">/oasis/kitchen/pose_image</property>
+				</item>
+				<item>
+					<label>Bar Poses</label>
+					<property name="smarthome.cameratopic">/oasis/bar/pose_image</property>
+				</item>
+				<item>
+					<label>Doorway Poses</label>
+					<property name="smarthome.cameratopic">/oasis/station/pose_image</property>
+				</item>
+				<item>
+					<label>Hallway Background</label>
+					<property name="smarthome.cameratopic">/oasis/kinect2/background</property>
+				</item>
+				<item>
+					<label>Kitchen Background</label>
+					<property name="smarthome.cameratopic">/oasis/kitchen/background</property>
+				</item>
+				<item>
+					<label>Bar Background</label>
+					<property name="smarthome.cameratopic">/oasis/bar/background</property>
+				</item>
+				<item>
+					<label>Doorway Background</label>
+					<property name="smarthome.cameratopic">/oasis/station/background</property>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include file="../../service.oasis/resources/skins/default/1080i/Includes_SmartHome.xml" />
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>BenQ monitor display area</description>
+			<width>823</width>
+			<!--
+			<control type="image">
+				<description>Upper Dell content area background</description>
+				<top>-20</top>
+				<bottom>-20</bottom>
+				<left>-20</left>
+				<right>-20</right>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			-->
+			<control type="group">
+				<description>Upper Dell display content area</description>
+				<top>40</top>
+				<height>170</height>
+				<left>40</left>
+				<right>40</right>
+				<!--
+				<control type="image">
+					<description>Upper Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				-->
+				<control type="image">
+					<description>OASIS logo</description>
+					<texture>OASIS.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control>
+			<control type="group">
+				<description>Lower Dell display content area</description>
+				<top>270</top>
+				<height>814</height>
+				<left>40</left>
+				<right>40</right>
+				<!--
+				<control type="image">
+					<description>Lower Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				-->
+				<control type="list">
+					<description>Node list</description>
+					<top>6</top>
+					<orientation>vertical</orientation>
+					<itemlayout width="743" height="80">
+						<control type="cameraview">
+							<description>Camera view</description>
+							<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+							<stretchmode>zoom</stretchmode>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>140</right>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+							<visible>!String.IsEmpty(ListItem.Property(smarthome.isactive))</visible>
+							<animation effect="fade" time="1500">VisibleChange</animation>
+						</control>
+						<control type="label">
+							<right>0</right>
+							<width>140</width>
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+							<visible>!String.IsEmpty(ListItem.Property(smarthome.isactive))</visible>
+							<animation effect="fade" time="1500">VisibleChange</animation>
+						</control>
+					</itemlayout>
+					<focusedlayout width="743" height="80">
+						<control type="cameraview">
+							<description>Camera view</description>
+							<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+							<stretchmode>zoom</stretchmode>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>140</right>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+							<visible>!String.IsEmpty(ListItem.Property(smarthome.isactive))</visible>
+							<animation effect="fade" time="1500">VisibleChange</animation>
+						</control>
+						<control type="label">
+							<right>0</right>
+							<width>140</width>
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<font>font36_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+							<visible>!String.IsEmpty(ListItem.Property(smarthome.isactive))</visible>
+							<animation effect="fade" time="1500">VisibleChange</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>File Server</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemNasIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(nas).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(nas).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Home Assistant</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemHomeAssistantIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(homeassistant).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(homeassistant).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Air Quality Lab</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemOceanPlatformIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(oceanplatform).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(oceanplatform).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Train Station</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemStationIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(station).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(station).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Millenium Falcon</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemFalconIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(falcon).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(falcon).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Door</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemDoorIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(door).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(door).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Patio</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemPatioIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(patio).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(patio).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Patio 2</label>
+							<property name="smarthome.isactive">$VAR[SmartHomeSystemGateIsActive]</property>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(gate).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(gate).CPUUtilization]</property>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<description>Dell monitor area</description>
+			<top>450</top>
+			<bottom>122</bottom>
+			<left>823</left>
+			<!--
+			<control type="image">
+				<description>Dell monitor content area background</description>
+				<top>-20</top>
+				<bottom>-20</bottom>
+				<left>-20</left>
+				<right>-20</right>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			-->
+			<!--
+			<control type="group">
+				<description>Ventura logo area</description>
+				<top>200</top>
+				<bottom>200</bottom>
+				<left>200</left>
+				<right>200</right>
+				<control type="image">
+					<description>Ventura logo</description>
+					<texture>Ventura_Ambigram.png</texture>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" start="0" end="360" center="auto" time="10000" loop="true" condition="true">Conditional</animation>
+				</control>
+			</control>
+			-->
+		</control>
+	</controls>
+</window>

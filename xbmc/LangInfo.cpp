@@ -1272,12 +1272,13 @@ CSpeed::Unit CLangInfo::GetSpeedUnit() const
   return m_speedUnit;
 }
 
-std::string CLangInfo::GetSpeedAsString(const CSpeed& speed) const
+std::string CLangInfo::GetSpeedAsString(const CSpeed& speed, unsigned int decimals) const
 {
   if (!speed.IsValid())
     return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // "Unknown"
 
-  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit()), GetSpeedUnitString());
+  return StringUtils::Format("{}{}", speed.ToString(GetSpeedUnit(), decimals),
+                             GetSpeedUnitString());
 }
 
 // Returns the speed unit string for the current language
