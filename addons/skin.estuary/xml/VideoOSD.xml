@@ -245,7 +245,7 @@
 					<onright condition="!Player.Paused">StepForward</onright>
 					<onright condition="Player.Paused">PlayerControl(FrameAdvance(1))</onright>
 				</control>
-				<control type="slider">
+				<control type="slider" id="6001">
 					<top>-5</top>
 					<left>0</left>
 					<width>100%</width>
@@ -259,7 +259,7 @@
 					<action>seek</action>
 					<visible>!Control.HasFocus(87) + !VideoPlayer.Content(LiveTV)</visible>
 				</control>
-				<control type="slider">
+				<control type="slider" id="6002">
 					<top>-5</top>
 					<left>0</left>
 					<width>100%</width>
@@ -273,7 +273,7 @@
 					<action>seek</action>
 					<visible>Control.HasFocus(87) + !VideoPlayer.Content(LiveTV)</visible>
 				</control>
-				<control type="slider">
+				<control type="slider" id="6003">
 					<top>-5</top>
 					<left>0</left>
 					<width>100%</width>
@@ -287,7 +287,7 @@
 					<action>pvr.seek</action>
 					<visible>!Control.HasFocus(87) + VideoPlayer.Content(LiveTV)</visible>
 				</control>
-				<control type="slider">
+				<control type="slider" id="6004">
 					<top>-5</top>
 					<left>0</left>
 					<width>100%</width>

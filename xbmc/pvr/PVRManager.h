@@ -19,6 +19,7 @@
 #include "utils/EventStream.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -169,6 +170,9 @@ public:
    * @return The playback state.
    */
   std::shared_ptr<CPVRPlaybackState> PlaybackState() const;
+
+  /*! \brief Convert a percentage of the displayed timeshift timeline to player milliseconds. */
+  std::optional<int64_t> GetTimeshiftSeekTime(double percentage) const;
 
   /*!
    * @brief Get access to the epg container.

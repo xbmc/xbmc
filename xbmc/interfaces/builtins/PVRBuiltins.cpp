@@ -8,21 +8,18 @@
 
 #include "PVRBuiltins.h"
 
-#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <regex>
 
@@ -52,7 +49,7 @@ static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
  */
 static int SeekPercentage(const std::vector<std::string>& params)
 {
-  const auto& components = CServiceBroker::GetAppComponents();
+  auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   if (params.empty())
@@ -62,29 +59,18 @@ static int SeekPercentage(const std::vector<std::string>& params)
   else
   {
     const float fTimeshiftPercentage = static_cast<float>(std::atof(params.front().c_str()));
-    if (fTimeshiftPercentage < 0 || fTimeshiftPercentage > 100)
+    if (!std::isfinite(fTimeshiftPercentage) || fTimeshiftPercentage < 0 ||
+        fTimeshiftPercentage > 100)
     {
       CLog::Log(LOGERROR, "PVR.SeekPercentage(n) - Invalid argument ({:f}), must be in range 0-100",
                 fTimeshiftPercentage);
     }
-    else if (appPlayer->IsPlaying())
+    else if (appPlayer->IsPlaying() && appPlayer->CanSeek())
     {
-      CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-
-      int iTimeshiftProgressDuration = 0;
-      infoMgr.GetInt(iTimeshiftProgressDuration, PVR_TIMESHIFT_PROGRESS_DURATION,
-                     INFO::DEFAULT_CONTEXT);
-
-      int iTimeshiftBufferStart = 0;
-      infoMgr.GetInt(iTimeshiftBufferStart, PVR_TIMESHIFT_PROGRESS_BUFFER_START,
-                     INFO::DEFAULT_CONTEXT);
-
-      float fPlayerPercentage = static_cast<float>(iTimeshiftProgressDuration) /
-                                static_cast<float>(g_application.GetTotalTime()) *
-                                (fTimeshiftPercentage - static_cast<float>(iTimeshiftBufferStart));
-      fPlayerPercentage = std::max(0.0f, std::min(fPlayerPercentage, 100.0f));
-
-      g_application.SeekPercentage(fPlayerPercentage);
+      const auto target =
+          CServiceBroker::GetPVRManager().GetTimeshiftSeekTime(fTimeshiftPercentage);
+      if (target)
+        appPlayer->SeekTime(*target);
     }
   }
   return 0;

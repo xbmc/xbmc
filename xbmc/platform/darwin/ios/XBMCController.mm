@@ -473,7 +473,13 @@ public:
       }
     }
 
-    if( touchBeginSignaled && ([sender state] == UIGestureRecognizerStateEnded || [sender state] == UIGestureRecognizerStateCancelled))
+    if (touchBeginSignaled && (sender.state == UIGestureRecognizerStateCancelled ||
+                               sender.state == UIGestureRecognizerStateFailed))
+    {
+      CGenericTouchActionHandler::GetInstance().OnTouchAbort();
+      touchBeginSignaled = false;
+    }
+    else if (touchBeginSignaled && sender.state == UIGestureRecognizerStateEnded)
     {
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
       CGenericTouchActionHandler::GetInstance().OnTouchGestureEnd((float)lastGesturePoint.x, (float)lastGesturePoint.y,
