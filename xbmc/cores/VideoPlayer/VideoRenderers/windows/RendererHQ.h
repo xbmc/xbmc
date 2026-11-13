@@ -25,6 +25,8 @@ protected:
 
   void SelectPSVideoFilter();
   bool HasHQScaler() const;
+  //! \brief Have the scaler chosen again, as it is for a renderer just configured.
+  void ResetScaler();
 
   ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_AUTO;

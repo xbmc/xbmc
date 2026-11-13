@@ -54,6 +54,12 @@ public:
   bool IsSameParams(const VideoPicture& pic) const;
 
   /*!
+   * \brief Whether \p pic differs from this picture in nothing IsSameParams() compares but its
+   * size and display size.
+   */
+  bool IsSameParamsExceptSize(const VideoPicture& pic) const;
+
+  /*!
    * \brief Whether a picture of \p format is full range when its stream gives \p range. RGB with
    * no range given is full range.
    */

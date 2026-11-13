@@ -198,6 +198,21 @@ bool CRendererShaders::Configure(const VideoPicture& picture, float fps, unsigne
   return false;
 }
 
+bool CRendererShaders::ChangePictureSize(const VideoPicture& picture)
+{
+  // Configure() decides from a decoder's texture whether it is drawn as it is or copied first
+  if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return false;
+
+  Flush(false);
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
+  ResetScaler();
+
+  return CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, false,
+                                  CalcIntermediateTargetFormat());
+}
+
 void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
 {
   if (!m_colorShader)

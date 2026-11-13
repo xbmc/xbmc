@@ -88,6 +88,7 @@ void CRenderManager::SetVideoSettings(const CVideoSettings& settings)
 
 bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned int orientation, int buffers)
 {
+  bool sizeOnly = false;
 
   // check if something has changed
   {
@@ -113,6 +114,10 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
       }
       return true;
     }
+
+    sizeOnly = m_pRenderer != nullptr && m_picture.IsSameParamsExceptSize(picture) &&
+               m_orientation == orientation && m_NumberBuffers == buffers && m_fps == fps &&
+               !m_pRenderer->ConfigChanged(picture);
   }
 
   CLog::Log(LOGDEBUG,
@@ -150,6 +155,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_dvdClock.SetVsyncAdjust(0);
     m_pConfigPicture = std::make_unique<VideoPicture>();
     m_pConfigPicture->CopyRef(picture);
+    m_configSizeOnly = sizeOnly;
 
     std::unique_lock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -177,7 +183,12 @@ bool CRenderManager::Configure()
   std::unique_lock lock2(m_presentlock);
   std::unique_lock lock3(m_datalock);
 
-  if (m_pRenderer)
+  const bool keepRenderer =
+      m_configSizeOnly && m_pRenderer && m_pRenderer->ChangePictureSize(*m_pConfigPicture);
+
+  if (keepRenderer)
+    CLog::Log(LOGDEBUG, "CRenderManager::Configure - renderer kept for the new picture size");
+  else if (m_pRenderer)
   {
     DeleteRenderer();
   }
@@ -190,7 +201,7 @@ bool CRenderManager::Configure()
   }
 
   m_pRenderer->SetVideoSettings(m_playerPort->GetVideoSettings());
-  bool result = m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_orientation);
+  bool result = keepRenderer || m_pRenderer->Configure(*m_pConfigPicture, m_fps, m_orientation);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
@@ -222,7 +233,9 @@ bool CRenderManager::Configure()
       m_free.push_back(i);
 
     m_bRenderGUI = true;
-    m_bTriggerUpdateResolution = true;
+    // A display mode is chosen by size too, and another size alone is no reason to change it
+    if (!keepRenderer)
+      m_bTriggerUpdateResolution = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
     m_lateframes = -1;

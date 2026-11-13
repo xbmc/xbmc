@@ -121,6 +121,11 @@ public:
 
   virtual CRenderInfo GetRenderInfo();
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation);
+  /*!
+   * \brief Take pictures of another size from here on, keeping all else Configure() set up.
+   * \return false if the renderer has to be configured again for them
+   */
+  virtual bool ChangePictureSize(const VideoPicture& picture) { return false; }
   virtual bool Supports(ESCALINGMETHOD method) const = 0;
   virtual bool Supports(ERENDERFEATURE feature) const;
 
