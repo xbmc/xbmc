@@ -20,6 +20,7 @@
 
 #include "platform/linux/sse4/DllLibSSE4.h"
 
+#include <array>
 #include <cstdint>
 #include <list>
 #include <map>
@@ -697,6 +698,9 @@ protected:
   int m_forwardRefs, m_backwardRefs;
   int m_currentIdx;
   int m_frameCount;
+  double m_lastAddedPts;
+  std::array<double, 4> m_frametimes;
+  unsigned int m_frametimeCount;
   EINTERLACEMETHOD m_vppMethod;
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
