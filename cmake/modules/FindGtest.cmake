@@ -18,8 +18,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     if(WIN32 OR WINDOWS_STORE)
       set(CMAKE_OPTIONS -Dgtest_force_shared_crt=ON)
 
-      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-stl_algorithms_cxxflag.patch"
-                  "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/02-win-pdb_install_paths.patch")
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-stl_algorithms_cxxflag.patch")
       generate_patchcommand("${patches}")
       unset(patches)
     endif()
