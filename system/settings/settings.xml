@@ -3935,6 +3935,11 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="powermanagement.dpmsstopsvideo" type="boolean" label="14131" help="36060">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="powermanagement.restartplayer" type="boolean" label="1451" help="36416">
           <level>1</level>
           <default>true</default>
