@@ -1,6 +1,7 @@
 set(SOURCES TestContentGeometrySampler.cpp
             TestDVDSubtitlesLibass.cpp
             TestLiveGeometryMonitor.cpp
+            TestOverlayRendererUtil.cpp
             TestRadioRDSCountries.cpp
             TestSubtitleMargins.cpp
             TestVideoCodecPictureFormat.cpp
