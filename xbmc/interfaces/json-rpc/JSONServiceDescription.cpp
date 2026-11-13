@@ -1298,7 +1298,7 @@ unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 JsonRpcMethod::JsonRpcMethod()
   : missingReference(),
     name(),
-    method(NULL),
+    method(),
     description(),
     parameters(),
     returns(new JSONSchemaTypeDefinition())
@@ -1578,7 +1578,7 @@ bool CJSONServiceDescription::addMethod(const std::string &jsonMethod, MethodCal
     return false;
   }
 
-  if (method == NULL)
+  if (!method)
   {
     unsigned int size = sizeof(m_methodMaps) / sizeof(JsonRpcMethodMap);
     for (unsigned int index = 0; index < size; index++)
@@ -1590,7 +1590,7 @@ bool CJSONServiceDescription::addMethod(const std::string &jsonMethod, MethodCal
       }
     }
 
-    if (method == NULL)
+    if (!method)
     {
       CLog::Log(LOGERROR, "JSONRPC: Missing implementation for method \"{}\"", methodName);
       return false;
@@ -1688,7 +1688,7 @@ bool CJSONServiceDescription::AddType(const std::string &jsonType)
 
 bool CJSONServiceDescription::AddMethod(const std::string &jsonMethod, MethodCall method)
 {
-  if (method == NULL)
+  if (!method)
   {
     CLog::Log(LOGERROR, "JSONRPC: Invalid JSONRPC method implementation");
     return false;
@@ -1699,7 +1699,7 @@ bool CJSONServiceDescription::AddMethod(const std::string &jsonMethod, MethodCal
 
 bool CJSONServiceDescription::AddBuiltinMethod(const std::string &jsonMethod)
 {
-  return addMethod(jsonMethod, NULL);
+  return addMethod(jsonMethod, {});
 }
 
 bool CJSONServiceDescription::AddNotification(const std::string &jsonNotification)

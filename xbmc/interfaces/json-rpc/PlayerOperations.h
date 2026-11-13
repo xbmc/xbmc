@@ -44,58 +44,38 @@ namespace JSONRPC
   class CPlayerOperations : CFileItemHandler
   {
   public:
-    static JSONRPC_STATUS GetActivePlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetPlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetItem(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetActivePlayers(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetPlayers(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetProperties(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetItem(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS PlayPause(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Stop(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetAudioDelay(const std::string& method,
-                                        ITransportLayer* transport,
-                                        IClient* client,
-                                        const CVariant& parameterObject,
-                                        CVariant& result);
-    static JSONRPC_STATUS SetAudioDelay(const std::string& method,
-                                        ITransportLayer* transport,
-                                        IClient* client,
-                                        const CVariant& parameterObject,
-                                        CVariant& result);
-    static JSONRPC_STATUS NotifyAudioChainReady(const std::string& method,
-                                                ITransportLayer* transport,
-                                                IClient* client,
-                                                const CVariant& parameterObject,
-                                                CVariant& result);
-    static JSONRPC_STATUS SetSpeed(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetTempo(const std::string& method,
-                                   ITransportLayer* transport,
-                                   IClient* client,
-                                   const CVariant& parameterObject,
-                                   CVariant& result);
-    static JSONRPC_STATUS Seek(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS PlayPause(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Stop(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetAudioDelay(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetAudioDelay(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS NotifyAudioChainReady(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetSpeed(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetTempo(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Seek(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Move(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Zoom(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Rotate(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Move(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Zoom(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetViewMode(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetViewMode(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Rotate(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Open(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GoTo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetShuffle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetRepeat(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetPartymode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Open(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GoTo(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetShuffle(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetRepeat(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetPartymode(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS SetAudioStream(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS AddSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetVideoStream(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS SetAudioStream(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS AddSubtitle(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetSubtitle(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetVideoStream(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS GetChapters(const std::string& method,
-                                      ITransportLayer* transport,
-                                      IClient* client,
-                                      const CVariant& parameterObject,
-                                      CVariant& result);
+    static JSONRPC_STATUS GetChapters(const CVariant& parameterObject, CVariant& result);
 
   private:
     static int GetActivePlayers();

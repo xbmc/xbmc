@@ -21,10 +21,6 @@ namespace JSONRPC
 class CDatabaseOperations
 {
 public:
-  static JSONRPC_STATUS GetDatabaseNameByType(const std::string& method,
-                                              ITransportLayer* transport,
-                                              IClient* client,
-                                              const CVariant& parameterObject,
-                                              CVariant& result);
+  static JSONRPC_STATUS GetDatabaseNameByType(const CVariant& parameterObject, CVariant& result);
 };
 } // namespace JSONRPC
