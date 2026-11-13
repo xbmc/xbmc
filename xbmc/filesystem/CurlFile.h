@@ -63,6 +63,8 @@ namespace XFILE
       bool Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize = NULL);
       bool IsInternet();
       void Cancel();
+      //! \brief Give up the request in flight, as Cancel() does, without waiting for it to close
+      void RequestCancel();
       void Reset();
       void SetUserAgent(const std::string& sUserAgent) { m_userAgent = sUserAgent; }
       void SetCustomRequest(const std::string &request) { m_customrequest = request; }

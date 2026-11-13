@@ -106,10 +106,13 @@ public:
   *   \param[in] strMovie The full path of the video file.
   *   \param[out] vecSubtitles The full paths of the subtitle files found.
   *   \param[in] tag The video's info, if any, so an episode's own subtitles are found
+  *   \param[in] listingFlags added to the flags the folders are listed with, eg.
+  *   DIR_FLAG_READ_CACHE by a scan that has just listed them
   */
   static void ScanForExternalSubtitles(const std::string& strMovie,
                                        std::vector<std::string>& vecSubtitles,
-                                       const CVideoInfoTag* tag = nullptr);
+                                       const CVideoInfoTag* tag = nullptr,
+                                       int listingFlags = 0);
 
   /** \brief Retrieves stream info of external associated files, e.g., subtitles, for a given video.
   *   \param[in] videoPath The full path of the video file.
@@ -192,8 +195,10 @@ public:
   static bool IsInPlaylistsFolder(const std::string& path, KODI::MEDIA::MediaSection section);
 
   static void GetSkinThemes(std::vector<std::string>& vecTheme);
-  static void GetRecursiveListing(const std::string& strPath, CFileItemList& items, const std::string& strMask, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
-  static void GetRecursiveDirsListing(const std::string& strPath, CFileItemList& items, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
+  static void GetRecursiveListing(const std::string& strPath,
+                                  CFileItemList& items,
+                                  const std::string& strMask,
+                                  unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void ForceForwardSlashes(std::string& strPath);
 
   static double AlbumRelevance(const std::string& strAlbumTemp1, const std::string& strAlbum1, const std::string& strArtistTemp1, const std::string& strArtist1);
@@ -331,7 +336,8 @@ protected:
   static void GetItemsToScan(const std::string& videoPath,
                              const std::string& item_exts,
                              const std::vector<std::string>& sub_dirs,
-                             CFileItemList& items);
+                             CFileItemList& items,
+                             int listingFlags = 0);
 
   /** \brief Searches for associated files of a given video.
     *   \param[in]  videoName The name of the video file.
@@ -342,7 +348,8 @@ protected:
   static void ScanPathsForAssociatedItems(const std::string& videoName,
                                           CFileItemList& items,
                                           const std::vector<std::string>& item_exts,
-                                          std::vector<std::string>& associatedFiles);
+                                          std::vector<std::string>& associatedFiles,
+                                          int listingFlags = 0);
 
   /** \brief Determines if the given path is an archive and scans it for associated files of a given video.
     *   \param path The path of the file.
@@ -356,7 +363,8 @@ protected:
                                                        const std::string& videoName,
                                                        const std::vector<std::string>& item_exts,
                                                        std::vector<std::string>& associatedFiles,
-                                                       int depth = 0);
+                                                       int depth = 0,
+                                                       int listingFlags = 0);
 
   /** \brief Searches in an archive for associated files of a given video.
     *   \param[in]  strArchivePath The full path of the archive.
@@ -369,5 +377,6 @@ protected:
                                            const std::string& videoNameNoExt,
                                            const std::vector<std::string>& item_exts,
                                            std::vector<std::string>& associatedFiles,
-                                           int depth);
+                                           int depth,
+                                           int listingFlags = 0);
 };

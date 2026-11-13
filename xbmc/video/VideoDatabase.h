@@ -18,6 +18,7 @@
 #include "utils/UrlOptions.h"
 
 #include <array>
+#include <atomic>
 #include <functional>
 #include <map>
 #include <memory>
@@ -670,6 +671,47 @@ public:
                                       bool& foundDirectly,
                                       ScraperCache* scraperCache = nullptr);
 
+  //! \brief What a row of the path table stores for scanning a path
+  struct PathScanRow
+  {
+    int idPath{-1};
+    std::string path;
+    std::string content;
+    std::string scraper;
+    std::string settings;
+    int scanRecursive{0};
+    bool useFolderNames{false};
+    bool noUpdate{false};
+    bool exclude{false};
+    bool allAudio{false};
+    std::string hash;
+  };
+
+  //! \brief The row stored for a path, as GetScraperForPath() looks it up
+  using PathScanRowLookup = std::function<std::optional<PathScanRow>(const std::string& path)>;
+
+  /*! \brief GetScraperForPath(), with the rows of the path table it walks looked up by \p lookup
+   rather than queried one at a time. A scan loads them once.
+   */
+  static ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             KODI::VIDEO::SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache);
+
+  /*! \brief The row stored for a path
+   \param path the path, with a slash at its end
+   \return the row, or nullopt if the path isn't stored
+   */
+  std::optional<PathScanRow> GetPathScanRow(const std::string& path);
+
+  /*! \brief The rows stored for a path and the paths below it, as GetSubPaths() finds them
+   \param basepath the path
+   \param rows [out] the rows
+   \return true if the rows were read, which may be none
+   */
+  bool GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows);
+
   /*! \brief Retrieve the content type of videos in the given path
    If content is set on the folder, we return the given content type, except in the case of tvshows,
    where we first check for whether we have episodes directly in the path (thus return episodes) or whether
@@ -876,9 +918,13 @@ public:
   bool HasContent(VideoDbContentType type);
   bool HasSets() const;
 
+  /*!
+   \param stop if given, whether to give the clean up, as its progress dialog's cancel does
+   */
   void CleanDatabase(CGUIDialogProgressBarHandle* handle = nullptr,
                      const std::set<int>& paths = std::set<int>(),
-                     bool showProgress = true);
+                     bool showProgress = true,
+                     const std::atomic<bool>* stop = nullptr);
 
   enum class FileExistsAction
   {
@@ -1170,6 +1216,40 @@ public:
    */
   int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
 
+  //! \brief The movies the files of a folder are versions of, by file name
+  struct FolderMovies
+  {
+    std::string folder;
+    std::map<std::string, int, std::less<>> byFile;
+  };
+
+  /*!
+   \brief The movies the files of a folder are versions of, read at once rather than for each file
+   \param folder the folder, with a slash at its end
+   */
+  FolderMovies GetFolderMovies(const std::string& folder);
+
+  /*!
+   \brief As GetMovieId(), from the movies of the file's folder where it is one of them
+   \param known the movies of a folder, which may not be the file's
+   */
+  int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
+
+  /*!
+   \brief Give a file the date it is added to the library with where nothing gives it one, read
+   (ReadDateAdded()) before the transaction it is added in, so that the file system isn't asked
+   while the database is held
+   \param fileAndPath the file, as it is added
+   */
+  void PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded);
+  void ForgetPreparedDatesAdded();
+
+  //! \brief The date a file is added with where nothing gives it one, read from the file system
+  static CDateTime ReadDateAdded(const std::string& fileAndPath)
+  {
+    return GetDateAdded(fileAndPath);
+  }
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t
@@ -1443,4 +1523,7 @@ private:
   static void AnnounceRemove(KODI::MEDIA::TYPE content, int id, bool scanning = false);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  //! The dates added of files about to be added \sa PrepareDateAdded
+  std::map<std::string, CDateTime, std::less<>> m_preparedDatesAdded;
 };

@@ -33,19 +33,27 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/Artwork.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+#include "video/tags/IVideoInfoTagLoader.h"
 
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
+#include <functional>
+#include <future>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -177,14 +185,39 @@ public:
 
   //! Looks the videos up with this scraper, which the add-on manager doesn't know of. The path's
   //! scraper is looked for here before it is asked.
+  using CVideoInfoScanner::CanLookUpMovieAlongside;
+
+  //! The folders a scan would plan with \p directory, itself included, \p budget of them below it
+  size_t FoldersPlannedWith(const std::string& directory, size_t budget)
+  {
+    const std::unique_ptr<DirectoryScan> scan{PlanDirectory(directory)};
+    if (!scan || !CanScanAlongside(*scan))
+      return 0;
+    PlanAhead(*scan, budget);
+    return CountPlanned(*scan);
+  }
+
+  //! The progress shown once \p directory, which the scan was asked to scan, is listed and \p share
+  //! of the first folder it holds is done
+  float ProgressOnceListed(const std::string& directory, float share)
+  {
+    m_progress.Start({directory}, directory);
+    const std::unique_ptr<DirectoryScan> scan{PlanDirectory(directory)};
+    return m_progress.Percentage(share);
+  }
+
   void UseScraper(const ADDON::ScraperPtr& scraper)
   {
     m_scraperCache.try_emplace(scraper->ID() + ADDON::TranslateContent(scraper->Content()),
                                scraper);
   }
 
-  //! As Start() and Process() do
-  void Scan(const std::string& directory)
+  using CVideoInfoScanner::FolderTime;
+  using CVideoInfoScanner::ScannedSubfolders;
+  using CVideoInfoScanner::Snapshot;
+
+  //! As Start() and Process() do, but for the clean where \p stoppedBeforeTheClean
+  void Scan(const std::string& directory, bool stoppedBeforeTheClean = false)
   {
     m_pathsToScan.insert(directory);
     std::vector<std::pair<int, std::string>> subPaths;
@@ -196,6 +229,7 @@ public:
     {
       // A copy, as DoScan() first removes the path from the set
       const std::string folder{*m_pathsToScan.begin()};
+      m_progress.Start(m_pathsToScan, folder);
       DoScan(folder);
       std::erase_if(m_pathsToScan,
                     [this, &folder](const std::string& path)
@@ -208,7 +242,7 @@ public:
                     });
     }
 
-    if (m_bClean)
+    if (m_bClean && !stoppedBeforeTheClean)
       m_database.CleanDatabase(nullptr, m_pathsToClean, false);
   }
 
@@ -230,12 +264,19 @@ public:
   }
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
+  using CVideoInfoScanner::FolderSettings;
+  using CVideoInfoScanner::ShowDiscs;
+  using CVideoInfoScanner::SourceName;
+  using CDownloads = CVideoInfoScanner::CDownloads;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
   using ScanSummary = CVideoInfoScanner::ScanSummary;
 
   const ScanSummary& Summary() const { return m_summary; }
 
   CVideoDatabase& Database() { return m_database; }
+
+  //! The progress of the whole scan, as its bar shows it
+  float Progress() { return m_progress.Percentage(); }
 };
 
 class TestVideoInfoScanner : public ::testing::Test
@@ -298,6 +339,10 @@ protected:
         m_fastHash;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors =
         m_ignoreErrors;
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps =
+        m_excludes;
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+        CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, m_extractFlags);
     if (!m_installedScraper.empty())
     {
       CServiceBroker::GetAddonMgr().UnloadAddon(SCRAPER_ID);
@@ -391,14 +436,14 @@ protected:
       BlurayRip(folder);
     Scan();
     ASSERT_EQ(1, CountMovies());
-    std::string first;
-    ASSERT_TRUE(m_db.GetPathHash(m_root, first));
+    const std::string first{Record(m_root)};
 
     Scan();
 
-    std::string second;
-    ASSERT_TRUE(m_db.GetPathHash(m_root, second));
-    EXPECT_EQ(first, second);
+    // What the listing held. The folder's time is read again where the file system updated it late.
+    const std::string second{Record(m_root)};
+    EXPECT_EQ(StringUtils::Split(first, '|')[3], StringUtils::Split(second, '|')[3]);
+    EXPECT_EQ(StringUtils::Split(first, '|')[1], StringUtils::Split(second, '|')[1]);
   }
 
   //! A bluray folder rip, with the backup copy of its index that a BDMV folder holds
@@ -423,6 +468,100 @@ protected:
         std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
     std::filesystem::last_write_time(path,
                                      std::filesystem::last_write_time(path) + std::chrono::days{1});
+  }
+
+  //! Sets a folder's modified time explicitly, a day back. Windows gives the time a folder's parent
+  //! lists it with from the parent's index, which it updates late after a file is added, but at
+  //! once when the time is set.
+  static void Settle(const std::string& folder)
+  {
+    const std::filesystem::path path{
+        std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
+    std::filesystem::last_write_time(path,
+                                     std::filesystem::last_write_time(path) - std::chrono::days{1});
+  }
+
+  //! Makes a change in a folder and puts the folder's modified time back, as it was before the
+  //! change, so that the folder looks as it did to a scan deciding from its time alone
+  static void KeepingItsTime(const std::string& folder, const std::function<void()>& change)
+  {
+    const std::filesystem::path path{
+        std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
+    const auto time{std::filesystem::last_write_time(path)};
+    change();
+    std::filesystem::last_write_time(path, time);
+  }
+
+  //! What the scan recorded for a folder
+  std::string Record(const std::string& folder)
+  {
+    std::string record;
+    EXPECT_TRUE(m_db.GetPathHash(folder, record));
+    return record;
+  }
+
+  //! Records something else for a folder
+  void SetRecord(const std::string& folder, const std::string& record)
+  {
+    ASSERT_TRUE(m_db.SetPathHash(folder, record));
+  }
+
+  //! The record of a folder with one of its fields replaced
+  std::string RecordWithField(const std::string& folder, size_t field, const std::string& value)
+  {
+    std::vector<std::string> fields{StringUtils::Split(Record(folder), '|')};
+    EXPECT_EQ(5U, fields.size());
+    if (field < fields.size())
+      fields[field] = value;
+    return StringUtils::Join(fields, "|");
+  }
+
+  //! Scans the source holding a movie, makes \p change, adds a second movie without moving the
+  //! source's time, and scans again
+  //! \return the second movie's file
+  std::string MovieAddedKeepingItsTime(const std::function<void()>& change = {})
+  {
+    Nfo(m_root, "First.nfo", "First");
+    File(m_root, "First.mkv");
+    Settle(m_root);
+    Scan();
+    EXPECT_EQ(1, CountMovies());
+    EXPECT_TRUE(Record(m_root).starts_with("2|"));
+    if (change)
+      change();
+
+    std::string second;
+    KeepingItsTime(m_root,
+                   [this, &second]
+                   {
+                     Nfo(m_root, "Second.nfo", "Second");
+                     second = File(m_root, "Second.mkv");
+                   });
+    Scan();
+    return second;
+  }
+
+  //! The folder holding .nomedia is the only folder of its parent. Deleting the file changes the
+  //! folder's time, not its parent's.
+  void NomediaFileDeleted(bool fastHash)
+  {
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash =
+        fastHash;
+    const std::string folder{Folder(m_root, "Film (2010)")};
+    FolderMovie(folder, "Film (2010).mkv");
+    const std::string noMedia{File(folder, ".nomedia")};
+    Scan();
+    ASSERT_EQ(0, CountMovies());
+
+    KeepingItsTime(m_root,
+                   [&noMedia, &folder]
+                   {
+                     ASSERT_TRUE(XFILE::CFile::Delete(noMedia));
+                     Touch(folder);
+                   });
+    Scan();
+
+    EXPECT_EQ(1, CountMovies());
   }
 
   //! \return What the scan did
@@ -529,6 +668,13 @@ protected:
   {
     Found(title);
     Details(title, "<error/>");
+  }
+
+  //! The title is found, with details titling it "<title> from the scraper"
+  static void FoundFromTheScraper(const std::string& title)
+  {
+    Found(title);
+    Details(title, "<details><title>" + title + " from the scraper</title></details>");
   }
 
   bool IsExtraOf(const std::string& path, int idMovie)
@@ -693,6 +839,11 @@ protected:
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash};
   const bool m_ignoreErrors{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors};
+  const std::vector<std::string> m_excludes{CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_moviesExcludeFromScanRegExps};
+  const bool m_extractFlags{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)};
   ADDON::AddonInfoPtr m_scraperInfo;
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
   std::string m_otherScraper;
@@ -787,6 +938,65 @@ TEST_F(TestVideoInfoScanner, AnUnchangedFolderAddsNothingAgain)
   EXPECT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM files"));
 }
 
+// A folder without folders to scan is decided by its modified time, without listing it
+TEST_F(TestVideoInfoScanner, AFolderWhoseTimeHasNotMovedIsNotListedAgain)
+{
+  EXPECT_EQ(-1, m_db.GetMovieId(MovieAddedKeepingItsTime()));
+}
+
+// A hash stored before folders were recorded doesn't tell what the folder held
+TEST_F(TestVideoInfoScanner, AFolderHashedBeforeRecordsIsListedAgain)
+{
+  const std::string second{
+      MovieAddedKeepingItsTime([this] { SetRecord(m_root, "0123456789abcdef0123456789abcdef"); })};
+
+  EXPECT_GT(m_db.GetMovieId(second), 0);
+  EXPECT_TRUE(Record(m_root).starts_with("2|"));
+}
+
+// A folder scanned with other settings may have been scanned for less
+TEST_F(TestVideoInfoScanner, AFolderScannedWithOtherSettingsIsListedAgain)
+{
+  auto& excludes{CServiceBroker::GetSettingsComponent()
+                     ->GetAdvancedSettings()
+                     ->m_moviesExcludeFromScanRegExps};
+  std::string before;
+  const std::string second{MovieAddedKeepingItsTime(
+      [this, &before, &excludes]
+      {
+        before = Record(m_root);
+        excludes.emplace_back("matches-nothing-in-this-test");
+      })};
+
+  EXPECT_GT(m_db.GetMovieId(second), 0);
+  EXPECT_NE(StringUtils::Split(before, '|')[1], StringUtils::Split(Record(m_root), '|')[1]);
+}
+
+// A time that isn't known can't show that a folder is unchanged
+TEST_F(TestVideoInfoScanner, AFolderRecordedWithoutItsTimeIsListedAgain)
+{
+  const std::string second{
+      MovieAddedKeepingItsTime([this] { SetRecord(m_root, RecordWithField(m_root, 2, "?")); })};
+
+  EXPECT_GT(m_db.GetMovieId(second), 0);
+  EXPECT_NE("?", StringUtils::Split(Record(m_root), '|')[2]);
+}
+
+// A folder is recorded before the folder holding it, and is linked to it all the same
+TEST_F(TestVideoInfoScanner, AFolderIsLinkedToTheFolderHoldingIt)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  const std::string empty{Folder(collection, "Empty")};
+
+  Scan();
+
+  const int idCollection{m_db.GetPathId(collection)};
+  ASSERT_GT(idCollection, 0);
+  ASSERT_GT(m_db.GetPathId(empty), 0);
+  EXPECT_EQ(idCollection, m_db.GetSingleValueInt(m_db.PrepareSQL(
+                              "SELECT idParentPath FROM path WHERE strPath='%s'", empty.c_str())));
+}
+
 TEST_F(TestVideoInfoScanner, AMovieDeletedIsCleanedOnUpdate)
 {
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -799,6 +1009,66 @@ TEST_F(TestVideoInfoScanner, AMovieDeletedIsCleanedOnUpdate)
   Scan(false, true);
 
   EXPECT_EQ(0, CountMovies());
+}
+
+// So that it is looked at again once it can be, rather than passed over by its time
+TEST_F(TestVideoInfoScanner, AFolderThatCantBeListedLosesItsRecord)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  Scan();
+  ASSERT_TRUE(Record(folder).starts_with("2|"));
+
+  ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(folder));
+  Scan(false, false, folder);
+
+  EXPECT_EQ("", Record(folder));
+}
+
+// A folder's time is the one read before it was listed, so that its record never holds a later
+// time than its listing: a video added between the two would otherwise be passed over by its time
+TEST_F(TestVideoInfoScanner, AFoldersTimeIsTheOneReadBeforeItWasListed)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  Settle(folder);
+  const std::optional<int64_t> before{ReadModifiedTime(folder)};
+  ASSERT_TRUE(before);
+
+  TestScanner scanner{m_settings};
+  ASSERT_TRUE(scanner.Snapshot(folder));
+  Touch(folder);
+  // Nor is it the time a listing of its parent taken since gives
+  const auto parent{scanner.Snapshot(m_root)};
+  ASSERT_TRUE(parent);
+  scanner.ScannedSubfolders(*parent, {});
+
+  EXPECT_EQ(before, scanner.FolderTime(folder));
+}
+
+// A movie deleted from a folder, leaving it without a video, is cleaned by the scan after one
+// stopped before its clean
+TEST_F(TestVideoInfoScanner, AMovieDeletedIsCleanedByTheScanAfterOneStoppedBeforeItsClean)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string other{Folder(m_root, "Other (2011)")};
+  FolderMovie(other, "Other (2011).mkv");
+  Scan();
+  ASSERT_EQ(2, CountMovies());
+
+  ASSERT_TRUE(XFILE::CFile::Delete(movie));
+  Touch(folder);
+  {
+    TestScanner stopped{m_settings, false, true};
+    stopped.Scan(m_root, true);
+  }
+  ASSERT_EQ(2, CountMovies());
+
+  // A change in another folder, so that the clean is of the folders the scan queued, not of all
+  File(other, "Notes.txt");
+  Touch(other);
+  Scan(false, true);
+  EXPECT_EQ(1, CountMovies());
 }
 
 TEST_F(TestVideoInfoScanner, AFileStackIsOneMovie)
@@ -836,6 +1106,35 @@ TEST_F(TestVideoInfoScanner, AFolderHoldingADiscRipKeepsItsHash)
 TEST_F(TestVideoInfoScanner, AFolderHoldingADvdRipKeepsItsHash)
 {
   FolderHoldingADiscRipKeepsItsHash(true);
+}
+
+// A folder holding nothing but an archive, whose movie the scraper didn't know, isn't recorded, so
+// that the next scan looks the movie up again, as it does a movie file the scraper didn't know
+TEST_F(TestVideoInfoScanner, AMovieInAnArchiveTheScraperDidntKnowIsLookedUpAgain)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  ScraperFile("search-Film.xml", "<results></results>");
+  const std::string folder{Folder(m_root, "Film")};
+  // A zip of an empty Film.mkv, compressed: an archive of one stored video is listed as the video
+  constexpr unsigned char zip[]{
+      0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x21, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
+      0x46, 0x69, 0x6c, 0x6d, 0x2e, 0x6d, 0x6b, 0x76, 0x03, 0x00, 0x50, 0x4b, 0x01, 0x02, 0x14,
+      0x00, 0x14, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x46, 0x69, 0x6c, 0x6d,
+      0x2e, 0x6d, 0x6b, 0x76, 0x50, 0x4b, 0x05, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01,
+      0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00};
+  File(folder, "Film.zip", std::string(reinterpret_cast<const char*>(zip), sizeof(zip)));
+  Settle(folder);
+  Scan();
+  ASSERT_EQ(0, CountMovies());
+
+  Found("Film");
+  Details("Film", "<details><title>Film</title></details>");
+  Scan();
+
+  EXPECT_EQ(1, CountMovies());
 }
 
 // A disc joining the movie of another disc of it makes the movie span the discs, so it isn't
@@ -1055,6 +1354,16 @@ TEST_F(TestVideoInfoScanner, AFolderHoldingANomediaFileIsSkipped)
   EXPECT_EQ(0, CountMovies());
 }
 
+TEST_F(TestVideoInfoScanner, AFolderWhoseNomediaFileIsDeletedIsScanned)
+{
+  NomediaFileDeleted(true);
+}
+
+TEST_F(TestVideoInfoScanner, AFolderWhoseNomediaFileIsDeletedIsScannedWithFastHashingOff)
+{
+  NomediaFileDeleted(false);
+}
+
 TEST_F(TestVideoInfoScanner, ATrailerIsTheMoviesTrailerNotAMovie)
 {
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -1113,6 +1422,229 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film from the scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// The movies of a folder are looked up alongside each other, and each is added with its own
+// details, one whose search failed among them
+TEST_F(TestVideoInfoScanner, TheMoviesOfAFolderAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  std::vector<std::string> movies;
+  constexpr int count{8};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    if (movie == 4)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    movies.emplace_back(File(m_root, name + ".mkv"));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(movies[movie - 1])};
+    if (movie == 4)
+    {
+      EXPECT_EQ(-1, idMovie);
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
+  // A failed search leaves the folder to be looked at again
+  EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+TEST_F(TestVideoInfoScanner, ADiscIsLookedUpAlongsideOtherMovies)
+{
+  const TestScanner scanner{m_settings};
+
+  EXPECT_TRUE(
+      scanner.CanLookUpMovieAlongside(CFileItem{DvdRip(Folder(m_root, "Film (2010)")), false}));
+  EXPECT_TRUE(scanner.CanLookUpMovieAlongside(
+      CFileItem{URIUtils::AddFileToFolder(m_root, "Other (2011).iso"), false}));
+}
+
+TEST_F(TestVideoInfoScanner, TheDiscsOfFoldersBesideEachOtherAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  std::vector<std::string> folders;
+  std::vector<std::string> discs;
+  constexpr int count{4};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    if (movie == 2)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    discs.emplace_back(DvdRip(folders.back()));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(discs[movie - 1])};
+    if (movie == 2)
+    {
+      EXPECT_EQ(-1, idMovie);
+      // A failed search leaves its folder to be looked at again
+      std::string record;
+      EXPECT_FALSE(m_db.GetPathHash(folders[movie - 1], record) && record.starts_with("2|"));
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
+}
+
+// Folders beside each other are looked up in bounded batches, so that a first scan of a large
+// source doesn't hold every folder before its first movie is added
+TEST_F(TestVideoInfoScanner, TheMoviesOfMoreFoldersThanAreLookedUpTogetherAreAllAdded)
+{
+  constexpr int count{70};
+  std::vector<std::string> folders;
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    FolderMovie(folders.back(), name + ".mkv");
+  }
+
+  Scan();
+
+  EXPECT_EQ(count, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+    EXPECT_TRUE(Record(folders[movie - 1]).starts_with("2|")) << movie;
+}
+
+// The movies of the folders beside each other are looked up alongside each other, each folder is
+// recorded once its own movie is added, and a folder that holds another is scanned in its turn
+TEST_F(TestVideoInfoScanner, TheMoviesOfFoldersBesideEachOtherAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  std::vector<std::string> folders;
+  std::vector<std::string> movies;
+  constexpr int count{6};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    if (movie == 3)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    movies.emplace_back(File(folders.back(), name + ".mkv"));
+  }
+  // A folder holding another folder of movies, scanned once those before it are
+  const std::string collection{Folder(folders[3], "Collection")};
+  Nfo(collection, "Inner.nfo", "Inner");
+  const std::string inner{File(collection, "Inner.mkv")};
+  // A movie folder with extras is still one holding no folder to scan
+  const std::string trailer{File(Folder(folders[4], "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  EXPECT_EQ(count, CountMovies());
+  EXPECT_GT(m_db.GetMovieId(inner), 0);
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(movies[movie - 1])};
+    if (movie == 3)
+    {
+      EXPECT_EQ(-1, idMovie);
+      // A failed search leaves its folder to be looked at again
+      std::string record;
+      EXPECT_FALSE(m_db.GetPathHash(folders[movie - 1], record) && record.starts_with("2|"));
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+    EXPECT_TRUE(Record(folders[movie - 1]).starts_with("2|")) << movie;
+  }
+  EXPECT_TRUE(IsExtraOf(trailer, m_db.GetMovieId(movies[4])));
+}
+
+// The movies of the folders a movie folder holds are looked up with those of the folders beside it,
+// and added in their turn, so that the library is written to in the order of the folders
+TEST_F(TestVideoInfoScanner, TheMoviesOfTheFoldersInAFolderAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  const std::string collection{Folder(m_root, "Film2")};
+  const std::vector<std::pair<std::string, std::string>> movies{
+      {File(Folder(m_root, "Film1"), "Film1.mkv"), "Film1"},
+      {File(Folder(collection, "Alpha"), "Alpha.mkv"), "Alpha"},
+      {File(Folder(collection, "Beta"), "Beta.mkv"), "Beta"},
+      {File(Folder(m_root, "Film3"), "Film3.mkv"), "Film3"}};
+  for (const auto& [movie, name] : movies)
+    FoundFromTheScraper(name);
+
+  Scan();
+
+  int previous{0};
+  for (const auto& [movie, name] : movies)
+  {
+    const int idMovie{m_db.GetMovieId(movie)};
+    ASSERT_GT(idMovie, previous) << movie;
+    EXPECT_EQ(name + " from the scraper", m_db.GetMovieTitle(idMovie));
+    previous = idMovie;
+  }
+}
+
+// A folder planned ahead with the folder holding it isn't planned again in its turn, which would
+// look the movies below it up twice: an update finds each folder of a tree unchanged once
+TEST_F(TestVideoInfoScanner, AnUpdateFindsEachFolderOfATreeUnchangedOnce)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  const std::string series{Folder(collection, "Series")};
+  const std::string film{Folder(series, "Film (2010)")};
+  FolderMovie(film, "Film (2010).mkv");
+  // A folder to scan, so that the update lists the film's folder too
+  const std::string other{Folder(film, "Other")};
+  for (const std::string& folder : {other, film, series, collection})
+    Settle(folder);
+  Scan();
+
+  const auto summary{Scan()};
+
+  EXPECT_EQ(1, CountMovies());
+  // The source, the collection, the series, the film's folder and the folder it holds
+  EXPECT_EQ(5u, summary.unchangedDirectories);
+}
+
+// The bar runs once over the whole scan, to its end, folders found on the way and unchanged ones
+// skipped included
+TEST_F(TestVideoInfoScanner, TheProgressOfAScanEndsAtItsEnd)
+{
+  for (const std::string name : {"Film1", "Film2", "Film3"})
+    FolderMovie(Folder(m_root, name), name + ".mkv");
+  FolderMovie(Folder(Folder(m_root, "Collection"), "Film4"), "Film4.mkv");
+
+  for (int scan = 0; scan < 2; ++scan)
+  {
+    TestScanner scanner{m_settings};
+    scanner.Scan(m_root);
+    EXPECT_FLOAT_EQ(100.f, scanner.Progress()) << scan;
+  }
+  EXPECT_EQ(4, CountMovies());
+}
+
+// A folder holding nothing but folders takes no share of the bar, which runs over the folders it
+// holds instead
+TEST_F(TestVideoInfoScanner, AFolderOfFoldersTakesNoShareOfTheProgress)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  File(collection, "Film1 (2001).mkv");
+  File(collection, "Film2 (2002).mkv");
+
+  EXPECT_FLOAT_EQ(50.f, TestScanner{m_settings}.ProgressOnceListed(m_root, 0.5f));
 }
 
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
@@ -1687,6 +2219,99 @@ TEST_F(TestVideoInfoScanner, ARefreshOfAMovieWithAnExportedNfoAddsItsExtras)
   EXPECT_TRUE(IsExtraOf(trailer, idRefreshed));
 }
 
+TEST_F(TestVideoInfoScanner, AFolderIsNamedAfterTheSourceHoldingIt)
+{
+  std::vector<CMediaSource>& sources{
+      CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO)};
+  const auto source{std::ranges::find(sources, m_root, &CMediaSource::strPath)};
+  ASSERT_NE(sources.end(), source);
+  source->strName = "Test Films";
+
+  EXPECT_EQ("Test Films", TestScanner::SourceName(m_root));
+  EXPECT_EQ("Test Films", TestScanner::SourceName(URIUtils::AddFileToFolder(m_root, "Film/")));
+  // A folder of no source is named after itself
+  EXPECT_EQ("Elsewhere", TestScanner::SourceName("smb://host/Elsewhere/"));
+}
+
+// Showing hidden files changes which are scanned, though not the listings they are in
+TEST_F(TestVideoInfoScanner, ShowingHiddenFilesIsPartOfAFoldersSettings)
+{
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const bool showHidden{settings->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN)};
+  const std::string hidden{TestScanner{m_settings}.FolderSettings(m_root)};
+  settings->SetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN, !showHidden);
+  const std::string shown{TestScanner{m_settings}.FolderSettings(m_root)};
+  settings->SetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN, showHidden);
+
+  EXPECT_FALSE(hidden.empty());
+  EXPECT_NE(hidden, shown);
+}
+
+// A folder whose folders, and those below them, make more than are looked up together has only
+// as many planned ahead; the others are scanned in their turn
+TEST_F(TestVideoInfoScanner, AllTheMoviesOfATreeOfMoreFoldersThanAreLookedUpTogetherAreAdded)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  std::vector<std::string> movies;
+  for (int series = 1; series <= 8; ++series)
+  {
+    const std::string folder{Folder(collection, StringUtils::Format("Series {}", series))};
+    for (int film = 1; film <= 8; ++film)
+    {
+      const std::string title{StringUtils::Format("Film {} {} (2010)", series, film)};
+      movies.push_back(FolderMovie(Folder(folder, title), title + ".mkv"));
+    }
+  }
+
+  // 8 series and 56 of their movies
+  EXPECT_EQ(1U + 64U, TestScanner{m_settings}.FoldersPlannedWith(collection, 64));
+
+  Scan();
+
+  EXPECT_EQ(64, CountMovies());
+  for (const std::string& movie : movies)
+    EXPECT_GT(m_db.GetMovieId(movie), 0) << movie;
+}
+
+// A scraper call waits for a place where as many are being made as a scan may make at once
+TEST(TestVideoInfoScannerDownloads, ACallWaitsForAPlace)
+{
+  TestScanner::CDownloads downloads{1};
+  CVideoInfoDownloader first{nullptr};
+  CVideoInfoDownloader second{nullptr};
+  std::optional<TestScanner::CDownloads::CRegistration> made{std::in_place, downloads, first};
+  auto waiting{
+      std::async(std::launch::async, [&downloads, &second]
+                 { const TestScanner::CDownloads::CRegistration call{downloads, second}; })};
+
+  const bool waited{waiting.wait_for(std::chrono::milliseconds(200)) ==
+                    std::future_status::timeout};
+  made.reset();
+  const bool placed{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Lets it through, should it still be waiting, so that the test ends
+  downloads.CancelAll();
+  EXPECT_TRUE(waited);
+  EXPECT_TRUE(placed);
+}
+
+// A stopped scan lets the calls waiting for a place go ahead, to be given up at once
+TEST(TestVideoInfoScannerDownloads, AStopLetsTheWaitingCallsThrough)
+{
+  TestScanner::CDownloads downloads{1};
+  CVideoInfoDownloader first{nullptr};
+  CVideoInfoDownloader second{nullptr};
+  std::optional<TestScanner::CDownloads::CRegistration> made{std::in_place, downloads, first};
+  auto waiting{
+      std::async(std::launch::async, [&downloads, &second]
+                 { const TestScanner::CDownloads::CRegistration call{downloads, second}; })};
+
+  downloads.CancelAll();
+  const bool through{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Frees its place, should it still be waiting, so that the test ends
+  made.reset();
+  EXPECT_TRUE(through);
+}
+
 // Music videos
 
 TEST_F(TestVideoInfoScanner, AFolderOfAMusicVideoSourceIsNotReportedAsNotFound)
@@ -1872,6 +2497,28 @@ TEST_F(TestVideoInfoScannerTvShows, AnUnchangedShowAddsNothingAgain)
   EXPECT_TRUE(summary.added.empty());
 }
 
+// Each folder of a show is recorded, as is the source holding the shows. A season is decided by its
+// time, as the listing of its show gives it, rather than by listing it.
+TEST_F(TestVideoInfoScannerTvShows, ASeasonWhoseTimeHasNotMovedIsNotListedAgain)
+{
+  const std::string show{Show("Show")};
+  const std::string season{Folder(show, "Season 1")};
+  Episode(season, "Show S01E01.mkv");
+  Settle(season);
+  Scan();
+  ASSERT_EQ(1, CountEpisodes());
+  EXPECT_TRUE(Record(m_root).starts_with("2|"));
+  EXPECT_TRUE(Record(show).starts_with("2|"));
+  EXPECT_TRUE(Record(season).starts_with("2|"));
+
+  std::string second;
+  KeepingItsTime(season, [&second, &season] { second = Episode(season, "Show S01E02.mkv"); });
+  Scan();
+
+  EXPECT_EQ(-1, m_db.GetEpisodeId(second, 2, 1));
+  EXPECT_EQ(1, CountEpisodes());
+}
+
 TEST_F(TestVideoInfoScannerTvShows, AFileOfTwoEpisodesIsTwoEpisodes)
 {
   const std::string episodes{Episode(Folder(Show("Show"), "Season 1"), "Show S01E01E02.mkv")};
@@ -1881,6 +2528,33 @@ TEST_F(TestVideoInfoScannerTvShows, AFileOfTwoEpisodesIsTwoEpisodes)
   EXPECT_GT(m_db.GetEpisodeId(episodes, 1, 1), 0);
   EXPECT_GT(m_db.GetEpisodeId(episodes, 2, 1), 0);
   EXPECT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(DISTINCT idFile) FROM episode"));
+}
+
+// The file is probed for its first episode only; the second has the same streams, and its subtitles
+// are still looked for
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAFileHaveItsStreamsAndSubtitles)
+{
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const std::string season{Folder(Show("Show"), "Season 1")};
+  const std::string episodes{URIUtils::AddFileToFolder(season, "Show S01E01E02.mkv")};
+  ASSERT_TRUE(XFILE::CFile::Copy(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv"), episodes));
+  // Each episode of a file of several has an nfo of its own, named by its season and episode
+  File(season, "Show S01E01E02-S01E01.nfo", "<episodedetails><title>1</title></episodedetails>");
+  File(season, "Show S01E01E02-S01E02.nfo", "<episodedetails><title>2</title></episodedetails>");
+  File(season, "Show S01E01E02.en.srt", "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+
+  Scan();
+
+  for (const int episode : {1, 2})
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(episodes, tag, m_db.GetEpisodeId(episodes, episode, 1)));
+    EXPECT_EQ(std::to_string(episode), tag.m_strTitle);
+    ASSERT_TRUE(m_db.GetStreamDetails(tag));
+    EXPECT_EQ(320, tag.m_streamDetails.GetVideoWidth()) << episode;
+    EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount()) << episode;
+  }
 }
 
 TEST_F(TestVideoInfoScannerTvShows, ASpecialIsInSeasonZero)
@@ -1924,6 +2598,43 @@ TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)
                        "SELECT url FROM art WHERE media_type = 'actor' AND type = 'thumb'"));
 }
 
+// Shows and episodes looked up at once each find the thumbs in their own show's actors folder
+TEST_F(TestVideoInfoScannerTvShows, EachShowsCastAndGuestsHaveTheThumbsInItsActorsFolder)
+{
+  UseTextureCache();
+  std::map<std::string, std::string> thumbs;
+  for (const std::string name : {"A", "B", "C", "D"})
+  {
+    const std::string show{Folder(m_root, "Show " + name)};
+    File(show, "tvshow.nfo",
+         "<tvshow><title>Show " + name + "</title><actor><name>Star " + name +
+             "</name></actor></tvshow>");
+    const std::string actors{Folder(show, ".actors")};
+    thumbs["Star " + name] = File(actors, "Star_" + name + ".jpg");
+    thumbs["Guest " + name] = File(actors, "Guest_" + name + ".jpg");
+    const std::string season{Folder(show, "Season 1")};
+    for (int episode = 1; episode <= 4; ++episode)
+    {
+      const std::string file{"Show " + name + " S01E0" + std::to_string(episode) + ".mkv"};
+      File(season, URIUtils::ReplaceExtension(file, ".nfo"),
+           "<episodedetails><title>" + file + "</title><actor><name>Guest " + name +
+               "</name></actor></episodedetails>");
+      File(season, file);
+    }
+  }
+
+  Scan();
+
+  for (const auto& [actor, thumb] : thumbs)
+  {
+    EXPECT_EQ(thumb, m_db.GetSingleValue(m_db.PrepareSQL(
+                         "SELECT url FROM art JOIN actor ON art.media_id = actor.actor_id WHERE "
+                         "art.media_type = 'actor' AND art.type = 'thumb' AND actor.name = '%s'",
+                         actor.c_str())))
+        << actor;
+  }
+}
+
 // TV shows looked up with a scraper
 
 TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
@@ -1947,6 +2658,112 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
 
   EXPECT_EQ(1, CountShows());
   EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
+
+// A show is looked up ahead of its turn, so a search that failed is reported as it is added
+TEST_F(TestVideoInfoScannerTvShows, AShowWhoseSearchFailedIsLookedUpAgain)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  SearchFails("Show");
+  const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
+  const auto summary{Scan()};
+  ASSERT_EQ(0, CountShows());
+  ASSERT_EQ(1u, summary.failed.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::TV_SHOW, summary.failed[0].type);
+  EXPECT_TRUE(summary.notFound.empty());
+
+  Found("Show");
+  Details("Show", "<details><title>Show</title></details>");
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
+
+// The shows of a source are looked up ahead of their turn, and each is still added with its own
+// details and episodes, in the order of their folders
+TEST_F(TestVideoInfoScannerTvShows, TheShowsOfASourceAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::vector<std::string> names{"Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"};
+  std::vector<std::string> episodes;
+  for (const std::string& name : names)
+  {
+    Found(name);
+    Details(name, "<details><title>Title of " + name + "</title></details>");
+    episodes.push_back(Episode(Folder(Folder(m_root, name), "Season 1"), name + " S01E01.mkv"));
+  }
+
+  Scan();
+
+  ASSERT_EQ(6, CountShows());
+  int previous{0};
+  for (const std::string& name : names)
+  {
+    const int idShow{m_db.GetTvShowId(URIUtils::AddFileToFolder(m_root, name + "/"))};
+    EXPECT_GT(idShow, previous) << name;
+    previous = idShow;
+    CVideoInfoTag show;
+    ASSERT_TRUE(m_db.GetTvShowInfo("", show, idShow)) << name;
+    EXPECT_EQ("Title of " + name, show.m_strTitle);
+  }
+  for (const std::string& episode : episodes)
+    EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0) << episode;
+}
+
+// The discs of a show new to the scan are read ahead of its turn, in the order its episodes are
+// found when it comes
+TEST_F(TestVideoInfoScannerTvShows, TheDiscsOfAShowAreReadAheadInTheOrderItsEpisodesAreFound)
+{
+  const std::string show{Folder(m_root, "Show")};
+  const std::string second{File(Folder(show, "Season 2"), "B S02E01.iso")};
+  const std::string first{File(Folder(show, "Season 1"), "A S01E01E02.iso")};
+  File(Folder(show, "Season 1"), "Show S01E03.mkv");
+  const std::string third{BlurayRip(Folder(show, "Show.S02E02"))};
+
+  TestScanner scanner{m_settings};
+  const std::vector<std::string> discs{scanner.ShowDiscs(show)};
+  CFileItem item{show, true};
+  EPISODELIST episodes;
+  ASSERT_EQ(TestScanner::EpisodeResult::FOUND_EPISODES,
+            scanner.EnumerateSeriesFolder(&item, episodes));
+
+  // The discs among the files the episodes are found on
+  std::vector<std::string> found;
+  for (const EPISODE& episode : episodes)
+  {
+    if (!episode.strPath.ends_with(".mkv") && (found.empty() || found.back() != episode.strPath))
+      found.push_back(episode.strPath);
+  }
+  ASSERT_EQ((std::vector<std::string>{first, second, third}), found);
+  EXPECT_EQ(found, discs);
+}
+
+// A show looked up ahead has its discs read while it is added, and the next show's while its
+// episodes are. Each disc's episodes are still added, whether or not it could be read.
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOnTheDiscsOfShowsLookedUpAheadAreEachAdded)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::vector<std::string> names{"Alpha", "Bravo", "Charlie"};
+  std::vector<std::string> discs;
+  for (const std::string& name : names)
+  {
+    Found(name);
+    Details(name, "<details><title>" + name + "</title></details>");
+    const std::string season{Folder(Folder(m_root, name), "Season 1")};
+    discs.push_back(Episode(season, name + " S01E01E02.iso"));
+    discs.push_back(Episode(season, name + " S01E03.iso"));
+  }
+
+  Scan();
+
+  ASSERT_EQ(3, CountShows());
+  for (size_t i = 0; i < discs.size(); i += 2)
+  {
+    EXPECT_GT(m_db.GetEpisodeId(discs[i], 1, 1), 0) << discs[i];
+    EXPECT_GT(m_db.GetEpisodeId(discs[i], 2, 1), 0) << discs[i];
+    EXPECT_GT(m_db.GetEpisodeId(discs[i + 1], 3, 1), 0) << discs[i + 1];
+  }
 }
 
 // A refresh of a show with all its episodes removes it before adding it again, so one whose
@@ -2038,6 +2855,42 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
 
   EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+}
+
+// The episodes of a show are looked up alongside each other, and each is added with its own details
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAShowAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
+       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
+  const std::string season{Folder(show, "Season 1")};
+  std::string guide{"<episodeguide>"};
+  std::vector<std::string> files;
+  constexpr int episodes{8};
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    const std::string name{"episode" + std::to_string(episode)};
+    guide += "<episode><title>" + name + "</title><url cache=\"" + name + ".xml\">" +
+             "http://scraper.invalid/" + name + "</url><epnum>" + std::to_string(episode) +
+             "</epnum><season>1</season></episode>";
+    ScraperFile(name + ".xml",
+                "<details><title>Title " + std::to_string(episode) + "</title></details>");
+    files.emplace_back(File(season, "Show S01E0" + std::to_string(episode) + ".mkv"));
+  }
+  ScraperFile("guide.xml", guide + "</episodeguide>");
+
+  Scan();
+
+  ASSERT_EQ(episodes, CountEpisodes());
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(files[episode - 1], tag,
+                                    m_db.GetEpisodeId(files[episode - 1], episode, 1)));
+    EXPECT_EQ("Title " + std::to_string(episode), tag.m_strTitle);
+  }
 }
 
 // A show's episodes are looked up in the episode guide stored when it was added, which only the

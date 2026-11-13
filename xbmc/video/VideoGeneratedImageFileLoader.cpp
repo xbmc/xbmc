@@ -12,7 +12,9 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "VideoInfoScannerLookups.h"
 #include "filesystem/DirectoryCache.h"
+#include "filesystem/IFileTypes.h"
 #include "guilib/Texture.h"
 #include "imagefiles/ImageFileURL.h"
 #include "settings/Settings.h"
@@ -74,7 +76,21 @@ std::unique_ptr<CTexture> CVideoGeneratedImageFileLoader::Load(
   int chapter = 0;
   std::from_chars(chapterOption.data(), chapterOption.data() + chapterOption.size(), chapter);
 
-  return CDVDFileInfo::ExtractThumbToTexture(item, chapter);
+  if (!CScanProbe::Scanning())
+    return CDVDFileInfo::ExtractThumbToTexture(item, chapter);
+
+  // Decoding a frame from a point in the file reads little of it, so it is read without the file
+  // cache. As a scan's art is cached while it runs, a frame is taken in turn with the scan's probes
+  // where the file's client makes one network call at a time.
+  std::unique_ptr<CTexture> texture;
+  CScanProbe::Run(item.GetPath(),
+                  [&]
+                  {
+                    texture =
+                        CDVDFileInfo::ExtractThumbToTexture(item, chapter, XFILE::READ_NO_CACHE);
+                    return texture != nullptr;
+                  });
+  return texture;
 }
 
 } // namespace KODI::VIDEO

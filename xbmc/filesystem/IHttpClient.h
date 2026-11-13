@@ -24,6 +24,8 @@ public:
   virtual bool IsInternet() = 0;
 
   virtual void Cancel() = 0;
+  //! \brief Give up the request in flight without waiting for it to close
+  virtual void RequestCancel() { Cancel(); }
   virtual void Reset() = 0;
 
   virtual void SetUserAgent(const std::string& userAgent) = 0;

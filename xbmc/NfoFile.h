@@ -34,7 +34,7 @@ public:
 
   CInfoScanner::InfoType Create(const std::string& nfoPath, const ADDON::ScraperPtr& info);
 
-  /*! \brief Re-parse the already loaded document, starting at its nth <movie> element.
+  /*! \brief Parse the already loaded document's nth <movie> element.
    Only valid after a successful Create(), and only for movie documents - nothing else can hold
    more than one entry.
    \param index 1-based index of the <movie> element to parse
@@ -84,7 +84,7 @@ private:
                                                  const ADDON::ScraperPtr& info);
   bool SeekToMovieIndex(int index);
 
-  // Returns the root element of m_doc (from m_headPos)
+  // Returns the element of m_doc at m_headPos, parsed once: of several movies, that one alone
   const TiXmlElement* GetRootElement() const;
 
   std::string m_doc;

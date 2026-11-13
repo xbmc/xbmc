@@ -38,7 +38,11 @@
 
 using namespace KODI;
 
-std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
+std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
+    IVideoPlayer* pPlayer,
+    const CFileItem& fileitem,
+    bool scanforextaudio /* = false */,
+    unsigned int fileFlags /* = 0 */)
 {
   using namespace ADDON;
 
@@ -175,8 +179,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 
   // our file interface handles all these types of streams
-  return std::make_shared<CDVDInputStreamFile>(finalFileitem,
-                                               XFILE::READ_TRUNCATED | XFILE::READ_BITRATE);
+  return std::make_shared<CDVDInputStreamFile>(finalFileitem, XFILE::READ_TRUNCATED |
+                                                                  XFILE::READ_BITRATE | fileFlags);
 }
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames)

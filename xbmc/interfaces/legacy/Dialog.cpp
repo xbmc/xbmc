@@ -24,6 +24,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "settings/MediaSourceSettings.h"
@@ -348,6 +349,8 @@ namespace XBMCAddon
 
     void Dialog::notification(const String& heading, const String& message, const String& icon, int time, bool sound)
     {
+      // Before the guard lets the interpreter go, as finding the script asks it
+      const long invokerId{languageHook ? languageHook->GetInvokerId() : -1};
       DelayedCallGuard dcguard(languageHook);
 
       std::string strIcon = getNOTIFICATION_INFO();
@@ -358,14 +361,24 @@ namespace XBMCAddon
       if (!icon.empty())
         strIcon = icon;
 
-      if (strIcon == getNOTIFICATION_INFO())
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime, sound);
-      else if (strIcon == getNOTIFICATION_WARNING())
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message, iTime, sound);
-      else if (strIcon == getNOTIFICATION_ERROR())
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime, sound);
-      else
-        CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
+      auto show = [heading, message, strIcon, iTime, sound]
+      {
+        if (strIcon == getNOTIFICATION_INFO())
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime,
+                                                sound);
+        else if (strIcon == getNOTIFICATION_WARNING())
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, heading, message,
+                                                iTime, sound);
+        else if (strIcon == getNOTIFICATION_ERROR())
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, message, iTime,
+                                                sound);
+        else
+          CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
+      };
+
+      // Held where the script was started by a caller that may try it again
+      if (!CHeldNotifications::Hold(invokerId, show))
+        show();
     }
 
     String Dialog::input(const String& heading, const String& defaultt, int type, int option, int autoclose)

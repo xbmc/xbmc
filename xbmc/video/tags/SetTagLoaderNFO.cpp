@@ -26,11 +26,11 @@ using namespace ADDON;
 
 CSetTagLoaderNFO::CSetTagLoaderNFO(const std::string& title) : ISetInfoTagLoader(title)
 {
-  if (!title.empty() && !KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title).empty())
-  {
-    const std::string msif{KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title)};
+  if (title.empty())
+    return;
+  if (const std::string msif{KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title)};
+      !msif.empty())
     m_path = URIUtils::AddFileToFolder(msif, "set.nfo");
-  }
 }
 
 bool CSetTagLoaderNFO::HasInfo() const

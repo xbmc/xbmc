@@ -52,12 +52,14 @@ extern "C" {
 
 using namespace KODI;
 
-bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
+bool CDVDFileInfo::GetFileDuration(const std::string& path,
+                                   int& duration,
+                                   unsigned int fileFlags /* = 0 */)
 {
   std::unique_ptr<CDVDDemux> demux;
 
   CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, fileFlags);
   if (!input)
     return false;
 
@@ -207,7 +209,8 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 } // namespace
 
 std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
-                                                              int chapterNumber)
+                                                              int chapterNumber,
+                                                              unsigned int fileFlags)
 {
   if (!CanExtract(fileItem))
     return {};
@@ -216,7 +219,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
   auto start = std::chrono::steady_clock::now();
 
   std::optional<VideoDecodeSession> session =
-      OpenVideoDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath);
+      OpenVideoDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath, fileFlags);
   if (!session)
     return {};
 
@@ -287,7 +290,10 @@ bool CDVDFileInfo::IsExtractableLocation(const std::string& path)
  * \brief Open the item pointed to by pItem and extract streamdetails
  * \return true if the stream details have changed
  */
-bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
+                                        int listingFlags /* = 0 */,
+                                        CStreamDetails* probed /* = nullptr */,
+                                        unsigned int fileFlags /* = 0 */)
 {
   if (!pItem)
     return false;
@@ -308,7 +314,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 
   CFileItem item(playablePath, false);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, fileFlags);
   if (!pInputStream)
     return false;
 
@@ -322,10 +328,13 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   {
     // Filled locally and published once, as the item may be shown while its streams are probed
     CStreamDetails details;
-    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath);
+    bool retVal =
+        DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath, fileFlags);
+    if (probed)
+      *probed = details;
 
     if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      ProcessExternalSubtitles(*pItem, details);
+      ProcessExternalSubtitles(*pItem, details, listingFlags);
 
     pItem->GetVideoInfoTag()->m_streamDetails = details;
 
@@ -396,12 +405,15 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
 bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                           CDVDDemux* pDemux,
                                           CStreamDetails& details,
-                                          const std::string& path)
+                                          const std::string& path,
+                                          unsigned int fileFlags)
 {
   bool retVal = false;
   details.Reset();
 
   const CURL pathToUrl(path);
+  // How long the parts of a stack after the first last, which every video stream lasts too
+  std::optional<int> otherPartsDuration;
   for (CDemuxStream* stream : pDemux->GetStreams())
   {
     if (stream->type == StreamType::VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
@@ -446,17 +458,22 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       // stack handling
       if (URIUtils::IsStack(path))
       {
-        CFileItemList files;
-        XFILE::CStackDirectory stack;
-        stack.GetDirectory(pathToUrl, files);
-
-        // skip first path as we already know the duration
-        for (int i = 1; i < files.Size(); i++)
+        if (!otherPartsDuration)
         {
-           int duration = 0;
-           if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration))
-             p->m_iDuration = p->m_iDuration + duration;
+          CFileItemList files;
+          XFILE::CStackDirectory stack;
+          stack.GetDirectory(pathToUrl, files);
+
+          // skip first path as we already know the duration
+          otherPartsDuration = 0;
+          for (int i = 1; i < files.Size(); i++)
+          {
+            int duration = 0;
+            if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration, fileFlags))
+              *otherPartsDuration += duration;
+          }
         }
+        p->m_iDuration = p->m_iDuration + *otherPartsDuration;
       }
 
       // finally, calculate seconds
@@ -522,13 +539,24 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   return retVal;
 }
 
-void CDVDFileInfo::ProcessExternalSubtitles(const CFileItem& item, CStreamDetails& details)
+void CDVDFileInfo::AddExternalSubtitles(CFileItem& item,
+                                        CStreamDetails streams,
+                                        int listingFlags /* = 0 */)
+{
+  ProcessExternalSubtitles(item, streams, listingFlags);
+  item.GetVideoInfoTag()->m_streamDetails = streams;
+}
+
+void CDVDFileInfo::ProcessExternalSubtitles(const CFileItem& item,
+                                            CStreamDetails& details,
+                                            int listingFlags /* = 0 */)
 {
   std::vector<std::string> externalSubtitles;
   const std::string videoPath = item.GetSubtitleAnchorPath();
 
   CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles,
-                                  item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr);
+                                  item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr,
+                                  listingFlags);
 
   for (const auto& externalSubtitle : externalSubtitles)
   {

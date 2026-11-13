@@ -227,6 +227,11 @@ void CVideoDatabase::CreateTables()
 void CVideoDatabase::CreateAnalytics()
 {
   KODI::DATABASE::CVideoDatabaseDDL::CreateAnalytics(*this);
+
+  // An actor is looked up by name regardless of case, which sqlite's own index of the names can't
+  // serve. MySQL's is case-insensitive already.
+  if (m_sqlite)
+    m_pDS->exec("CREATE INDEX ix_actor_2 ON actor (name COLLATE NOCASE)");
 }
 
 //********************************************************************************************************************************
@@ -750,7 +755,11 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
   std::string sql;
   try
   {
-    const CDateTime finalDateAdded{GetDateAdded(fileAndPath, fileInfo.m_dateAdded)};
+    CDateTime dateAdded{fileInfo.m_dateAdded};
+    if (const auto prepared{m_preparedDatesAdded.find(fileAndPath)};
+        !dateAdded.IsValid() && prepared != m_preparedDatesAdded.end())
+      dateAdded = prepared->second;
+    const CDateTime finalDateAdded{GetDateAdded(fileAndPath, dateAdded)};
 
     std::string strFileName;
     std::string strPath;
@@ -1222,6 +1231,50 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   return -1;
 }
 
+CVideoDatabase::FolderMovies CVideoDatabase::GetFolderMovies(const std::string& folder)
+{
+  FolderMovies movies;
+  movies.folder = folder;
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return movies;
+
+    m_pDS->query(PrepareSQL("SELECT files.strFileName, videoversion.idMedia FROM files "
+                            "JOIN path ON path.idPath = files.idPath "
+                            "JOIN videoversion ON videoversion.idFile = files.idFile "
+                            "WHERE path.strPath = '%s' AND videoversion.media_type = '%s' "
+                            "AND videoversion.itemType = %i",
+                            folder.c_str(), NameOf(MEDIA::TYPE::MOVIE).c_str(),
+                            VideoAssetType::VERSION));
+    while (!m_pDS->eof())
+    {
+      movies.byFile.try_emplace(m_pDS->fv(0).get_asString(), m_pDS->fv(1).get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(folder));
+  }
+  return movies;
+}
+
+int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known)
+{
+  // A file of the folder that is a version of a movie is that movie's, as GetMovieId() finds it
+  std::string path;
+  std::string file;
+  SplitPath(strFilenameAndPath, path, file);
+  if (path == known.folder)
+  {
+    if (const auto movie{known.byFile.find(file)}; movie != known.byFile.end())
+      return movie->second;
+  }
+  return GetMovieId(strFilenameAndPath);
+}
+
 int CVideoDatabase::GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder)
 {
   if (!m_pDB || !m_pDS)
@@ -1564,7 +1617,9 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
     if (nullptr == m_pDS)
       return -1;
 
-    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
+    std::string strSQL =
+        PrepareSQL("SELECT %s FROM %s WHERE %s = '%s' COLLATE NOCASE", firstField.c_str(),
+                   table.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
@@ -1814,7 +1869,8 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     std::string trimmedName = name;
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
+    std::string strSQL = PrepareSQL("SELECT actor_id FROM actor WHERE name = '%s' COLLATE NOCASE",
+                                    trimmedName.substr(0, 255).c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
@@ -1981,6 +2037,8 @@ void CVideoDatabase::AddCast(int mediaId, MEDIA::TYPE mediaType,
   for (const auto &i : cast)
   {
     int idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb);
+    if (idActor < 0)
+      continue;
     AddLinkToActor(mediaId, mediaType, idActor, i.strRole, i.order >= 0 ? i.order : ++order);
   }
 }
@@ -6599,20 +6657,29 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath,
 void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
                                           CGUIDialogProgress* progress /* = nullptr */)
 {
-  if(URIUtils::IsMultiPath(strPath))
-  {
-    std::vector<std::string> paths;
-    CMultiPathDirectory::GetPaths(strPath, paths);
-
-    for (const auto& path : paths)
-      RemoveContentForPath(path, progress);
-  }
-
   try
   {
     if (nullptr == m_pDB)
       return;
     if (nullptr == m_pDS)
+      return;
+
+    // The records under the path, and for a multipath those under each of its paths, so that one
+    // progress dialog covers them all
+    std::vector<std::pair<int, std::string>> paths;
+    std::vector<std::string> pending{strPath};
+    while (!pending.empty())
+    {
+      const std::string pendingPath{std::move(pending.back())};
+      pending.pop_back();
+      GetSubPaths(pendingPath, paths, false);
+      std::vector<std::string> multiPaths;
+      if (URIUtils::IsMultiPath(pendingPath) &&
+          CMultiPathDirectory::GetPaths(pendingPath, multiPaths))
+        pending.insert(pending.end(), multiPaths.begin(), multiPaths.end());
+    }
+    // Nothing to remove, so no progress to show
+    if (paths.empty())
       return;
 
     if (progress)
@@ -6625,8 +6692,6 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
       progress->Open();
       progress->ShowProgressBar(true);
     }
-    std::vector<std::pair<int, std::string> > paths;
-    GetSubPaths(strPath, paths, false);
     int iCurr = 0;
     for (const auto& [pathId, path] : paths)
     {
@@ -9229,10 +9294,8 @@ bool CVideoDatabase::HasContent(VideoDbContentType type)
     const MEDIA::TYPE mediaType{DatabaseUtils::MediaTypeFromVideoContentType(type)};
     if (IdColumnOf(mediaType).empty())
       return false;
-    m_pDS->query("select count(1) from " + NameOf(mediaType));
-
-    if (!m_pDS->eof())
-      result = (m_pDS->fv(0).get_asInt() > 0);
+    m_pDS->query("SELECT 1 FROM " + NameOf(mediaType) + " LIMIT 1");
+    result = !m_pDS->eof();
 
     m_pDS->close();
   }
@@ -9262,6 +9325,21 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
                                              SScanSettings& settings,
                                              bool& foundDirectly,
                                              ScraperCache* scraperCache /*= nullptr*/)
+{
+  foundDirectly = false;
+  if (strPath.empty() || !m_pDB || !m_pDS)
+    return ScraperPtr();
+
+  return GetScraperForPath(
+      strPath, [this](const std::string& path) { return GetPathScanRow(path); }, settings,
+      foundDirectly, scraperCache);
+}
+
+ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache)
 {
   // Returns a pair of bool and CScraperPtr.
   // The boolean is true if an addon matching the scraperID exists.
@@ -9297,7 +9375,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
   foundDirectly = false;
   try
   {
-    if (strPath.empty() || !m_pDB || !m_pDS)
+    if (strPath.empty())
       return ScraperPtr();
 
     ScraperPtr scraper;
@@ -9311,55 +9389,41 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       strPath2 = strPath;
 
     std::string strPath1 = URIUtils::GetDirectory(strPath2);
-    int idPath = GetPathId(strPath1);
-
-    if (idPath > -1)
-    {
-      std::string strSQL = PrepareSQL(
-          "SELECT path.strContent, path.strScraper, path.scanRecursive, path.useFolderNames, "
-          "path.strSettings, path.noUpdate, path.exclude, path.allAudio FROM path WHERE idPath=%i",
-          idPath);
-      m_pDS->query( strSQL );
-    }
+    URIUtils::AddSlashAtEnd(strPath1);
+    const std::optional<PathScanRow> row{lookup(strPath1)};
 
     int iFound = 1;
     ContentType content = ContentType::NONE;
-    if (!m_pDS->eof())
+    if (row)
     { // path is stored in db
 
-      settings.m_allExtAudio = m_pDS->fv("path.allAudio").get_asBool();
+      settings.m_allExtAudio = row->allAudio;
 
-      if (m_pDS->fv("path.exclude").get_asBool())
+      if (row->exclude)
       {
         settings.exclude = true;
-        m_pDS->close();
         return ScraperPtr();
       }
       settings.exclude = false;
 
       // try and ascertain scraper for this path
-      std::string strcontent = m_pDS->fv("path.strContent").get_asString();
-      StringUtils::ToLower(strcontent);
-      content = TranslateContent(strcontent);
+      content = TranslateContent(StringUtils::ToLower(row->content));
 
       //FIXME paths stored should not have empty strContent
       //assert(content != ContentType::CONTENT_NONE);
-      std::string scraperID = m_pDS->fv("path.strScraper").get_asString();
-
-      if (!scraperID.empty())
+      if (!row->scraper.empty())
       {
         bool found = false;
-        std::tie(found, scraper) =
-            getScraper(content, scraperID, m_pDS->fv("path.strSettings").get_asString());
+        std::tie(found, scraper) = getScraper(content, row->scraper, row->settings);
 
         if (found && !scraper)
           return ScraperPtr();
 
         if (scraper)
         {
-          settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-          settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-          settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+          settings.parent_name = row->useFolderNames;
+          settings.recurse = row->scanRecursive;
+          settings.noupdate = row->noUpdate;
         }
       }
     }
@@ -9372,40 +9436,26 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       {
         iFound++;
 
-        std::string strSQL =
-            PrepareSQL("SELECT path.strContent, path.strScraper, path.scanRecursive, "
-                       "path.useFolderNames, path.strSettings, path.noUpdate, path.exclude, "
-                       "path.allAudio FROM path WHERE strPath='%s'",
-                       strParent.c_str());
-        m_pDS->query(strSQL);
-
-        ContentType content2 = ContentType::NONE;
-        if (!m_pDS->eof())
+        if (const std::optional<PathScanRow> parent{lookup(strParent)}; parent)
         {
-          settings.m_allExtAudio = m_pDS->fv("path.allAudio").get_asBool();
-          std::string strcontent = m_pDS->fv("path.strContent").get_asString();
-          StringUtils::ToLower(strcontent);
-          if (m_pDS->fv("path.exclude").get_asBool())
+          settings.m_allExtAudio = parent->allAudio;
+          if (parent->exclude)
           {
             settings.exclude = true;
             scraper.reset();
-            m_pDS->close();
             break;
           }
 
-          content2 = TranslateContent(strcontent);
-
+          const ContentType content2{TranslateContent(StringUtils::ToLower(parent->content))};
           if (content2 != ContentType::NONE)
           {
             bool found = false;
-            std::tie(found, scraper) =
-                getScraper(content2, m_pDS->fv("path.strScraper").get_asString(),
-                           m_pDS->fv("path.strSettings").get_asString());
+            std::tie(found, scraper) = getScraper(content2, parent->scraper, parent->settings);
             if (found)
             {
-              settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-              settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-              settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+              settings.parent_name = parent->useFolderNames;
+              settings.recurse = parent->scanRecursive;
+              settings.noupdate = parent->noUpdate;
               settings.exclude = false;
               break;
             }
@@ -9414,7 +9464,6 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
         strPath1 = strParent;
       }
     }
-    m_pDS->close();
 
     if (!scraper || scraper->Content() == ContentType::NONE)
       return ScraperPtr();
@@ -9449,6 +9498,76 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
     CLog::LogF(LOGERROR, "failed");
   }
   return ScraperPtr();
+}
+
+namespace
+{
+constexpr std::string_view PATH_SCAN_SELECT{
+    "SELECT idPath, strPath, strContent, strScraper, strSettings, scanRecursive, useFolderNames, "
+    "noUpdate, exclude, allAudio, strHash FROM path "};
+
+CVideoDatabase::PathScanRow ReadPathScanRow(dbiplus::Dataset& ds)
+{
+  return {.idPath = ds.fv(0).get_asInt(),
+          .path = ds.fv(1).get_asString(),
+          .content = ds.fv(2).get_asString(),
+          .scraper = ds.fv(3).get_asString(),
+          .settings = ds.fv(4).get_asString(),
+          .scanRecursive = ds.fv(5).get_asInt(),
+          .useFolderNames = ds.fv(6).get_asBool(),
+          .noUpdate = ds.fv(7).get_asBool(),
+          .exclude = ds.fv(8).get_asBool(),
+          .allAudio = ds.fv(9).get_asBool(),
+          .hash = ds.fv(10).get_asString()};
+}
+} // namespace
+
+std::optional<CVideoDatabase::PathScanRow> CVideoDatabase::GetPathScanRow(const std::string& path)
+{
+  if (!m_pDB || !m_pDS)
+    return std::nullopt;
+
+  std::optional<PathScanRow> row;
+  try
+  {
+    m_pDS->query(PrepareSQL(std::string{PATH_SCAN_SELECT} + "WHERE strPath='%s'", path.c_str()));
+    if (!m_pDS->eof())
+      row = ReadPathScanRow(*m_pDS);
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(path));
+  }
+  return row;
+}
+
+bool CVideoDatabase::GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows)
+{
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return false;
+
+    std::string path(basepath);
+    URIUtils::AddSlashAtEnd(path);
+
+    // As GetSubPaths() finds them, so that both backends give the same rows
+    m_pDS->query(PrepareSQL(std::string{PATH_SCAN_SELECT} + "WHERE SUBSTR(strPath,1,%i)='%s'",
+                            StringUtils::utf8_strlen(path), path.c_str()));
+    while (!m_pDS->eof())
+    {
+      rows.push_back(ReadPathScanRow(*m_pDS));
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed for {}", CURL::GetRedacted(basepath));
+  }
+  return false;
 }
 
 bool CVideoDatabase::GetUseAllExternalAudioForVideo(const std::string& videoPath)
@@ -10701,7 +10820,8 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
 
 void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                                    const std::set<int>& paths,
-                                   bool showProgress)
+                                   bool showProgress,
+                                   const std::atomic<bool>* stop /* = nullptr */)
 {
   CGUIDialogProgress* progress = nullptr;
   try
@@ -10711,6 +10831,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
     if (nullptr == m_pDS)
       return;
     if (nullptr == m_pDS2)
+      return;
+
+    if (stop && *stop)
       return;
 
     auto start = std::chrono::steady_clock::now();
@@ -10837,6 +10960,17 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         }
         if (del)
           filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
+
+        if (stop && *stop)
+        {
+          if (progress)
+            progress->Close();
+          m_pDS2->close();
+          RollbackTransaction();
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                             "OnCleanFinished");
+          return;
+        }
 
         if (!handle && progress)
         {
@@ -11403,6 +11537,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                              "AND id NOT IN (SELECT idType FROM videoversion)",
                              VideoAssetType::EXTRA, VideoAssetTypeOwner::SYSTEM));
 
+      if (stop && *stop)
+      {
+        if (progress)
+          progress->Close();
+        RollbackTransaction();
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                           "OnCleanFinished");
+        return;
+      }
       CommitTransaction();
 
       if (handle)
@@ -13612,6 +13755,16 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, MEDIA::TYPE mediaT
   return false;
 }
 
+void CVideoDatabase::PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded)
+{
+  m_preparedDatesAdded.insert_or_assign(fileAndPath, dateAdded);
+}
+
+void CVideoDatabase::ForgetPreparedDatesAdded()
+{
+  m_preparedDatesAdded.clear();
+}
+
 CDateTime CVideoDatabase::GetDateAdded(const std::string& filename,
                                        CDateTime dateAdded /* = CDateTime() */)
 {
@@ -14303,10 +14456,10 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
   if (!m_pDB || !m_pDS)
     return false;
 
-  assert(m_pDB->in_transaction() == false);
-
   if (itemType != VideoDbContentType::MOVIES)
     return false;
+
+  const bool inTransaction{m_pDB->in_transaction()};
 
   int idFile;
   if (item.HasVideoInfoTag())
@@ -14324,35 +14477,29 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
 
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
-    if (!AddOrUpdateVideoVersion(itemType, dbId, idFile, idVideoAsset, videoAssetType))
+    if (!AddOrUpdateVideoVersion(itemType, dbId, idFile, idVideoAsset, videoAssetType) ||
+        (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
+         !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile)) ||
+        !SetArtForItem(idFile, MEDIA::TYPE::VIDEO_VERSION, item.GetArt()))
     {
-      RollbackTransaction();
+      if (!inTransaction)
+        RollbackTransaction();
       return false;
     }
 
-    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
-        !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile))
-    {
-      RollbackTransaction();
-      return false;
-    }
-
-    if (!SetArtForItem(idFile, MEDIA::TYPE::VIDEO_VERSION, item.GetArt()))
-    {
-      RollbackTransaction();
-      return false;
-    }
-
-    CommitTransaction();
+    if (!inTransaction)
+      CommitTransaction();
 
     return true;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed for video {}", dbId);
-    RollbackTransaction();
+    if (!inTransaction)
+      RollbackTransaction();
     return false;
   }
 }

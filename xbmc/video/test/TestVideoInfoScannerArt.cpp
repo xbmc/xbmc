@@ -10,6 +10,7 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -27,6 +28,8 @@
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoManagerTypes.h"
 
+#include <chrono>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <utility>
@@ -84,6 +87,10 @@ protected:
     m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
     ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, m_db.Connect(DB_NAME, m_settings, true));
 
+    // The test environment has no cache of what discs hold, which a look-up reading a disc fills
+    m_previousDiscCache = CServiceBroker::GetBlurayDiscCache();
+    CServiceBroker::RegisterBlurayDiscCache(std::make_shared<XFILE::CBlurayDiscCache>());
+
     // One of the test's own, so a scan's announcements go nowhere
     m_previousAnnouncementManager = CServiceBroker::GetAnnouncementManager();
     CServiceBroker::RegisterAnnouncementManager(
@@ -113,6 +120,7 @@ protected:
     std::erase_if(CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO),
                   [this](const CMediaSource& source) { return source.strPath == m_root; });
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, m_movieSetsFolder);
 
     // First, as its jobs are cancelled with the job manager
     CServiceBroker::UnregisterTextureCache();
@@ -125,6 +133,10 @@ protected:
     CServiceBroker::UnregisterAnnouncementManager();
     if (m_previousAnnouncementManager)
       CServiceBroker::RegisterAnnouncementManager(m_previousAnnouncementManager);
+    if (m_previousDiscCache)
+      CServiceBroker::RegisterBlurayDiscCache(m_previousDiscCache);
+    else
+      CServiceBroker::UnregisterBlurayDiscCache();
 
     m_db.Close();
     XFILE::CFile::Delete(m_settings.host + DB_NAME + ".db");
@@ -303,9 +315,12 @@ protected:
   CVideoDatabase m_db;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncementManager;
   std::shared_ptr<CJobManager> m_previousJobManager;
+  std::shared_ptr<XFILE::CBlurayDiscCache> m_previousDiscCache;
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   const bool m_retrieveAllArt{
       Settings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)};
+  const std::string m_movieSetsFolder{
+      Settings()->GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER)};
 };
 } // namespace
 
@@ -637,6 +652,66 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
 }
 
+// Each movie of a set takes the set's details from its set.nfo and its art from its folder
+TEST_F(TestVideoInfoScannerArt, EachMovieOfASetHasWhatItsInformationFolderHolds)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  const std::string saga{Folder(sets, "Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>From the set's nfo</overview></set>");
+  const std::string poster{File(saga, "poster.jpg")};
+  Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+  for (const std::string name : {"First", "Second"})
+  {
+    const std::string folder{Folder(m_root, name)};
+    File(folder, name + ".mkv");
+    File(folder, name + ".nfo",
+         "<movie><title>" + name + "</title><set><name>Saga</name></set></movie>");
+  }
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie JOIN sets ON movie.idSet = "
+                                      "sets.idSet WHERE sets.strSet = 'Saga'"));
+  EXPECT_EQ("From the set's nfo",
+            m_db.GetSingleValue("SELECT strOverview FROM sets WHERE strSet = 'Saga'"));
+  EXPECT_EQ(poster, m_db.GetSingleValue(
+                        "SELECT url FROM art WHERE media_type = 'set' AND type = 'poster'"));
+}
+
+// A set's information folder is read once for each set, not again for each of its movies
+TEST_F(TestVideoInfoScannerArt, AMovieSetsFolderIsReadOnceForEachSet)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  const std::string saga{Folder(sets, "Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>Read first</overview></set>");
+  Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+
+  const CVideoInfoScannerArt art;
+  const CVideoInfoScannerArt::MovieSetFolder& first{art.GetMovieSetFolder("Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>Read again</overview></set>");
+  const CVideoInfoScannerArt::MovieSetFolder& second{art.GetMovieSetFolder("Saga")};
+
+  EXPECT_EQ(saga, first.path);
+  ASSERT_TRUE(second.nfo);
+  EXPECT_EQ("Read first", second.nfo->GetOverview());
+}
+
+// A movie in a folder of its own has the art named after its file, and the folder's
+TEST_F(TestVideoInfoScannerArt, AMovieInAFolderOfItsOwnHasItsArtAndTheFolders)
+{
+  const std::string folder{Folder(m_root, "Film (2020)")};
+  File(folder, "Film (2020).mkv");
+  File(folder, "Film (2020).nfo", "<movie><title>Film</title></movie>");
+  const std::string poster{File(folder, "Film (2020)-poster.jpg")};
+  const std::string fanart{File(folder, "fanart.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(poster, MovieArt("poster"));
+  EXPECT_EQ(fanart, MovieArt("fanart"));
+}
+
 namespace
 {
 class TestVideoInfoScannerArtTvShows : public TestVideoInfoScannerArt
@@ -652,7 +727,20 @@ protected:
         m_db.GetPathId(m_root))));
   }
 
-  //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, read from the disc's nfo
+  //! The nfo of each of the given episodes of season 1 of a file or disc of several, in \p folder
+  //! and named as an export names them: <base>-S01E01.nfo
+  void EpisodeNfos(const std::string& folder,
+                   const std::string& base,
+                   const std::vector<std::pair<int, std::string>>& episodes)
+  {
+    for (const auto& [episode, title] : episodes)
+      File(folder, StringUtils::Format("{}-S01E{:02}.nfo", base, episode),
+           StringUtils::Format("<episodedetails><title>{}</title><season>1</season>"
+                               "<episode>{}</episode></episodedetails>",
+                               title, episode));
+  }
+
+  //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, each read from its nfo
   //! \return the folder holding BDMV
   std::string BlurayRipOfTwoEpisodes()
   {
@@ -664,43 +752,67 @@ protected:
     File(bdmv, "MovieObject.bdmv");
     File(Folder(bdmv, "PLAYLIST"), "00000.mpls");
     File(Folder(bdmv, "STREAM"), "00000.m2ts");
-    File(bdmv, "index.nfo",
-         "<episodedetails><title>First</title><season>1</season><episode>1</episode>"
-         "</episodedetails>"
-         "<episodedetails><title>Second</title><season>1</season><episode>2</episode>"
-         "</episodedetails>");
+    EpisodeNfos(bdmv, "index", {{1, "First"}, {2, "Second"}});
     return folder;
   }
 
-  //! A show holding a dvd folder rip of episodes 3 and 4 of season 1, read from the disc's nfo
+  //! A show holding a dvd folder rip of episodes 3 and 4 of season 1, each read from its nfo
   //! \return the folder holding VIDEO_TS
   std::string DvdRipOfTwoEpisodes()
   {
     const std::string show{Folder(m_root, "Show")};
     File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
     const std::string folder{Folder(show, "Show.S01E03E04")};
-    File(Folder(folder, "VIDEO_TS"), "VIDEO_TS.IFO");
-    File(URIUtils::AddFileToFolder(folder, "VIDEO_TS"), "VIDEO_TS.nfo",
-         "<episodedetails><title>Third</title><season>1</season><episode>3</episode>"
-         "</episodedetails>"
-         "<episodedetails><title>Fourth</title><season>1</season><episode>4</episode>"
-         "</episodedetails>");
+    const std::string videoTs{Folder(folder, "VIDEO_TS")};
+    File(videoTs, "VIDEO_TS.IFO");
+    EpisodeNfos(videoTs, "VIDEO_TS", {{3, "Third"}, {4, "Fourth"}});
     return folder;
   }
 
-  //! A show holding an ISO of episodes 5 and 6 of season 1, read from the ISO's nfo
+  //! A show holding an ISO of episodes 5 and 6 of season 1, each read from its nfo
   //! \return the folder holding the ISO
   std::string IsoOfTwoEpisodes()
   {
     const std::string show{Folder(m_root, "Show")};
     File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
     File(show, "Show.S01E05E06.iso");
-    File(show, "Show.S01E05E06.nfo",
-         "<episodedetails><title>Fifth</title><season>1</season><episode>5</episode>"
-         "</episodedetails>"
-         "<episodedetails><title>Sixth</title><season>1</season><episode>6</episode>"
-         "</episodedetails>");
+    EpisodeNfos(show, "Show.S01E05E06", {{5, "Fifth"}, {6, "Sixth"}});
     return show;
+  }
+
+  //! A show of an episode in each of the given seasons, each read from its nfo
+  //! \return the show's folder
+  std::string Show(const std::vector<int>& seasons)
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    for (const int season : seasons)
+      Episode(show, season);
+    return show;
+  }
+
+  void Episode(const std::string& show, int season)
+  {
+    const std::string name{StringUtils::Format("Show S{:02}E01", season)};
+    File(show, name + ".mkv");
+    File(show, name + ".nfo", "<episodedetails><title>" + name + "</title></episodedetails>");
+  }
+
+  //! Moves a folder's modified time a day on, as a later change to it would
+  static void MoveOn(const std::string& folder)
+  {
+    const std::filesystem::path path{
+        std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
+    std::filesystem::last_write_time(path,
+                                     std::filesystem::last_write_time(path) + std::chrono::days{1});
+  }
+
+  std::string SeasonArt(int season, const std::string& type)
+  {
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT art.url FROM art JOIN seasons ON art.media_id = seasons.idSeason "
+                        "WHERE art.media_type='season' AND art.type='%s' AND seasons.season=%i",
+                        type.c_str(), season));
   }
 
   std::string EpisodeArt(int episode, const std::string& type)
@@ -806,11 +918,7 @@ TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAVideoFileHasItsOwnArtBeside
   const std::string show{Folder(m_root, "Show")};
   File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
   File(show, "Show.S01E07E08.mkv");
-  File(show, "Show.S01E07E08.nfo",
-       "<episodedetails><title>Seventh</title><season>1</season><episode>7</episode>"
-       "</episodedetails>"
-       "<episodedetails><title>Eighth</title><season>1</season><episode>8</episode>"
-       "</episodedetails>");
+  EpisodeNfos(show, "Show.S01E07E08", {{7, "Seventh"}, {8, "Eighth"}});
   const std::string thumb7{File(show, "Show.S01E07E08-S01E07-thumb.jpg")};
   File(show, "S01E08-thumb.jpg");
 
@@ -819,4 +927,35 @@ TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAVideoFileHasItsOwnArtBeside
   ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
   EXPECT_EQ(thumb7, EpisodeArt(7, "thumb"));
   EXPECT_EQ("", EpisodeArt(8, "thumb"));
+}
+
+// A new show's seasons have the art its folder holds for them, worked out as the show is added
+TEST_F(TestVideoInfoScannerArtTvShows, ANewShowsSeasonsHaveTheArtOfItsFolder)
+{
+  const std::string show{Show({1, 2})};
+  const std::string all{File(show, "season-all-poster.jpg")};
+  const std::string first{File(show, "season01-poster.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(all, SeasonArt(-1, "poster"));
+  EXPECT_EQ(first, SeasonArt(1, "poster"));
+  EXPECT_EQ("", SeasonArt(2, "poster"));
+}
+
+// A season a later scan adds to a show has the art the show's folder holds for it
+TEST_F(TestVideoInfoScannerArtTvShows, ASeasonALaterScanAddsHasTheArtOfTheShowsFolder)
+{
+  const std::string show{Show({1})};
+  Scan();
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  Episode(show, 2);
+  const std::string second{File(show, "season02-poster.jpg")};
+  MoveOn(show);
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(second, SeasonArt(2, "poster"));
 }

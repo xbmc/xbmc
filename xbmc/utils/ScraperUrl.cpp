@@ -26,7 +26,14 @@
 
 #include <algorithm>
 #include <cstring>
+#include <mutex>
 #include <sstream>
+
+namespace
+{
+//! Held while a cached page is read or written, as calls of two scrapers can share a cache file
+std::mutex cacheFileLock;
+} // namespace
 
 CScraperUrl::CScraperUrl() : m_relevance(0.0), m_parsed(false)
 {
@@ -312,6 +319,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     strCachePath = URIUtils::AddFileToFolder(
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers",
         cacheContext, scrURL.m_cache);
+    std::unique_lock lock(cacheFileLock);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -426,6 +434,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     const auto strCachePath = URIUtils::AddFileToFolder(
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers",
         cacheContext, scrURL.m_cache);
+    std::unique_lock lock(cacheFileLock);
     XFILE::CFile file;
     if (!file.OpenForWrite(strCachePath, true) ||
         file.Write(strHTML.data(), strHTML.size()) != static_cast<ssize_t>(strHTML.size()))

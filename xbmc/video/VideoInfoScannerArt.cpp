@@ -34,6 +34,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/tags/SetInfoTagLoaderFactory.h"
 
 #include <algorithm>
 #include <chrono>
@@ -167,7 +168,10 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
       if (a.priority == ArtPriority::LIST)
         CacheArtwork(a.url, false, a.hash);
       else
+      {
+        std::unique_lock lock(m_deferredArtLock);
         m_deferredArt.push_back(std::move(a));
+      }
     }
     return;
   }
@@ -215,6 +219,7 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
 
 void CVideoInfoScannerArt::FlushDeferred()
 {
+  std::unique_lock lock(m_deferredArtLock);
   DedupeArt(m_deferredArt);
   if (m_deferredArt.empty())
     return;
@@ -294,12 +299,17 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     if (!pItem->SkipLocalArt())
     {
       bool useFolder = false;
+      // The art looked up for a movie or music video in a folder of its own, and its folder's
+      std::string lookedUp;
       if (bApplyToDir && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
       {
         std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
         std::string directory = URIUtils::GetDirectory(filename);
         if (filename != directory)
+        {
           ART::AddLocalItemArtwork(art, artTypes, filename, addAll, exactName, bApplyToDir);
+          lookedUp = filename;
+        }
       }
 
       // Reset useFolder to false as GetLocalArtBaseFilename may modify it in
@@ -357,13 +367,14 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       }
       else
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
-      ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
+      // Not again where it was looked up above, which would find the same
+      if (path != lookedUp || !isInFolder)
+        ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
     }
 
     if (moviePartOfSet)
     {
-      std::string movieSetInfoPath =
-          CVideoInfoScanner::GetMovieSetInfoFolder(movieDetails.m_set.GetTitle());
+      const std::string& movieSetInfoPath{GetMovieSetFolder(movieDetails.m_set.GetTitle()).path};
       if (!movieSetInfoPath.empty())
       {
         KODI::ART::Artwork movieSetArt;
@@ -558,10 +569,48 @@ void CVideoInfoScannerArt::GetSeasonThumbs(const CVideoInfoTag& show,
   }
 }
 
-void CVideoInfoScannerArt::FetchActorThumbs(
-    std::vector<SActorInfo>& actors,
-    const std::string& actorsDir,
-    UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+const CVideoInfoScannerArt::ActorThumbs& CVideoInfoScannerArt::GetActorThumbs(
+    const std::string& actorsDir) const
+{
+  ListedActorThumbs* folder{nullptr};
+  {
+    std::unique_lock lock(m_actorThumbsLock);
+    folder = &m_actorThumbs.try_emplace(actorsDir).first->second;
+  }
+  std::call_once(folder->listed, [&] { ListActorThumbs(actorsDir, folder->thumbs); });
+  return folder->thumbs;
+}
+
+const CVideoInfoScannerArt::MovieSetFolder& CVideoInfoScannerArt::GetMovieSetFolder(
+    const std::string& setTitle) const
+{
+  ReadMovieSet* set{nullptr};
+  {
+    std::unique_lock lock(m_movieSetsLock);
+    set = &m_movieSets.try_emplace(setTitle).first->second;
+  }
+  std::call_once(set->read, [&] { set->folder = ReadMovieSetFolder(setTitle); });
+  return set->folder;
+}
+
+CVideoInfoScannerArt::MovieSetFolder CVideoInfoScannerArt::ReadMovieSetFolder(
+    const std::string& setTitle)
+{
+  MovieSetFolder folder;
+  folder.path = CVideoInfoScanner::GetMovieSetInfoFolder(setTitle);
+  if (folder.path.empty())
+    return folder;
+
+  if (const std::unique_ptr setLoader{CSetInfoTagLoaderFactory::CreateLoader(setTitle)}; setLoader)
+  {
+    CSetInfoTag setTag;
+    if (setLoader->Load(setTag, false) != CInfoScanner::InfoType::NONE && !setTag.IsEmpty())
+      folder.nfo = std::move(setTag);
+  }
+  return folder;
+}
+
+void CVideoInfoScannerArt::ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs)
 {
   CFileItemList items;
   // don't try to fetch anything local with plugin source
@@ -570,8 +619,6 @@ void CVideoInfoScannerArt::FetchActorThumbs(
 
   // Index the thumbs by filename (without extension), and the hashes taken from the directory
   // listing by url
-  std::map<std::string, std::string> thumbs;
-  std::map<std::string, std::string> listedHashes;
   for (const auto& item : items)
   {
     if (item->IsFolder())
@@ -579,10 +626,18 @@ void CVideoInfoScannerArt::FetchActorThumbs(
 
     std::string name{URIUtils::GetFileName(item->GetPath())};
     URIUtils::RemoveExtension(name);
-    thumbs.try_emplace(std::move(name), item->GetPath());
+    actorThumbs.thumbs.try_emplace(std::move(name), item->GetPath());
     if (std::string hash{CTextureCacheJob::GetImageHash(*item)}; !hash.empty())
-      listedHashes.emplace(item->GetPath(), std::move(hash));
+      actorThumbs.listedHashes.emplace(item->GetPath(), std::move(hash));
   }
+}
+
+void CVideoInfoScannerArt::FetchActorThumbs(
+    std::vector<SActorInfo>& actors,
+    const std::string& actorsDir,
+    UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+{
+  const auto& [thumbs, listedHashes]{GetActorThumbs(actorsDir)};
 
   for (auto& actor : actors)
   {

@@ -27,6 +27,11 @@
 //! the stored hash; Stack() skips the disc structure probes for such folders
 static constexpr const char* PROPERTY_UNCHANGED{"scanner:unchanged"};
 
+//! item property set by the video library scanner on a folder whose listing it has: the disc
+//! structure file the folder holds, or empty if it holds none. Stack() takes it rather than
+//! probing the folder.
+static constexpr const char* PROPERTY_DISC_PATH{"scanner:discpath"};
+
 //! item property set by Stack() on a stack: a digest of what each of its parts is,
 //! to allow the scraper to detect changes to any part
 static constexpr const char* PROPERTY_STACK_DIGEST{"scanner:stackdigest"};

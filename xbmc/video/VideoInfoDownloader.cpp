@@ -11,6 +11,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/HttpClientFactory.h"
 #include "filesystem/IHttpClient.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -48,8 +49,29 @@ int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int m
   return 1;  // success
 }
 
+namespace
+{
+thread_local CVideoInfoDownloader::CKeptErrors* keptErrors{nullptr};
+} // namespace
+
+CVideoInfoDownloader::CKeptErrors::CKeptErrors() : m_previous(keptErrors)
+{
+  keptErrors = this;
+}
+
+CVideoInfoDownloader::CKeptErrors::~CKeptErrors()
+{
+  keptErrors = m_previous;
+}
+
 void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
 {
+  if (keptErrors)
+  {
+    keptErrors->m_errors.push_back(sce);
+    return;
+  }
+
   if (!sce.Title().empty())
     HELPERS::ShowOKDialogText(CVariant{ sce.Title() }, CVariant{ sce.Message() });
 }
@@ -136,10 +158,14 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
   }
 
   // unthreaded
+  // A notification the scraper raises as the first search fails is dropped if it searches again:
+  // the second search's say how it went
+  CHeldNotifications held;
   int success = InternalFindMovie(movieTitle, movieYear, movieList);
   // NOTE: this might be improved by rescraping if the match quality isn't high?
   if (success == 1 && movieList.empty())
   { // no results. try without cleaning chars like '.' and '_'
+    held.Drop();
     success = InternalFindMovie(movieTitle, movieYear, movieList, false);
   }
   return success;
@@ -258,6 +284,11 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
   }
   else  // unthreaded
     return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
+}
+
+void CVideoInfoDownloader::Cancel()
+{
+  m_http->RequestCancel();
 }
 
 void CVideoInfoDownloader::CloseThread()

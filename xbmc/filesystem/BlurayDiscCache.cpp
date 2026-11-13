@@ -99,13 +99,13 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
   disc.mapsSet = true;
 }
 
-void CBlurayDiscCache::SetPlaylistStreamInfo(const std::string& path,
-                                             unsigned int playlist,
-                                             const StreamMap& streams)
+void CBlurayDiscCache::SetClipStreamInfo(const std::string& path,
+                                         const std::string& clipFiles,
+                                         const StreamMap& streams)
 {
   std::unique_lock lock(m_cs);
 
-  FindOrCreate(path).streamMap[playlist] = streams;
+  FindOrCreate(path).streamMap[clipFiles] = streams;
 }
 
 void CBlurayDiscCache::SetMenuSupport(const std::string& path, bool menuSupport)
@@ -156,15 +156,15 @@ bool CBlurayDiscCache::GetMaps(const std::string& path,
   return false;
 }
 
-bool CBlurayDiscCache::GetPlaylistStreamInfo(const std::string& path,
-                                             unsigned int playlist,
-                                             StreamMap& streams) const
+bool CBlurayDiscCache::GetClipStreamInfo(const std::string& path,
+                                         const std::string& clipFiles,
+                                         StreamMap& streams) const
 {
   std::unique_lock lock(m_cs);
 
   if (const Disc * disc{Find(path)}; disc)
   {
-    if (const auto& it{disc->streamMap.find(playlist)}; it != disc->streamMap.end())
+    if (const auto& it{disc->streamMap.find(clipFiles)}; it != disc->streamMap.end())
     {
       streams = it->second;
       return true;

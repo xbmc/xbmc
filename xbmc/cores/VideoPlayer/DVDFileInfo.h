@@ -24,8 +24,10 @@ class CTextureDetails;
 class CDVDFileInfo
 {
 public:
+  //! \param fileFlags as for GetFileStreamDetails()
   static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem,
-                                                         int chapterNumber = 0);
+                                                         int chapterNumber = 0,
+                                                         unsigned int fileFlags = 0);
 
   /*!
    * @brief Can a thumbnail image and file stream details be extracted from this file item?
@@ -37,16 +39,35 @@ public:
   */
   static bool IsExtractableLocation(const std::string& path);
 
-  // Probe the files streams and store the info in the VideoInfoTag
-  static bool GetFileStreamDetails(CFileItem* pItem);
+  /*!
+   * @brief Probe the file's streams, look for its external subtitles, and store them in its tag
+   * @param listingFlags added to the flags the folders are listed with to look for subtitles
+   * @param[out] probed if given, the file's own streams, without the external subtitles, which
+   * another video of the same file (eg. another episode of it) can be given by AddExternalSubtitles()
+   * @param fileFlags added to the flags (XFILE::READ_*) the file, and each part of a stack, is
+   * opened with
+   */
+  static bool GetFileStreamDetails(CFileItem* pItem,
+                                   int listingFlags = 0,
+                                   CStreamDetails* probed = nullptr,
+                                   unsigned int fileFlags = 0);
 
-  static bool GetFileDuration(const std::string& path, int& duration);
+  /*!
+   * @brief Store streams probed already in an item's tag, with the item's own external subtitles
+   * @param streams the streams of the item's file, as GetFileStreamDetails() probed them
+   */
+  static void AddExternalSubtitles(CFileItem& item, CStreamDetails streams, int listingFlags = 0);
+
+  //! \param fileFlags as for GetFileStreamDetails()
+  static bool GetFileDuration(const std::string& path, int& duration, unsigned int fileFlags = 0);
 
 private:
+  //! \param fileFlags as for GetFileStreamDetails()
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
-                                     const std::string& path = "");
+                                     const std::string& path = "",
+                                     unsigned int fileFlags = 0);
 
   /** \brief Probe the file's internal and external streams and store the info in the StreamDetails parameter.
   *   \param[out] details The file's StreamDetails consisting of internal streams and external subtitle streams.
@@ -66,5 +87,7 @@ private:
   *   \param[out] details The stream details to add the subtitles to
   *   \sa AddExternalSubtitleToDetails
   */
-  static void ProcessExternalSubtitles(const CFileItem& item, CStreamDetails& details);
+  static void ProcessExternalSubtitles(const CFileItem& item,
+                                       CStreamDetails& details,
+                                       int listingFlags = 0);
 };

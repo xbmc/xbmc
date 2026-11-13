@@ -10,11 +10,15 @@
 
 #include "XBDateTime.h"
 #include "addons/Addon.h"
+#include "threads/CriticalSection.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 #include "video/Episode.h"
 
+#include <condition_variable>
 #include <memory>
+#include <mutex>
+#include <set>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -178,6 +182,31 @@ private:
   std::string GetPathSettingsAsJSON();
 
   bool Load();
+
+  /*!
+   \brief Held for the length of a call to an xml scraper, as its parser keeps the call's state. A
+   python scraper keeps none of it here and runs each call in an interpreter of its own, so its
+   calls go ahead alongside each other.
+   */
+  std::unique_lock<CCriticalSection> LockCall() const;
+
+  /*!
+   \brief Marks a result as being looked up for as long as it lives, once no other call is looking
+   it up. A call after the same result waits for it to be cached rather than asking again.
+   */
+  class CLookingUp
+  {
+  public:
+    CLookingUp(CScraper& scraper, std::string key);
+    ~CLookingUp();
+    CLookingUp(const CLookingUp&) = delete;
+    CLookingUp& operator=(const CLookingUp&) = delete;
+
+  private:
+    CScraper& m_scraper;
+    std::string m_key;
+  };
+
   std::vector<std::string> Run(const std::string& function,
                                const CScraperUrl& url,
                                XFILE::IHttpClient& http,
@@ -208,8 +237,6 @@ private:
 
    Lifetime is this instance.
    Repeats come from versions, discs and folders of the same title, which are scraped close together.
-   Not synchronised, matching the rest of CScraper: a scraper shared between threads needs the
-   caller to provide that.
    */
   static constexpr size_t MAX_CACHED_RESULTS{50};
   std::unordered_map<std::string, std::vector<CScraperUrl>, StringHash, std::equal_to<>>
@@ -217,12 +244,21 @@ private:
   std::unordered_map<std::string, std::shared_ptr<const CVideoInfoTag>, StringHash, std::equal_to<>>
       m_detailsCache;
 
+  //! Guards the caches and the results being looked up
+  std::mutex m_resultsLock;
+  std::condition_variable m_resultsChanged;
+  std::set<std::string, std::less<>> m_lookingUp;
+
   bool m_fLoaded = false;
   bool m_isPython = false;
   bool m_requiressettings = false;
   CDateTimeSpan m_persistence;
   ContentType m_pathContent = ContentType::NONE;
   CScraperParser m_parser;
+
+  //! Held across a call to an xml scraper, see LockCall(), and while the settings are read or
+  //! changed
+  mutable CCriticalSection m_callSection;
 };
 
 } // namespace ADDON

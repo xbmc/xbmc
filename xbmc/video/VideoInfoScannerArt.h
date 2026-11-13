@@ -11,8 +11,13 @@
 #include "addons/Scraper.h"
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
+#include "video/SetInfoTag.h"
 
 #include <cstdint>
+#include <functional>
+#include <map>
+#include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -145,6 +150,22 @@ public:
 
   static void ApplyThumbToFolder(const std::string& folder, const std::string& imdbThumb);
 
+  //! What a movie set's information folder holds
+  struct MovieSetFolder
+  {
+    std::string path; //!< The folder, or empty where the set has none
+    std::optional<CSetInfoTag> nfo; //!< Its set.nfo, where that holds anything
+  };
+
+  /*! \brief A movie set's information folder, read once for each set rather than for each of its
+   movies. Different sets are read at once, and one being read is waited for.
+   \param setTitle the set's title, as a movie's tag gives it
+   */
+  const MovieSetFolder& GetMovieSetFolder(const std::string& setTitle) const;
+
+  //! A movie set's information folder, read each time \sa GetMovieSetFolder
+  static MovieSetFolder ReadMovieSetFolder(const std::string& setTitle);
+
 private:
   enum class ArtRetrievalTiming : uint8_t
   {
@@ -160,6 +181,39 @@ private:
   //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
   //! Mutable, as the art is found by the const methods that gather it
   mutable std::vector<ArtToCache> m_deferredArt;
+  //! The art of videos looked up alongside each other is found alongside each other
+  mutable std::mutex m_deferredArtLock;
+
+  //! The thumbs of an actors folder by name, and the hashes its listing gave them by path
+  struct ActorThumbs
+  {
+    std::map<std::string, std::string, std::less<>> thumbs;
+    std::map<std::string, std::string, std::less<>> listedHashes;
+  };
+
+  //! Each actors folder looked in, listed once rather than for each video, as the episodes of a
+  //! show all look in the show's. Different folders are listed at once, and one being listed is
+  //! waited for.
+  const ActorThumbs& GetActorThumbs(const std::string& actorsDir) const;
+  static void ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs);
+  struct ListedActorThumbs
+  {
+    std::once_flag listed;
+    ActorThumbs thumbs;
+  };
+  mutable std::map<std::string, ListedActorThumbs, std::less<>> m_actorThumbs;
+  //! Held only to find a folder's entry, not while the folder is listed
+  mutable std::mutex m_actorThumbsLock;
+
+  struct ReadMovieSet
+  {
+    std::once_flag read;
+    MovieSetFolder folder;
+  };
+  //! By set title \sa GetMovieSetFolder
+  mutable std::map<std::string, ReadMovieSet, std::less<>> m_movieSets;
+  //! Held only to find a set's entry, not while its folder is read
+  mutable std::mutex m_movieSetsLock;
 };
 
 } // namespace KODI::VIDEO
