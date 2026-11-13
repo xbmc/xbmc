@@ -759,7 +759,16 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           stream = *(CActiveAEStream**)msg->data;
           if (!stream->m_paused && m_streams.size() == 1)
           {
-            FlushEngine();
+            // A RAW AudioTrack would otherwise play its queued audio on resume, ahead of the sync
+            // correction. Discarding it makes resume start on an empty sink, as after a seek. As
+            // that lengthens the gap on resume, only where the queued audio disturbs it.
+            const CAEStreamInfo::DataType type{m_sinkFormat.m_streamInfo.m_type};
+            const bool discard =
+                m_mode == MODE_TRANSCODE ||
+                (m_mode == MODE_RAW && (type == CAEStreamInfo::STREAM_TYPE_TRUEHD ||
+                                        type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
+                                        type == CAEStreamInfo::STREAM_TYPE_DTSHD));
+            FlushEngine(discard);
             streaming = false;
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::STREAMING, &streaming, sizeof(bool));
           }
