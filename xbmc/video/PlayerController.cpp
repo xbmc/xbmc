@@ -38,9 +38,17 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <string_view>
 
 using namespace KODI;
 using namespace UTILS;
+
+namespace
+{
+// Each stream selection makes the previous announcement obsolete, so tagging them with a
+// common group lets the newly selected stream be announced right away.
+constexpr std::string_view STREAM_TOAST_GROUP{"player.stream"};
+} // unnamed namespace
 
 CPlayerController::CPlayerController()
 {
@@ -78,7 +86,7 @@ bool CPlayerController::OnAction(const CAction &action)
               CGUIDialogKaiToast::Info,
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(287),
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005), DisplTime,
-              false, MsgTime);
+              false, MsgTime, STREAM_TOAST_GROUP);
           return true;
         }
 
@@ -107,7 +115,7 @@ bool CPlayerController::OnAction(const CAction &action)
         CGUIDialogKaiToast::QueueNotification(
             CGUIDialogKaiToast::Info,
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(287), sub, DisplTime,
-            false, MsgTime);
+            false, MsgTime, STREAM_TOAST_GROUP);
         return true;
       }
 
@@ -174,7 +182,7 @@ bool CPlayerController::OnAction(const CAction &action)
         CGUIDialogKaiToast::QueueNotification(
             CGUIDialogKaiToast::Info,
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(287), sub, DisplTime,
-            false, MsgTime);
+            false, MsgTime, STREAM_TOAST_GROUP);
         return true;
       }
 
@@ -303,7 +311,7 @@ bool CPlayerController::OnAction(const CAction &action)
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(38031);
         caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, it->name,
-                                              DisplTime, false, MsgTime);
+                                              DisplTime, false, MsgTime, STREAM_TOAST_GROUP);
         return true;
       }
 
@@ -636,7 +644,7 @@ bool CPlayerController::NextAudioStream()
   std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
   caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo, DisplTime,
-                                        false, MsgTime);
+                                        false, MsgTime, STREAM_TOAST_GROUP);
   return true;
 }
 
