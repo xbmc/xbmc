@@ -219,9 +219,9 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   if (!CanStart(priority))
     return;
 
-  // Workers neither running a job nor in its callbacks (ie waiting for one, or between jobs and
-  // about to ask for the next)
-  const size_t busy{GetBusyCount()};
+  // Workers neither running a job, in its callbacks nor retiring (ie waiting for one, or between
+  // jobs and about to ask for the next)
+  const size_t busy{GetBusyCount() + m_retiring};
   const size_t free{m_workers.size() > busy ? m_workers.size() - busy : 0};
 
   // Each job already waiting has a claim on those ahead of this one
@@ -341,7 +341,12 @@ CJob* CJobManager::GetNextJob()
   }
   // ensure no jobs have come in during the period after
   // timeout and before we held the lock
-  return PopJob();
+  CJob* job{PopJob()};
+  if (!job)
+  {
+    ++m_retiring;
+  }
+  return job;
 }
 
 bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob* job) const
@@ -438,7 +443,10 @@ void CJobManager::RemoveWorker(const CJobWorker* worker)
   // remove our worker
   const auto i = std::ranges::find(m_workers, worker);
   if (i != m_workers.cend())
+  {
     m_workers.erase(i); // workers auto-delete
+    --m_retiring;
+  }
 }
 
 unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority)
