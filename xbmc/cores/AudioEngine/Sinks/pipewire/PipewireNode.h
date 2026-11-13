@@ -41,6 +41,12 @@ public:
   std::set<uint32_t>& GetRates() { return m_rates; }
   std::set<spa_audio_iec958_codec>& GetIEC958Codecs() { return m_iec958Codecs; }
 
+  /*!
+   * \brief Set the volume of every channel as an amplitude factor, and the
+   * mute; the thread loop must be locked
+   */
+  void SetVolume(float volume, bool mute);
+
 private:
   bool Parse(uint32_t type, void* body, uint32_t size);
 

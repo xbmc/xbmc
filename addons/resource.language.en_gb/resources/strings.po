@@ -18392,8 +18392,25 @@ msgctxt "#34130"
 msgid "384.0"
 msgstr ""
 
-#empty strings from id 34131 to 34200
-#34131-34200 reserved for future use
+#: system/settings/settings.xml
+msgctxt "#34131"
+msgid "Volume control"
+msgstr ""
+
+#. Value of setting "System -> Audio output -> Volume control" with label #34131
+#: system/settings/settings.xml
+msgctxt "#34132"
+msgid "Kodi's audio"
+msgstr ""
+
+#. Value of setting "System -> Audio output -> Volume control" with label #34131
+#: system/settings/settings.xml
+msgctxt "#34133"
+msgid "Output device"
+msgstr ""
+
+#empty strings from id 34134 to 34200
+#34134-34200 reserved for future use
 
 #: xbmc/PlayListPlayer.cpp
 msgctxt "#34201"
@@ -22513,7 +22530,13 @@ msgctxt "#36448"
 msgid "Video files only: display order in the stream selection dialogs. [Media] stream order in the media, [Sorted] sorted using the stream attributes[CR]"
 msgstr ""
 
-#empty strings from id 36449 to 36459
+#. Description of setting "System -> Audio output -> Volume control" with label #34131
+#: system/settings/settings.xml
+msgctxt "#36449"
+msgid "Select what the volume and mute change. [Kodi's audio] scales Kodi's own audio before it reaches the output device. [Output device] sets the volume of the output device, which applies to every program playing on it."
+msgstr ""
+
+#empty strings from id 36450 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml

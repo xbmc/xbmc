@@ -16,6 +16,7 @@
 #include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireStream.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -260,6 +261,8 @@ bool CAESinkPipewire::Register()
   entry.createFunc = CAESinkPipewire::Create;
   entry.enumerateFunc = CAESinkPipewire::EnumerateDevicesEx;
   entry.cleanupFunc = CAESinkPipewire::Destroy;
+  entry.hasDeviceVolumeFunc = CAESinkPipewire::HasDeviceVolume;
+  entry.setDeviceVolumeFunc = CAESinkPipewire::SetDeviceVolume;
   AE::CAESinkFactory::RegisterSink(entry);
 
   return true;
@@ -538,6 +541,43 @@ void CAESinkPipewire::Deinitialize()
 double CAESinkPipewire::GetCacheTotal()
 {
   return m_latency.count();
+}
+
+bool CAESinkPipewire::HasDeviceVolume(const std::string& device)
+{
+  PIPEWIRE::CLoopLockGuard lock(pipewire->GetThreadLoop());
+  return GetDeviceNode(device) != nullptr;
+}
+
+bool CAESinkPipewire::SetDeviceVolume(const std::string& device, float volume, bool mute)
+{
+  PIPEWIRE::CLoopLockGuard lock(pipewire->GetThreadLoop());
+
+  PIPEWIRE::CPipewireNode* node = GetDeviceNode(device);
+  if (!node)
+    return false;
+
+  node->SetVolume(CAEUtil::GainToScale(CAEUtil::PercentToGain(volume)), mute);
+  return true;
+}
+
+PIPEWIRE::CPipewireNode* CAESinkPipewire::GetDeviceNode(const std::string& device)
+{
+  auto& nodes = pipewire->GetRegistry().GetNodes();
+
+  // the default device is not tracked, so it has a volume only when it is
+  // the one device there is
+  if (device == "Default")
+    return nodes.size() == 1 && nodes.begin()->second->HasInfo() ? nodes.begin()->second.get()
+                                                                 : nullptr;
+
+  const auto node = std::find_if(nodes.begin(), nodes.end(),
+                                 [&device](const auto& entry)
+                                 {
+                                   const auto& [id, node] = entry;
+                                   return node->HasInfo() && device == node->Get(PW_KEY_NODE_NAME);
+                                 });
+  return node == nodes.end() ? nullptr : node->second.get();
 }
 
 unsigned int CAESinkPipewire::AddPackets(uint8_t** data,

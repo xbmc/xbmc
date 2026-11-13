@@ -407,11 +407,15 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::VOLUME:
           m_volume = *(float*)msg->data;
           m_volumeScaled = CAEUtil::GainToScale(CAEUtil::PercentToGain(m_volume));
-          if (m_sinkHasVolume)
+          m_volumeReceived = true;
+          if (!m_deviceVolume.empty())
+            ApplyDeviceVolume();
+          else if (m_sinkHasVolume)
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
           return;
         case CActiveAEControlProtocol::MUTE:
           m_muted = *(bool*)msg->data;
+          ApplyDeviceVolume();
           return;
         case CActiveAEControlProtocol::KEEPCONFIG:
           m_extKeepConfig = std::chrono::milliseconds(*reinterpret_cast<unsigned int*>(msg->data));
@@ -2492,7 +2496,7 @@ bool CActiveAE::RunStages()
 
         // mix gui sounds
         MixSounds(*(out->pkt));
-        if (!m_sinkHasVolume || m_muted)
+        if ((!m_sinkHasVolume && m_deviceVolume.empty()) || m_muted)
           Deamplify(*(out->pkt));
 
         if (m_mode == MODE_TRANSCODE && m_encoder)
@@ -2929,6 +2933,39 @@ void CActiveAE::LoadSettings()
   m_settings.silenceTimeoutMinutes = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   m_settings.mixSubLevel = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL) / 100.0;
   m_settings.lowLatencyMode = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_LOWLATENCY);
+
+  UpdateDeviceVolume();
+}
+
+void CActiveAE::UpdateDeviceVolume()
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  std::string device;
+  if (settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_VOLUMECONTROL) == AE_VOLUME_DEVICE &&
+      CAESinkFactory::HasDeviceVolume(m_settings.device))
+    device = m_settings.device;
+
+  if (device == m_deviceVolume)
+    return;
+
+  CLog::LogF(LOGINFO, "volume controls {}",
+             device.empty() ? "Kodi's audio" : "the volume of " + device);
+  m_deviceVolume = device;
+
+  // Kodi's volume arrives only after the engine has started; until then the
+  // device keeps its own
+  if (m_volumeReceived)
+    ApplyDeviceVolume();
+}
+
+void CActiveAE::ApplyDeviceVolume()
+{
+  if (m_deviceVolume.empty())
+    return;
+
+  if (!CAESinkFactory::SetDeviceVolume(m_deviceVolume, m_volume, m_muted))
+    CLog::LogF(LOGWARNING, "cannot set the volume of {}", m_deviceVolume);
 }
 
 void CActiveAE::ValidateOutputDevices(bool saveChanges)
@@ -3147,6 +3184,12 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
   {
     if (m_sink.GetDeviceType(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)) != AE_DEVTYPE_IEC958)
       return true;
+  }
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_VOLUMECONTROL)
+  {
+    return CAESinkFactory::HasDeviceVolume(
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+            CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE));
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {

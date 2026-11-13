@@ -9,6 +9,7 @@
 #include "PipewireRegistry.h"
 
 #include "PipewireCore.h"
+#include "PipewireDevice.h"
 #include "PipewireNode.h"
 #include "utils/log.h"
 
@@ -45,11 +46,20 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
 
-  if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
+  if (!props)
     return;
 
   const char* mediaClass = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
   if (!mediaClass)
+    return;
+
+  if (strcmp(type, PW_TYPE_INTERFACE_Device) == 0 && strcmp(mediaClass, "Audio/Device") == 0)
+  {
+    registry.m_devices[id] = std::make_unique<CPipewireDevice>(registry, id, type);
+    return;
+  }
+
+  if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
     return;
 
   if (strcmp(mediaClass, "Audio/Sink") != 0)
@@ -75,6 +85,8 @@ void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 
     nodes.erase(it);
   }
+
+  registry.m_devices.erase(id);
 }
 
 pw_registry_events CPipewireRegistry::CreateRegistryEvents()

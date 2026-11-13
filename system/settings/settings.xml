@@ -3483,6 +3483,20 @@
           </constraints>
           <control type="list" format="integer" />
         </setting>
+        <setting id="audiooutput.volumecontrol" type="integer" label="34131" help="36449">
+          <level>1</level>
+          <default>0</default> <!-- AE_VOLUME_STREAM -->
+          <dependencies>
+            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.volumecontrol</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="34132">0</option> <!-- AE_VOLUME_STREAM -->
+              <option label="34133">1</option> <!-- AE_VOLUME_DEVICE -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="audiooutput.maintainoriginalvolume" type="boolean" label="346" help="36533">
           <level>2</level>
           <default>true</default>
