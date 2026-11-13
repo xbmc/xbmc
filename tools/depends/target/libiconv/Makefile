@@ -4,7 +4,7 @@ DEPS = ../../Makefile.include LIBICONV-VERSION Makefile ../../download-files.inc
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
           cp -f $(CONFIG_SUB) $(CONFIG_GUESS) libcharset/build-aux/; \
-          ./configure --prefix=$(PREFIX) --disable-shared --enable-extra-encodings
+          ./configure --prefix=$(PREFIX) --disable-shared --disable-nls --enable-extra-encodings
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 
