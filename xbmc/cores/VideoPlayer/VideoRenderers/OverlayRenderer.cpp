@@ -494,6 +494,7 @@ void CRenderer::PrepareOverlays(int idx)
   bool doMarkDirty = false;
   bool hasImageSpu = false;
   bool hasLibassImages = false;
+  std::vector<const CDVDOverlay*> imageSpu;
   for (auto& e : m_buffers[idx])
   {
     // Clear last frame's cached output; libass may have invalidated the
@@ -514,6 +515,7 @@ void CRenderer::PrepareOverlays(int idx)
     if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
       hasImageSpu = true;
+      imageSpu.push_back(&o);
       if (o.m_textureid == 0)
         doMarkDirty = true;
       continue;
@@ -554,6 +556,14 @@ void CRenderer::PrepareOverlays(int idx)
 
   m_prevHadImageSpu = hasImageSpu;
   m_prevHadLibassImages = hasLibassImages;
+
+  // A disc menu that removes part of its images keeps the rest, already uploaded, so neither
+  // check above sees it and the removed images stayed on the GUI plane.
+  if (imageSpu != m_prevImageSpu)
+  {
+    doMarkDirty = true;
+    m_prevImageSpu = std::move(imageSpu);
+  }
 
   if (doMarkDirty)
     MarkDirty();
