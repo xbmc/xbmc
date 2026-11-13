@@ -10,12 +10,15 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/BlurayCallback.h"
 #include "filesystem/BlurayDirectory.h"
 #include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "filesystem/ZipManager.h"
 #include "language/LanguageTag.h"
 #include "test/TestUtils.h"
 #include "utils/ItemProperties.h"
@@ -364,4 +367,114 @@ TEST_F(TestBlurayDirectory, GetPlaylists_IgnoresOtherFilesNamedAfterAPlaylist)
   EXPECT_TRUE(found);
   ASSERT_EQ(items.Size(), 1);
   EXPECT_EQ(items[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger(), 888);
+}
+
+// libbluray looks in folders a disc needn't have: one missing is opened as no folder, and one there
+// is listed
+TEST(TestBlurayCallback, AFolderADiscDoesNotHaveIsNoFolder)
+{
+  const std::string disc{
+      CSpecialProtocol::TranslatePath("special://temp/TestBlurayCallback/Disc/")};
+  CDirectory::RemoveRecursive(disc);
+  const std::string library{URIUtils::AddFileToFolder(disc, "BDMV", "META", "DL")};
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV")));
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV", "META")));
+  ASSERT_TRUE(CDirectory::Create(library));
+  {
+    CFile file;
+    ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(library, "bdmt_eng.xml"), true));
+  }
+
+  std::string base{disc};
+  BD_DIR_H* const listed{CBlurayCallback::dir_open(&base, "BDMV/META/DL")};
+  BD_DIR_H* const missing{CBlurayCallback::dir_open(&base, "BDMV/META/TN")};
+  std::string name;
+  if (listed)
+  {
+    BD_DIRENT entry;
+    if (listed->read(listed, &entry) == 0)
+      name = entry.d_name;
+    listed->close(listed);
+  }
+  CDirectory::RemoveRecursive(disc);
+
+  ASSERT_NE(nullptr, listed);
+  EXPECT_EQ("bdmt_eng.xml", name);
+  EXPECT_EQ(nullptr, missing);
+}
+
+// A folder made after the directory cache took its parent's listing is looked for on the disc
+TEST(TestBlurayCallback, AFolderMadeAfterItsParentWasListedIsListed)
+{
+  const std::string disc{
+      CSpecialProtocol::TranslatePath("special://temp/TestBlurayCallback/Later/")};
+  CDirectory::RemoveRecursive(disc);
+  const std::string meta{URIUtils::AddFileToFolder(disc, "BDMV", "META")};
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV")));
+  ASSERT_TRUE(CDirectory::Create(meta));
+  CFileItemList before;
+  ASSERT_TRUE(CDirectory::GetDirectory(meta, before, "", DIR_FLAG_DEFAULTS));
+  const std::string library{URIUtils::AddFileToFolder(meta, "DL")};
+  ASSERT_TRUE(CDirectory::Create(library));
+  {
+    CFile file;
+    ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(library, "bdmt_eng.xml"), true));
+  }
+
+  std::string base{disc};
+  BD_DIR_H* const listed{CBlurayCallback::dir_open(&base, "BDMV/META/DL")};
+  std::string name;
+  if (listed)
+  {
+    BD_DIRENT entry;
+    if (listed->read(listed, &entry) == 0)
+      name = entry.d_name;
+    listed->close(listed);
+  }
+  CDirectory::RemoveRecursive(disc);
+  g_directoryCache.Clear();
+
+  ASSERT_NE(nullptr, listed);
+  EXPECT_EQ("bdmt_eng.xml", name);
+}
+
+// A folder in a zip says that it is there only once the directory cache holds its parent's listing,
+// so one a disc needn't have, in a zip, is listed without asking
+TEST(TestBlurayCallback, AFolderOfADiscInAZipIsListed)
+{
+  //! A zip holding a disc's BDMV/META/DL/bdmt_eng.xml, empty, stored
+  constexpr unsigned char DISC_ZIP[] = {
+      0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x5c, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00,
+      0x42, 0x44, 0x4d, 0x56, 0x2f, 0x4d, 0x45, 0x54, 0x41, 0x2f, 0x44, 0x4c, 0x2f, 0x62, 0x64,
+      0x6d, 0x74, 0x5f, 0x65, 0x6e, 0x67, 0x2e, 0x78, 0x6d, 0x6c, 0x50, 0x4b, 0x01, 0x02, 0x14,
+      0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x5c, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x42, 0x44, 0x4d, 0x56,
+      0x2f, 0x4d, 0x45, 0x54, 0x41, 0x2f, 0x44, 0x4c, 0x2f, 0x62, 0x64, 0x6d, 0x74, 0x5f, 0x65,
+      0x6e, 0x67, 0x2e, 0x78, 0x6d, 0x6c, 0x50, 0x4b, 0x05, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01,
+      0x00, 0x01, 0x00, 0x47, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 0x00, 0x00};
+  const std::string zip{CSpecialProtocol::TranslatePath("special://temp/TestBlurayCallback.zip")};
+  {
+    CFile file;
+    ASSERT_TRUE(file.OpenForWrite(zip, true));
+    ASSERT_EQ(static_cast<ssize_t>(sizeof(DISC_ZIP)), file.Write(DISC_ZIP, sizeof(DISC_ZIP)));
+  }
+  std::string base{URIUtils::CreateArchivePath("zip", CURL{zip}).Get()};
+  g_directoryCache.Clear();
+
+  BD_DIR_H* const listed{CBlurayCallback::dir_open(&base, "BDMV/META/DL")};
+  std::string name;
+  if (listed)
+  {
+    BD_DIRENT entry;
+    if (listed->read(listed, &entry) == 0)
+      name = entry.d_name;
+    listed->close(listed);
+  }
+  g_ZipManager.release(base);
+  CFile::Delete(zip);
+
+  ASSERT_NE(nullptr, listed);
+  EXPECT_EQ("bdmt_eng.xml", name);
 }
