@@ -28,6 +28,8 @@
 #include <androidjni/Surface.h>
 
 class CJNISurface;
+struct AVBSFContext;
+struct AVPacket;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
 class CJNIMediaCrypto;
@@ -132,6 +134,8 @@ protected:
   void FlushInternal(void);
   void SignalEndOfStream();
   void InjectExtraData(CJNIMediaFormat& mediaformat);
+  void OpenHlgFilter();
+  void FilterHlg(uint8_t*& data, size_t& size);
   std::vector<uint8_t> GetHDRStaticMetadata();
   bool ConfigureMediaCodec(void);
   int GetOutputPicture(void);
@@ -169,6 +173,8 @@ protected:
   static std::atomic<bool> m_InstanceGuard;
 
   std::unique_ptr<CBitstreamConverter> m_bitstream;
+  AVBSFContext* m_hlgFilter = nullptr;
+  AVPacket* m_hlgPacket = nullptr;
   VideoPicture m_videobuffer;
 
   int m_indexInputBuffer;
