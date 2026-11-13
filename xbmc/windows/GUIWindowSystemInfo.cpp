@@ -14,6 +14,9 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#if defined(TARGET_WASM)
+#include "powermanagement/PowerManager.h"
+#endif
 #include "pvr/PVRManager.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -23,6 +26,13 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "windowing/WinSystem.h"
+
+#if defined(TARGET_WASM)
+#include <atomic>
+
+#include <emscripten/heap.h>
+#include <emscripten/version.h>
+#endif
 
 constexpr int CONTROL_TEXT_START = 2;
 constexpr int CONTROL_TEXT_END = 13; // 12 lines
@@ -72,6 +82,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
+#if defined(TARGET_WASM)
+      m_diskUsageRefreshTimer.SetExpired();
+#endif
       m_privacyPolicyLoaded = false;
       return true;
     }
@@ -120,23 +133,49 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20154));
     SetControlLabel(i++, "{}: {}", 158, SYSTEM_FREE_MEMORY);
     SetControlLabel(i++, "{}: {}", 150, NETWORK_IP_ADDRESS);
+#if defined(TARGET_WASM)
+    // "GUI resolution"
+    SetControlLabel(i++, "{}: {}", 39227, SYSTEM_SCREEN_RESOLUTION);
+#else
     SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
+#endif
     SetControlLabel(i++, "{} {}", 13283, SYSTEM_OS_VERSION_INFO);
+#if defined(TARGET_WASM)
+    // "Application uptime"
+    SetControlLabel(i++, "{}: {}", 39226, SYSTEM_UPTIME);
+#else
     SetControlLabel(i++, "{}: {}", 12390, SYSTEM_UPTIME);
+#endif
+    // "Total uptime"
     SetControlLabel(i++, "{}: {}", 12394, SYSTEM_TOTALUPTIME);
-    SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
+#if defined(TARGET_WASM)
+    if (CServiceBroker::GetPowerManager().GetPowerSyscall())
+#endif
+      SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
   }
 
   else if (m_section == CONTROL_BT_STORAGE)
   {
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20155));
+#if defined(TARGET_WASM)
+    if (m_diskUsageRefreshTimer.IsTimePast())
+#else
     if (m_diskUsage.empty())
+#endif
+    {
       m_diskUsage = CServiceBroker::GetMediaManager().GetDiskUsage();
-
+#if defined(TARGET_WASM)
+      m_diskUsageRefreshTimer.Set(std::chrono::seconds(1));
+#endif
+    }
     for (size_t d = 0; d < m_diskUsage.size() && d <= CONTROL_TEXT_END - CONTROL_TEXT_START; ++d)
     {
       SET_CONTROL_LABEL(i++, m_diskUsage[d]);
     }
+#if defined(TARGET_WASM)
+    while (i <= CONTROL_TEXT_END)
+      SET_CONTROL_LABEL(i++, "");
+#endif
   }
 
   else if (m_section == CONTROL_BT_NETWORK)
@@ -158,7 +197,12 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20159));
     SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
                                SYSTEM_VIDEO_ENCODER_INFO, INFO::DEFAULT_CONTEXT));
+#if defined(TARGET_WASM)
+    // "GUI resolution"
+    SetControlLabel(i++, "{}: {}", 39227, SYSTEM_SCREEN_RESOLUTION);
+#else
     SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
+#endif
 
     auto renderingSystem = CServiceBroker::GetRenderSystem();
     if (renderingSystem)
@@ -197,7 +241,13 @@ void CGUIWindowSystemInfo::FrameMove()
                 platform));
     }
 
-    SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
+#if defined(TARGET_WASM)
+    // "Not available"
+    if (CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_GPU_TEMPERATURE,
+                                                            INFO::DEFAULT_CONTEXT) !=
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005))
+#endif
+      SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
 
     const std::string hdrTypes = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
         SYSTEM_SUPPORTED_HDR_TYPES, INFO::DEFAULT_CONTEXT);
@@ -216,9 +266,11 @@ void CGUIWindowSystemInfo::FrameMove()
     auto cpuInfo = CServiceBroker::GetCPUInfo();
     if (cpuInfo)
     {
+#if !defined(TARGET_WASM)
       static std::string model = cpuInfo->GetCPUModel();
       if (!model.empty())
         SET_CONTROL_LABEL(i++, "CPU: " + model);
+#endif
 
       static std::string mips = cpuInfo->GetCPUBogoMips();
       if (!mips.empty())
@@ -240,8 +292,15 @@ void CGUIWindowSystemInfo::FrameMove()
       if (!serial.empty())
         SET_CONTROL_LABEL(i++, "Serial: " + serial);
 
-      // temperature can't really be conditional because of localization units
-      SetControlLabel(i++, "{} {}", 22011, SYSTEM_CPU_TEMPERATURE);
+#if defined(TARGET_WASM)
+      // "Not available"
+      if (CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_CPU_TEMPERATURE,
+                                                              INFO::DEFAULT_CONTEXT) !=
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005))
+#else
+        // temperature can't really be conditional because of localization units
+#endif
+        SetControlLabel(i++, "{} {}", 22011, SYSTEM_CPU_TEMPERATURE);
 
       // we can check if the cpufrequency is not 0 (default if not implemented)
       // but we have to call through CGUIInfoManager -> CSystemGUIInfo -> CSysInfo
@@ -250,6 +309,23 @@ void CGUIWindowSystemInfo::FrameMove()
       if (cpuFreq > 0)
         SetControlLabel(i++, "{} {}", 13284, SYSTEM_CPUFREQUENCY);
     }
+#if defined(TARGET_WASM)
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    const auto toolchain = StringUtils::Format("Emscripten {}.{}.{}", __EMSCRIPTEN_MAJOR__,
+                                               __EMSCRIPTEN_MINOR__, __EMSCRIPTEN_TINY__);
+    // "WebAssembly toolchain: {0}"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39225), toolchain));
+    const auto heapSize = emscripten_get_heap_size();
+    const auto heapMax = emscripten_get_heap_max();
+    // "WASM linear memory: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39222), heapSize / 1048576.0));
+    // "WASM linear memory maximum: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39223), heapMax / 1048576.0));
+    const auto programBreak =
+        std::atomic_ref(*emscripten_get_sbrk_ptr()).load(std::memory_order_relaxed);
+    // "WASM allocator program break: {0:.1f} MiB"
+    SET_CONTROL_LABEL(i++, StringUtils::Format(strings.Get(39224), programBreak / 1048576.0));
+#endif
   }
 
   else if (m_section == CONTROL_BT_PVR)
@@ -280,6 +356,13 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12396));
   }
+#if defined(TARGET_WASM)
+  if (m_section == CONTROL_BT_HARDWARE || m_section == CONTROL_BT_VIDEO)
+  {
+    for (; i <= CONTROL_TEXT_END; ++i)
+      SET_CONTROL_LABEL(i, "");
+  }
+#endif
   CGUIWindow::FrameMove();
 }
 

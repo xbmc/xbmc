@@ -8,9 +8,12 @@
 
 #include "TizenWebApis.h"
 
+#include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#include <array>
 
 #include <emscripten/em_asm.h>
 
@@ -182,6 +185,78 @@ WasmDeviceInfo CTizenWebApis::GetDeviceInfo()
             info.firmware, info.platformVersion);
 
   return info;
+}
+
+KODI::MEMORY::MemoryStatus CTizenWebApis::GetMemoryStatus()
+{
+  std::array<double, 2> values{};
+  // clang-format off
+  const bool available = MAIN_THREAD_EM_ASM_INT(({
+    try {
+      if (typeof tizen === 'undefined' || !tizen.systeminfo)
+        return 0;
+      const total = tizen.systeminfo.getTotalMemory();
+      const free = tizen.systeminfo.getAvailableMemory();
+      if (!Number.isSafeInteger(total) || total <= 0 ||
+          !Number.isSafeInteger(free) || free < 0 || free > total)
+        return 0;
+      HEAPF64[$0 >> 3] = total;
+      HEAPF64[($0 + 8) >> 3] = free;
+      return 1;
+    } catch (e) {
+      return 0;
+    }
+  }), values.data()) != 0;
+  // clang-format on
+  if (!available)
+    return {};
+
+  KODI::MEMORY::MemoryStatus status{};
+  status.totalPhys = static_cast<uint64_t>(values[0]);
+  status.availPhys = static_cast<uint64_t>(values[1]);
+  status.memoryLoad =
+      static_cast<unsigned int>(100 * (status.totalPhys - status.availPhys) / status.totalPhys);
+  return status;
+}
+
+TizenStorageInfo CTizenWebApis::GetStorageInfo()
+{
+  // STORAGE is asynchronous; keep the last snapshot while a refresh is pending.
+  // clang-format off
+  void* json = MAIN_THREAD_EM_ASM_PTR(({
+    try {
+      if (typeof tizen === 'undefined' || !tizen.systeminfo)
+        return 0;
+      const kodi = (Module.kodi = Module.kodi || {});
+      const state = (kodi.storageInfo = kodi.storageInfo ||
+                     {pending: false, nextUpdate: 0, data: null});
+      const now = performance.now();
+      if (!state.pending && now >= state.nextUpdate) {
+        state.pending = true;
+        state.nextUpdate = now + 10000;
+        const failed = () => { state.data = null; state.pending = false; };
+        try {
+          tizen.systeminfo.getPropertyValue('STORAGE', info => {
+            state.data = null;
+            const unit = info.units.find(u => u.type === 'INTERNAL');
+            if (unit && Number.isSafeInteger(unit.capacity) && unit.capacity > 0 &&
+                Number.isSafeInteger(unit.availableCapacity) && unit.availableCapacity >= 0 &&
+                unit.availableCapacity <= unit.capacity)
+              state.data = {capacity: unit.capacity, available: unit.availableCapacity};
+            state.pending = false;
+          }, failed);
+        } catch (e) { failed(); }
+      }
+      return state.data ? stringToNewUTF8(JSON.stringify(state.data)) : 0;
+    } catch (e) {
+      return 0;
+    }
+  }));
+  // clang-format on
+  CVariant data;
+  if (!ParseOwnedJson(json, data))
+    return {};
+  return {data["capacity"].asUnsignedInteger(), data["available"].asUnsignedInteger()};
 }
 
 bool CTizenWebApis::SetScreenSaverEnabled(bool enabled)

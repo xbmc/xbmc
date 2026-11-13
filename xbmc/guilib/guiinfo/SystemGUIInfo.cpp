@@ -47,6 +47,10 @@
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
 
+#if defined(TARGET_WASM)
+#include "platform/wasm/WasmWebApis.h"
+#endif
+
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -153,13 +157,24 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
     case SYSTEM_CPU_USAGE:
       value = GetSystemHeatInfo(info.GetInfo());
       return true;
-    case SYSTEM_VIDEO_ENCODER_INFO:
     case NETWORK_IP_ADDRESS:
     case NETWORK_MAC_ADDRESS:
     case NETWORK_SUBNET_MASK:
     case NETWORK_GATEWAY_ADDRESS:
     case NETWORK_DNS1_ADDRESS:
     case NETWORK_DNS2_ADDRESS:
+#if defined(TARGET_WASM)
+      if (KODI::PLATFORM::WASM::CWasmWebApis::GetProvider() ==
+          KODI::PLATFORM::WASM::WebApiProvider::NONE)
+      {
+        // "Not available"; the browser's loopback interface is only for internal use.
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005);
+        return true;
+      }
+#endif
+      value = g_sysinfo.GetInfo(info.GetInfo());
+      return true;
+    case SYSTEM_VIDEO_ENCODER_INFO:
     case NETWORK_LINK_STATE:
     case SYSTEM_OS_VERSION_INFO:
     case SYSTEM_CPUFREQUENCY:
@@ -179,6 +194,9 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       {
         const RESOLUTION_INFO& resInfo = winSystem->GetGfxContext().GetResInfo();
 
+#if defined(TARGET_WASM)
+        value = StringUtils::Format("{}x{}", resInfo.iWidth, resInfo.iHeight);
+#else
         if (winSystem->IsFullScreen())
           value = StringUtils::Format(
               "{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
@@ -188,6 +206,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
           value = StringUtils::Format(
               "{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(242));
+#endif
       }
       else
       {
@@ -218,6 +237,14 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
     {
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
+#if defined(TARGET_WASM)
+      if (stat.totalPhys == 0)
+      {
+        // "N/A"
+        value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10006);
+        return true;
+      }
+#endif
       int iMemPercentFree =
           100 -
           static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
@@ -342,6 +369,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 #endif
     case SYSTEM_SUPPORTED_HDR_TYPES:
     {
+#if defined(TARGET_WASM)
+      // "Unknown": the browser does not expose the physical display's HDR capabilities.
+      value = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205);
+#else
       CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
       if (winSystem->IsHDRDisplay())
       {
@@ -359,6 +390,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 
         value = types;
       }
+#endif
 
       return true;
     }
@@ -395,6 +427,10 @@ bool CSystemGUIInfo::GetInt(int& value,
     {
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
+#if defined(TARGET_WASM)
+      if (stat.totalPhys == 0)
+        return false;
+#endif
       const auto memPercentUsed{
           static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f)};
       if (info.GetInfo() == SYSTEM_FREE_MEMORY)
@@ -410,9 +446,17 @@ bool CSystemGUIInfo::GetInt(int& value,
       return true;
     }
     case SYSTEM_CPU_USAGE:
+#if defined(TARGET_WASM)
+      if (!CServiceBroker::GetCPUInfo()->SupportsCPUUsage())
+        return false;
+#endif
       value = CServiceBroker::GetCPUInfo()->GetUsedPercentage();
       return true;
     case SYSTEM_BATTERY_LEVEL:
+#if defined(TARGET_WASM)
+      if (!CServiceBroker::GetPowerManager().GetPowerSyscall())
+        return false;
+#endif
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
     default:

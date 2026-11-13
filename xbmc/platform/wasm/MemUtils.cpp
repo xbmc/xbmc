@@ -8,10 +8,10 @@
 
 #include "utils/MemUtils.h"
 
-#include <cstdint>
-#include <cstdlib>
+#include "platform/wasm/TizenWebApis.h"
 
-#include <emscripten/heap.h>
+#include <chrono>
+#include <cstdlib>
 
 namespace KODI
 {
@@ -41,11 +41,16 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (!buffer)
     return;
 
-  // The sbrk break, not the linear-memory size, is what the allocator has claimed.
-  const uint64_t heapMax = static_cast<uint64_t>(emscripten_get_heap_max());
-  const uint64_t heapUsed = static_cast<uint64_t>(*emscripten_get_sbrk_ptr());
-  buffer->totalPhys = heapMax;
-  buffer->availPhys = (heapMax > heapUsed) ? (heapMax - heapUsed) : 0;
+  // Avoid querying the TV on every GUI frame without locking across a main-thread proxy call.
+  thread_local MemoryStatus status{};
+  thread_local std::chrono::steady_clock::time_point nextUpdate{};
+  const auto now = std::chrono::steady_clock::now();
+  if (now >= nextUpdate)
+  {
+    status = KODI::PLATFORM::WASM::CTizenWebApis::GetMemoryStatus();
+    nextUpdate = now + std::chrono::seconds(1);
+  }
+  *buffer = status;
 }
 
 } // namespace MEMORY

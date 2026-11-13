@@ -245,6 +245,7 @@
 				<orientation>vertical</orientation>
 				<control type="label">
 					<description>Memory Text</description>
+					<visible>!String.IsEqual(System.Memory(total),$LOCALIZE[10006])</visible>
 					<width>auto</width>
 					<height>80</height>
 					<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
@@ -255,6 +256,7 @@
 				</control>
 				<control type="progress">
 					<description>Memory BAR</description>
+					<visible>!String.IsEqual(System.Memory(total),$LOCALIZE[10006])</visible>
 					<width>730</width>
 					<height>16</height>
 					<info>system.memory(used)</info>

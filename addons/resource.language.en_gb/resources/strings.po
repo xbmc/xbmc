@@ -5095,8 +5095,10 @@ msgid "Not available"
 msgstr ""
 
 #. Abbreviation of "Not Available"
+#: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
 #: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
 #: xbmc/utils/SystemInfo.cpp
+#: xbmc/windows/GUIWindowDebugInfo.cpp
 msgctxt "#10006"
 msgid "N/A"
 msgstr ""
@@ -6782,6 +6784,7 @@ msgstr ""
 
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
+#: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
 #: xbmc/language/LangInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemux.cpp
@@ -25382,7 +25385,63 @@ msgctxt "#39219"
 msgid "Use the system Dolby Vision extensions to correctly display Dolby Vision profile 5, 7 (excludes FEL reconstruction), 8 and 10 video."
 msgstr ""
 
-#empty strings from id 39220 to 39899
+#empty strings from id 39220 to 39221
+
+#. Size of the WebAssembly linear-memory buffer, not resident physical memory
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39222"
+msgid "WASM linear memory: {0:.1f} MiB"
+msgstr ""
+
+#. Maximum size of WebAssembly linear memory
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39223"
+msgid "WASM linear memory maximum: {0:.1f} MiB"
+msgstr ""
+
+#. End of the allocator's address range, including memory it may have freed internally
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39224"
+msgid "WASM allocator program break: {0:.1f} MiB"
+msgstr ""
+
+#. Compiler used to build Kodi for WebAssembly, not the device's native kernel. {0} is the technical name and version, e.g. Emscripten 7.0.0.
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39225"
+msgid "WebAssembly toolchain: {0}"
+msgstr ""
+
+#. Time since the application started, not the device's uptime
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39226"
+msgid "Application uptime"
+msgstr ""
+
+#. Resolution used to render Kodi's GUI, not necessarily the physical display mode
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39227"
+msgid "GUI resolution"
+msgstr ""
+
+#. Internal user storage reported by Tizen, excluding system-reserved space; not browser storage quota
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39228"
+msgid "Internal user storage: {0:.2f} GiB free / {1:.2f} GiB total"
+msgstr ""
+
+#. Browser-origin usage and quota estimates, not physical device capacity or free space
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39229"
+msgid "Storage (estimate)"
+msgstr ""
+
+#. Estimated storage limit for this browser origin, not physical device capacity
+#: xbmc/platform/wasm/storage/WasmStorageProvider.cpp
+msgctxt "#39230"
+msgid "Browser quota"
+msgstr ""
+
+#empty strings from id 39231 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
