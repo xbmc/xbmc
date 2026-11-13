@@ -15,6 +15,19 @@
 
 using namespace Actor;
 
+namespace
+{
+// messages are released outside the protocol's lock, as Purge() does
+void ReleaseMessages(std::queue<Message*>& messages)
+{
+  while (!messages.empty())
+  {
+    messages.front()->Release();
+    messages.pop();
+  }
+}
+} // namespace
+
 void Message::Release()
 {
   bool skip;
@@ -341,42 +354,59 @@ void Protocol::PurgeIn(int signal)
 {
   Message *msg;
   std::queue<Message*> msgs;
+  std::queue<Message*> purged;
 
-  std::unique_lock lock(criticalSection);
+  {
+    std::unique_lock lock(criticalSection);
 
-  while (!inMessages.empty())
-  {
-    msg = inMessages.front();
-    inMessages.pop();
-    if (msg->signal != signal)
-      msgs.push(msg);
+    while (!inMessages.empty())
+    {
+      msg = inMessages.front();
+      inMessages.pop();
+      if (msg->signal != signal)
+        msgs.push(msg);
+      else
+        purged.push(msg);
+    }
+    while (!msgs.empty())
+    {
+      msg = msgs.front();
+      msgs.pop();
+      inMessages.push(msg);
+    }
   }
-  while (!msgs.empty())
-  {
-    msg = msgs.front();
-    msgs.pop();
-    inMessages.push(msg);
-  }
+
+  ReleaseMessages(purged);
 }
 
-void Protocol::PurgeOut(int signal)
+size_t Protocol::PurgeOut(int signal)
 {
   Message *msg;
   std::queue<Message*> msgs;
+  std::queue<Message*> purged;
 
-  std::unique_lock lock(criticalSection);
+  {
+    std::unique_lock lock(criticalSection);
 
-  while (!outMessages.empty())
-  {
-    msg = outMessages.front();
-    outMessages.pop();
-    if (msg->signal != signal)
-      msgs.push(msg);
+    while (!outMessages.empty())
+    {
+      msg = outMessages.front();
+      outMessages.pop();
+      if (msg->signal != signal)
+        msgs.push(msg);
+      else
+        purged.push(msg);
+    }
+    while (!msgs.empty())
+    {
+      msg = msgs.front();
+      msgs.pop();
+      outMessages.push(msg);
+    }
   }
-  while (!msgs.empty())
-  {
-    msg = msgs.front();
-    msgs.pop();
-    outMessages.push(msg);
-  }
+
+  const size_t count = purged.size();
+  ReleaseMessages(purged);
+
+  return count;
 }
