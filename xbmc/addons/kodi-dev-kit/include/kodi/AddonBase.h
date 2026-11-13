@@ -1103,6 +1103,9 @@ inline std::string ATTR_DLL_LOCAL GetAddonPath(const std::string& append = "")
   CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
+    if (ret.back() == '\\' || ret.back() == '/')
+      ret.pop_back();
+
     if (append.at(0) != '\\' && append.at(0) != '/')
 #ifdef TARGET_WINDOWS
       ret.append("\\");
@@ -1140,6 +1143,9 @@ inline std::string ATTR_DLL_LOCAL GetLibPath(const std::string& append = "")
   CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
+    if (ret.back() == '\\' || ret.back() == '/')
+      ret.pop_back();
+
     if (append.at(0) != '\\' && append.at(0) != '/')
 #ifdef TARGET_WINDOWS
       ret.append("\\");
@@ -1172,6 +1178,9 @@ inline std::string ATTR_DLL_LOCAL GetUserPath(const std::string& append = "")
   CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
+    if (ret.back() == '\\' || ret.back() == '/')
+      ret.pop_back();
+
     if (append.at(0) != '\\' && append.at(0) != '/')
 #ifdef TARGET_WINDOWS
       ret.append("\\");
@@ -1205,6 +1214,9 @@ inline std::string ATTR_DLL_LOCAL GetTempPath(const std::string& append = "")
   CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
+    if (ret.back() == '\\' || ret.back() == '/')
+      ret.pop_back();
+
     if (append.at(0) != '\\' && append.at(0) != '/')
 #ifdef TARGET_WINDOWS
       ret.append("\\");
