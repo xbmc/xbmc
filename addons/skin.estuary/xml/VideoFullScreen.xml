@@ -33,7 +33,7 @@
 		</control>
 		<control type="group" id="1">
 			<depth>DepthOSD+</depth>
-			<visible>Player.Caching + Integer.IsGreater(Player.CacheLevel,0)</visible>
+			<visible>Player.Caching + Integer.IsGreater(Player.CacheLevel,0) + !Player.WaitingForAudio</visible>
 			<animation effect="fade" delay="300" time="200">Visible</animation>
 			<animation effect="fade" delay="200" time="150">Hidden</animation>
 			<centerleft>50%</centerleft>
@@ -71,6 +71,32 @@
 				<aligny>center</aligny>
 				<align>center</align>
 				<font>font13</font>
+			</control>
+		</control>
+		<control type="group">
+			<depth>DepthOSD+</depth>
+			<visible>Player.WaitingForAudio</visible>
+			<animation effect="fade" time="200">Visible</animation>
+			<animation effect="fade" time="150">Hidden</animation>
+			<centerleft>50%</centerleft>
+			<width>500</width>
+			<centertop>50%</centertop>
+			<height>76</height>
+			<control type="label">
+				<top>0</top>
+				<width>100%</width>
+				<height>50</height>
+				<label>$LOCALIZE[31616]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="progress">
+				<top>60</top>
+				<width>100%</width>
+				<height>16</height>
+				<info>Player.WaitingForAudioRemaining</info>
 			</control>
 		</control>
 	</controls>

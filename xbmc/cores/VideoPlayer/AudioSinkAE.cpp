@@ -196,6 +196,14 @@ void CAudioSinkAE::Pause()
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
+void CAudioSinkAE::Hold()
+{
+  std::unique_lock lock(m_critSection);
+  if (m_pAudioStream)
+    m_pAudioStream->Hold();
+  m_playingPts = DVD_NOPTS_VALUE;
+}
+
 void CAudioSinkAE::Resume()
 {
   std::unique_lock lock(m_critSection);
@@ -254,6 +262,15 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
     return false;
 
   return true;
+}
+
+bool CAudioSinkAE::HasSinkFormatChanged()
+{
+  std::unique_lock lock(m_critSection);
+  if (!m_pAudioStream)
+    return false;
+
+  return m_pAudioStream->HasSinkFormatChanged();
 }
 
 double CAudioSinkAE::GetCacheTime()
