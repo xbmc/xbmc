@@ -36,6 +36,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/ArtUtils.h"
 #include "utils/EndianSwap.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -159,11 +160,13 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
           : std::string{};
   if (!pipeName.empty())
   {
-    // UpdateInfo overwrites the mime type, and an empty url clears the previous thumbnail.
+    // UpdateInfo overwrites the mime type and replaces the whole art map, so an empty url clears
+    // the previous thumbnail and the default icon has to travel with it.
     CFileItem* item = new CFileItem();
     item->SetPath(pipeName);
     item->SetMimeType("audio/x-xbmc-pcm");
     item->SetArt(KODI::ART::TYPE::THUMB, CFile::Exists(coverArtFile) ? coverArtFile : "");
+    KODI::ART::FillInDefaultIcon(*item);
 
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
                                                static_cast<void*>(item));
