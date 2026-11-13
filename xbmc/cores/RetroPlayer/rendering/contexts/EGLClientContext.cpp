@@ -108,11 +108,13 @@ bool CEGLClientContext::RestoreCurrent()
 
   if (m_prevAPI != m_api)
     ReleaseCurrent();
+  // glvnd reports OpenGL ES for a thread that never bound an API, even when no driver supports
+  // it. With no previous context to restore, failing to bind that back leaves nothing wrong.
+  const bool apiRestored = m_egl.bindAPI(m_prevAPI) == EGL_TRUE;
   const bool restored =
-      m_egl.bindAPI(m_prevAPI) &&
-      (m_prevContext != EGL_NO_CONTEXT
-           ? m_egl.makeCurrent(m_prevDisplay, m_prevDraw, m_prevRead, m_prevContext)
-           : m_egl.makeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
+      m_prevContext != EGL_NO_CONTEXT
+          ? apiRestored && m_egl.makeCurrent(m_prevDisplay, m_prevDraw, m_prevRead, m_prevContext)
+          : m_egl.makeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
   if (!restored)
   {
     CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to restore EGL context (error {:#x})",
