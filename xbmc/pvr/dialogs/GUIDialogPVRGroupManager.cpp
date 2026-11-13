@@ -553,6 +553,7 @@ void CGUIDialogPVRGroupManager::OnInitWindow()
 void CGUIDialogPVRGroupManager::OnDeinitWindow(int nextWindowID)
 {
   Clear();
+  CServiceBroker::GetPVRManager().PlaybackState()->RestorePlayingChannelGroup();
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
