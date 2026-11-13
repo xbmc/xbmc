@@ -78,6 +78,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoQueueLevel = 0;
   m_videoQueueDataLevel = 0;
   m_videoIsInterlaced = false;
+  m_videoHwScaling = false;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
@@ -96,6 +97,7 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoLiveBitRate(m_videoLiveBitRate);
     m_dataCache->SetVideoQueueLevel(m_videoQueueLevel);
     m_dataCache->SetVideoQueueDataLevel(m_videoQueueDataLevel);
+    m_dataCache->SetVideoHwScaling(m_videoHwScaling);
   }
 }
 
@@ -287,6 +289,16 @@ void CProcessInfo::SetVideoInterlaced(bool interlaced)
 
   if (m_dataCache)
     m_dataCache->SetVideoInterlaced(interlaced);
+}
+
+void CProcessInfo::SetVideoHwScaling(bool active)
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  m_videoHwScaling = active;
+
+  if (m_dataCache)
+    m_dataCache->SetVideoHwScaling(active);
 }
 
 bool CProcessInfo::GetVideoInterlaced()
