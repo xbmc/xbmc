@@ -78,6 +78,18 @@ TEST_F(VideoDatabaseGetResultTest, BoolOverloadsStillReportFalseForMissingRows)
   EXPECT_FALSE(m_db.GetFileInfo("", details, MISSING_ID));
 }
 
+TEST_F(VideoDatabaseGetResultTest, MissingItemOfEveryKindIsNotFound)
+{
+  CVideoInfoTag details;
+
+  for (const KODI::MEDIA::TYPE type :
+       {KODI::MEDIA::TYPE::MOVIE, KODI::MEDIA::TYPE::VIDEO_COLLECTION, KODI::MEDIA::TYPE::TV_SHOW,
+        KODI::MEDIA::TYPE::SEASON, KODI::MEDIA::TYPE::EPISODE, KODI::MEDIA::TYPE::MUSIC_VIDEO,
+        KODI::MEDIA::TYPE::SONG})
+    EXPECT_EQ(m_db.TryGetDetailsByTypeAndId(type, MISSING_ID, details), GetResult::NotFound)
+        << KODI::MEDIA::NameOf(type);
+}
+
 // A negative id is rejected before any query runs, which is still an answer
 // about the record.
 TEST_F(VideoDatabaseGetResultTest, NegativeIdIsNotFound)

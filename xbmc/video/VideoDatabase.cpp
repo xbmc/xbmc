@@ -4979,30 +4979,39 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
   }
 }
 
+CVideoDatabase::GetResult CVideoDatabase::TryGetDetailsByTypeAndId(
+    MEDIA::TYPE type,
+    int id,
+    CVideoInfoTag& details,
+    CFileItem* item /* = nullptr */,
+    int getDetails /* = VideoDbDetailsAll */,
+    int idVersion /* = -1 */,
+    int idFile /* = -1 */)
+{
+  switch (type)
+  {
+    case MEDIA::TYPE::MOVIE:
+      return TryGetMovieInfo("", details, id, idVersion, idFile, getDetails);
+    case MEDIA::TYPE::VIDEO_COLLECTION:
+      return TryGetSetInfo(id, details, item);
+    case MEDIA::TYPE::TV_SHOW:
+      return TryGetTvShowInfo("", details, id, item, getDetails);
+    case MEDIA::TYPE::SEASON:
+      return TryGetSeasonInfo(id, details, item);
+    case MEDIA::TYPE::EPISODE:
+      return TryGetEpisodeInfo("", details, id, getDetails);
+    case MEDIA::TYPE::MUSIC_VIDEO:
+      return TryGetMusicVideoInfo("", details, id, getDetails);
+    default:
+      return GetResult::NotFound;
+  }
+}
+
 bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id)
 {
   CVideoInfoTag details;
-  details.Reset();
-
-  switch (type)
-  {
-    case VideoDbContentType::MOVIES:
-      GetMovieInfo("", details, id);
-      break;
-    case VideoDbContentType::TVSHOWS:
-      GetTvShowInfo("", details, id, &item);
-      break;
-    case VideoDbContentType::EPISODES:
-      GetEpisodeInfo("", details, id);
-      break;
-    case VideoDbContentType::MUSICVIDEOS:
-      GetMusicVideoInfo("", details, id);
-      break;
-    default:
-      return false;
-  }
-
-  if (details.m_iDbId < 0)
+  if (TryGetDetailsByTypeAndId(DatabaseUtils::MediaTypeFromVideoContentType(type), id, details,
+                               &item) != GetResult::Ok)
     return false;
 
   item.SetFromVideoInfoTag(details);
