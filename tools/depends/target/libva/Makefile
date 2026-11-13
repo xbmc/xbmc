@@ -1,5 +1,5 @@
 include ../../Makefile.include LIBVA-VERSION ../../download-files.include
-DEPS =../../Makefile.include Makefile ../../download-files.include
+DEPS =../../Makefile.include Makefile LIBVA-VERSION ../../download-files.include
 
 MESON_BUILD_TYPE=release
 
