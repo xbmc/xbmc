@@ -70,6 +70,10 @@ bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned 
 bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)
 {
   CVdpauRenderPicture *pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
+  // a buffer from another decoder, e.g. NVDEC after a stream change
+  if (!pic)
+    return true;
+
   if (pic->procPic.isYuv && !m_isYuv)
     return true;
 
