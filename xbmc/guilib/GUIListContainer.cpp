@@ -29,7 +29,7 @@ CGUIListContainer::~CGUIListContainer(void) = default;
 
 bool CGUIListContainer::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  switch (MapScrollAction(action.GetID()))
   {
   case ACTION_PAGE_UP:
     {
@@ -232,27 +232,35 @@ void CGUIListContainer::SelectItem(int item)
   }
 }
 
-int CGUIListContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint) const
+int CGUIListContainer::GetCursorFromPoint(const CPoint& point, CPoint* itemPoint) const
 {
   if (!m_focusedLayout || !m_layout)
     return -1;
 
-  int row = 0;
-  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
-  while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
+  const bool vertical = IsVertical(m_orientation);
+  const bool mirrored = IsScrollAxisMirrored();
+  float pos = GetListPosFromPoint(point);
+  if (pos < 0.0f)
+    return -1;
+
+  for (int row = 0; row < m_itemsPerPage + 1; ++row) // +1: the possible half item at the end
   {
-    const CGUIListItemLayout *layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
-    if (pos < layout->Size(m_orientation) && row + GetOffset() < (int)m_items.size())
-    { // found correct "row" -> check horizontal
+    const CGUIListItemLayout* layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
+    const float size = layout->Size(m_orientation);
+    if (pos < size && row + GetOffset() < static_cast<int>(m_items.size()))
+    { // found correct "row" -> check the cross axis
       if (!InsideLayout(layout, point))
         return -1;
 
       if (itemPoint)
-        *itemPoint = m_orientation == VERTICAL ? CPoint(point.x, pos) : CPoint(pos, point.y);
+      {
+        // item-local screen coordinate: flip the primary axis when mirrored
+        const float local = mirrored ? size - pos : pos;
+        *itemPoint = vertical ? CPoint(point.x, local) : CPoint(local, point.y);
+      }
       return row;
     }
-    row++;
-    pos -= layout->Size(m_orientation);
+    pos -= size;
   }
   return -1;
 }
