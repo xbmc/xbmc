@@ -1,4 +1,5 @@
-set(SOURCES RenderContext.cpp
+set(SOURCES RenderBezel.cpp
+            RenderContext.cpp
             RenderSettings.cpp
             RenderTranslator.cpp
             RenderUtils.cpp
@@ -7,6 +8,7 @@ set(SOURCES RenderContext.cpp
 )
 
 set(HEADERS IRenderManager.h
+            RenderBezel.h
             RenderContext.h
             RenderSettings.h
             RenderTranslator.h
