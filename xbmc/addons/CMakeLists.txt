@@ -31,6 +31,7 @@ set(SOURCES Addon.cpp
             UISoundsResource.cpp
             VFSEntry.cpp
             Visualization.cpp
+            WebApp.cpp
             Webinterface.cpp)
 
 set(HEADERS Addon.h
@@ -74,6 +75,7 @@ set(HEADERS Addon.h
             UISoundsResource.h
             VFSEntry.h
             Visualization.h
+            WebApp.h
             Webinterface.h)
 
 core_add_library(addons)

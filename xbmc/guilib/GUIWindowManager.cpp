@@ -152,6 +152,11 @@ constexpr int MAX_BUFFER_AGE = 10;
 
 /* Game related include files */
 #include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
+#if defined(HAVE_WAYLAND_SERVER)
+#include "cores/WebPlayer/GUIDialogWebKeyboard.h"
+#include "cores/WebPlayer/GUIDialogWebOSD.h"
+#include "cores/WebPlayer/GUIWindowFullScreenWeb.h"
+#endif
 #include "games/agents/windows/GUIAgentWindow.h"
 #include "games/cheats/dialogs/DialogGameCheats.h"
 #include "games/controllers/windows/GUIControllerWindow.h"
@@ -371,6 +376,11 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CDialogGameIndicators);
   Add(new GAME::CDialogGameCheats);
   Add(new RETRO::CGameWindowFullScreen);
+#if defined(HAVE_WAYLAND_SERVER)
+  Add(new WEB::CGUIWindowFullScreenWeb);
+  Add(new WEB::CGUIDialogWebKeyboard);
+  Add(new WEB::CGUIDialogWebOSD);
+#endif
 }
 
 bool CGUIWindowManager::DestroyWindows()
@@ -503,6 +513,9 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_GAME_ACHIEVEMENTS);
     DestroyWindow(WINDOW_DIALOG_GAME_CHEATS);
     DestroyWindow(WINDOW_FULLSCREEN_GAME);
+    DestroyWindow(WINDOW_FULLSCREEN_WEB);
+    DestroyWindow(WINDOW_DIALOG_WEB_KEYBOARD);
+    DestroyWindow(WINDOW_DIALOG_WEB_OSD);
 
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_MYPVR);
@@ -1046,6 +1059,10 @@ bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
     if (activeWindowID != WINDOW_FULLSCREEN_GAME)
       windowID = WINDOW_FULLSCREEN_GAME;
   }
+
+  // See if we're showing a web page
+  else if (appPlayer->IsWebPlaying())
+    windowID = WINDOW_FULLSCREEN_WEB;
 
   // See if we're playing a video
   else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && appPlayer->IsPlayingVideo())

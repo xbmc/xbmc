@@ -45,6 +45,8 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     bool IsInputHidden() const { return m_hiddenInput; }
 
   protected:
+    CGUIDialogKeyboardGeneric(int id, const std::string& xmlFile);
+
     void OnWindowLoaded() override;
     void OnInitWindow() override;
     bool OnAction(const CAction &action) override;

@@ -1,6 +1,7 @@
 set(SOURCES ITouchInputHandling.cpp)
 
 set(HEADERS ITouchActionHandler.h
+            ITouchEventHandler.h
             ITouchInputHandler.h
             ITouchInputHandling.h
             TouchTypes.h)

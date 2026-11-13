@@ -390,6 +390,24 @@ bool CWinSystemGbm::UseLimitedColor()
       CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
+bool CWinSystemGbm::HasKeyboard() const
+{
+  return m_libinput && m_libinput->HasKeyboard();
+}
+
+// a touch screen measures its own active area, which a cheap panel's EDID often misreports
+std::pair<int, int> CWinSystemGbm::GetPhysicalSize() const
+{
+  if (m_libinput && m_libinput->GetTouchWidth() > 0 && m_libinput->GetTouchHeight() > 0)
+    return {m_libinput->GetTouchWidth(), m_libinput->GetTouchHeight()};
+
+  const CDRMConnector* connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector)
+    return {0, 0};
+  return {static_cast<int>(connector->GetPhysicalWidth()),
+          static_cast<int>(connector->GetPhysicalHeight())};
+}
+
 bool CWinSystemGbm::Hide()
 {
   bool ret = m_DRM->SetActive(false);

@@ -47,7 +47,8 @@
 						<description>Get more</description>
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[21452]</label>
-						<onclick>ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
+						<onclick condition="!String.StartsWith(Container.FolderPath,addons://sources/webapp)">ActivateWindow(addonbrowser,addons://more/executable/,return)</onclick>
+						<onclick condition="String.StartsWith(Container.FolderPath,addons://sources/webapp)">ActivateWindow(addonbrowser,addons://more/webapp/,return)</onclick>
 						<visible>Container.Content(addons)</visible>
 					</control>
 				</control>

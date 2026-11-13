@@ -64,6 +64,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/DefaultArt.h"
+#include "utils/ExecString.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
 #include "utils/LabelFormatter.h"
@@ -1127,6 +1128,14 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       }
       return true;
     }
+  }
+
+  if (pItem->GetURL().IsProtocol("webapp"))
+  {
+    const CExecString exec(*pItem, "");
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               exec.GetExecString());
+    return true;
   }
 
   if (pItem->IsFolder())

@@ -53,7 +53,13 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
                                                  int32_t pointer /* = 0 */,
                                                  float size /* = 0.0f */)
 {
-  if (time < 0 || pointer < 0 || pointer >= MAX_POINTERS)
+  if (time < 0 || pointer < 0)
+    return false;
+
+  if (event != TouchInputUnchanged && OnTouchEvent(event, x, y, time, pointer))
+    return true;
+
+  if (pointer >= MAX_POINTERS)
     return false;
 
   std::unique_lock lock(m_critical);
@@ -319,6 +325,30 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(
     detector->OnTouchUpdate(pointer, m_pointers[pointer]);
 
   return true;
+}
+
+void CGenericTouchInputHandler::RegisterEventHandler(ITouchEventHandler* handler)
+{
+  if (handler == nullptr)
+    return;
+
+  std::unique_lock lock(m_eventHandlerLock);
+  if (std::ranges::find(m_eventHandlers, handler) == m_eventHandlers.end())
+    m_eventHandlers.insert(m_eventHandlers.begin(), handler);
+}
+
+void CGenericTouchInputHandler::UnregisterEventHandler(ITouchEventHandler* handler)
+{
+  std::unique_lock lock(m_eventHandlerLock);
+  std::erase(m_eventHandlers, handler);
+}
+
+bool CGenericTouchInputHandler::OnTouchEvent(
+    TouchInput event, float x, float y, int64_t time, int32_t pointer)
+{
+  std::unique_lock lock(m_eventHandlerLock);
+  return std::ranges::any_of(m_eventHandlers, [&](ITouchEventHandler* handler)
+                             { return handler->OnTouchEvent(event, x, y, time, pointer); });
 }
 
 void CGenericTouchInputHandler::saveLastTouch()

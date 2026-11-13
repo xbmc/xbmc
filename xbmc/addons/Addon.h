@@ -476,6 +476,19 @@ protected:
    */
   virtual bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
+  /*!
+   * \brief Load the definition of the settings
+   *
+   * \param[in] path Path of the add-on's settings definition file
+   * \param[out] doc XML document to receive the definition
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if a definition is loaded, false otherwise
+   */
+  virtual bool LoadSettingsDefinition(const std::string& path,
+                                      CXBMCTinyXML& doc,
+                                      AddonInstanceId id);
+
   const AddonInfoPtr m_addonInfo;
 
 private:

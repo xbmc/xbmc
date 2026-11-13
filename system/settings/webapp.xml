@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="kodi.webapp">
+    <category id="network" label="40254" help="40255">
+      <group id="1">
+        <setting id="uplinkaddress" type="string" label="40256" help="40257">
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
+    </category>
+    <category id="video" label="40261" help="40262">
+      <group id="1">
+        <setting id="softwarevideodecoding" type="boolean" label="40263" help="40264">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="encryptedmedia" type="boolean" label="40269" help="40270">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="hbbtv" label="40265" help="40266">
+      <group id="1">
+        <setting id="redbuttonhides" type="boolean" label="40267" help="40268">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

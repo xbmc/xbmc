@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "input/touch/ITouchEventHandler.h"
 #include "input/touch/ITouchInputHandler.h"
 #include "input/touch/TouchTypes.h"
 #include "threads/CriticalSection.h"
@@ -16,6 +17,7 @@
 #include <array>
 #include <memory>
 #include <set>
+#include <vector>
 
 class IGenericTouchGestureDetector;
 
@@ -49,6 +51,13 @@ public:
                         float size = 0.0f) override;
   bool UpdateTouchPointer(
       int32_t pointer, float x, float y, int64_t time, float size = 0.0f) override;
+
+  /*!
+   * \brief Offer raw touch events to a handler before gesture recognition;
+   *        the last handler registered is asked first
+   */
+  void RegisterEventHandler(ITouchEventHandler* handler);
+  void UnregisterEventHandler(ITouchEventHandler* handler);
 
 private:
   // private construction, and no assignments; use the provided singleton methods
@@ -87,7 +96,10 @@ private:
   }
   void triggerDetectors(TouchInput event, int32_t pointer);
   float AdjustPointerSize(float size);
+  bool OnTouchEvent(TouchInput event, float x, float y, int64_t time, int32_t pointer);
 
+  CCriticalSection m_eventHandlerLock;
+  std::vector<ITouchEventHandler*> m_eventHandlers;
   CCriticalSection m_critical;
   std::unique_ptr<CTimer> m_holdTimer;
   std::array<Pointer, MAX_POINTERS> m_pointers;

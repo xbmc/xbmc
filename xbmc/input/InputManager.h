@@ -37,6 +37,7 @@ class ICecInputProvider;
 namespace KEYBOARD
 {
 class IKeyboardDriverHandler;
+class IKeyboardEventHandler;
 }
 
 namespace KEYMAP
@@ -239,6 +240,9 @@ public:
   void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
   void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler);
 
+  void RegisterKeyboardEventHandler(KODI::KEYBOARD::IKeyboardEventHandler* handler);
+  void UnregisterKeyboardEventHandler(KODI::KEYBOARD::IKeyboardEventHandler* handler);
+
   virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
 
@@ -247,6 +251,12 @@ public:
 
 private:
   friend class TestInputManager;
+
+  /*! \brief Offer a keyboard event to the registered event handlers
+   *
+   * \return True if a handler consumed the event
+   */
+  bool OnKeyboardEvent(const XBMC_keysym& keysym, const CKey& key, bool pressed);
 
   /*! \brief Process keyboard event and translate into an action
    *
@@ -319,6 +329,7 @@ private:
   std::unique_ptr<KODI::KEYMAP::CJoystickMapper> m_joystickTranslator;
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
+  std::vector<KODI::KEYBOARD::IKeyboardEventHandler*> m_keyboardEventHandlers;
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
   std::vector<KODI::CEC::ICecInputProvider*> m_cecInputProviders;
 

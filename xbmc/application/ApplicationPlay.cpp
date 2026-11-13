@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/WebPlayer/WebPlayerDefs.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/DiscDirectoryHelper.h"
@@ -388,16 +389,16 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
   }
 
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
-  if (m_item.GetMimeType().empty())
+  if (m_item.GetMimeType().empty() && m_player != KODI::WEB::PLAYER_NAME)
     m_item.FillInMimeType();
 
   if (VIDEO::IsDiscStub(m_item))
     return GatherPlaybackDetailsResult::RESULT_SUCCESS; // all done
 
-  if (PLAYLIST::IsPlayList(m_item) && !m_item.IsGame())
+  if (m_player != KODI::WEB::PLAYER_NAME && PLAYLIST::IsPlayList(m_item) && !m_item.IsGame())
     return GatherPlaybackDetailsResult::RESULT_ERROR; // non-game playlists not supported
 
-  if (!ResolvePath())
+  if (m_player != KODI::WEB::PLAYER_NAME && !ResolvePath())
     return GatherPlaybackDetailsResult::RESULT_ERROR;
 
   if (!isStack)

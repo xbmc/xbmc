@@ -124,6 +124,8 @@ bool CExecString::Parse(const CFileItem& item, const std::string& contextWindow)
     else
       Build("RunAddon", {StringUtils::Paramify(url.GetFileName())});
   }
+  else if (item.GetURL().IsProtocol("webapp"))
+    Build("RunAddon", {StringUtils::Paramify(item.GetURL().GetHostName())});
   else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
     Build("StartAndroidActivity", {StringUtils::Paramify(item.GetPath().substr(26))});
   else // assume a media file

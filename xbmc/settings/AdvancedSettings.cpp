@@ -473,6 +473,7 @@ void CAdvancedSettings::Initialize()
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
   m_curlDisableHTTP2 = false;
+  m_webFilterLists.clear();
 
 #if defined(TARGET_WINDOWS_DESKTOP)
   m_minimizeToTray = false;
@@ -571,6 +572,7 @@ bool CAdvancedSettings::Load(const CProfileManager &profileManager)
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
+  ParseSettingsFile("special://xbmc/system/contentfilterlists.xml");
   ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
   for (const auto& file : m_settingsFiles)
     ParseSettingsFile(file);
@@ -985,6 +987,24 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
     XMLUtils::GetUInt(pElement, "nfstimeout", m_nfsTimeout, 0, 3600);
     XMLUtils::GetInt(pElement, "nfsretries", m_nfsRetries, -1, 30);
+  }
+
+  pElement = pRootElement->FirstChildElement("webapps");
+  if (pElement)
+  {
+    const TiXmlElement* pLists = pElement->FirstChildElement("contentfilterlists");
+    const TiXmlElement* pList = pLists ? pLists->FirstChildElement("list") : nullptr;
+    for (; pList; pList = pList->NextSiblingElement("list"))
+    {
+      const std::string name = XMLUtils::GetAttribute(pList, "name");
+      if (name.empty())
+      {
+        CLog::Log(LOGWARNING, "Ignoring a content filter list without a name");
+        continue;
+      }
+      const TiXmlNode* url = pList->FirstChild();
+      m_webFilterLists[name] = url ? url->ValueStr() : "";
+    }
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");

@@ -26,6 +26,27 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+namespace
+{
+
+bool DrmLayout(CVideoBuffer* buffer, uint32_t& format, uint64_t& modifier)
+{
+  auto* buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
+  if (!buf || !buf->AcquireDescriptor())
+    return false;
+
+  const AVDRMFrameDescriptor* desc = buf->GetDescriptor();
+  if (desc)
+  {
+    format = desc->layers[0].format;
+    modifier = desc->objects[0].format_modifier;
+  }
+  buf->ReleaseDescriptor();
+  return desc != nullptr;
+}
+
+} // unnamed namespace
+
 CRendererDRMPRIME::~CRendererDRMPRIME()
 {
   Flush(false);
@@ -42,15 +63,9 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
-    return nullptr;
-
-  if (buffer && settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+  auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
+  if (buf && settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
-    auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
-    if (!buf)
-      return nullptr;
-
     auto winSystem = static_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
     if (!winSystem)
       return nullptr;
@@ -59,23 +74,13 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     if (!drm)
       return nullptr;
 
-    if (!buf->AcquireDescriptor())
+    uint32_t format;
+    uint64_t modifier;
+    if (!DrmLayout(buf, format, modifier))
       return nullptr;
 
-    AVDRMFrameDescriptor* desc = buf->GetDescriptor();
-    if (!desc)
-    {
-      buf->ReleaseDescriptor();
-      return nullptr;
-    }
-
-    AVDRMLayerDescriptor* layer = &desc->layers[0];
-    uint32_t format = layer->format;
-    uint64_t modifier = desc->objects[0].format_modifier;
     uint64_t width = buf->GetWidth();
     uint64_t height = buf->GetHeight();
-
-    buf->ReleaseDescriptor();
 
     auto gui = drm->GetGuiPlane();
     if (!gui)
@@ -107,6 +112,9 @@ void CRendererDRMPRIME::Register()
 bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
   m_format = picture.videoBuffer->GetFormat();
+  m_drmFormat = 0;
+  m_drmModifier = 0;
+  DrmLayout(picture.videoBuffer, m_drmFormat, m_drmModifier);
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
@@ -273,7 +281,11 @@ bool CRendererDRMPRIME::ConfigChanged(const VideoPicture& picture)
   if (picture.videoBuffer->GetFormat() != m_format)
     return true;
 
-  return false;
+  // a client may hand over pictures the chosen video plane cannot scan out
+  uint32_t format = 0;
+  uint64_t modifier = 0;
+  DrmLayout(picture.videoBuffer, format, modifier);
+  return format != m_drmFormat || modifier != m_drmModifier;
 }
 
 bool CRendererDRMPRIME::Supports(ERENDERFEATURE feature) const

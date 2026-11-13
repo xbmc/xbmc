@@ -1234,6 +1234,17 @@ bool CApplicationPlayer::IsRemotePlaying() const
   return false;
 }
 
+bool CApplicationPlayer::IsWebPlaying() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+  {
+    if (player->IsPlaying() && player->m_type == "web")
+      return true;
+  }
+  return false;
+}
+
 std::string CApplicationPlayer::GetName() const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();

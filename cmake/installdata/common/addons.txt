@@ -11,6 +11,7 @@ addons/kodi.inputstream/*
 addons/kodi.peripheral/*
 addons/kodi.resource/*
 addons/kodi.vfs/*
+addons/kodi.webapp/*
 addons/metadata.album.universal/*
 addons/metadata.artists.universal/*
 addons/metadata.common.allmusic.com/*

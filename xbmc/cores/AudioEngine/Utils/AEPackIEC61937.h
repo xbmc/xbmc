@@ -39,6 +39,19 @@ public:
   static int PackTrueHD(const uint8_t* data, unsigned int size, uint8_t* dest);
   static int PackDTSHD(uint8_t* data, unsigned int size, uint8_t* dest, unsigned int period);
   static int PackPause(uint8_t *dest, unsigned int millis, unsigned int framesize, unsigned int samplerate, unsigned int rep_period, unsigned int encodedRate);
+
+  /*!
+   * \brief Copies the AC3, E-AC3 or DTS frame out of the first complete burst at or after
+   * *offset in a stream of bursts as the Pack functions write them
+   * \param frame receives the frame, room for MAX_IEC61937_PACKET bytes
+   * \return the frame size, 0 while no complete burst is there; *offset moves past the
+   * burst, or to where an incomplete one starts
+   */
+  static unsigned int Unpack(const uint8_t* data,
+                             unsigned int size,
+                             unsigned int* offset,
+                             uint8_t* frame);
+
 private:
 
   static int PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian,

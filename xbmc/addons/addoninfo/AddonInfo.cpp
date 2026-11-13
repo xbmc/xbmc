@@ -40,7 +40,7 @@ struct TypeMapping
 };
 
 // clang-format off
-static constexpr const std::array<TypeMapping, 42> types =
+static constexpr const std::array<TypeMapping, 44> types =
   {{
    {"unknown",                           "", AddonType::UNKNOWN,                 0, AddonInstanceSupport::SUPPORT_NONE,      "" },
    {"xbmc.metadata.scraper.albums",      "", AddonType::SCRAPER_ALBUMS,      24016, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_ALBUM_INFO },
@@ -84,6 +84,8 @@ static constexpr const std::array<TypeMapping, 42> types =
    {"kodi.inputstream",                  "", AddonType::INPUTSTREAM,         24048, AddonInstanceSupport::SUPPORT_MANDATORY, KODI::ART::DEFAULT::ADDON_INPUTSTREAM },
    {"kodi.vfs",                          "", AddonType::VFS,                 39013, AddonInstanceSupport::SUPPORT_MANDATORY, KODI::ART::DEFAULT::ADDON_VFS },
    {"kodi.imagedecoder",                 "", AddonType::IMAGEDECODER,        39015, AddonInstanceSupport::SUPPORT_MANDATORY, KODI::ART::DEFAULT::ADDON_IMAGE_DECODER },
+   {"kodi.webapp",                       "", AddonType::WEBAPP,              40243, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_WEB_SKIN },
+   {"kodi.webapp.module",                "", AddonType::WEBAPP_MODULE,       40259, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_LIBRARY },
   }};
 // clang-format on
 

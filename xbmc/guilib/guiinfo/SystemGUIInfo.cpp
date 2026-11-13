@@ -17,6 +17,9 @@
 #include "application/AppParams.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
+#if defined(HAVE_WAYLAND_SERVER)
+#include "cores/WebPlayer/WebClientManager.h"
+#endif
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -682,6 +685,16 @@ bool CSystemGUIInfo::GetBool(bool& value,
     case SYSTEM_SUPPORTS_CPU_USAGE:
       value = CServiceBroker::GetCPUInfo()->SupportsCPUUsage();
       return true;
+    case SYSTEM_SUPPORTS_WEB_APPS:
+    {
+      value = false;
+#if defined(HAVE_WAYLAND_SERVER)
+      const auto web =
+          CServiceBroker::GetAppComponents().GetComponent<KODI::WEB::CWebClientManager>();
+      value = web && web->IsEnabled();
+#endif
+      return true;
+    }
     case SYSTEM_GET_BOOL:
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(info.GetData3());
       return true;

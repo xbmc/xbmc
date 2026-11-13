@@ -38,6 +38,7 @@
 #include <algorithm>
 #include <array>
 #include <span>
+#include <string_view>
 
 namespace
 {
@@ -47,6 +48,12 @@ std::string GetDateStringWithFormat(const CDateTime& date, const std::string& fo
   // eg: '1/02/2003 (D/MM/YYYY)'
   return date.GetAsLocalizedDate(format) + " (" + format + ")";
 }
+
+// the languages whose CLDR 47 locale without script or region orders its characters right to left
+constexpr std::array<std::string_view, 22> RIGHT_TO_LEFT_LANGUAGES = {
+    "apc", "ar", "bal", "bgn", "ckb", "dv",  "fa",  "he",  "ks", "lrc", "mzn",
+    "nqo", "ps", "rhg", "sd",  "sdh", "skr", "syr", "trw", "ug", "ur",  "yi",
+};
 } // namespace
 
 using namespace KODI::LANGINFO;
@@ -1003,6 +1010,16 @@ const CLocale& CLangInfo::GetLocale() const
 {
   LanguageResourcePtr language = GetLanguageAddon();
   return language != nullptr ? language->GetLocale() : CLocale::Empty;
+}
+
+bool CLangInfo::IsRightToLeft(const std::string& language /* = "" */) const
+{
+  const LanguageResourcePtr addon = GetLanguageAddon(language);
+  if (addon == nullptr)
+    return false;
+
+  const std::string code = StringUtils::ToLower(addon->GetLocale().GetLanguageCode());
+  return std::ranges::find(RIGHT_TO_LEFT_LANGUAGES, code) != RIGHT_TO_LEFT_LANGUAGES.end();
 }
 
 const std::string& CLangInfo::GetRegionLocale() const

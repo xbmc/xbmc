@@ -25,6 +25,7 @@
   <addon>kodi.binary.instance.videocodec</addon>
   <addon>kodi.binary.instance.visualization</addon>
   <addon>kodi.resource</addon>
+  <addon>kodi.webapp</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
   <addon>metadata.common.allmusic.com</addon>

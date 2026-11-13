@@ -791,6 +791,8 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return Browse(CURL("addons://all/xbmc.addon." + type), items);
     else if (type == "game")
       return Browse(CURL("addons://all/category.gameaddons"), items);
+    else if (type == "webapp")
+      return Browse(CURL("addons://all/kodi.webapp"), items);
     return false;
   }
   else
@@ -915,6 +917,12 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
 
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDONS &addons)
 {
+  if (content == "webapp")
+  {
+    CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::WEBAPP);
+    return true;
+  }
+
   CPluginSource::Content type = CPluginSource::Translate(content);
   if (type == CPluginSource::Content::UNKNOWN)
     return false;
@@ -982,13 +990,17 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
       // Kodi fails to launch games with empty path from home screen
       path = "game://" + addon->ID();
     }
+    else if (addon->HasType(AddonType::WEBAPP))
+    {
+      path = "webapp://" + addon->ID();
+    }
 
     items.Add(FileItemFromAddon(addon, path, bIsFolder));
   }
 
   items.SetContent(MEDIA::CONTENT::ADDONS);
-  items.SetLabel(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24001)); // Add-ons
+  items.SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      content == "webapp" ? 40243 : 24001));
 
   return true;
 }

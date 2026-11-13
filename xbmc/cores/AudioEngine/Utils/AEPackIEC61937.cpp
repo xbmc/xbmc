@@ -233,3 +233,62 @@ int CAEPackIEC61937::PackPause(uint8_t *dest, unsigned int millis, unsigned int 
 
   return periodsNeeded * periodInBytes;
 }
+
+unsigned int CAEPackIEC61937::Unpack(const uint8_t* data,
+                                     unsigned int size,
+                                     unsigned int* offset,
+                                     uint8_t* frame)
+{
+  unsigned int pos = *offset & ~1u;
+
+  for (; pos + IEC61937_DATA_OFFSET <= size; pos += 2)
+  {
+    uint16_t header[IEC61937_DATA_OFFSET / 2];
+    memcpy(header, data + pos, sizeof(header));
+    if (header[0] != IEC61937_PREAMBLE1 || header[1] != IEC61937_PREAMBLE2)
+      continue;
+
+    unsigned int length;
+    switch (header[2] & 0x1f)
+    {
+      case IEC61937_TYPE_AC3:
+      case IEC61937_TYPE_DTS1:
+      case IEC61937_TYPE_DTS2:
+      case IEC61937_TYPE_DTS3:
+        length = header[3] >> 3;
+        break;
+      case IEC61937_TYPE_EAC3:
+        length = header[3];
+        break;
+      default:
+        pos += IEC61937_DATA_OFFSET - 2;
+        continue;
+    }
+
+    const unsigned int stored = length + (length & 0x1);
+    if (stored > MAX_IEC61937_PACKET - IEC61937_DATA_OFFSET)
+    {
+      pos += IEC61937_DATA_OFFSET - 2;
+      continue;
+    }
+
+    if (pos + IEC61937_DATA_OFFSET + stored > size)
+      break;
+
+#ifdef __BIG_ENDIAN__
+    memcpy(frame, data + pos + IEC61937_DATA_OFFSET, stored);
+#else
+    for (unsigned int i = 0; i < stored; i += 2)
+    {
+      frame[i] = data[pos + IEC61937_DATA_OFFSET + i + 1];
+      frame[i + 1] = data[pos + IEC61937_DATA_OFFSET + i];
+    }
+#endif
+
+    *offset = pos + IEC61937_DATA_OFFSET + stored;
+    return length;
+  }
+
+  *offset = pos;
+  return 0;
+}

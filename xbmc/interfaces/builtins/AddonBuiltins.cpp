@@ -22,6 +22,11 @@
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
+#include "cores/WebPlayer/WebApp.h"
+#include "cores/WebPlayer/WebPlayerDefs.h"
 #include "filesystem/PluginDirectory.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
@@ -179,6 +184,45 @@ static int RunAddon(const std::vector<std::string>& params)
       // re-parse it with CUtil::SplitParams, which ends a parameter at any comma not inside
       // quotes.
       RunScript(params);
+    }
+    else if (addonMgr.GetAddon(addonid, addon, AddonType::WEBAPP, OnlyEnabled::CHOICE_YES))
+    {
+      const auto webapp = std::dynamic_pointer_cast<CAddon>(addon);
+      CServiceBroker::GetAddonMgr().UpdateLastUsed(addonid);
+      const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+      const auto appPower =
+          CServiceBroker::GetAppComponents().GetComponent<CApplicationPowerHandling>();
+      appPower->ResetScreenSaver();
+      appPower->WakeUpScreenSaverAndDPMS();
+      // a web app already shown comes back as it was, playing or not
+      if (params.size() < 2 && appPlayer->IsWebPlaying() &&
+          g_application.CurrentFileItem().GetProperty(KODI::WEB::PROPERTY_PROFILE).asString() ==
+              addonid)
+      {
+        CServiceBroker::GetGUI()->GetWindowManager().SwitchToFullScreen();
+        return 0;
+      }
+
+      const CAddonType* type = webapp->Type(AddonType::WEBAPP);
+      std::string url =
+          params.size() >= 2
+              ? params[1]
+              : KODI::WEB::WebAppElement(*type, "starturl", webapp->GetSetting("starturl"));
+      if (url.empty())
+        url = type->GetValue("@starturl").asString();
+      // a URL given to RunAddon is opened as given
+      bool redButtonHides = false;
+      if (params.size() < 2 &&
+          webapp->GetSettingBool(KODI::WEB::SETTING_RED_BUTTON_HIDES, redButtonHides))
+        url = KODI::WEB::WebAppRedButtonUrl(*type, url, redButtonHides);
+      CFileItem item(url, false);
+      item.SetLabel(webapp->Name());
+      item.SetProperty(KODI::WEB::PROPERTY_PROFILE, addonid);
+      if (!g_application.PlayMedia(item, KODI::WEB::PLAYER_NAME, PLAYLIST::Id::TYPE_NONE))
+      {
+        CLog::Log(LOGERROR, "RunAddon could not open {}", addonid);
+        return false;
+      }
     }
     else if (addonMgr.GetAddon(addonid, addon, AddonType::GAMEDLL, OnlyEnabled::CHOICE_YES))
     {

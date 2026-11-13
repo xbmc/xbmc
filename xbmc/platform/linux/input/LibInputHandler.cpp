@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <string.h>
 
@@ -27,7 +28,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-static int open_restricted(const char *path, int flags, void __attribute__((unused)) *user_data)
+static int open_restricted(const char* path, int flags, void __attribute__((unused)) * user_data)
 {
   int fd = open(path, flags);
 
@@ -47,18 +48,20 @@ static int open_restricted(const char *path, int flags, void __attribute__((unus
   return fd;
 }
 
-static void close_restricted(int fd, void  __attribute__((unused)) *user_data)
+static void close_restricted(int fd, void __attribute__((unused)) * user_data)
 {
   close(fd);
 }
 
-static const struct libinput_interface m_interface =
-{
-  open_restricted,
-  close_restricted,
+static const struct libinput_interface m_interface = {
+    open_restricted,
+    close_restricted,
 };
 
-static void LogHandler(libinput  __attribute__((unused)) *libinput, libinput_log_priority priority, const char *format, va_list args)
+static void LogHandler(libinput __attribute__((unused)) * libinput,
+                       libinput_log_priority priority,
+                       const char* format,
+                       va_list args)
 {
   if (priority == LIBINPUT_LOG_PRIORITY_DEBUG)
   {
@@ -181,7 +184,7 @@ void CLibInputHandler::Process()
       return;
     }
 
-    libinput_event *ev;
+    libinput_event* ev;
     while ((ev = libinput_get_event(m_li)) != nullptr)
     {
       ProcessEvent(ev);
@@ -198,10 +201,10 @@ void CLibInputHandler::Process()
   }
 }
 
-void CLibInputHandler::ProcessEvent(libinput_event *ev)
+void CLibInputHandler::ProcessEvent(libinput_event* ev)
 {
   libinput_event_type type = libinput_event_get_type(ev);
-  libinput_device *dev = libinput_event_get_device(ev);
+  libinput_device* dev = libinput_event_get_device(ev);
 
   switch (type)
   {
@@ -248,16 +251,45 @@ void CLibInputHandler::ProcessEvent(libinput_event *ev)
   }
 }
 
-void CLibInputHandler::DeviceAdded(libinput_device *dev)
+namespace
 {
-  const char *sysname = libinput_device_get_sysname(dev);
-  const char *name = libinput_device_get_name(dev);
+
+// udev calls a device a keyboard when it has the letter keys; a remote
+// control reports the keyboard capability without them
+bool HasLetterKeys(libinput_device* dev)
+{
+  for (uint32_t key = KEY_Q; key <= KEY_P; ++key)
+  {
+    if (!libinput_device_keyboard_has_key(dev, key))
+      return false;
+  }
+  for (uint32_t key = KEY_A; key <= KEY_L; ++key)
+  {
+    if (!libinput_device_keyboard_has_key(dev, key))
+      return false;
+  }
+  return true;
+}
+
+} // unnamed namespace
+
+void CLibInputHandler::DeviceAdded(libinput_device* dev)
+{
+  const char* sysname = libinput_device_get_sysname(dev);
+  const char* name = libinput_device_get_name(dev);
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_TOUCH))
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - touch type device added: {} ({})", __FUNCTION__,
               name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
+    double width = 0.0;
+    double height = 0.0;
+    if (libinput_device_get_size(dev, &width, &height) == 0)
+    {
+      m_touchWidth = static_cast<int>(std::lround(width));
+      m_touchHeight = static_cast<int>(std::lround(height));
+    }
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_POINTER))
@@ -273,18 +305,22 @@ void CLibInputHandler::DeviceAdded(libinput_device *dev)
               name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
     m_keyboard->GetRepeat(dev);
+    if (HasLetterKeys(dev))
+      ++m_keyboards;
   }
 }
 
-void CLibInputHandler::DeviceRemoved(libinput_device *dev)
+void CLibInputHandler::DeviceRemoved(libinput_device* dev)
 {
-  const char *sysname = libinput_device_get_sysname(dev);
-  const char *name = libinput_device_get_name(dev);
+  const char* sysname = libinput_device_get_sysname(dev);
+  const char* name = libinput_device_get_name(dev);
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_TOUCH))
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - touch type device removed: {} ({})", __FUNCTION__,
               name, sysname);
+    m_touchWidth = 0;
+    m_touchHeight = 0;
     auto device = std::ranges::find(m_devices, libinput_device_unref(dev));
     m_devices.erase(device);
   }
@@ -301,6 +337,8 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
   {
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - keyboard type device removed: {} ({})",
               __FUNCTION__, name, sysname);
+    if (HasLetterKeys(dev))
+      --m_keyboards;
     auto device = std::ranges::find(m_devices, libinput_device_unref(dev));
     m_devices.erase(device);
   }

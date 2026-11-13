@@ -6375,7 +6375,12 @@ msgctxt "#12906"
 msgid "Fullscreen game"
 msgstr ""
 
-#empty strings from id 12907 to 12998
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12907"
+msgid "Fullscreen web"
+msgstr ""
+
+#empty strings from id 12908 to 12998
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12999"
@@ -25971,7 +25976,226 @@ msgctxt "#40232"
 msgid "When exporting the library with images, retrieve art that isn't cached yet. Turn off to only export art that is already cached."
 msgstr ""
 
-#empty strings from id 40233 to 40399
+#. Settings section for pages shown inside Kodi
+#: system/settings/settings.xml
+msgctxt "#40233"
+msgid "Web"
+msgstr ""
+
+#. Help for the Web settings section
+#: system/settings/settings.xml
+msgctxt "#40234"
+msgid "Settings for the web pages Kodi shows through its web client."
+msgstr ""
+
+#. Help for the Web settings category
+#: system/settings/settings.xml
+msgctxt "#40235"
+msgid "This category contains the settings of the web client Kodi starts to show pages."
+msgstr ""
+
+#. Settings group with the web client's settings
+#: system/settings/settings.xml
+msgctxt "#40236"
+msgid "Web client"
+msgstr ""
+
+#. Name of the setting holding the web client's executable
+#: system/settings/settings.xml
+msgctxt "#40237"
+msgid "Client command"
+msgstr ""
+
+#. Help for setting Client command
+#: system/settings/settings.xml
+msgctxt "#40238"
+msgid "The program Kodi starts as its web client. It connects to Kodi as a Wayland client over an inherited socket and shows the requested page."
+msgstr ""
+
+#. Name of the setting that turns the web client on
+#: system/settings/settings.xml
+msgctxt "#40239"
+msgid "Show web pages"
+msgstr ""
+
+#. Help for setting Show web pages
+#: system/settings/settings.xml
+msgctxt "#40240"
+msgid "Start a web client and show web pages inside Kodi. Turning this off removes every web entry point."
+msgstr ""
+
+#. Name of the setting that starts the web client with Kodi
+#: system/settings/settings.xml
+msgctxt "#40241"
+msgid "Start the web client with Kodi"
+msgstr ""
+
+#. Help for setting Start the web client with Kodi
+#: system/settings/settings.xml
+msgctxt "#40242"
+msgid "Keep the web client running from start-up so that pages open at once. Turn off to start it on first use and save memory."
+msgstr ""
+
+
+
+#. Add-on type: a web application shown through Kodi's web view
+#: xbmc/addons/addoninfo/AddonInfo.cpp
+msgctxt "#40243"
+msgid "Web apps"
+msgstr ""
+
+
+#. Web OSD button going back in the page's history
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40246"
+msgid "Back"
+msgstr ""
+
+#. Web OSD button going forward in the page's history
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40247"
+msgid "Forward"
+msgstr ""
+
+#. Web OSD button loading the page again
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40248"
+msgid "Reload"
+msgstr ""
+
+#. Name of the setting that keeps the files web apps download on disk
+#: system/settings/settings.xml
+msgctxt "#40249"
+msgid "Cache web apps on disk"
+msgstr ""
+
+#. Help for setting Cache web apps on disk
+#: system/settings/settings.xml
+msgctxt "#40250"
+msgid "Keep the files web apps download in Kodi's profile, so that apps start faster on a slow connection after a restart. Off caches them in memory only, which spares the storage the writes."
+msgstr ""
+
+#. Progress text while a web app waits for a content filter list to download
+#: xbmc/cores/WebPlayer/WebPlayer.cpp
+msgctxt "#40251"
+msgid "Fetching the content filter list {0:s}"
+msgstr ""
+
+#. Progress text while the web client prepares a content filter list
+#: xbmc/cores/WebPlayer/WebPlayer.cpp
+msgctxt "#40252"
+msgid "Preparing the content filter list {0:s}"
+msgstr ""
+
+#. Notification text when a web app cannot open without a content filter list
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40253"
+msgid "The content filter list {0:s} is not available."
+msgstr ""
+
+#. Label of the category of the settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40254"
+msgid "Network"
+msgstr ""
+
+#. Help text of the category of the settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40255"
+msgid "Which uplink the app's connections leave through."
+msgstr ""
+
+#. Label of the setting that picks the uplink of a web app
+#: system/settings/webapp.xml
+msgctxt "#40256"
+msgid "Uplink"
+msgstr ""
+
+#. Help text of the setting that picks the uplink of a web app
+#: system/settings/webapp.xml
+msgctxt "#40257"
+msgid "Leave every connection of this app through a chosen uplink. Give an address, a subnet such as 192.168.5.0/24, or an interface name. An address or a subnet binds each connection to that local source address; an interface name also pins each connection to that interface, so it never leaves through another one, even when the routing or the address changes. A subnet or an interface name is resolved for every connection, so a new DHCP lease is picked up. A connection that cannot be bound fails rather than taking the default route. Empty means the system default route."
+msgstr ""
+
+#. Notification text when the settings of a web app cannot be loaded
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40258"
+msgid "The settings of the web app cannot be loaded."
+msgstr ""
+
+#. Name of the add-on type that holds files web apps share
+#: xbmc/addons/addoninfo/AddonInfo.cpp
+msgctxt "#40259"
+msgid "Web app modules"
+msgstr ""
+
+#. Notification text when a file a web app names cannot be used
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40260"
+msgid "The web app's file {0:s} is missing or cannot be used."
+msgstr ""
+
+#. Label of the category of the video settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40261"
+msgid "Video"
+msgstr ""
+
+#. Help text of the category of the video settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40262"
+msgid "How the app plays video."
+msgstr ""
+
+#. Label of the setting that lets a web app play video decoded in software
+#: system/settings/webapp.xml
+msgctxt "#40263"
+msgid "Allow software decoding"
+msgstr ""
+
+#. Help text of the setting that lets a web app play video decoded in software
+#: system/settings/webapp.xml
+msgctxt "#40264"
+msgid "Let the app play video that only a software decoder can decode. Off offers the app only the codecs the hardware decodes, so that an app choosing among several picks one of those; on most devices software decoding cannot keep up with high definition video. Video that a DRM module such as Widevine decodes itself is not affected."
+msgstr ""
+
+#. Label of the category of the HbbTV settings Kodi gives a web app that names a red button
+#: system/settings/webapp.xml
+msgctxt "#40265"
+msgid "HbbTV"
+msgstr ""
+
+#. Help text of the category of the HbbTV settings Kodi gives a web app that names a red button
+#: system/settings/webapp.xml
+msgctxt "#40266"
+msgid "How the app behaves as a broadcaster's HbbTV application."
+msgstr ""
+
+#. Label of the setting that lets the red button hide an HbbTV web app
+#: system/settings/webapp.xml
+msgctxt "#40267"
+msgid "Red button hides the app to show the TV picture"
+msgstr ""
+
+#. Help text of the setting that lets the red button hide an HbbTV web app
+#: system/settings/webapp.xml
+msgctxt "#40268"
+msgid "On a television, the red button hides an HbbTV application so that the broadcast behind it shows. Kodi shows no broadcast behind a web app, so with this off the red button stays inside the app."
+msgstr ""
+
+#. Label of the setting that lets a web app use a DRM module such as Widevine
+#: system/settings/webapp.xml
+msgctxt "#40269"
+msgid "Allow DRM-protected video"
+msgstr ""
+
+#. Help text of the setting that lets a web app use a DRM module such as Widevine
+#: system/settings/webapp.xml
+msgctxt "#40270"
+msgid "Let the app play protected video through the DRM module, such as Widevine. Off offers the app no DRM, and a service such as YouTube then serves its free video in the clear, which the hardware decodes. On also plays protected video, but the DRM module decodes it in software, which on small devices may be too slow for high resolutions."
+msgstr ""
+
+#empty strings from id 40271 to 40399
 
 # Video versions
 
