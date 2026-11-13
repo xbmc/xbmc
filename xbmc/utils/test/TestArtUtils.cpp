@@ -376,7 +376,8 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
     std::error_code ec;
     auto tmpdir = KODI::PLATFORM::FILESYSTEM::temp_directory_path(ec);
     ASSERT_TRUE(!ec);
-    uniq = unique_path("FanartTest%%%%%");
+    // A random suffix can be mistaken for a stacked movie folder (e.g. "cd1").
+    uniq = unique_path("%%%%%FanartTest");
     path = URIUtils::AddFileToFolder(tmpdir, uniq);
     URIUtils::AddSlashAtEnd(path);
     XFILE::CDirectory::Create(path);
