@@ -544,7 +544,7 @@ namespace XBMCAddon
         break;
       case CLangCodeExpander::ISO_NAME:
         if (const auto tag = KODI::LANGUAGE::CLanguageTag::TryParse(language); tag.has_value())
-          convertedLanguage = tag->GetEnglishLanguageName();
+          convertedLanguage = tag->ToEnglishLanguageName();
         break;
       default:
         return "";

@@ -953,7 +953,7 @@ SubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId
     lang[1] = (subp_attributes.lang_code & 255);
     lang[0] = (subp_attributes.lang_code >> 8) & 255;
 
-    info.language = CLanguageTag::Parse(lang);
+    info.language = CLanguageTag::ParseStreamLanguage(lang);
   }
 
   return info;
@@ -1115,7 +1115,7 @@ AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
     lang[1] = (audio_attributes.lang_code & 255);
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
-    info.language = CLanguageTag::Parse(lang);
+    info.language = CLanguageTag::ParseStreamLanguage(lang);
   }
 
   return info;

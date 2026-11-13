@@ -470,7 +470,7 @@ protected:
   {
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).AsBcp47();
+    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).ToString();
     m_languageDetailsOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS);
   }

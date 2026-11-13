@@ -73,6 +73,7 @@
 #include "filesystem/UPnPDirectory.h"
 #endif
 #include "guilib/TextureManager.h"
+#include "language/LanguageTag.h"
 #include "network/Network.h"
 #include "network/NetworkFileItemClassify.h"
 #include "platform/Environment.h"
@@ -2423,21 +2424,6 @@ std::optional<StreamFlags> ExternalStreamFlagFromToken(std::string_view token)
 
   return it->second;
 }
-
-/*!
- * \brief The language a filename token states.
- * \param[in] token One token of the filename.
- * \return The language, or nullopt where the token states none.
- */
-std::optional<KODI::LANGUAGE::CLanguageTag> ExternalStreamLanguageFromToken(
-    const std::string& token)
-{
-  // _ stands in for the BCP 47 subtag separator, since - separates the filename's own tokens
-  std::string langCode{token};
-  std::ranges::replace(langCode, '_', '-');
-
-  return KODI::LANGUAGE::CLanguageTag::TryParse(langCode);
-}
 } // namespace
 
 ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
@@ -2487,6 +2473,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
 
     // The tokens are read from the end of the filename towards the front, so of several languages
     // the one nearest the extension is the stream's and the rest belong to its name
+    bool languageFound{false};
     for (auto it = tokens.rbegin(); it != tokens.rend(); ++it)
     {
       if (const auto flag = ExternalStreamFlagFromToken(*it); flag.has_value())
@@ -2495,11 +2482,12 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
         continue;
       }
 
-      if (info.language.IsEmpty())
+      if (!languageFound)
       {
-        if (const auto tag = ExternalStreamLanguageFromToken(*it); tag.has_value())
+        if (const auto tag = KODI::LANGUAGE::CLanguageTag::TryParse(*it); tag.has_value())
         {
           info.language = *tag;
+          languageFound = true;
           continue;
         }
       }
@@ -2514,8 +2502,8 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
   if (info.flag == 0)
     info.flag = StreamFlags::FLAG_NONE;
 
-  CLog::Log(LOGDEBUG, "{} - Language = '{}' / Name = '{}' / Flag = '{}' from {}", __FUNCTION__,
-            info.language.AsBcp47(), info.name, info.flag, CURL::GetRedacted(associatedFile));
+  CLog::LogF(LOGDEBUG, "Language = '{}' / Name = '{}' / Flag = '{}' from {}",
+             info.language.ToString(), info.name, info.flag, CURL::GetRedacted(associatedFile));
 
   return info;
 }

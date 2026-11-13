@@ -144,9 +144,9 @@ public:
     // fall back to the audio setting, and default, original and mediadefault name none either,
     // so fall back to the language actually playing
     m_subLang = g_langInfo.GetSubtitleLanguage(false);
-    if (m_subLang.IsEmpty())
+    if (m_subLang.IsUndetermined())
       m_subLang = g_langInfo.GetAudioLanguage(false);
-    if (m_subLang.IsEmpty())
+    if (m_subLang.IsUndetermined())
       m_subLang = m_playedAudioLang;
 
     // Dont allow "forced" setting to be combined with "impaired" setting
@@ -5898,7 +5898,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (stream.name.empty())
         stream.name = info.name;
 
-      if (stream.language.IsEmpty())
+      if (stream.language.IsUndetermined())
         stream.language = info.language;
 
       if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
@@ -6749,8 +6749,8 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   }
 
   const SelectionStream& s = m_content.m_selectionStreams.Get(StreamType::VIDEO, streamId);
-  if (!s.language.IsEmpty())
-    info.language = s.language;
+
+  info.language = s.language;
 
   if (!s.name.empty())
     info.name = s.name;
@@ -6956,7 +6956,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
       contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
       contentEntry["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) != 0;
       contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
-      contentEntry["language"] = info.language.AsBcp47();
+      contentEntry["language"] = info.language.ToString();
       contentEntry["name"] = info.name;
       data["property"]["currentsubtitle"] = contentEntry;
     }
@@ -6982,7 +6982,7 @@ void CVideoPlayer::NotifyAudioUpdate()
   contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
   contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0;
   contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
-  contentEntry["language"] = info.language.AsBcp47();
+  contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
   data["property"]["currentaudiostream"] = contentEntry;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
@@ -7003,7 +7003,7 @@ void CVideoPlayer::NotifyVideoUpdate()
   contentEntry["codec"] = info.codecName;
   contentEntry["height"] = info.height;
   contentEntry["width"] = info.width;
-  contentEntry["language"] = info.language.AsBcp47();
+  contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
   data["property"]["currentvideostream"] = contentEntry;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",

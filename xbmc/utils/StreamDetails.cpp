@@ -228,7 +228,7 @@ bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail& that) const
 
   // the best subtitle should be the one in the user's preferred language
   // If preferred language is set to "original" this is "eng"
-  return language.IsEmpty() || g_langInfo.GetSubtitleLanguage(true).Matches(other);
+  return language.IsUndetermined() || g_langInfo.GetSubtitleLanguage(true).Matches(other);
 }
 
 CStreamDetailVideo& CStreamDetailVideo::operator=(const CStreamDetailVideo& that)

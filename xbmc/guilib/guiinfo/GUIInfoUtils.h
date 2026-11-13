@@ -28,7 +28,7 @@ public:
 
   /*!
    * \brief The display name of a language, always non-empty.
-   * \note CLanguageTag::GetEnglishName serves the callers where an unnamed language should
+   * \note CLanguageTag::ToEnglishName serves the callers where an unnamed language should
    *       display as nothing.
    * \note Not suitable for a value that leaves Kodi, as the fallback is localized.
    * \param[in] language The language of a stream.

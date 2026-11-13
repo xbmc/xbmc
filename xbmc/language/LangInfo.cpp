@@ -239,7 +239,7 @@ namespace
  */
 CLanguageTag DiscLanguage(const CLanguageTag& language, const std::string& fallback)
 {
-  return language.IsEmpty() ? CLanguageTag::Parse(fallback) : language;
+  return language.IsUndetermined() ? CLanguageTag::Parse(fallback) : language;
 }
 
 /*!
@@ -959,7 +959,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
 
 const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_audioLanguage.IsEmpty())
+  if (allowFallback && m_audioLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_audioLanguage;
@@ -972,7 +972,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
 
 const CLanguageTag& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_subtitleLanguage.IsEmpty())
+  if (allowFallback && m_subtitleLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_subtitleLanguage;

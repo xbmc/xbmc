@@ -558,7 +558,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   demuxStream->codecName = stream->m_codecInternalName;
   demuxStream->uniqueId = streamId;
   demuxStream->flags = static_cast<StreamFlags>(stream->m_flags);
-  demuxStream->language = CLanguageTag::Parse(stream->m_language);
+  demuxStream->language = CLanguageTag::ParseStreamLanguage(stream->m_language);
 
   if (thisClass->GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
       CAddonVersion("2.0.8"))

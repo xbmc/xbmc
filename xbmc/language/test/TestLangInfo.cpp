@@ -70,12 +70,12 @@ TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
   // The setting can arrive hand-edited or over JSON-RPC; a value naming no language must be
   // rejected rather than stored, or callers prefer a language no stream can ever match
   langInfo.SetAudioLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetAudioLanguage(false).IsEmpty());
-  EXPECT_FALSE(langInfo.GetAudioLanguage(true).IsEmpty());
+  EXPECT_TRUE(langInfo.GetAudioLanguage(false).IsUndetermined());
+  EXPECT_FALSE(langInfo.GetAudioLanguage(true).IsUndetermined());
 
   langInfo.SetSubtitleLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsEmpty());
-  EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsEmpty());
+  EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsUndetermined());
+  EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsUndetermined());
 }
 
 TEST(TestLangInfo, RegionalDateFormatsAreTheRegions)
