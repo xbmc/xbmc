@@ -383,8 +383,8 @@ bool CWinSystemX11GLContext::RefreshGLContext(
     VDPAURegister();
     VDPAURegisterRender();
 #if defined(HAVE_NVDEC)
-    NVDEC::CDecoder::Register();
-    CRendererNVDECGL::Register();
+    if (NVDEC::CDecoder::Register())
+      CRendererNVDECGL::Register();
 #endif
   }
   return success;

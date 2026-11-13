@@ -63,8 +63,8 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   }
 
 #if defined(HAVE_NVDEC)
-  NVDEC::CDecoder::Register();
-  CRendererNVDECGL::Register();
+  if (NVDEC::CDecoder::Register(m_eglContext.GetEGLDisplay()))
+    CRendererNVDECGL::Register();
 #endif
 
   CBufferObjectFactory::ClearBufferObjects();

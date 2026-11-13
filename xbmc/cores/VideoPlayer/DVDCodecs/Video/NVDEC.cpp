@@ -17,12 +17,20 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <atomic>
 #include <list>
 #include <mutex>
 #include <optional>
+#include <string>
+#include <string_view>
+
+#include "system_gl.h"
+
+#include <EGL/eglext.h>
 
 extern "C"
 {
@@ -38,6 +46,67 @@ using namespace NVDEC;
 namespace
 {
 std::atomic<bool> interopFailed{false};
+//! CUDA device that renders the display, -1 for the CUDA default device
+std::atomic<int> cudaDeviceIndex{-1};
+
+//! The CUDA device behind an EGL display, from EGL_NV_device_cuda.
+std::optional<CUdevice> GetEGLCudaDevice(EGLDisplay display)
+{
+  const auto queryDisplayAttrib = reinterpret_cast<PFNEGLQUERYDISPLAYATTRIBEXTPROC>(
+      eglGetProcAddress("eglQueryDisplayAttribEXT"));
+  const auto queryDeviceString = reinterpret_cast<PFNEGLQUERYDEVICESTRINGEXTPROC>(
+      eglGetProcAddress("eglQueryDeviceStringEXT"));
+  const auto queryDeviceAttrib = reinterpret_cast<PFNEGLQUERYDEVICEATTRIBEXTPROC>(
+      eglGetProcAddress("eglQueryDeviceAttribEXT"));
+
+  EGLAttrib device = 0;
+  if (!queryDisplayAttrib || !queryDeviceString || !queryDeviceAttrib ||
+      !queryDisplayAttrib(display, EGL_DEVICE_EXT, &device) || !device)
+    return std::nullopt;
+
+  const auto eglDevice = reinterpret_cast<EGLDeviceEXT>(device);
+  const char* extensions = queryDeviceString(eglDevice, EGL_EXTENSIONS);
+  if (!extensions)
+    return std::nullopt;
+
+  const std::vector<std::string> list = StringUtils::Split(extensions, ' ');
+  EGLAttrib cudaDevice = 0;
+  if (std::ranges::find(list, "EGL_NV_device_cuda") == list.end() ||
+      !queryDeviceAttrib(eglDevice, EGL_CUDA_DEVICE_NV, &cudaDevice))
+    return std::nullopt;
+
+  return static_cast<CUdevice>(cudaDevice);
+}
+
+//! The CUDA device behind the current GL context.
+std::optional<CUdevice> GetGLCudaDevice()
+{
+  unsigned int count = 0;
+  CUdevice device;
+  if (GetCudaFunctions()->cuGLGetDevices(&count, &device, 1, CU_GL_DEVICE_LIST_ALL) !=
+          CUDA_SUCCESS ||
+      count == 0)
+    return std::nullopt;
+
+  return device;
+}
+
+//! The ordinal FFmpeg takes to open a CUDA device.
+std::optional<int> ToDeviceIndex(CUdevice device)
+{
+  CudaFunctions* cu = GetCudaFunctions();
+  int count = 0;
+  if (cu->cuDeviceGetCount(&count) != CUDA_SUCCESS)
+    return std::nullopt;
+
+  for (int i = 0; i < count; ++i)
+  {
+    CUdevice candidate;
+    if (cu->cuDeviceGet(&candidate, i) == CUDA_SUCCESS && candidate == device)
+      return i;
+  }
+  return std::nullopt;
+}
 
 bool IsSupportedSwFormat(AVPixelFormat fmt)
 {
@@ -298,16 +367,36 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo& hint,
   return new CDecoder(processInfo);
 }
 
-void CDecoder::Register()
+bool CDecoder::Register(EGLDisplay display)
 {
+  cudaDeviceIndex = -1;
+
+  // Don't load CUDA, which wakes a discrete GPU, when another GPU renders the display.
+  const char* vendor = display != EGL_NO_DISPLAY
+                           ? eglQueryString(display, EGL_VENDOR)
+                           : reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+  if (!vendor || std::string_view(vendor).find("NVIDIA") == std::string_view::npos)
+    return false;
+
   if (!GetCudaFunctions())
-    return;
+    return false;
+
+  // Decode on the GPU that renders the display, CUDA-GL interop needs both on one GPU.
+  const auto device = display != EGL_NO_DISPLAY ? GetEGLCudaDevice(display) : GetGLCudaDevice();
+  const auto index = device ? ToDeviceIndex(*device) : std::nullopt;
+  if (index)
+  {
+    cudaDeviceIndex = *index;
+    CLog::Log(LOGINFO, "NVDEC: display is on CUDA device {}", *index);
+  }
+  else
+    CLog::Log(LOGINFO, "NVDEC: CUDA device of the display not found, using the default device");
 
   CDVDFactoryCodec::RegisterHWAccel("nvdec", CDecoder::Create);
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent || !settingsComponent->GetSettings())
-    return;
+    return true;
 
   auto setting =
       settingsComponent->GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USENVDEC);
@@ -315,6 +404,7 @@ void CDecoder::Register()
     CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_VIDEOPLAYER_USENVDEC);
   else
     setting->SetVisible(true);
+  return true;
 }
 
 CDecoder::CDecoder(CProcessInfo& processInfo)
@@ -334,7 +424,10 @@ CDecoder::~CDecoder()
 
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
-  if (av_hwdevice_ctx_create(&m_deviceRef, AV_HWDEVICE_TYPE_CUDA, nullptr, nullptr, 0) < 0)
+  const int index = cudaDeviceIndex;
+  const std::string device = index >= 0 ? std::to_string(index) : std::string();
+  if (av_hwdevice_ctx_create(&m_deviceRef, AV_HWDEVICE_TYPE_CUDA,
+                             device.empty() ? nullptr : device.c_str(), nullptr, 0) < 0)
   {
     CLog::Log(LOGERROR, "NVDEC: failed to create CUDA device context");
     return false;
