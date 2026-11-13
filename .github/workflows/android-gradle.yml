@@ -1,0 +1,80 @@
+name: Gradle home (Android)
+
+# Publishes the Gradle home the Android legs restore when ghcr.io has none for
+# the current Gradle files. A stub of the packaging project, without the Kodi
+# build, makes Gradle download what `make apk` needs: the wrapper's
+# distribution, the plugins, the app's dependencies and the tools assemble
+# runs.
+#
+# Called from ci.yml before the Android legs.
+on:
+  workflow_call:
+    outputs:
+      ref:
+        description: The Gradle home image for depends-prefix-restore.
+        value: ${{ jobs.gradle.outputs.ref }}
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+  GRADLE_USER_HOME: /home/runner/kodi-gradle
+
+jobs:
+  gradle:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      ref: ${{ steps.gradle.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Look up the Gradle home
+        uses: ./.github/actions/depends-prefix-restore
+        id: gradle
+        with:
+          key: android-gradle
+          sources: >-
+            tools/android/packaging/build.gradle tools/android/packaging/settings.gradle
+            tools/android/packaging/gradle.properties tools/android/packaging/gradle
+            tools/android/packaging/xbmc/build.gradle.in
+          prefix: ${{ env.GRADLE_USER_HOME }}
+
+      - name: Set up the Android build environment
+        if: steps.gradle.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        uses: ./.github/actions/setup-android-build
+
+      # Debug and Release, as the legs build them, signed like theirs with a
+      # generated debug key.
+      - name: Fill the Gradle home
+        if: steps.gradle.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        run: |
+          keytool -genkey -keystore "${RUNNER_TEMP}/debug.keystore" -alias androiddebugkey \
+            -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
+            -keyalg RSA -keysize 2048 -validity 10000
+          sdk() { sed -n "s/^set($1 \([0-9]*\))/\1/p" cmake/platform/android/android.cmake; }
+          stub="${RUNNER_TEMP}/gradle-stub"
+          mkdir -p "${stub}/xbmc"
+          cp -R tools/android/packaging/{build.gradle,settings.gradle,gradle.properties,gradlew,gradle} "${stub}/"
+          sed -e '/ndkPath\|ndkVersion/d' -e 's/@APP_PACKAGE@/org.xbmc.kodi/' \
+            -e "s/@TARGET_SDK@/$(sdk TARGET_SDK)/" -e "s/@TARGET_MINSDK@/$(sdk TARGET_MINSDK)/" \
+            -e 's/@APP_VERSION_CODE_ANDROID@/1/' -e 's/@APP_VERSION@/1/' \
+            tools/android/packaging/xbmc/build.gradle.in > "${stub}/xbmc/build.gradle"
+          echo '<manifest xmlns:android="http://schemas.android.com/apk/res/android"/>' \
+            > "${stub}/xbmc/AndroidManifest.xml"
+          cd "${stub}"
+          ANDROID_HOME="${ANDROID_SDK_ROOT}" KODI_ANDROID_STORE_FILE="${RUNNER_TEMP}/debug.keystore" \
+            KODI_ANDROID_STORE_PASSWORD=android KODI_ANDROID_KEY_ALIAS=androiddebugkey \
+            KODI_ANDROID_KEY_PASSWORD=android ./gradlew --no-daemon assembleDebug assembleRelease
+
+      - name: Publish the Gradle home
+        uses: ./.github/actions/depends-prefix-push
+        if: steps.gradle.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.gradle.outputs.ref }}
+          prefix: ${{ env.GRADLE_USER_HOME }}
+          paths: caches wrapper

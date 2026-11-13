@@ -1,0 +1,51 @@
+name: Set up the Linux build environment
+description: >
+  Installs the Ubuntu packages docs/README.Linux.md lists for building Kodi
+  against system libraries, plus those of the requested windowing platforms.
+inputs:
+  platforms:
+    description: Space-separated CORE_PLATFORM_NAME values (gbm, wayland, x11).
+    required: true
+  extra-packages:
+    description: Further packages, e.g. analysers or DEB packaging tools.
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Install build tools and libraries
+      shell: bash
+      env:
+        PLATFORMS: ${{ inputs.platforms }}
+        EXTRA_PACKAGES: ${{ inputs.extra-packages }}
+      run: |
+        # libmicrohttpd-dev is not optional for E2E: without it there is no
+        # JSON-RPC webserver. libgif/libjpeg are for TexturePacker.
+        packages="build-essential cmake gawk gperf gettext libtool meson nasm
+          ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
+          libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev
+          libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
+          libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev
+          libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev
+          libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev
+          libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev
+          libdbus-1-dev libasound2-dev libdav1d-dev libdrm-dev"
+        for platform in ${PLATFORMS}; do
+          case "${platform}" in
+            gbm)
+              packages="${packages} libxkbcommon-dev libegl-dev libegl1 libegl-mesa0
+                libgles2-mesa-dev libgl1-mesa-dri libinput-dev libudev-dev
+                libdisplay-info-dev libgbm-dev" ;;
+            wayland)
+              packages="${packages} libxkbcommon-dev libegl-dev libegl1 libegl-mesa0
+                libgles2-mesa-dev libgl1-mesa-dri libgbm-dev libwayland-dev
+                wayland-protocols waylandpp-dev" ;;
+            # libegl1-mesa-dev provides <EGL/eglext_angle.h> for GLContextEGL.h.
+            x11)
+              packages="${packages} libgl-dev libegl-dev libegl1-mesa-dev libglu1-mesa-dev
+                libgl1-mesa-dri libx11-dev libxext-dev libxrandr-dev" ;;
+            *) echo "::error::Unknown platform ${platform}"; exit 1 ;;
+          esac
+        done
+        sudo apt-get update
+        # shellcheck disable=SC2086
+        sudo apt-get install -y ${packages} ${EXTRA_PACKAGES}

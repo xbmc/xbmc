@@ -1,0 +1,54 @@
+name: Configure tools/depends
+description: >
+  Bootstraps and configures tools/depends for the given prefix. configure
+  alone writes Makefile.include and installs the Toolchain files that
+  cmakebuildsys and binary-addons read, so a build job with a restored prefix
+  needs nothing more; otherwise the dependencies are built too.
+inputs:
+  configure-args:
+    description: Arguments for tools/depends/configure other than --prefix and --with-tarballs.
+    required: true
+  prefix:
+    description: Install prefix (--prefix).
+    required: true
+  build:
+    description: Set to "true" to run make after configure.
+    default: "false"
+outputs:
+  built:
+    description: Whether tools/depends was built here ("true") rather than reused.
+    value: ${{ steps.build.outputs.built }}
+runs:
+  using: composite
+  steps:
+    # Tarballs go outside the prefix so the published prefix does not carry them.
+    - name: Configure tools/depends
+      shell: bash
+      working-directory: tools/depends
+      run: |
+        ./bootstrap
+        # shellcheck disable=SC2086
+        ./configure ${{ inputs.configure-args }} \
+          --prefix="${{ inputs.prefix }}" --with-tarballs="${RUNNER_TEMP}/xbmc-tarballs"
+
+    # The native tool directory is named after the build host's triplet, which
+    # carries the Darwin version on macOS, so an image update can leave a
+    # restored prefix without the directories this configure points at.
+    - name: Build tools/depends
+      id: build
+      shell: bash
+      working-directory: tools/depends
+      env:
+        BUILD: ${{ inputs.build }}
+      run: |
+        if [ "${BUILD}" != "true" ]; then
+          prefix=$(sed -n 's/^PREFIX=//p' Makefile.include)
+          native=$(sed -n 's/^NATIVEPREFIX=//p' Makefile.include)
+          if [ -d "${prefix}/lib" ] && [ -d "${native}/bin" ]; then
+            echo "built=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "::warning::The restored prefix has no ${prefix}/lib or ${native}/bin, building tools/depends"
+        fi
+        make -j"$(getconf _NPROCESSORS_ONLN)"
+        echo "built=true" >> "$GITHUB_OUTPUT"

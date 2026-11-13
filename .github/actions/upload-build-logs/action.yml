@@ -1,0 +1,24 @@
+name: Upload build logs
+description: >
+  On runs started with debug logging enabled, uploads the autoconf, meson and
+  cmake logs that hold the actual compiler and linker errors.
+inputs:
+  name:
+    description: Platform suffix for the artifact name.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Upload build logs
+      if: always() && runner.debug == '1'
+      uses: actions/upload-artifact@v7
+      with:
+        name: build-logs-${{ inputs.name }}
+        path: |
+          tools/depends/target/*/*/config.log
+          tools/depends/native/*/*/config.log
+          tools/depends/target/*/*/meson-logs/*.txt
+          tools/depends/native/*/*/meson-logs/*.txt
+          build/CMakeFiles/CMake*.log
+        if-no-files-found: ignore
+        retention-days: 7
