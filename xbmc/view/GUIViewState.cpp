@@ -15,6 +15,7 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "ViewDatabase.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
@@ -108,7 +109,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
       return new CGUIViewStateMusicPlaylist(items);
   }
 
-  if (items.GetPath() == "special://musicplaylists/")
+  if (items.GetPath() == CUtil::PlaylistsPathOf(MediaSection::MUSIC))
     return new CGUIViewStateWindowMusicNav(items);
 
   if (url.IsProtocol("androidapp"))
