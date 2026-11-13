@@ -262,7 +262,7 @@ void CGUIDialogNumeric::OnBackSpace()
       }
     }
     else if (m_datetime.second)
-      m_datetime.minute /= 10;
+      m_datetime.second /= 10;
     else
     {
       m_block = 0;
@@ -432,7 +432,7 @@ void CGUIDialogNumeric::SetMode(NUMERIC_MODE mode, const std::string &initial)
       return;
 
     dateTime.GetAsSystemTime(m_datetime);
-    m_lastblock = (m_mode == NUMERIC_MODE::DATE) ? 2 : 1;
+    m_lastblock = (m_mode == NUMERIC_MODE::TIME) ? 1 : 2;
   }
   else if (m_mode == NUMERIC_MODE::IP_ADDRESS)
   {
