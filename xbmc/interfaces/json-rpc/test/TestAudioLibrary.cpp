@@ -139,8 +139,7 @@ TEST_P(TestAudioLibrary, SetArtistDetailsPreservesDiscographyAndVideoLinks)
   params["art"]["thumb"] = "new-thumb";
   params["art"]["banner"] = CVariant(CVariant::VariantTypeNull);
   CVariant result;
-  ASSERT_EQ(JSONRPC::ACK, JSONRPC::CAudioLibrary::SetArtistDetails(
-                              "AudioLibrary.SetArtistDetails", nullptr, nullptr, params, result));
+  ASSERT_EQ(JSONRPC::ACK, JSONRPC::CAudioLibrary::SetArtistDetails(params, result));
 
   EXPECT_EQ("Updated biography",
             m_db.GetSingleValue(m_db.PrepareSQL(

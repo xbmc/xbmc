@@ -24,39 +24,27 @@ namespace JSONRPC
   class CPVROperations : public CFileItemHandler
   {
   public:
-    static JSONRPC_STATUS GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetChannelGroups(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetChannelGroupDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetChannels(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetChannelDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetClients(const std::string& method,
-                                     ITransportLayer* transport,
-                                     IClient* client,
-                                     const CVariant& parameterObject,
-                                     CVariant& result);
-    static JSONRPC_STATUS GetBroadcasts(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetBroadcastDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetBroadcastIsPlayable(const std::string& method,
-                                                 ITransportLayer* transport,
-                                                 IClient* client,
-                                                 const CVariant& parameterObject,
-                                                 CVariant& result);
-    static JSONRPC_STATUS GetPlayableBroadcasts(const std::string& method,
-                                                ITransportLayer* transport,
-                                                IClient* client,
-                                                const CVariant& parameterObject,
-                                                CVariant& result);
-    static JSONRPC_STATUS GetTimers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetTimerDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetRecordings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetRecordingDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetProperties(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetChannelGroups(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetChannelGroupDetails(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetChannels(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetChannelDetails(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetClients(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetBroadcasts(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetBroadcastDetails(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetBroadcastIsPlayable(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetPlayableBroadcasts(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetTimers(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetTimerDetails(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetRecordings(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetRecordingDetails(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS AddTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS DeleteTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ToggleTimer(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS AddTimer(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS DeleteTimer(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS ToggleTimer(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Record(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Scan(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Record(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Scan(const CVariant& parameterObject, CVariant& result);
 
     static std::shared_ptr<CFileItem> GetRecordingFileItem(int recordingId);
 

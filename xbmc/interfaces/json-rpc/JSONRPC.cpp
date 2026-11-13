@@ -124,14 +124,17 @@ void CJSONRPC::Cleanup()
   m_initialized = false;
 }
 
-JSONRPC_STATUS CJSONRPC::Introspect(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::Introspect(ITransportLayer* transport,
+                                    IClient* client,
+                                    const CVariant& parameterObject,
+                                    CVariant& result)
 {
   return CJSONServiceDescription::Print(result, transport, client,
     parameterObject["getdescriptions"].asBoolean(), parameterObject["getmetadata"].asBoolean(), parameterObject["filterbytransport"].asBoolean(),
     parameterObject["filter"]["id"].asString(), parameterObject["filter"]["type"].asString(), parameterObject["filter"]["getreferences"].asBoolean());
 }
 
-JSONRPC_STATUS CJSONRPC::Version(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::Version(const CVariant& parameterObject, CVariant& result)
 {
   result["version"]["major"] = 0;
   result["version"]["minor"] = 0;
@@ -152,7 +155,10 @@ JSONRPC_STATUS CJSONRPC::Version(const std::string &method, ITransportLayer *tra
   return OK;
 }
 
-JSONRPC_STATUS CJSONRPC::Permission(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::Permission(ITransportLayer* transport,
+                                    IClient* client,
+                                    const CVariant& parameterObject,
+                                    CVariant& result)
 {
   int flags = client->GetPermissionFlags();
 
@@ -162,14 +168,17 @@ JSONRPC_STATUS CJSONRPC::Permission(const std::string &method, ITransportLayer *
   return OK;
 }
 
-JSONRPC_STATUS CJSONRPC::Ping(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::Ping(const CVariant& parameterObject, CVariant& result)
 {
   CVariant temp = "pong";
   result.swap(temp);
   return OK;
 }
 
-JSONRPC_STATUS CJSONRPC::GetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::GetConfiguration(ITransportLayer* transport,
+                                          IClient* client,
+                                          const CVariant& parameterObject,
+                                          CVariant& result)
 {
   int flags = client->GetAnnouncementFlags();
 
@@ -179,7 +188,10 @@ JSONRPC_STATUS CJSONRPC::GetConfiguration(const std::string &method, ITransportL
   return OK;
 }
 
-JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::SetConfiguration(ITransportLayer* transport,
+                                          IClient* client,
+                                          const CVariant& parameterObject,
+                                          CVariant& result)
 {
   int flags = 0;
   const int oldFlags = client->GetAnnouncementFlags();
@@ -202,10 +214,10 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
   if (!client->SetAnnouncementFlags(flags))
     return BadPermission;
 
-  return GetConfiguration(method, transport, client, parameterObject, result);
+  return GetConfiguration(transport, client, parameterObject, result);
 }
 
-JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSONRPC_STATUS CJSONRPC::NotifyAll(const CVariant& parameterObject, CVariant& result)
 {
   if (parameterObject["data"].isNull())
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other,
@@ -287,7 +299,7 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
     CVariant params;
 
     if ((errorCode = CJSONServiceDescription::CheckCall(methodName.c_str(), request["params"], transport, client, isNotification, method, params)) == OK)
-      errorCode = method(methodName, transport, client, params, result);
+      errorCode = method(transport, client, params, result);
     else
       result = params;
   }

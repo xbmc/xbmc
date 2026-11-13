@@ -22,7 +22,7 @@
 using namespace JSONRPC;
 using KODI::UTILITY::CDigest;
 
-JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::GetProfiles(const CVariant& parameterObject, CVariant& result)
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -61,7 +61,8 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
   return OK;
 }
 
-JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const CVariant& parameterObject,
+                                                      CVariant& result)
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -84,7 +85,7 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method,
   return OK;
 }
 
-JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CProfilesOperations::LoadProfile(const CVariant& parameterObject, CVariant& result)
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
