@@ -679,6 +679,8 @@ public:
    \return A content type string for the current path.
    */
   std::string GetContentForPath(const std::string& strPath);
+  bool GetContentForPaths(const std::set<std::string, std::less<>>& paths,
+                          std::map<std::string, ADDON::ContentType>& contents);
 
   /*! \brief Get videos of the given content type from the given path
    \param content the content type to fetch.

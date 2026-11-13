@@ -230,6 +230,9 @@ public:
   }
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
+  using CVideoInfoScanner::GetScanPathsByContent;
+  using CVideoInfoScanner::m_pathsToScan;
+  using CVideoInfoScanner::UpdateScanProgress;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
   using ScanSummary = CVideoInfoScanner::ScanSummary;
 
@@ -741,6 +744,106 @@ TEST_F(TestVideoInfoScanner, ACancelledScanDoesNotHideTheSameScanAskedForAgain)
   cancelled.Cancel();
 
   EXPECT_FALSE(cancelled.Equals(&again));
+}
+
+TEST_F(TestVideoInfoScanner, ASectionRefreshesOnlyAfterAllItsSourcesHaveBeenScanned)
+{
+  const std::string firstMovies{Folder(m_root, "A Movies")};
+  const std::string tvShows{Folder(m_root, "B TV Shows")};
+  const std::string lastMovies{Folder(m_root, "C Movies")};
+  const std::string musicVideos{Folder(m_root, "D Music Videos")};
+  for (const auto& [path, content] :
+       {std::pair{tvShows, "tvshows"}, std::pair{musicVideos, "musicvideos"}})
+  {
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='%s', strScraper='metadata.local' WHERE idPath=%i", content,
+        m_db.AddPath(path))));
+  }
+
+  TestScanner scanner{m_settings};
+  scanner.m_pathsToScan = {firstMovies, tvShows, lastMovies, musicVideos};
+  auto progress = scanner.GetScanPathsByContent();
+  ASSERT_EQ(3U, progress.size());
+  EXPECT_FALSE(scanner.UpdateScanProgress(progress));
+
+  scanner.m_pathsToScan.erase(firstMovies);
+  EXPECT_FALSE(scanner.UpdateScanProgress(progress));
+
+  scanner.m_pathsToScan.erase(tvShows);
+  EXPECT_TRUE(scanner.UpdateScanProgress(progress));
+  EXPECT_FALSE(progress.contains(ADDON::ContentType::TVSHOWS));
+  EXPECT_TRUE(progress.contains(ADDON::ContentType::MOVIES));
+  EXPECT_TRUE(progress.contains(ADDON::ContentType::MUSICVIDEOS));
+  EXPECT_FALSE(scanner.UpdateScanProgress(progress));
+
+  scanner.m_pathsToScan.erase(lastMovies);
+  EXPECT_TRUE(scanner.UpdateScanProgress(progress));
+  EXPECT_FALSE(progress.contains(ADDON::ContentType::MOVIES));
+  EXPECT_TRUE(progress.contains(ADDON::ContentType::MUSICVIDEOS));
+
+  scanner.m_pathsToScan.erase(musicVideos);
+  EXPECT_TRUE(scanner.UpdateScanProgress(progress));
+  EXPECT_TRUE(progress.empty());
+  EXPECT_FALSE(scanner.UpdateScanProgress(progress));
+}
+
+TEST_F(TestVideoInfoScanner, ScanContentInheritsNestedSourcesAndHonoursExclusions)
+{
+  const std::string tvShows{Folder(m_root, "TV Shows")};
+  const std::string show{Folder(tvShows, "Show")};
+  const std::string excluded{Folder(tvShows, "Excluded")};
+  const std::string excludedShow{Folder(excluded, "Show")};
+  const std::string movies{Folder(m_root, "TV Shows Elsewhere")};
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='tvshows', strScraper='metadata.local' WHERE idPath=%i",
+      m_db.AddPath(tvShows))));
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET exclude=1 WHERE idPath=%i", m_db.AddPath(excluded))));
+
+  TestScanner scanner{m_settings};
+  scanner.m_pathsToScan = {tvShows, show, excluded, excludedShow, movies};
+  const auto progress = scanner.GetScanPathsByContent();
+
+  ASSERT_EQ(2U, progress.size());
+  ASSERT_TRUE(progress.contains(ADDON::ContentType::TVSHOWS));
+  const auto& tvPaths = progress.at(ADDON::ContentType::TVSHOWS);
+  EXPECT_EQ(2U, tvPaths.size());
+  EXPECT_TRUE(tvPaths.contains(tvShows));
+  EXPECT_TRUE(tvPaths.contains(show));
+  ASSERT_TRUE(progress.contains(ADDON::ContentType::MOVIES));
+  const auto& moviePaths = progress.at(ADDON::ContentType::MOVIES);
+  EXPECT_EQ(1U, moviePaths.size());
+  EXPECT_TRUE(moviePaths.contains(movies));
+}
+
+TEST_F(TestVideoInfoScanner, RecursivelyConsumedPathsCompleteTheirSection)
+{
+  const std::string movie{Folder(m_root, "Movie")};
+  const std::string extras{Folder(movie, "Extras")};
+  TestScanner scanner{m_settings};
+  scanner.m_pathsToScan = {m_root, movie, extras};
+  auto progress = scanner.GetScanPathsByContent();
+  ASSERT_EQ(1U, progress.size());
+
+  scanner.m_pathsToScan.clear();
+
+  EXPECT_TRUE(scanner.UpdateScanProgress(progress));
+  EXPECT_TRUE(progress.empty());
+}
+
+TEST_F(TestVideoInfoScanner, CancellingTheLastPathDoesNotCompleteItsSection)
+{
+  TestScanner scanner{m_settings};
+  scanner.m_pathsToScan = {m_root};
+  auto progress = scanner.GetScanPathsByContent();
+  ASSERT_EQ(1U, progress.size());
+
+  // DoScan removes the current path before it can be cancelled.
+  scanner.m_pathsToScan.clear();
+  scanner.Stop();
+
+  EXPECT_FALSE(scanner.UpdateScanProgress(progress));
+  EXPECT_TRUE(progress.contains(ADDON::ContentType::MOVIES));
 }
 
 // Movies

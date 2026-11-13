@@ -31,6 +31,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -224,6 +225,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
+      auto pathsByContent = GetScanPathsByContent();
       bool bCancelled = false;
       while (!bCancelled && !m_pathsToScan.empty())
       {
@@ -285,6 +287,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
               CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipped {} missing sub directories of {}.",
                         missing, directory);
           }
+        }
+
+        if (!bCancelled && UpdateScanProgress(pathsByContent))
+        {
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          CServiceBroker::GetGUI()
+              ->GetInfoManager()
+              .GetInfoProviders()
+              .GetLibraryInfoProvider()
+              .ResetLibraryBools();
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                           "OnRefresh");
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_VIDEO_NAV);
         }
       }
 
@@ -373,6 +389,46 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_database.Interrupt();
 
     m_bStop = true;
+  }
+
+  CVideoInfoScanner::ScanPathsByContent CVideoInfoScanner::GetScanPathsByContent()
+  {
+    ScanPathsByContent pathsByContent;
+    if (m_bStop)
+      return pathsByContent;
+
+    std::map<std::string, ContentType> contents;
+    if (m_database.GetContentForPaths(m_pathsToScan, contents))
+    {
+      for (const auto& [path, content] : contents)
+        pathsByContent[content].insert(path);
+    }
+    return pathsByContent;
+  }
+
+  bool CVideoInfoScanner::UpdateScanProgress(ScanPathsByContent& pathsByContent) const
+  {
+    if (m_bStop)
+      return false;
+
+    // DoScan() can consume descendants, and missing sources can remove several paths at once.
+    // Only inspect each section's first remaining path to avoid rescanning all paths per folder.
+    bool completed{false};
+    for (auto it = pathsByContent.begin(); it != pathsByContent.end();)
+    {
+      auto& paths = it->second;
+      while (!paths.empty() && !m_pathsToScan.contains(*paths.begin()))
+        paths.erase(paths.begin());
+
+      if (paths.empty())
+      {
+        completed = true;
+        it = pathsByContent.erase(it);
+      }
+      else
+        ++it;
+    }
+    return completed;
   }
 
   std::pair<CInfoScanner::ScanComplete, CInfoScanner::ContentFound> CVideoInfoScanner::DoScan(
