@@ -1603,6 +1603,16 @@ TEST_F(TestGameClientHardwareRendering, PreFrameZeroSizeDoesNotDisableLazyRetry)
   EXPECT_EQ(m_core.sizeQueries, 2U);
 }
 
+TEST_F(TestGameClientHardwareRendering, CachedSizeNeverAsksTheClient)
+{
+  m_client->RunFrame(false);
+  EXPECT_EQ(m_client->GetSerializeSize(CGameClient::SerializeSizeMode::Cached), 0U);
+  EXPECT_EQ(m_core.sizeQueries, 0U);
+  EXPECT_EQ(m_client->GetSerializeSize(), 1U);
+  EXPECT_EQ(m_client->GetSerializeSize(CGameClient::SerializeSizeMode::Cached), 1U);
+  EXPECT_EQ(m_core.sizeQueries, 1U);
+}
+
 TEST_F(TestGameClientHardwareRendering, AcceptedHardwarePreservesUnrelatedLoadErrors)
 {
   if (!HARDWARE_API_SUPPORTED)

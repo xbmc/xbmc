@@ -223,6 +223,7 @@ public:
   {
     Lazy,
     Restore,
+    Cached, // The size the client last gave, without asking it again
   };
   size_t GetSerializeSize(SerializeSizeMode mode = SerializeSizeMode::Lazy) const;
   bool Serialize(uint8_t* data, size_t size);
@@ -428,7 +429,7 @@ private:
   std::string m_gamePath;
   std::string m_missingFile; // The first file the client reported missing while loading
   bool m_bRequiresGameLoop = false;
-  mutable size_t m_serializeSize = 0;
+  mutable std::atomic<size_t> m_serializeSize{0};
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
   std::atomic<double> m_framerate{0.0}; // Video frame rate (fps)
   std::atomic<double> m_samplerate{0.0}; // Audio sample rate (Hz)

@@ -822,6 +822,9 @@ void CGameClient::RunFrame(bool pollInput)
 
 size_t CGameClient::GetSerializeSize(SerializeSizeMode mode) const
 {
+  if (mode == SerializeSizeMode::Cached)
+    return m_serializeSize;
+
   std::unique_lock lock(m_critSection);
 
   // A zero size during boot may become usable after another frame.
@@ -838,7 +841,7 @@ size_t CGameClient::GetSerializeSize(SerializeSizeMode mode) const
       m_serializeSize = m_ifc.game->toAddon->SerializeSize(m_ifc.game);
 
       if (m_serializeSize > 0)
-        CLog::Log(LOGINFO, "GAME: Savestate size: {}", m_serializeSize);
+        CLog::Log(LOGINFO, "GAME: Savestate size: {}", m_serializeSize.load());
     }
     catch (...)
     {
