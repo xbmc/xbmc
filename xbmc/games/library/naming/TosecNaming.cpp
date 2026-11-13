@@ -8,7 +8,7 @@
 
 #include "TosecNaming.h"
 
-#include "language/i18n/Iso639_1.h"
+#include "language/i18n/Iso639.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -540,5 +540,5 @@ bool CTosecNaming::IsLanguage(std::string_view code)
 {
   return code.size() == 2 && std::islower(static_cast<unsigned char>(code[0])) &&
          std::islower(static_cast<unsigned char>(code[1])) &&
-         LANGUAGE::I18N::CIso639_1::LookupByCode(code).has_value();
+         LANGUAGE::I18N::CIso639::Alpha2ToAlpha3B(code).has_value();
 }

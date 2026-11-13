@@ -113,6 +113,11 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   EXPECT_TRUE(CLangCodeExpander::ConvertToISO6392B("ast", varstr));
   EXPECT_EQ(refstr, varstr);
 
+  // ISO 639-2 withdrew scr, but it is still the code Serbo-Croatian is written with
+  refstr = "scr";
+  EXPECT_TRUE(CLangCodeExpander::ConvertToISO6392B("scr", varstr));
+  EXPECT_EQ(refstr, varstr);
+
   // A region code is not a language here. bol is Bolivia, and although ISO 639-3 assigns it to
   // Bole, ISO 639-2 does not, so there is nothing to convert to.
   refstr = "invalid";
