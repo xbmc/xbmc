@@ -1827,6 +1827,11 @@ bool URIUtils::IsAbsolutePOSIXPath(const std::string& path)
   return false;
 }
 
+bool URIUtils::IsMagnetURI(const std::string& strFile)
+{
+  return StringUtils::StartsWithNoCase(strFile, "magnet:");
+}
+
 std::string URIUtils::AppendSlash(std::string strFolder)
 {
   AddSlashAtEnd(strFolder);

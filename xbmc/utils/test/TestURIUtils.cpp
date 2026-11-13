@@ -3182,11 +3182,10 @@ TEST_F(TestURIUtils, SanitiseEncodingDistinguishesLegacyURLsFromIdentifiers)
 
 TEST_F(TestURIUtils, IdentifierFactoriesRespectSchemeSupport)
 {
-  for (const auto& [identifier, hasFileHandler] : std::array<std::pair<const char*, bool>, 4>{{
+  for (const auto& [identifier, hasFileHandler] : std::array<std::pair<const char*, bool>, 3>{{
            {"data:,movie.zip", true},
            {"data://host/movie.zip", true},
            {"urn:example:movie.zip", false},
-           {"magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567", false},
        }})
   {
     SCOPED_TRACE(identifier);
@@ -3196,6 +3195,16 @@ TEST_F(TestURIUtils, IdentifierFactoriesRespectSchemeSupport)
     const std::unique_ptr<IDirectory> directory{CDirectoryFactory::Create(url)};
     EXPECT_EQ(nullptr, directory);
   }
+
+#ifdef HAS_LIBTORRENT
+  constexpr bool hasMagnetHandler = true;
+#else
+  constexpr bool hasMagnetHandler = false;
+#endif
+  const CURL magnet{"magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"};
+  EXPECT_EQ(hasMagnetHandler, std::unique_ptr<IFile>{CFileFactory::CreateLoader(magnet)} != nullptr);
+  EXPECT_EQ(hasMagnetHandler,
+            std::unique_ptr<IDirectory>{CDirectoryFactory::Create(magnet)} != nullptr);
 }
 
 TEST_F(TestURIUtils, ExplicitUnknownIdentifiersHaveNoFilesystemSemantics)
