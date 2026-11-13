@@ -16,6 +16,8 @@
 #include <memory>
 #include <vector>
 
+#include <EGL/egl.h>
+
 // Must come before libavutil/hwcontext_cuda.h, which otherwise includes the CUDA toolkit's cuda.h.
 #include <ffnvcodec/dynlink_loader.h>
 
@@ -92,7 +94,14 @@ public:
   static IHardwareDecoder* Create(CDVDStreamInfo& hint,
                                   CProcessInfo& processInfo,
                                   AVPixelFormat fmt);
-  static void Register();
+  /*!
+   * \brief Registers the decoder if an NVIDIA GPU renders the display and
+   * picks the CUDA device of that GPU.
+   * \param display EGL display of the window system, or EGL_NO_DISPLAY to query
+   * the current GL context
+   * \return true if registered, the caller then registers the renderer
+   */
+  static bool Register(EGLDisplay display = EGL_NO_DISPLAY);
 
   bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
   CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
