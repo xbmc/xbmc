@@ -290,8 +290,14 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     CFileItemPtr item(new CFileItem(chapterName));
     item->SetLabel2(time);
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
+    if (const std::string art{
+            g_application.CurrentFileItem().GetArt(StringUtils::Format("chapter{}", i))};
+        !art.empty())
+    {
+      item->SetArt(KODI::ART::TYPE::THUMB, art);
+    }
+    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
       auto chapterPath = IMAGE_FILES::CImageFileURL::FromFile(m_filePath, "video");
       chapterPath.AddOption("chapter", std::to_string(i));

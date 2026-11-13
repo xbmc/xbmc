@@ -294,12 +294,14 @@ namespace XBMCAddon
       ///  | clearlogo     | string - image filename
       ///  | landscape     | string - image filename
       ///  | icon          | string - image filename
+      ///  | chapter1, chapter2, ... | string - image filename of each chapter of a video, shown in the chapter list while it plays
       ///
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v13 New function added.
       /// @python_v16 Added new label **icon**.
+      /// @python_v23 Added labels **chapter1**, **chapter2** and so on.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
