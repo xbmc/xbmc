@@ -367,6 +367,13 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
       }
       pos++;
     }
+
+    // The enumeration's watched filter can drop the chosen item.
+    if (pos == queuedItems.Size())
+    {
+      playList.Insert(itemToPlay, 0);
+      pos = 0;
+    }
   }
 
   if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_VIDEO))
