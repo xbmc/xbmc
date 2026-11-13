@@ -11,6 +11,8 @@
 #include "../OSScreenSaver.h"
 #include "threads/Timer.h"
 
+#include <memory>
+
 #include <X11/Xlib.h>
 
 class COSScreenSaverX11 : public KODI::WINDOWING::IOSScreenSaver
@@ -25,4 +27,5 @@ private:
 
   Display* m_dpy;
   CTimer m_screensaverResetTimer;
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> m_freedesktopScreenSaver;
 };
