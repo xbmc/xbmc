@@ -53,7 +53,7 @@
 						<pagecontrol>5010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_movies_categories_widget)">
 							<param name="content_path" value="library://video/movies/"/>
-							<param name="additional_movie_items" value="true"/>
+							<param name="additional_movie_items" value="!Skin.HasSetting(home_no_Embuary_movies_categories)"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="5900"/>
@@ -122,7 +122,7 @@
 						<pagecontrol>6010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_tvshows_categories_widget)">
 							<param name="content_path" value="library://video/tvshows/"/>
-							<param name="additional_tvshow_items" value="true"/>
+							<param name="additional_tvshow_items" value="!Skin.HasSetting(home_no_Embuary_tvshows_categories)"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6900"/>
