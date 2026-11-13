@@ -204,6 +204,12 @@ bool CRendererShaders::ChangePictureSize(const VideoPicture& picture)
   if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
     return false;
 
+#if defined(TARGET_WINDOWS_STORE)
+  // Configure() opens the Dolby Vision effect and sizes its textures
+  if (m_dolbyVisionEffect || picture.doviRpu)
+    return false;
+#endif
+
   Flush(false);
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
