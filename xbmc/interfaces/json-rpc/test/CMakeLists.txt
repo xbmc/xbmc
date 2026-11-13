@@ -1,5 +1,6 @@
 set(SOURCES TestAddonsExecuteAddon.cpp
             TestAudioLibrary.cpp
+            TestFileItemHandler.cpp
             TestFileOperations.cpp
             TestJSONRPCPermission.cpp
             TestJSONRPCStatus.cpp

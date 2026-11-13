@@ -339,15 +339,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool append /* = true */,
                                       CThumbLoader* thumbLoader /* = NULL */)
 {
-  std::set<std::string> fields;
-  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
-  {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-         field != parameterObject["properties"].end_array(); ++field)
-      fields.insert(field->asString());
-  }
-
-  HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, append, thumbLoader);
+  HandleFileItem(ID, allowFile, resultname, item, parameterObject, FieldNames(validFields), result,
+                 append, thumbLoader);
 }
 
 void CFileItemHandler::HandleFileItem(const char* ID,
