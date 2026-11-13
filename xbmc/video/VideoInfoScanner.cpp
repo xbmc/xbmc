@@ -1604,6 +1604,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return edition;
   }
 
+  bool CVideoInfoScanner::GetMovieIdentifier(const CFileItem& item,
+                                             bool dirNames,
+                                             const CFilenameAttributes& filenameAttributes,
+                                             std::string& identifierType,
+                                             std::string& identifier) const
+  {
+    return filenameAttributes.GetIdentifier(identifierType, identifier) ||
+           CFilenameAttributes(item.GetMovieName(dirNames), &m_regexpCache)
+               .GetIdentifier(identifierType, identifier);
+  }
+
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForMovie(CFileItem* pItem,
                                                                 bool bDirNames,
                                                                 ScraperPtr& info2,
@@ -1854,10 +1865,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    // The ids a refresh looks the movie up by come first: an identifier in the file name may name
-    // another film, and the ids are those its details were already read by
+    // The ids a refresh looks the movie up by come first: an identifier in the file or folder
+    // name may name another film, and the ids are those its details were already read by
     if (info2->IsPython() && m_uniqueIDs.empty() &&
-        filenameAttributes.GetIdentifier(identifierType, identifier))
+        GetMovieIdentifier(*pItem, bDirNames, filenameAttributes, identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
