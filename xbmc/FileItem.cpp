@@ -79,6 +79,7 @@
 #include <cstdlib>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -2398,7 +2399,9 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   // Note: CPVRRecording is derived from CVideoInfoTag
   if (m_pvrRecordingInfoTag)
     return m_pvrRecordingInfoTag.get();
-  else if (!m_videoInfoTag)
+
+  std::unique_lock lock(m_infoTagMutex);
+  if (!m_videoInfoTag)
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
@@ -2412,6 +2415,7 @@ const CVideoInfoTag* CFileItem::GetVideoInfoTag() const
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()
 {
+  std::unique_lock lock(m_infoTagMutex);
   if (!m_pictureInfoTag)
     m_pictureInfoTag = new CPictureInfoTag;
 
@@ -2420,6 +2424,7 @@ CPictureInfoTag* CFileItem::GetPictureInfoTag()
 
 MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 {
+  std::unique_lock lock(m_infoTagMutex);
   if (!m_musicInfoTag)
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
@@ -2428,6 +2433,7 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 
 CGameInfoTag* CFileItem::GetGameInfoTag()
 {
+  std::unique_lock lock(m_infoTagMutex);
   if (!m_gameInfoTag)
     m_gameInfoTag = new CGameInfoTag;
 
