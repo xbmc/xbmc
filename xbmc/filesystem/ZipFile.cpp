@@ -9,16 +9,138 @@
 #include "ZipFile.h"
 
 #include "URL.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cstdint>
+#include <functional>
+#include <vector>
 
+#include <infback9.h>
 #include <sys/stat.h>
 
 static constexpr uint64_t ZIP_CACHE_LIMIT = 4ull * 1024 * 1024;
 
 using namespace XFILE;
+
+namespace
+{
+constexpr size_t DEFLATE64_WINDOW_SIZE = 64 * 1024;
+
+struct Deflate64Input
+{
+  CFile& file;
+  uint64_t remaining;
+  std::vector<unsigned char> buffer = std::vector<unsigned char>(64 * 1024);
+};
+
+unsigned int Deflate64Read(void* desc, z_const unsigned char** buf)
+{
+  auto* input = static_cast<Deflate64Input*>(desc);
+  const auto toRead =
+      static_cast<size_t>(std::min<uint64_t>(input->remaining, input->buffer.size()));
+  if (toRead == 0)
+    return 0;
+
+  const ssize_t read = input->file.Read(input->buffer.data(), toRead);
+  if (read <= 0)
+    return 0;
+
+  input->remaining -= static_cast<uint64_t>(read);
+  *buf = input->buffer.data();
+  return static_cast<unsigned int>(read);
+}
+
+struct Deflate64Output
+{
+  CFile& file;
+  uint64_t remaining;
+  uLong crc = crc32(0L, Z_NULL, 0);
+};
+
+int Deflate64Write(void* desc, unsigned char* buf, unsigned int len)
+{
+  auto* output = static_cast<Deflate64Output*>(desc);
+  if (len > output->remaining)
+    return 1;
+
+  output->remaining -= len;
+  output->crc = crc32(output->crc, buf, len);
+  return output->file.Write(buf, len) == static_cast<ssize_t>(len) ? 0 : 1;
+}
+
+std::string GetDeflate64CachePath(const CURL& url, const SZipEntry& entry)
+{
+  return StringUtils::Format("special://temp/zip-{:016x}-{:08x}",
+                             std::hash<std::string>{}(url.Get()), entry.crc32);
+}
+
+bool IsCompleteCache(const std::string& path, uint64_t size)
+{
+  struct __stat64 buffer
+  {
+  };
+  return CFile::Stat(path, &buffer) == 0 && static_cast<uint64_t>(buffer.st_size) == size;
+}
+
+// inflateBack9 decodes the whole stream in a single call, so Deflate64 entries
+// are always extracted to a file instead of being inflated on demand. The file
+// is decoded under a unique name and renamed so destPath is never partial.
+bool DecompressDeflate64(const std::string& archivePath,
+                         const SZipEntry& entry,
+                         const std::string& destPath)
+{
+  CFile archive;
+  if (!archive.Open(archivePath) || archive.Seek(entry.offset, SEEK_SET) != entry.offset)
+  {
+    CLog::Log(LOGERROR, "FileZip: unable to open zip file {}!", archivePath);
+    return false;
+  }
+
+  const std::string tempPath = destPath + "-" + StringUtils::CreateUUID();
+  CFile dest;
+  if (!dest.OpenForWrite(tempPath, true))
+  {
+    CLog::Log(LOGERROR, "FileZip: unable to create {}", tempPath);
+    return false;
+  }
+
+  Deflate64Input input{archive, entry.csize};
+  Deflate64Output output{dest, entry.usize};
+  std::vector<unsigned char> window(DEFLATE64_WINDOW_SIZE);
+  z_stream strm{};
+  int ret = inflateBack9Init(&strm, window.data());
+  if (ret == Z_OK)
+    ret = inflateBack9(&strm, Deflate64Read, &input, Deflate64Write, &output);
+  inflateBack9End(&strm);
+  dest.Close();
+
+  if (ret != Z_STREAM_END)
+  {
+    CLog::Log(LOGERROR, "FileZip: failed to decompress Deflate64 data. zlib error {} {}", ret,
+              strm.msg ? strm.msg : "");
+    CFile::Delete(tempPath);
+    return false;
+  }
+
+  if (output.remaining != 0 || output.crc != entry.crc32)
+  {
+    CLog::Log(LOGERROR, "FileZip: Deflate64 data does not match the size or CRC of {}", entry.name);
+    CFile::Delete(tempPath);
+    return false;
+  }
+
+  // Another open of the same entry may have published it first.
+  if (!CFile::Rename(tempPath, destPath))
+  {
+    CFile::Delete(tempPath);
+    return IsCompleteCache(destPath, entry.usize);
+  }
+  return true;
+}
+} // namespace
 
 CZipFile::CZipFile() : m_szStringBuffer(nullptr), m_szStartOfStringBuffer(nullptr)
 {
@@ -45,15 +167,23 @@ bool CZipFile::Open(const CURL&url)
     return false;
   }
 
-  if ((mZipItem.method != 8) && (mZipItem.method != 0))
+  if (mZipItem.method != 0 && mZipItem.method != 8 && mZipItem.method != 9)
   {
-    std::string method = std::to_string(mZipItem.method);
-
-    if (mZipItem.method == 9)
-      method.append(" (PKWARE proprietary DEFLATE64)");
-
-    CLog::Log(LOGERROR, "FileZip: unsupported compression method {}", method);
+    CLog::Log(LOGERROR, "FileZip: unsupported compression method {}", mZipItem.method);
     return false;
+  }
+
+  if (mZipItem.method == 9)
+  {
+    const std::string cachePath = GetDeflate64CachePath(url2, mZipItem);
+    if (!IsCompleteCache(cachePath, mZipItem.usize))
+    {
+      CFile::Delete(cachePath);
+      if (!DecompressDeflate64(url2.GetHostName(), mZipItem, cachePath))
+        return false;
+    }
+    m_bCached = true;
+    return mFile.Open(cachePath);
   }
 
   if (mZipItem.method != 0 && mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
