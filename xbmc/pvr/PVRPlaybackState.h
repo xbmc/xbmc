@@ -229,6 +229,12 @@ public:
   void SetActiveChannelGroup(const std::shared_ptr<CPVRChannelGroupMember>& channel);
 
   /*!
+   * @brief Make the playing channel's group the active group, if another group is active.
+   * @return True if the active group was changed, false otherwise.
+   */
+  bool RestorePlayingChannelGroup();
+
+  /*!
    * @brief Get the active channel group.
    * @param bRadio True to get the active radio group, false to get the active TV group.
    * @return The current group or the group containing all channels if it's not set.
