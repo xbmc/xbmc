@@ -366,6 +366,10 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
       m_pFormatContext->interrupt_callback = int_cb;
       AVDictionary* options = GetFFMpegOptionsFromInput();
       av_dict_set_int(&options, "load_all_variants", 0, AV_OPT_SEARCH_CHILDREN);
+      // Don't send "Range: bytes=0-" for HLS segments. Some CDNs answer it with a
+      // truncated body for AES-128 encrypted segments, which corrupts the last
+      // frames of every segment.
+      av_dict_set_int(&options, "http_seekable", 0, AV_OPT_SEARCH_CHILDREN);
       if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
       {
         CLog::Log(LOGDEBUG, "Error, could not open file (2) {}", CURL::GetRedacted(strFile));
