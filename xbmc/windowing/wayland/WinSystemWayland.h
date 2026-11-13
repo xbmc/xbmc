@@ -159,6 +159,7 @@ private:
                              bool sizeIncludesDecoration,
                              bool mustAck = false,
                              std::uint32_t configureSerial = 0u);
+  RESOLUTION FindOrAddCustomResolution(CSizeInt size, float refreshRate, std::string const& output);
   struct Sizes
   {
     CSizeInt surfaceSize;
