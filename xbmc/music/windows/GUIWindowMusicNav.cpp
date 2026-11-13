@@ -496,7 +496,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
   else if (PLAYLIST::IsPlayList(items))
     items.SetContent(MEDIA::CONTENT::SONGS);
-  else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/") ||
+  else if (URIUtils::PathEquals(strDirectory, CUtil::PlaylistsPathOf(MediaSection::MUSIC)) ||
            URIUtils::PathEquals(strDirectory, MEDIA::LIBRARY_PATH::MUSIC_PLAYLISTS))
     items.SetContent(MEDIA::CONTENT::PLAYLISTS);
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
@@ -539,7 +539,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   std::string strLabel;
 
   // "Playlists"
-  if (m_vecItems->IsPath("special://musicplaylists/"))
+  if (m_vecItems->IsPath(CUtil::PlaylistsPathOf(MediaSection::MUSIC)))
     strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
   // "{Playlist Name}"
   else if (PLAYLIST::IsPlayList(*m_vecItems))

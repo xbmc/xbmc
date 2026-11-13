@@ -722,17 +722,19 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
       // however this is quicker to implement and subsequently purge when a
       // better solution presents itself
       std::string child_id((const char*)id);
-      if (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))
+      if (StringUtils::StartsWithNoCase(child_id,
+                                        CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC)))
         parent = MUSIC::DB_PATH::ROOT;
-      else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))
+      else if (StringUtils::StartsWithNoCase(
+                   child_id, CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO)))
         parent = MEDIA::LIBRARY_PATH::VIDEO;
       else if (StringUtils::StartsWithNoCase(
                    child_id, CSourcesDirectory::PathOf(KODI::MEDIA::MediaSection::VIDEO)))
         parent = MEDIA::LIBRARY_PATH::VIDEO;
       else if (CUtil::IsInPlaylistsFolder(child_id, KODI::MEDIA::MediaSection::MUSIC))
-        parent = "special://musicplaylists/";
+        parent = CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC);
       else if (CUtil::IsInPlaylistsFolder(child_id, KODI::MEDIA::MediaSection::VIDEO))
-        parent = "special://videoplaylists/";
+        parent = CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO);
       else
         parent = CSourcesDirectory::PathOf(
             KODI::MEDIA::MediaSection::VIDEO); // this can only match video sources
@@ -865,7 +867,8 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
   // video nodes
   if (items.GetPath() == MUSIC::DB_PATH::ROOT)
   {
-    CFileItemPtr playlists(new CFileItem("special://musicplaylists/", true));
+    CFileItemPtr playlists(
+        new CFileItem(CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC), true));
     playlists->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136));
     items.Add(playlists);
 
@@ -1179,8 +1182,9 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
   }
   else if (searchClass.Find("object.container.playlistContainer") >= 0)
   {
-    return OnBrowseDirectChildren(action, "special://musicplaylists/", filter, starting_index,
-                                  requested_count, sort_criteria, context);
+    return OnBrowseDirectChildren(action,
+                                  CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC).c_str(),
+                                  filter, starting_index, requested_count, sort_criteria, context);
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastShow") >= 0)
   {

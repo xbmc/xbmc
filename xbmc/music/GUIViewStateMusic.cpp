@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -35,6 +36,7 @@
 using namespace KODI;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
+using KODI::MEDIA::MediaSection;
 
 namespace
 {
@@ -566,7 +568,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetSortOrder(SortOrder::NONE);
   }
-  else if (items.GetPath() == "special://musicplaylists/")
+  else if (items.GetPath() == CUtil::PlaylistsPathOf(MediaSection::MUSIC))
   { // playlists list sorts by label only, ignoring folders
     AddSortMethod(SortBy::LABEL, SortAttributeIgnoreFolders, 551,
                   LABEL_MASKS("%F", "%D", "%L", "")); // Filename, Duration | Foldername, empty
