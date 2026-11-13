@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2026-06-11 02:16+0000\n"
 "Last-Translator: A B <maxtherabbit85@gmail.com>\n"
@@ -810,6 +810,11 @@ msgstr "Tekstityskoodekki"
 msgctxt "#31615"
 msgid "Subtitle language"
 msgstr "Tekstityskieli"
+
+#. Label shown while playback waits for the audio device to lock on to a new audio format
+msgctxt "#31616"
+msgid "Waiting for audio"
+msgstr ""
 
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
