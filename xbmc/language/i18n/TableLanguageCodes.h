@@ -255,8 +255,7 @@ inline constexpr auto TableISO639_1ByAlpha3B = CreateTableISO639_1ByAlpha3B();
 // The sort above is not stable, so a repeated code would resolve to whichever row the compiler
 // happened to place first - a language exported differently by different builds.
 static_assert(std::ranges::adjacent_find(TableISO639_1ByAlpha3B,
-                                         [](const ISO639_1& a, const ISO639_1& b)
-                                         {
+                                         [](const ISO639_1& a, const ISO639_1& b) {
                                            return a.alpha3B == b.alpha3B &&
                                                   a.withdrawn == b.withdrawn;
                                          }) == TableISO639_1ByAlpha3B.end());
