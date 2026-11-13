@@ -652,12 +652,9 @@ bool CDRMUtils::FindConnector()
   std::string connectorName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   if (connectorName != "Default")
   {
-    connector = std::find_if(m_connectors.begin(), m_connectors.end(),
-                             [&connectorName](auto& connector)
-                             {
-                               return connector->GetEncoderId() > 0 && connector->IsConnected() &&
-                                      connector->GetName() == connectorName;
-                             });
+    connector =
+        std::find_if(m_connectors.begin(), m_connectors.end(), [&connectorName](auto& connector)
+                     { return connector->IsConnected() && connector->GetName() == connectorName; });
 
     if (connector == m_connectors.end())
     {
@@ -668,8 +665,7 @@ bool CDRMUtils::FindConnector()
 
   if (connectorName == "Default")
   {
-    connector = std::ranges::find_if(m_connectors, [](auto& conn)
-                                     { return conn->GetEncoderId() > 0 && conn->IsConnected(); });
+    connector = std::ranges::find_if(m_connectors, [](auto& conn) { return conn->IsConnected(); });
   }
 
   if (connector == m_connectors.end())
@@ -686,48 +682,73 @@ bool CDRMUtils::FindConnector()
 
 bool CDRMUtils::FindEncoder()
 {
-  auto encoder = std::ranges::find_if(
-      m_encoders, [this](auto& enc) { return enc->GetEncoderId() == m_connector->GetEncoderId(); });
-
-  if (encoder == m_encoders.end())
+  for (auto* encoder : m_connector->GetPossibleEncoders(m_encoders))
   {
-    CLog::LogF(LOGDEBUG, "Failed to find encoder for connector id: {}",
-               *m_connector->GetConnectorId());
-    return false;
+    if (encoder->GetPossibleCrtcs(m_crtcs).empty())
+      continue;
+
+    CLog::LogF(LOGINFO, "Using encoder: {}", encoder->GetEncoderId());
+
+    m_encoder = encoder;
+    return true;
   }
 
-  CLog::LogF(LOGINFO, "Using encoder: {}", encoder->get()->GetEncoderId());
-
-  m_encoder = encoder->get();
-  return true;
+  CLog::LogF(LOGDEBUG, "Failed to find encoder for connector id: {}",
+             *m_connector->GetConnectorId());
+  return false;
 }
 
 bool CDRMUtils::FindCrtc()
 {
-  for (auto& crtc : m_encoder->GetPossibleCrtcs(m_crtcs))
+  CDRMCrtc* attached = nullptr;
+
+  if (m_encoder->GetCrtcId() > 0)
   {
-    if (crtc->GetCrtcId() != m_encoder->GetCrtcId())
-      continue;
-    m_orig_crtc = crtc;
-    m_crtc = m_orig_crtc;
-    if (m_orig_crtc->GetModeValid())
-    {
-      m_mode = m_orig_crtc->GetMode();
-      CLog::LogF(LOGDEBUG, "Original crtc id: {}, mode: {}x{}{} @ {} Hz", m_crtc->GetCrtcId(),
-                 m_mode->hdisplay, m_mode->vdisplay,
-                 m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
-    }
-    return true;
+    auto crtc = std::ranges::find_if(m_crtcs, [this](auto& c)
+                                     { return c->GetCrtcId() == m_encoder->GetCrtcId(); });
+    if (crtc != m_crtcs.end())
+      attached = crtc->get();
   }
 
-  return false;
+  auto possible = m_encoder->GetPossibleCrtcs(m_crtcs, attached);
+  if (possible.empty())
+    return false;
+
+  m_crtc = possible.front();
+
+  if (m_crtc != attached)
+    return true;
+
+  m_orig_crtc = m_crtc;
+  if (m_orig_crtc->GetModeValid())
+  {
+    m_mode = m_orig_crtc->GetMode();
+    CLog::LogF(LOGDEBUG, "Original crtc id: {}, mode: {}x{}{} @ {} Hz", m_crtc->GetCrtcId(),
+               m_mode->hdisplay, m_mode->vdisplay,
+               m_mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "", m_mode->vrefresh);
+  }
+
+  return true;
 }
 
 bool CDRMUtils::RestoreOriginalMode()
 {
   if (!m_orig_crtc)
   {
-    return false;
+    // Nothing had driven the connector before us, so there is no mode to
+    // put back. Leaving ours up would leak the last frame to whatever
+    // comes next, so switch the output off instead.
+    if (!m_crtc)
+      return false;
+
+    if (drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), 0, 0, 0, nullptr, 0, nullptr))
+    {
+      CLog::LogF(LOGERROR, "Failed to disable crtc {}", m_crtc->GetCrtcId());
+      return false;
+    }
+
+    CLog::LogF(LOGDEBUG, "Disabled crtc {}, nothing to restore", m_crtc->GetCrtcId());
+    return true;
   }
 
   auto ret = drmModeSetCrtc(m_fd, m_orig_crtc->GetCrtcId(), m_orig_crtc->GetBufferId(),

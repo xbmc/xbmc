@@ -51,7 +51,8 @@ std::map<drmModeConnection, std::string> connectorStatusNames = {
 } // namespace
 
 CDRMConnector::CDRMConnector(int fd, uint32_t connector)
-  : CDRMObject(fd), m_connector(drmModeGetConnector(m_fd, connector))
+  : CDRMObject(fd),
+    m_connector(drmModeGetConnector(m_fd, connector))
 {
   if (!m_connector)
     throw std::runtime_error("drmModeGetConnector failed: " + std::string{strerror(errno)});
@@ -97,6 +98,29 @@ std::string CDRMConnector::GetStatus()
 std::string CDRMConnector::GetName()
 {
   return GetType() + "-" + std::to_string(m_connector->connector_type_id);
+}
+
+std::vector<CDRMEncoder*> CDRMConnector::GetPossibleEncoders(
+    const std::vector<std::unique_ptr<CDRMEncoder>>& encoders) const
+{
+  std::vector<CDRMEncoder*> possible;
+
+  for (int i = 0; i < m_connector->count_encoders; i++)
+  {
+    auto encoder = std::ranges::find_if(
+        encoders, [this, i](auto& enc) { return enc->GetEncoderId() == m_connector->encoders[i]; });
+
+    if (encoder == encoders.end())
+      continue;
+
+    // Put the attached encoder at the front, nothing is attached before a modeset
+    if (m_connector->encoder_id == encoder->get()->GetEncoderId())
+      possible.insert(possible.begin(), encoder->get());
+    else
+      possible.push_back(encoder->get());
+  }
+
+  return possible;
 }
 
 std::vector<uint8_t> CDRMConnector::GetEDID() const
