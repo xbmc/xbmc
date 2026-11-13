@@ -659,6 +659,10 @@ void CVideoPlayerVideo::Process()
               m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
             m_packets.pop_front();
         }
+        else
+        {
+          m_packets.clear();
+        }
 
         m_videoStats.AddSampleBytes(pPacket->iSize);
         UpdatePlayerInfo();
@@ -712,16 +716,37 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     return false;
   }
 
-  if (decoderState == CDVDVideoCodec::VC_REOPEN)
+  if (decoderState == CDVDVideoCodec::VC_REOPEN ||
+      (decoderState == CDVDVideoCodec::VC_FATAL &&
+       !(m_hints.codecOptions & (CODEC_FORCE_SOFTWARE | CODEC_SKIP_HW_CODECS))))
   {
+    // in order, ahead of packets that an earlier reopen resent and that are still queued
     while (!m_packets.empty())
     {
-      auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
-      m_packets.pop_front();
-      SendMessage(msg, 10);
+      auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.back().message);
+      m_packets.pop_back();
+      SendMessageBack(msg, 10);
     }
 
-    m_pVideoCodec->Reopen();
+    if (decoderState == CDVDVideoCodec::VC_REOPEN)
+    {
+      m_pVideoCodec->Reopen();
+    }
+    else
+    {
+      CLog::Log(LOGWARNING,
+                "CVideoPlayerVideo - video decoder {} failed, opening the stream without "
+                "platform video codecs",
+                m_pVideoCodec->GetName());
+      CDVDStreamInfo hint(m_hints);
+      hint.codecOptions |= CODEC_SKIP_HW_CODECS;
+      OpenStream(hint, nullptr);
+      if (m_picture.videoBuffer)
+      {
+        m_picture.videoBuffer->Release();
+        m_picture.videoBuffer = nullptr;
+      }
+    }
     m_packets.clear();
     m_renderManager.DiscardBuffer();
     return false;

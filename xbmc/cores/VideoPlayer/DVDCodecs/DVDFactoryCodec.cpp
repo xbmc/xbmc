@@ -69,7 +69,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInf
   }
 
   // platform specific video decoders
-  if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
+  if (!(hint.codecOptions & (CODEC_FORCE_SOFTWARE | CODEC_SKIP_HW_CODECS)))
   {
     for (auto &codec : m_hwVideoCodecs)
     {

@@ -100,6 +100,17 @@ CDVDVideoCodecDRMPRIME::~CDVDVideoCodecDRMPRIME()
   avcodec_free_context(&m_pCodecContext);
 }
 
+void CDVDVideoCodecDRMPRIME::Reopen()
+{
+  av_frame_unref(m_pFrame);
+  avcodec_free_context(&m_pCodecContext);
+  m_packetsSinceOpen = 0;
+  m_pictureDecoded = false;
+
+  if (!Open(m_hints, m_options))
+    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - unable to reopen the decoder", __FUNCTION__);
+}
+
 std::unique_ptr<CDVDVideoCodec> CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 {
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -181,25 +192,34 @@ static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
   return nullptr;
 }
 
-static const AVCodec* FindDecoder(CDVDStreamInfo& hints)
+static const AVCodec* FindHWDecoder(const CDVDStreamInfo& hints, const std::set<std::string>& skip)
 {
   const AVCodec* codec = nullptr;
   void* i = 0;
 
-  if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
-    while ((codec = av_codec_iterate(&i)))
-    {
-      if (!av_codec_is_decoder(codec))
-        continue;
-      if (codec->id != hints.codec)
-        continue;
+  if (hints.codecOptions & CODEC_FORCE_SOFTWARE)
+    return nullptr;
 
-      const AVCodecHWConfig* config = FindHWConfig(codec);
-      if (config)
-        return codec;
-    }
+  while ((codec = av_codec_iterate(&i)))
+  {
+    if (!av_codec_is_decoder(codec))
+      continue;
+    if (codec->id != hints.codec)
+      continue;
+    if (skip.contains(codec->name))
+      continue;
 
-  codec = avcodec_find_decoder(hints.codec);
+    const AVCodecHWConfig* config = FindHWConfig(codec);
+    if (config)
+      return codec;
+  }
+
+  return nullptr;
+}
+
+static const AVCodec* FindSWDecoder(const CDVDStreamInfo& hints)
+{
+  const AVCodec* codec = avcodec_find_decoder(hints.codec);
   if (codec && (codec->capabilities & AV_CODEC_CAP_DR1) == AV_CODEC_CAP_DR1)
     return codec;
 
@@ -209,11 +229,22 @@ static const AVCodec* FindDecoder(CDVDStreamInfo& hints)
 enum AVPixelFormat CDVDVideoCodecDRMPRIME::GetFormat(struct AVCodecContext* avctx,
                                                      const enum AVPixelFormat* fmt)
 {
+  CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
+  bool hwOffered = false;
+
+  for (int n = 0; fmt[n] != AV_PIX_FMT_NONE; ++n)
+    hwOffered |= ctx->m_hwDecoder && IsSupportedHwFormat(fmt[n]);
+
+  // ffmpeg asks again without the hardware format once the hwaccel fails to initialise
+  if (hwOffered)
+    ctx->m_hwFormatOffered = true;
+  else if (ctx->m_hwFormatOffered)
+    ctx->m_hwFormatFailed = true;
+
   for (int n = 0; fmt[n] != AV_PIX_FMT_NONE; n++)
   {
-    if (IsSupportedHwFormat(fmt[n]) || IsSupportedSwFormat(fmt[n]))
+    if ((ctx->m_hwDecoder && IsSupportedHwFormat(fmt[n])) || IsSupportedSwFormat(fmt[n]))
     {
-      CDVDVideoCodecDRMPRIME* ctx = static_cast<CDVDVideoCodecDRMPRIME*>(avctx->opaque);
       ctx->UpdateProcessInfo(avctx, fmt[n]);
       return fmt[n];
     }
@@ -227,6 +258,7 @@ enum AVPixelFormat CDVDVideoCodecDRMPRIME::GetFormat(struct AVCodecContext* avct
   CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - no supported pixel formats: {}", __FUNCTION__,
             StringUtils::Join(formats, ", "));
 
+  ctx->m_noSupportedFormat = true;
   return AV_PIX_FMT_NONE;
 }
 
@@ -289,7 +321,10 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
 
 bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
-  const AVCodec* pCodec = FindDecoder(hints);
+  const AVCodec* pCodec = FindHWDecoder(hints, m_skipDecoders);
+  m_hwDecoder = pCodec != nullptr;
+  if (!pCodec)
+    pCodec = FindSWDecoder(hints);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - unable to find decoder for codec {}",
@@ -305,8 +340,12 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return false;
 
   m_hints = hints;
+  m_options = options;
+  m_hwFormatOffered = false;
+  m_hwFormatFailed = false;
+  m_noSupportedFormat = false;
 
-  const AVCodecHWConfig* pConfig = FindHWConfig(pCodec);
+  const AVCodecHWConfig* pConfig = m_hwDecoder ? FindHWConfig(pCodec) : nullptr;
   if (pConfig && (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
   {
     const char* type = av_hwdevice_get_type_name(pConfig->device_type);
@@ -383,10 +422,10 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   {
     CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
     avcodec_free_context(&m_pCodecContext);
-    if (hints.codecOptions & CODEC_FORCE_SOFTWARE)
+    if (!m_hwDecoder)
       return false;
 
-    hints.codecOptions |= CODEC_FORCE_SOFTWARE;
+    m_skipDecoders.insert(pCodec->name);
     return Open(hints, options);
   }
 
@@ -413,11 +452,11 @@ void CDVDVideoCodecDRMPRIME::UpdateProcessInfo(struct AVCodecContext* avctx,
 
 bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
 {
-  if (!m_pCodecContext)
+  if (!m_pCodecContext || !packet.pData)
+  {
+    m_packetsSinceOpen++;
     return true;
-
-  if (!packet.pData)
-    return true;
+  }
 
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
@@ -458,6 +497,7 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
       return false;
   }
 
+  m_packetsSinceOpen++;
   return true;
 }
 
@@ -628,6 +668,34 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
 
 CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideoPicture)
 {
+  if (!m_pCodecContext)
+    return VC_FATAL;
+
+  if (m_hwFormatFailed)
+  {
+    m_hwFormatFailed = false;
+
+    std::set<std::string> skip = m_skipDecoders;
+    skip.insert(m_pCodecContext->codec->name);
+
+    const AVCodec* next = FindHWDecoder(m_hints, skip);
+    if (next)
+    {
+      CLog::Log(LOGINFO,
+                "CDVDVideoCodecDRMPRIME::{} - hwaccel of decoder {} failed, reopening with {}",
+                __FUNCTION__, m_pCodecContext->codec->name, next->name);
+      m_skipDecoders = std::move(skip);
+      return VC_REOPEN;
+    }
+  }
+
+  if (m_noSupportedFormat)
+  {
+    CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - decoder {} has no supported pixel format",
+              __FUNCTION__, m_pCodecContext->codec->name);
+    return VC_FATAL;
+  }
+
   if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
     Drain();
 
@@ -652,6 +720,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
               err, ret);
     return VC_ERROR;
   }
+
+  m_pictureDecoded = true;
 
   // ffmpeg's v4l2m2m resizes without re-invoking our GetFormat callback; republish from the frames
   int piWidth, piHeight;
