@@ -1975,12 +1975,15 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
 void CUtil::GetItemsToScan(const std::string& videoPath,
                            const std::string& item_exts,
                            const std::vector<std::string>& sub_dirs,
-                           CFileItemList& items)
+                           CFileItemList& items,
+                           int listingFlags /* = 0 */)
 {
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
 
+  // Only the video's folder is listed with the flags given: a scan that has just listed it can read
+  // it from the cache, but hasn't listed the folders of subtitles in it
   if (!videoPath.empty())
-    CDirectory::GetDirectory(videoPath, items, item_exts, flags);
+    CDirectory::GetDirectory(videoPath, items, item_exts, flags | listingFlags);
 
   std::vector<std::string> additionalPaths;
   for (const auto &item : items)
@@ -2268,7 +2271,8 @@ bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTa
 
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
                                      std::vector<std::string>& vecSubtitles,
-                                     const CVideoInfoTag* tag /* = nullptr */)
+                                     const CVideoInfoTag* tag /* = nullptr */,
+                                     int listingFlags /* = 0 */)
 {
   auto start = std::chrono::steady_clock::now();
 
@@ -2299,7 +2303,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   const std::string subtitleExtensions = CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
-  GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items);
+  GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items, listingFlags);
 
   // A version (playlist) of a bluray has subtitles of its own beside the disc, and only there, as
   // another folder could be shared by many discs
@@ -2335,6 +2339,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
     strLookInPaths.push_back(strPath2);
   }
 
+  // Not read from the cache, as a scan lists it nowhere else: what the cache holds may be old
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
   for (const std::string& path : strLookInPaths)
   {

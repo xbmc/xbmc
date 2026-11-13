@@ -1,4 +1,5 @@
 set(SOURCES TestContentGeometrySampler.cpp
+            TestDVDFileInfo.cpp
             TestDVDSubtitlesLibass.cpp
             TestLiveGeometryMonitor.cpp
             TestRadioRDSCountries.cpp
