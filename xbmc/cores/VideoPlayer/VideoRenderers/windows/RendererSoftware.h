@@ -35,6 +35,9 @@ protected:
 
 private:
   SwsContext* m_sw_scale_ctx = nullptr;
+  // swscale rewrites some formats in the context, so what it was made for is kept here
+  AVPixelFormat m_scalerSrcFormat = AV_PIX_FMT_NONE;
+  AVPixelFormat m_scalerDstFormat = AV_PIX_FMT_NONE;
   SwsFilter* m_srcFilter = nullptr;
   bool m_restoreMultithreadProtectedOff = false;
 };
