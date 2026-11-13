@@ -30,7 +30,8 @@ struct Disc
   XFILE::ClipMap clipMap;
   CFileItemList itemMap;
 
-  std::map<unsigned int, XFILE::StreamMap, std::less<>> streamMap;
+  //! By the clip files the streams are read from \sa XFILE::GetStreamClipFiles
+  std::map<std::string, XFILE::StreamMap, std::less<>> streamMap;
 
   std::optional<bool> menuSupport;
   std::optional<int> mainPlaylist;
@@ -70,9 +71,11 @@ public:
                const PlaylistMap& playlistmap,
                const ClipMap& clipmap,
                const CFileItemList& itemmap);
-  void SetPlaylistStreamInfo(const std::string& path,
-                             unsigned int playlist,
-                             const StreamMap& streams);
+  //! The streams read from a playlist's clip files, for each playlist playing the same files
+  //! \param clipFiles as GetStreamClipFiles() names them
+  void SetClipStreamInfo(const std::string& path,
+                         const std::string& clipFiles,
+                         const StreamMap& streams);
   void SetMenuSupport(const std::string& path, bool menuSupport);
   void SetProject(const std::string& path, const ProjectInformation& project);
   void SetMainPlaylist(const std::string& path, int mainPlaylist);
@@ -86,9 +89,9 @@ public:
                PlaylistMap& playlistmap,
                ClipMap& clipmap,
                CFileItemList& itemmap) const;
-  bool GetPlaylistStreamInfo(const std::string& path,
-                             unsigned int playlist,
-                             StreamMap& streams) const;
+  bool GetClipStreamInfo(const std::string& path,
+                         const std::string& clipFiles,
+                         StreamMap& streams) const;
 
   /*!
    \brief Get whether this disc supports menus, if already determined.
