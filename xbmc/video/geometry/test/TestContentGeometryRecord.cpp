@@ -7,6 +7,7 @@
  */
 
 #include "test/TestUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "video/geometry/ContentGeometryRecord.h"
@@ -171,6 +172,55 @@ TEST(TestContentGeometryRecord, XmlSkipsInvalidAspects)
   ASSERT_TRUE(record);
   const std::vector<float> aspects{1.85f};
   EXPECT_EQ(aspects, record->aspects);
+}
+
+//! The TinyXML form, which CVideoInfoTag loads and saves with.
+TEST(TestContentGeometryRecord, TinyXmlRoundTrip)
+{
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(std::string{"<movie/>"}));
+  SaveContentGeometryXML(*doc.RootElement(), ScopeRecord({2.40f, 1.78f}));
+
+  const TiXmlElement* geometry{doc.RootElement()->FirstChildElement("contentgeometry")};
+  ASSERT_NE(nullptr, geometry);
+  ASSERT_NE(nullptr, geometry->FirstChildElement("aspect"));
+  EXPECT_STREQ("2.40", geometry->FirstChildElement("aspect")->GetText());
+
+  const auto record = LoadContentGeometryXML(*doc.RootElement());
+  ASSERT_TRUE(record);
+  const std::vector<float> aspects{2.40f, 1.78f};
+  EXPECT_EQ(aspects, record->aspects);
+}
+
+//! A reader keeps the record it took, whatever is published after it.
+TEST(TestSharedContentGeometry, ASnapshotIsUnaffectedByALaterPublication)
+{
+  SharedContentGeometry shared;
+  EXPECT_FALSE(shared.HasReading());
+
+  shared.Set({.aspects = {2.40f, 1.78f}, .identity = {}});
+  const ContentGeometryRecord snapshot{shared.Get()};
+
+  shared.Set({});
+  EXPECT_FALSE(shared.HasReading());
+  EXPECT_EQ((std::vector<float>{2.40f, 1.78f}), snapshot.aspects);
+}
+
+TEST(TestSharedContentGeometry, CopiesAndAssignmentsAreIndependent)
+{
+  SharedContentGeometry original;
+  original.Set({.aspects = {2.40f}, .identity = {100, 200}});
+
+  const SharedContentGeometry copied{original};
+  SharedContentGeometry assigned;
+  assigned = original;
+  original.Set({.aspects = {1.78f}, .identity = {}});
+
+  for (const ContentGeometryRecord& record : {copied.Get(), assigned.Get()})
+  {
+    EXPECT_EQ((std::vector<float>{2.40f}), record.aspects);
+    EXPECT_TRUE(record.identity.Matches({100, 200}));
+  }
 }
 
 TEST(TestContentGeometryLookup, MissingCarriesNoRecord)

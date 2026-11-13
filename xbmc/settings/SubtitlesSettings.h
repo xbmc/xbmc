@@ -88,6 +88,14 @@ public:
    */
   void SetAlignment(Align align) const;
 
+  //! \brief Whether the inside positions are measured against the picture rather than the
+  //! whole video.
+  bool IsAlignedToContent() const;
+
+  //! \brief Whether a native ASS track whose positions are not overridden keeps the video's
+  //! margins while the others follow the picture.
+  bool IsKeepingAuthoredPositions() const;
+
   /*!
    * \brief Get horizontal text alignment
    * \return The alignment

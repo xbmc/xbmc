@@ -18,6 +18,7 @@
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "guilib/GUIComponent.h"
@@ -401,6 +402,14 @@ namespace XBMCAddon
         return new InfoTagVideo(movie);
 
       return new InfoTagVideo(true);
+    }
+
+    ContentGeometry* Player::getContentGeometry()
+    {
+      XBMC_TRACE;
+
+      return new ContentGeometry(
+          CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Get());
     }
 
     InfoTagMusic* Player::getMusicInfoTag()

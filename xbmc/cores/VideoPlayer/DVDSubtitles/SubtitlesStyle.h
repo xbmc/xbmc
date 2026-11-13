@@ -10,6 +10,7 @@
 
 #include "utils/ColorUtils.h"
 
+#include <algorithm>
 #include <string>
 
 namespace KODI
@@ -120,6 +121,10 @@ struct renderOpts
   float videoWidth;
   // Video size height, may be influenced by video settings (e.g. zoom)
   float videoHeight;
+  // The picture within the video, in the same space as videoWidth/videoHeight, with coded
+  // bars outside it. Zero means not known, taken as the whole video.
+  float contentWidth = 0.0f;
+  float contentHeight = 0.0f;
   float sourceWidth;
   float sourceHeight;
   float m_par; // Set the pixel aspect ratio
@@ -128,7 +133,42 @@ struct renderOpts
   // only for bottom alignment, 0 = bottom (no change), 100 = on top
   double position = 0;
   HorizontalAlign horizontalAlignment = HorizontalAlign::DISABLED;
+  // Inset a native ASS track whose positions are not overridden to the video rather than the
+  // picture, keeping the canvas its positions were authored against.
+  bool keepAuthoredPositions = false;
 };
+
+//! \brief Margins insetting the render frame, in frame pixels.
+struct FrameMargins
+{
+  int top{0};
+  int left{0};
+};
+
+//! \brief Margins placing text inside the picture rather than the whole frame. Applied
+//! symmetrically.
+inline FrameMargins InsideVideoMargins(const renderOpts& opts)
+{
+  const float width = opts.contentWidth > 0.0f ? opts.contentWidth : opts.videoWidth;
+  const float height = opts.contentHeight > 0.0f ? opts.contentHeight : opts.videoHeight;
+
+  return {static_cast<int>((opts.frameHeight - std::min(height, opts.frameHeight)) / 2),
+          static_cast<int>((opts.frameWidth - std::min(width, opts.frameWidth)) / 2)};
+}
+
+//! \brief Margins for a track rendered with frame margins, \p native for a native ASS track.
+inline FrameMargins TrackMargins(const renderOpts& opts, bool native)
+{
+  if (native && opts.marginsMode == MarginsMode::DISABLED && opts.keepAuthoredPositions)
+  {
+    renderOpts video{opts};
+    video.contentWidth = 0.0f;
+    video.contentHeight = 0.0f;
+    return InsideVideoMargins(video);
+  }
+
+  return InsideVideoMargins(opts);
+}
 
 } // namespace STYLE
 } // namespace SUBTITLES

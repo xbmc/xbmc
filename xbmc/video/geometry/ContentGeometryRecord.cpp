@@ -11,10 +11,13 @@
 #include "filesystem/File.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/XBMCTinyXML2.h"
 
 #include <algorithm>
 #include <cmath>
+#include <mutex>
+#include <utility>
 
 #include <sys/stat.h>
 
@@ -125,6 +128,44 @@ void Archive(CArchive& ar, ContentGeometryRecord& record)
   }
 }
 
+SharedContentGeometry::SharedContentGeometry(const SharedContentGeometry& that)
+  : m_record(that.Get())
+{
+}
+
+SharedContentGeometry& SharedContentGeometry::operator=(const SharedContentGeometry& that)
+{
+  if (this != &that)
+    Set(that.Get());
+  return *this;
+}
+
+ContentGeometryRecord SharedContentGeometry::Get() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_record;
+}
+
+void SharedContentGeometry::Set(ContentGeometryRecord record)
+{
+  std::unique_lock lock(m_critSection);
+  m_record = std::move(record);
+}
+
+bool SharedContentGeometry::HasReading() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_record.HasReading();
+}
+
+void Archive(CArchive& ar, SharedContentGeometry& shared)
+{
+  ContentGeometryRecord record{shared.Get()};
+  Archive(ar, record);
+  if (!ar.IsStoring())
+    shared.Set(std::move(record));
+}
+
 void SaveContentGeometryXML(tinyxml2::XMLNode& movie, const ContentGeometryRecord& record)
 {
   if (!record.HasReading())
@@ -150,6 +191,46 @@ std::optional<ContentGeometryRecord> LoadContentGeometryXML(const tinyxml2::XMLE
 
   ContentGeometryRecord record;
   for (const tinyxml2::XMLElement* element = geometry->FirstChildElement("aspect"); element;
+       element = element->NextSiblingElement("aspect"))
+  {
+    if (!element->GetText())
+      continue;
+
+    const float aspect{StoredAspect(StringUtils::ToFloat(element->GetText()))};
+    if (IsRatio(aspect))
+      record.aspects.push_back(aspect);
+  }
+
+  if (!record.HasReading())
+    return std::nullopt;
+
+  return record;
+}
+
+void SaveContentGeometryXML(TiXmlNode& movie, const ContentGeometryRecord& record)
+{
+  if (!record.HasReading())
+    return;
+
+  TiXmlElement geometry("contentgeometry");
+  for (const float aspect : record.aspects)
+  {
+    TiXmlElement element("aspect");
+    element.InsertEndChild(TiXmlText(StringUtils::Format("{:.2f}", aspect)));
+    geometry.InsertEndChild(element);
+  }
+
+  movie.InsertEndChild(geometry);
+}
+
+std::optional<ContentGeometryRecord> LoadContentGeometryXML(const TiXmlElement& movie)
+{
+  const TiXmlElement* geometry{movie.FirstChildElement("contentgeometry")};
+  if (!geometry)
+    return std::nullopt;
+
+  ContentGeometryRecord record;
+  for (const TiXmlElement* element = geometry->FirstChildElement("aspect"); element;
        element = element->NextSiblingElement("aspect"))
   {
     if (!element->GetText())

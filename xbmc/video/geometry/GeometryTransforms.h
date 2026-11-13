@@ -72,8 +72,9 @@ float PixelAspectRatio(const StreamGeometry& stream);
 //! \brief Undo the coding's pixel aspect, leaving the picture oriented as it was coded.
 CRect ToSquarePixels(const CRectInt& coded, const StreamGeometry& stream);
 
-//! \brief The largest rectangle of ratio \p aspect that fits centred inside \p frame.
-CRect FitAspect(float aspect, const CRect& frame);
+//! \brief The largest rectangle of ratio \p aspect that fits centred inside \p frame, whose
+//! pixels are \p pixelRatio wide.
+CRect FitAspect(float aspect, const CRect& frame, float pixelRatio = 1.0f);
 
 //! \brief The resolved geometry reduced to what a render path reads.
 struct RenderGeometry
@@ -96,7 +97,7 @@ CRect SourceRect(const RenderGeometry& geometry, const CRect& frameSource);
 struct ContentCut
 {
   CRect source; //!< the region of the source the content occupies
-  float aspect{0.0f}; //!< that content's ratio, as the rotation leaves it
+  float aspect{0.0f}; //!< that content's upright ratio
 };
 
 //! \brief \p frameSource cut to \p content, a rectangle measured from one frame in the space

@@ -35,6 +35,23 @@ struct YuvImage
   unsigned int bpp; // bytes per pixel
 };
 
+namespace KODI::VIDEO::GEOMETRY
+{
+struct ReducedFrame;
+}
+
+//! \brief What ReduceForAnalysis() managed for one picture.
+enum class ReductionResult
+{
+  //! \brief No reduction: this buffer cannot produce one, or the device refused.
+  Unsupported,
+
+  //! \brief Nothing to read yet, and not a failure.
+  Pending,
+
+  Produced,
+};
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -131,6 +148,21 @@ public:
    * the concrete buffer type.
    */
   virtual AVDRMFrameDescriptor* GetDescriptor() const { return nullptr; }
+
+  /*!
+   * \brief Produce a small CPU-readable copy of the picture, for analysis that survives
+   * downscaling, when GetPlanes() exposes nothing. Not supported by default.
+   *
+   * \p reduction is written only on Produced, and its plane vectors are reused across calls.
+   * The height follows the source shape, and a source already smaller is copied at its size.
+   */
+  virtual ReductionResult ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                                            unsigned int sourceWidth,
+                                            unsigned int sourceHeight,
+                                            unsigned int targetWidth)
+  {
+    return ReductionResult::Unsupported;
+  }
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);

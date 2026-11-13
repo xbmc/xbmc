@@ -69,7 +69,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
       "VideoStream integer,"
       "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer, "
-      "Hue float, Saturation float)\n");
+      "Hue float, Saturation float,"
+      "DeclaredAspect float, DeclaredOn text, DetectedWhenDeclared float)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");
@@ -204,6 +205,16 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(
       "CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
       "TEXT, itemType INTEGER, idType INTEGER)");
+
+  CreateContentGeometryTable(db);
+}
+
+void CVideoDatabaseDDL::CreateContentGeometryTable(CDatabase& db)
+{
+  CLog::Log(LOGINFO, "create contentgeometry table");
+
+  db.ExecuteQuery("CREATE TABLE contentgeometry (idFile INTEGER PRIMARY KEY, aspects TEXT, "
+                  "algorithmVersion INTEGER, fileSize BIGINT, fileMTime BIGINT)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -380,6 +391,7 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM stacktimes WHERE idFile=old.idFile; "
                   "DELETE FROM streamdetails WHERE idFile=old.idFile; "
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
+                  "DELETE FROM contentgeometry WHERE idFile=old.idFile; "
                   "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
   // The type of an extra other than a built-in one is the name of one extra, so goes with it

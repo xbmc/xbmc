@@ -28,6 +28,8 @@ namespace DXVA
 {
 class CDecoder;
 
+class CSurfaceReadback;
+
 class CVideoBuffer : public ::CVideoBuffer
 {
   template<typename TBuffer>
@@ -42,6 +44,11 @@ public:
   virtual void Initialize(CDecoder* decoder);
   virtual HRESULT GetResource(ID3D11Resource** ppResource);
   virtual unsigned GetIdx();
+
+  ReductionResult ReduceForAnalysis(KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+                                    unsigned int sourceWidth,
+                                    unsigned int sourceHeight,
+                                    unsigned int targetWidth) override;
 
   ID3D11View* view = nullptr;
   DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
@@ -178,6 +185,10 @@ public:
   size_t Size();
   bool HasFree();
 
+  //! \brief The pool-wide readback scaler, created on first use. Its D3D objects are
+  //! per-stream, not per-buffer. Owned by the pool, which outlives every buffer in it.
+  CSurfaceReadback* GetReadback();
+
 protected:
   void Reset();
   virtual CVideoBuffer* CreateBuffer(int idx) = 0;
@@ -188,6 +199,7 @@ protected:
   std::deque<size_t> m_freeViews;
   std::vector<CVideoBuffer*> m_out;
   std::deque<size_t> m_freeOut;
+  std::unique_ptr<CSurfaceReadback> m_readback;
 };
 
 template<typename TBuffer>

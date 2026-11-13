@@ -249,6 +249,8 @@ public:
                 "in order and its callers rely on the names coming out sorted");
 
   static std::string VideoDimsToResolutionDescription(int iWidth, int iHeight);
+
+  //! \brief The label Kodi reports for \p fAspect. See KODI::UTILS::CAspectRatioVocabulary.
   static std::string VideoAspectToAspectDescription(float fAspect);
 
   /*!

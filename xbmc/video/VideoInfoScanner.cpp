@@ -63,11 +63,14 @@
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
+#include "video/geometry/ContentGeometryScanner.h"
+#include "video/geometry/GeometrySettings.h"
 
 #include <algorithm>
 #include <chrono>
 #include <map>
 #include <memory>
+#include <optional>
 #include <ranges>
 #include <set>
 #include <string>
@@ -2450,6 +2453,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
+    // A measurement that found nothing is stored too, once the file is added, so the sweep
+    // does not measure the file again.
+    std::optional<GEOMETRY::ContentGeometryRecord> unread;
+    if (GEOMETRY::ContentGeometryNonLiveFromSettings() && !movieDetails.HasContentGeometry())
+    {
+      if (const std::optional<GEOMETRY::FileIdentity> identity{
+              GEOMETRY::MeasurableIdentity(*pItem)})
+      {
+        const std::optional<GEOMETRY::ContentGeometryRecord> geometry{
+            GEOMETRY::MeasureContentGeometry(*pItem, *identity, GEOMETRY::SamplingDepth::Normal,
+                                             [this]() { return m_bStop.load(); })};
+
+        if (geometry && geometry->HasReading())
+          movieDetails.m_contentGeometry.Set(*geometry);
+        else if (geometry)
+          unread = *geometry;
+      }
+    }
+
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
               CURL::GetRedacted(path));
     long lResult = -1;
@@ -2621,6 +2643,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           movieDetails.GetResumePoint().IsSet())
         m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
+
+    if (unread && lResult > -1)
+      m_database.SetContentGeometry(m_database.GetFileId(*pItem), *unread);
 
     m_database.Close();
 

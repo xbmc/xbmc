@@ -54,8 +54,10 @@ KODI_CONSTRUCT(XBMCAddon::xbmc, Actor)
 KODI_CONSTRUCT(XBMCAddon::xbmc, VideoStreamDetail)
 KODI_CONSTRUCT(XBMCAddon::xbmc, AudioStreamDetail)
 KODI_CONSTRUCT(XBMCAddon::xbmc, SubtitleStreamDetail)
+KODI_CONSTRUCT(XBMCAddon::xbmc, ContentGeometrySection)
+KODI_CONSTRUCT(XBMCAddon::xbmc, ContentGeometry)
 
-namespace XBMCAddon { namespace xbmc { class PlayList; class Actor; } }
+namespace XBMCAddon { namespace xbmc { class PlayList; class Actor; class ContentGeometrySection; } }
 
 // Player.h names these before their own headers are parsed, and spells them
 // without the namespace. SWIG records the name as written, so without this it
@@ -63,16 +65,20 @@ namespace XBMCAddon { namespace xbmc { class PlayList; class Actor; } }
 // getter silently returns an opaque object that also never refcounts.
 namespace XBMCAddon { namespace xbmc {
   class InfoTagVideo; class InfoTagMusic; class InfoTagGame; class InfoTagRadioRDS;
+  class ContentGeometry;
 } }
 %traits_swigtype(XBMCAddon::xbmc::PlayList);
 %fragment(SWIG_Traits_frag(XBMCAddon::xbmc::PlayList));
 %traits_swigtype(XBMCAddon::xbmc::Actor);
 %fragment(SWIG_Traits_frag(XBMCAddon::xbmc::Actor));
+%traits_swigtype(XBMCAddon::xbmc::ContentGeometrySection);
+%fragment(SWIG_Traits_frag(XBMCAddon::xbmc::ContentGeometrySection));
 
 /* one line per shape crossing the boundary in this module */
 %template() std::vector<std::string>;
 %template() std::vector<XBMCAddon::xbmc::Actor*>;
 %template() std::vector<XBMCAddon::xbmc::Actor const*>;
+%template() std::vector<XBMCAddon::xbmc::ContentGeometrySection*>;
 %template() XBMCAddon::Tuple<std::string, std::string>;
 %template() XBMCAddon::Tuple<float, int>;
 %template() XBMCAddon::Tuple<int, std::string, std::string>;

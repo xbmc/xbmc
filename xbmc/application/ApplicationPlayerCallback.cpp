@@ -14,8 +14,10 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
+#include "cores/VideoPlayer/LiveGeometryMonitor.h"
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDirectory.h"
 #endif
@@ -41,6 +43,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
+#include "video/geometry/ContentGeometryRecord.h"
 
 #include <chrono>
 #include <memory>
@@ -51,6 +54,8 @@ using namespace std::chrono_literals;
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "call");
+
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Clear();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -463,6 +468,8 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "call");
 
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Clear();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
@@ -524,6 +531,8 @@ void CApplicationPlayerCallback::OnAVChange()
 
   CServiceBroker::GetGUI()->GetStereoscopicsManager().OnStreamChange();
 
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Refresh();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
@@ -532,8 +541,20 @@ void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
 {
   CLog::LogF(LOGDEBUG, "call");
 
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Refresh();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+}
+
+void CApplicationPlayerCallback::OnContentGeometryChanged(const LiveGeometryUpdate& update)
+{
+  const auto geometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  if (update.clear)
+    geometry->ClearLive();
+  else
+    geometry->SetLive(update.rect, update.varies);
 }
 
 void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
@@ -551,6 +572,11 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     appPlayer->SetVideoSettings(vs);
+
+    const VIDEO::GEOMETRY::ContentGeometryLookup cached{
+        dbs.GetContentGeometryOfFile(dbs.GetFileId(fileItem), fileItem.GetDynPath())};
+
+    components.GetComponent<CApplicationContentGeometry>()->SetFileInputs(cached);
 
     dbs.Close();
   }
