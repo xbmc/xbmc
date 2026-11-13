@@ -184,17 +184,26 @@ public:
   //! As Start() and Process() do
   void Scan(const std::string& directory)
   {
-    m_pathsToScan.insert(directory);
-    std::vector<std::pair<int, std::string>> subPaths;
-    m_database.GetSubPaths(directory, subPaths);
-    for (const auto& [_, path] : subPaths)
-      m_pathsToScan.insert(path);
+    if (directory.empty())
+      m_database.GetPaths(m_pathsToScan);
+    else
+    {
+      m_pathsToScan.insert(directory);
+      std::vector<std::pair<int, std::string>> subPaths;
+      m_database.GetSubPaths(directory, subPaths);
+      for (const auto& [_, path] : subPaths)
+        m_pathsToScan.insert(path);
+    }
 
     while (!m_pathsToScan.empty())
     {
       // A copy, as DoScan() first removes the path from the set
       const std::string folder{*m_pathsToScan.begin()};
-      DoScan(folder);
+      const auto [scanComplete, foundContent] = DoScan(folder);
+      if (scanComplete == ScanComplete::Stopped)
+        return;
+      if (scanComplete == ScanComplete::Skipped)
+        continue;
       std::erase_if(m_pathsToScan,
                     [this, &folder](const std::string& path)
                     {
@@ -206,7 +215,7 @@ public:
                     });
     }
 
-    if (m_bClean)
+    if (m_bClean && !m_pathsToClean.empty())
       m_database.CleanDatabase(nullptr, m_pathsToClean, false);
   }
 
@@ -731,6 +740,81 @@ TEST_F(TestVideoInfoScanner, AMovieDeletedIsCleanedOnUpdate)
   Scan(false, true);
 
   EXPECT_EQ(0, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, CleanOnUpdateHonorsInheritedNoUpdate)
+{
+  const std::string parent{Folder(m_root, "Parent")};
+  const std::string parentMovie{FolderMovie(parent, "parent.mkv")};
+  const std::string child{Folder(parent, "Child")};
+  const std::string childMovie{FolderMovie(child, "child.mkv")};
+  const std::string allowed{Folder(m_root, "Allowed")};
+  const std::string allowedMovie{FolderMovie(allowed, "allowed.mkv")};
+  Scan();
+  ASSERT_EQ(3, CountMovies());
+  const int childId{m_db.GetMovieId(childMovie)};
+  ASSERT_GT(childId, 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET noUpdate=1 WHERE strPath='%s'", m_root.c_str())));
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local', noUpdate=0 "
+      "WHERE strPath='%s'",
+      allowed.c_str())));
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET strContent=NULL, noUpdate=NULL WHERE strPath IN ('%s','%s')",
+                      parent.c_str(), child.c_str())));
+  ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(child));
+  ASSERT_TRUE(XFILE::CFile::Delete(allowedMovie));
+  Touch(allowed);
+
+  TestScanner{m_settings, false, true}.Scan({});
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(childId, m_db.GetMovieId(childMovie));
+  EXPECT_GT(m_db.GetMovieId(parentMovie), 0);
+  EXPECT_EQ(-1, m_db.GetMovieId(allowedMovie));
+
+  // With every queued source excluded, an empty clean list must not clean the whole library.
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET noUpdate=1 WHERE strPath='%s'", allowed.c_str())));
+  TestScanner{m_settings, false, true}.Scan({});
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(childId, m_db.GetMovieId(childMovie));
+}
+
+TEST_F(TestVideoInfoScanner, CleanOnUpdateScansEnabledSourceUnderExcludedParent)
+{
+  const std::string parent{Folder(m_root, "Parent")};
+  const std::string parentMovie{FolderMovie(parent, "parent.mkv")};
+  const std::string child{Folder(parent, "Child")};
+  const std::string childMovie{FolderMovie(child, "child.mkv")};
+  const std::string allowed{Folder(parent, "Allowed")};
+  const std::string allowedMovie{FolderMovie(allowed, "allowed.mkv")};
+  Scan();
+  ASSERT_EQ(3, CountMovies());
+  const int childId{m_db.GetMovieId(childMovie)};
+  ASSERT_GT(childId, 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET noUpdate=1 WHERE strPath='%s'", m_root.c_str())));
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local', noUpdate=0 "
+      "WHERE strPath='%s'",
+      allowed.c_str())));
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET strContent=NULL, noUpdate=NULL WHERE strPath IN ('%s','%s')",
+                      parent.c_str(), child.c_str())));
+  ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(child));
+  ASSERT_TRUE(XFILE::CFile::Delete(allowedMovie));
+  const std::string newMovie{FolderMovie(Folder(allowed, "New"), "new.mkv")};
+  Touch(allowed);
+
+  TestScanner{m_settings, false, true}.Scan({});
+  EXPECT_EQ(3, CountMovies());
+  EXPECT_GT(m_db.GetMovieId(parentMovie), 0);
+  EXPECT_EQ(childId, m_db.GetMovieId(childMovie));
+  EXPECT_EQ(-1, m_db.GetMovieId(allowedMovie));
+  EXPECT_GT(m_db.GetMovieId(newMovie), 0);
 }
 
 TEST_F(TestVideoInfoScanner, AFileStackIsOneMovie)

@@ -350,7 +350,6 @@ namespace KODI::VIDEO
     //! Sticky - never reset, so a scanner instance is good for one scan only
     std::atomic<bool> m_bStop{false};
     bool m_scanAll;
-    bool m_scanSubtree{false};
 
     //! Lookups so far that failed, rather than finding nothing. A directory in which one failed
     //! isn't hashed, so that the next scan tries it again.
