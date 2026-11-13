@@ -22,7 +22,6 @@
 #define CURRENT_STREAM -1
 
 struct TextCacheStruct_t;
-class TiXmlElement;
 class CStreamDetails;
 class CAction;
 class IPlayerCallback;
@@ -31,6 +30,11 @@ namespace KODI::RENDERING::CAPTURE
 {
 struct CaptureResult;
 } // namespace KODI::RENDERING::CAPTURE
+
+namespace tinyxml2
+{
+class XMLElement;
+} // namespace tinyxml2
 
 class CPlayerOptions
 {
@@ -97,7 +101,7 @@ class IPlayer
 public:
   explicit IPlayer(IPlayerCallback& callback) : m_callback(callback) {}
   virtual ~IPlayer() = default;
-  virtual bool Initialize(TiXmlElement* pConfig) { return true; }
+  virtual bool Initialize(tinyxml2::XMLElement* pConfig) { return true; }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
