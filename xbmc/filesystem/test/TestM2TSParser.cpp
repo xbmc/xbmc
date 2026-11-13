@@ -7,6 +7,7 @@
  */
 
 #include "filesystem/bluray/M2TSParser.h"
+#include "platform/Filesystem.h"
 
 #include <algorithm>
 #include <bit>
@@ -137,12 +138,22 @@ class CTempDisc
 {
 public:
   CTempDisc()
-    : m_root(std::filesystem::temp_directory_path() /
-             (std::string("kodi-test-m2ts-") +
-              testing::UnitTest::GetInstance()->current_test_info()->name()))
   {
-    std::filesystem::remove_all(m_root);
-    std::filesystem::create_directories(m_root / "BDMV" / "STREAM");
+    std::error_code error;
+    const std::string root{KODI::PLATFORM::FILESYSTEM::create_temp_directory(error)};
+    if (error)
+      throw std::system_error(error, "Failed to create temporary disc directory");
+
+    m_root = std::u8string{root.begin(), root.end()};
+    try
+    {
+      std::filesystem::create_directories(m_root / "BDMV" / "STREAM");
+    }
+    catch (...)
+    {
+      std::filesystem::remove_all(m_root, error);
+      throw;
+    }
   }
 
   ~CTempDisc()
