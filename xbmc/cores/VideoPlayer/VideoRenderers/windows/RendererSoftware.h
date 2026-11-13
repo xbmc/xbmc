@@ -22,6 +22,7 @@ public:
   ~CRendererSoftware();
 
   bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
+  bool ChangePictureSize(const VideoPicture& picture) override;
   bool Supports(ESCALINGMETHOD method) const override;
 
   static CRendererBase* Create(CVideoSettings& videoSettings);

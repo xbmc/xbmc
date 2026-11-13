@@ -90,6 +90,12 @@ public:
   virtual void RenderUpdate(
       int index, int index2, bool clear, unsigned int flags, unsigned int alpha) = 0;
   virtual bool ConfigChanged(const VideoPicture &picture) = 0;
+  /*!
+   * \brief Take pictures of another size from here on, keeping all else Configure() set up.
+   * The pictures the renderer holds are released.
+   * \return false if the renderer has to be configured again for them
+   */
+  virtual bool ChangePictureSize(const VideoPicture& picture) { return false; }
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;

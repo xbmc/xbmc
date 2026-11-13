@@ -114,7 +114,12 @@ bool VideoPicture::IsSameParams(const VideoPicture& pic) const
 {
   return this->iWidth == pic.iWidth && this->iHeight == pic.iHeight &&
          this->iDisplayWidth == pic.iDisplayWidth && this->iDisplayHeight == pic.iDisplayHeight &&
-         this->stereoMode == pic.stereoMode && this->color_primaries == pic.color_primaries &&
+         IsSameParamsExceptSize(pic);
+}
+
+bool VideoPicture::IsSameParamsExceptSize(const VideoPicture& pic) const
+{
+  return this->stereoMode == pic.stereoMode && this->color_primaries == pic.color_primaries &&
          this->color_transfer == pic.color_transfer && this->hdrType == pic.hdrType &&
          CompareDisplayMetadata(pic);
 }

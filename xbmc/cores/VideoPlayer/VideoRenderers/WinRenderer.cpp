@@ -281,6 +281,19 @@ bool CWinRenderer::ConfigChanged(const VideoPicture& picture)
   return picture.videoBuffer->GetFormat() != m_format;
 }
 
+bool CWinRenderer::ChangePictureSize(const VideoPicture& picture)
+{
+  if (!m_bConfigured || !m_renderer->ChangePictureSize(picture))
+    return false;
+
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
+  SetViewMode(m_videoSettings.m_ViewMode);
+  ManageRenderArea();
+  return true;
+}
+
 CRenderInfo CWinRenderer::GetRenderInfo()
 {
   if (!m_bConfigured)
