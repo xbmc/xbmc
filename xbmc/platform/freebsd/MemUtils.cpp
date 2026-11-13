@@ -79,5 +79,8 @@ void GetMemoryStatus(MemoryStatus* buffer)
   buffer->availPhys = mem_inactive + mem_cache + mem_free;
 }
 
+void TrimHeap()
+{
+}
 }
 }
