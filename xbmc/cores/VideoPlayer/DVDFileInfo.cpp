@@ -37,6 +37,7 @@
 #include "Process/ProcessInfo.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "filesystem/IFileTypes.h"
 
 #include <cstdint>
 #include <memory>
@@ -57,7 +58,8 @@ bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
   std::unique_ptr<CDVDDemux> demux;
 
   CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  // Reads only the header, no file cache needed
+  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, XFILE::READ_NO_CACHE);
   if (!input)
     return false;
 
@@ -215,6 +217,8 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
   const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
   auto start = std::chrono::steady_clock::now();
 
+  const CMetadataFrameDecodeLock lock;
+
   std::optional<VideoDecodeSession> session =
       OpenVideoDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath);
   if (!session)
@@ -285,9 +289,12 @@ bool CDVDFileInfo::IsExtractableLocation(const std::string& path)
 
 /**
  * \brief Open the item pointed to by pItem and extract streamdetails
+ * \param mayWait If false, the HDR details of a frame are skipped instead of waiting for
+ *                the decode of another probe. The item then keeps its stream details and
+ *                false is returned
  * \return true if the stream details have changed
  */
-bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem, bool mayWait)
 {
   if (!pItem)
     return false;
@@ -308,7 +315,9 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 
   CFileItem item(playablePath, false);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  // Reads a few megabytes with seeks, no file cache needed
+  auto pInputStream =
+      CDVDFactoryInputStream::CreateInputStream(NULL, item, false, XFILE::READ_NO_CACHE);
   if (!pInputStream)
     return false;
 
@@ -322,12 +331,17 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   {
     // Filled locally and published once, as the item may be shown while its streams are probed
     CStreamDetails details;
-    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath);
+    bool retVal =
+        DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath, mayWait);
 
-    if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      ProcessExternalSubtitles(*pItem, details);
+    // Incomplete details are not published, a later probe reads them completely
+    if (mayWait || retVal)
+    {
+      if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        ProcessExternalSubtitles(*pItem, details);
 
-    pItem->GetVideoInfoTag()->m_streamDetails = details;
+      pItem->GetVideoInfoTag()->m_streamDetails = details;
+    }
 
     delete pDemuxer;
     return retVal;
@@ -356,6 +370,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   return result;
 }
 
+//! The caller holds CMetadataFrameDecodeLock.
 static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
                                 CDVDDemux* demuxer,
                                 const std::string& redactPath,
@@ -396,9 +411,11 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
 bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                           CDVDDemux* pDemux,
                                           CStreamDetails& details,
-                                          const std::string& path)
+                                          const std::string& path,
+                                          bool mayWait)
 {
   bool retVal = false;
+  bool incomplete = false;
   details.Reset();
 
   const CURL pathToUrl(path);
@@ -438,7 +455,15 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
           vstream->hdr_type != StreamHdrType::HDR_TYPE_HLG && vstream->dovi.dv_profile != 5 &&
           vstream->dovi.dv_profile <= 10 && p->m_strHdrTypeAlt != "hlg")
       {
-        if (!GetDetailsFromFrame(vstream, pDemux, CURL::GetRedacted(path), *p))
+        // Without waiting, the HDR details of a frame are skipped and the details are reported
+        // as incomplete
+        const CMetadataFrameDecodeLock lock(mayWait);
+        if (!lock.OwnsLock())
+        {
+          CLog::LogF(LOGDEBUG, "another decode is running, skipping the HDR details from a frame");
+          incomplete = true;
+        }
+        else if (!GetDetailsFromFrame(vstream, pDemux, CURL::GetRedacted(path), *p))
           CLog::LogF(LOGERROR, "Failed to get HDR details from frame");
       }
       p->SetSource(CStreamDetail::MEDIA);
@@ -519,7 +544,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     }
   }
 #endif
-  return retVal;
+  return retVal && !incomplete;
 }
 
 void CDVDFileInfo::ProcessExternalSubtitles(const CFileItem& item, CStreamDetails& details)
