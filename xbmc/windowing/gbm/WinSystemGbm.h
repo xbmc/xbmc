@@ -20,6 +20,9 @@
 
 #include "platform/linux/input/LibInputHandler.h"
 
+#include <atomic>
+#include <optional>
+#include <string_view>
 #include <utility>
 
 #include <gbm.h>
@@ -36,6 +39,23 @@ namespace WINDOWING
 {
 namespace GBM
 {
+
+enum class ColorRange
+{
+  AUTO = 0, //!< leave it to the graphics driver
+  FULL = 1, //!< output full range (0-255) and signal it
+  LIMITED = 2, //!< output limited range (16-235) and signal it
+};
+
+enum class ColorFormat
+{
+  AUTO = 0, //!< leave it to the graphics driver
+  RGB = 1,
+  YUV444 = 2,
+  YUV422 = 3,
+  YUV420 = 4,
+  ADAPTIVE = 5, //!< Auto, with YCbCr for >8 bit video when RGB does not fit the mode
+};
 
 class CWinSystemGbm : public CWinSystemBase, public ISettingCallback
 {
@@ -105,8 +125,96 @@ protected:
 
 private:
   static void ApplyLimitGuiSize(void* userptr);
+  static void ApplyColorRangeSetting(void* userptr);
+  static void ApplyColorFormatSetting(void* userptr);
+  static void ApplyMaxBpcSetting(void* userptr);
 
   KODI::MESSAGING::ThreadMessageCallback m_limitGuiSizeCallback{ApplyLimitGuiSize, this};
+  KODI::MESSAGING::ThreadMessageCallback m_colorRangeCallback{ApplyColorRangeSetting, this};
+  KODI::MESSAGING::ThreadMessageCallback m_colorFormatCallback{ApplyColorFormatSetting, this};
+  KODI::MESSAGING::ThreadMessageCallback m_maxBpcCallback{ApplyMaxBpcSetting, this};
+
+  struct PropertyRequest
+  {
+    const char* property{nullptr};
+    bool queued{false};
+    uint64_t target{0};
+  };
+
+  void ApplyConnectorProperties(bool retry = false);
+  void RetryConnectorProperties();
+  void RequeueConnectorProperties();
+  void ApplyBroadcastRange();
+  void ApplyColorFormat();
+  void ApplyMaxBpc();
+  void ApplyColorspace();
+
+  bool QueueConnectorProperty(PropertyRequest& request,
+                              const char* property,
+                              const char* valueName);
+  bool QueueConnectorProperty(PropertyRequest& request,
+                              const char* property,
+                              uint64_t target,
+                              std::string_view label);
+  //! True if the request's commit was refused. Clears its queued flag
+  bool IsRequestRejected(PropertyRequest& request);
+
+  //! True if the connector offers the format, or if that is not known
+  bool IsColorFormatOffered(ColorFormat format) const;
+
+  ColorRange GetColorRange() const;
+  ColorFormat GetColorFormat() const;
+  //! The format to ask the driver for: the choice or Adaptive's pick, if listed and not refused
+  ColorFormat GetRequestedColorFormat() const;
+  //! The "max bpc" in effect: the choice, or what the connector has. 0 if unknown
+  uint64_t GetEffectiveMaxBpc() const;
+  //! True if the HDMI link can be driven with FRL, which carries 4K 60 Hz 10 bit RGB
+  bool IsHdmiFrlLink() const;
+  //! True if >8 bit video in the active HDMI mode does not fit as RGB, but does as YCbCr
+  bool ContentNeedsSubsampling() const;
+
+  bool IsYuvRequested() const;
+  bool IsYuvFormatCommitted(const CDRMConnector& connector) const;
+
+  void MigrateLimitedRangeSetting();
+
+  void UpdateDriverLimitedRange();
+
+  std::atomic<int> m_colorRange{static_cast<int>(ColorRange::AUTO)};
+
+  //! True while "Broadcast RGB" is committed as "Limited 16:235"
+  std::atomic<bool> m_driverLimitedRange{false};
+
+  bool m_migratingColorRange{false};
+
+  PropertyRequest m_rangeRequest;
+  PropertyRequest m_formatRequest;
+  PropertyRequest m_bpcRequest;
+  int m_connectorRetries{0};
+
+  std::atomic<int> m_colorFormat{static_cast<int>(ColorFormat::AUTO)};
+
+  //! Index into the "Maximum bit depth" options, 0 is Auto
+  std::atomic<int> m_maxBpc{0};
+  //! The driver refused the chosen "max bpc", so the default is used
+  bool m_maxBpcFallback{false};
+  //! The mode that refused the chosen depth, the fallback only holds there
+  std::string m_maxBpcFailedMode;
+  //! The default depth is being tried, to see whether the chosen one was refused
+  bool m_bpcProbe{false};
+  //! The "max bpc" the connector had before Kodi wrote to it
+  std::optional<uint64_t> m_defaultMaxBpc;
+
+  //! Bits per component of the video that is playing, 0 when there is none
+  std::atomic<int> m_contentBits{0};
+
+  //! How many formats the driver refused for m_colorFormatFailedMode, they are skipped there
+  int m_colorFormatSkip{0};
+  std::string m_colorFormatFailedMode;
+  std::string m_currentModeId;
+
+  //! Whether the "Colorspace" tag was last set for a YCbCr output
+  bool m_scanoutYuv{false};
 
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
