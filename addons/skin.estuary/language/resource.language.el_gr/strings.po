@@ -811,6 +811,11 @@ msgctxt "#31615"
 msgid "Subtitle language"
 msgstr ""
 
+#. Label shown while playback waits for the audio device to lock on to a new audio format
+msgctxt "#31616"
+msgid "Waiting for audio"
+msgstr ""
+
 #~ msgctxt "#31025"
 #~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 #~ msgstr "Δεν βρέθηκαν αγαπημένα. Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από την προβολή πολυμέσων σε αυτή τη λίστα χρησιμοποιώντας το κεντρικό μενού."
