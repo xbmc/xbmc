@@ -54,12 +54,18 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
 
   CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir {}", CURL::GetRedacted(strDirname));
 
+  // libbluray looks in folders a disc needn't have (BDMV/META/DL, BDMV/META/TN), so one missing is
+  // no error to log, as listing it would
+  if (!CDirectory::Exists(strDirname))
+  {
+    CLog::Log(LOGDEBUG, "CBlurayCallback - No dir {}", CURL::GetRedacted(strDirname));
+    return nullptr;
+  }
+
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
-    if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! ({})",
-                CURL::GetRedacted(strDirname));
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! ({})", CURL::GetRedacted(strDirname));
     delete st;
     return nullptr;
   }
