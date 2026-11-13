@@ -8,10 +8,8 @@
 #include "AndroidUtils.h"
 
 #include "ServiceBroker.h"
-#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -145,9 +143,6 @@ CAndroidUtils::CAndroidUtils()
   }
   CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: {}x{}", m_width, m_height);
 
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
-      this, {CAndroidUtils::SETTING_LIMITGUI});
-
   LogDisplaySupportedHdrTypes();
 }
 
@@ -238,14 +233,6 @@ bool CAndroidUtils::IsHDRDisplay()
   }
   CLog::Log(LOGDEBUG, "CAndroidUtils: IsHDRDisplay: {}", ret ? "true" : "false");
   return ret;
-}
-
-void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
-{
-  const std::string& settingId = setting->GetId();
-  /* Calibration (overscan / subtitles) are based on GUI size -> reset required */
-  if (settingId == CAndroidUtils::SETTING_LIMITGUI)
-    CDisplaySettings::GetInstance().ClearCalibrations();
 }
 
 std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes()
