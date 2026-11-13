@@ -15,6 +15,7 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #if defined(TARGET_DARWIN_TVOS)
 #include "windowing/tvos/WinSystemTVOS.h"
 #endif
@@ -23,6 +24,7 @@
 
 extern "C" {
 #include <libavcodec/videotoolbox.h>
+#include <libavutil/pixdesc.h>
 }
 
 using namespace VTB;
@@ -203,6 +205,15 @@ void CDecoder::Close()
 
 }
 
+/*!
+ * \brief Configure VideoToolbox frame output for the current stream.
+ *
+ * Returning false lets codec selection fall back to software decoding when
+ * VideoToolbox is disabled or the tvOS VP9 requirements are not met.
+ *
+ * \param avctx FFmpeg codec context receiving the hardware frame context.
+ * \return True when hardware frame output is configured.
+ */
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
@@ -218,6 +229,27 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
       m_hdrOutput = (avctx->color_trc == AVCOL_TRC_SMPTE2084 && caps.SupportsHDR10()) ||
                     (avctx->color_trc == AVCOL_TRC_ARIB_STD_B67 && CanDisplayHLG(caps));
     }
+  }
+#endif
+
+#if defined(TARGET_DARWIN_TVOS) && defined(__TVOS_26_2)
+  if (avctx->codec_id == AV_CODEC_ID_VP9)
+  {
+    // The GLES renderer only supports 8-bit NV12 surfaces.
+    const AVPixFmtDescriptor* descriptor = av_pix_fmt_desc_get(avctx->sw_pix_fmt);
+    if (!descriptor || descriptor->nb_components == 0 || descriptor->comp[0].depth != 8)
+      return false;
+
+    if (__builtin_available(tvOS 26.2, *))
+    {
+      VTRegisterSupplementalVideoDecoderIfAvailable(kCMVideoCodecType_VP9);
+      const bool supported = VTIsHardwareDecodeSupported(kCMVideoCodecType_VP9);
+      CLog::Log(LOGDEBUG, "VTB: VP9 hardware decode support after registration: {}", supported);
+      if (!supported)
+        return false;
+    }
+    else
+      return false;
   }
 #endif
 
