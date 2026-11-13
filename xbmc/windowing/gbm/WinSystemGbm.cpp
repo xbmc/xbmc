@@ -370,18 +370,25 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
   m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
   // !videoLayer alone cannot gate teardown: FlipPage also runs with videoLayer
-  // false during a mode switch or renderer swap. use_count reaches 1 only when
-  // CRendererDRMPRIME drops its bridge reference, which happens at video stop.
-  if (m_videoLayerBridge && !videoLayer && m_videoLayerBridge.use_count() == 1)
-  {
-    // delete video layer bridge when video layer no longer is active
-    m_videoLayerBridge.reset();
+  // false during a mode switch or renderer swap.
+  if (!videoLayer)
+    ReleaseVideoLayerBridge();
+}
 
-    //! @todo unify D2P and single-plane teardown behind one winsystem plane API
-    m_DRM->ReleaseVideoPlane();
-    auto* gui = m_DRM->GetGuiPlane();
-    m_DRM->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
-  }
+// use_count reaches 1 only when CRendererDRMPRIME drops its bridge reference,
+// which happens at video stop or when another renderer takes over
+void CWinSystemGbm::ReleaseVideoLayerBridge()
+{
+  if (!m_videoLayerBridge || m_videoLayerBridge.use_count() != 1)
+    return;
+
+  // delete video layer bridge when video layer no longer is active
+  m_videoLayerBridge.reset();
+
+  //! @todo unify D2P and single-plane teardown behind one winsystem plane API
+  m_DRM->ReleaseVideoPlane();
+  auto* gui = m_DRM->GetGuiPlane();
+  m_DRM->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
 }
 
 bool CWinSystemGbm::UseLimitedColor()
@@ -471,6 +478,13 @@ std::vector<std::string> CWinSystemGbm::GetConnectedOutputs()
 
 bool CWinSystemGbm::SetVideoOutput(const VideoPicture* videoPicture)
 {
+  // a replaced direct-to-plane renderer leaves its bridge on its video plane until FlipPage
+  if (m_videoLayerBridge)
+  {
+    m_videoLayerBridge->Disable();
+    ReleaseVideoLayerBridge();
+  }
+
   // Base: flip the gui/video plane role for the single shared output
   // plane on GBM. videoPicture set means a video is starting and the
   // output plane should be tracked as the video plane; nullptr means

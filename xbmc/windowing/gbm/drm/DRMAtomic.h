@@ -15,6 +15,8 @@
 #include <deque>
 #include <map>
 #include <memory>
+#include <utility>
+#include <vector>
 
 namespace KODI
 {
@@ -35,6 +37,10 @@ public:
   void DestroyDrm() override;
   bool SupportsFencing() override { return true; }
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
+
+  //! \brief Whether the kernel accepts these properties of the object on top of its current state
+  bool TestProperties(CDRMObject* object,
+                      const std::vector<std::pair<const char*, uint64_t>>& properties);
 
   // Probe whether any DRM device supports atomic modesetting, with no
   // connector required. Used to decide atomic-vs-legacy before falling back.
