@@ -475,6 +475,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_SETTINGS_MENU);
     DestroyWindow(WINDOW_SETTINGS_PROFILES);
     DestroyWindow(WINDOW_SCREEN_CALIBRATION);
+    DestroyWindow(WINDOW_SCREEN_ALIGNMENT);
     DestroyWindow(WINDOW_SYSTEM_INFORMATION);
     DestroyWindow(WINDOW_SCREENSAVER);
     DestroyWindow(WINDOW_DIALOG_VIDEO_OSD);
