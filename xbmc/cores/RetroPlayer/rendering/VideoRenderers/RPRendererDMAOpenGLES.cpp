@@ -70,12 +70,15 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
   {
     RenderBufferTextures* rbTextures;
 
-    // Drop cached textures if target size is changed
-    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
+    // Drop cached textures if target size or HDR state is changed
+    const bool hdr = m_hdrPeak != 0;
+    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight ||
+        hdr != m_lastTargetHdr)
     {
       m_RBTexturesMap.clear();
       m_lastTargetWidth = m_fullDestWidth;
       m_lastTargetHeight = m_fullDestHeight;
+      m_lastTargetHdr = hdr;
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
@@ -97,9 +100,7 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
               static_cast<unsigned int>(renderBuffer->GetWidth()),
               static_cast<unsigned int>(renderBuffer->GetHeight()), renderBuffer->TextureID()),
           // Target texture
-          std::make_shared<SHADER::CShaderTextureGLES>(static_cast<unsigned int>(m_fullDestWidth),
-                                                       static_cast<unsigned int>(m_fullDestHeight),
-                                                       GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA, false)};
+          CreateTargetTexture()};
       rbTextures->targetTexture->CreateTexture(); // Create new internal texture
       m_RBTexturesMap.emplace(renderBuffer, rbTextures);
     }
@@ -143,44 +144,5 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
-  if (alpha < 255)
-  {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  }
-  else
-  {
-    glDisable(GL_BLEND);
-  }
-
-  // Use GUI shader
-  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
-
-  GLint uniColLoc = m_context.GUIShaderGetUniCol();
-  GLint depthLoc = m_context.GUIShaderGetDepth();
-
-  // Setup color values
-  GLubyte col[4];
-  const uint32_t color = (alpha << 24) | 0xFFFFFF;
-  col[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
-  col[1] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::G, color);
-  col[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
-  col[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
-
-  glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
-              (col[3] / 255.0f));
-  glUniform1f(depthLoc, -1.0f);
-
-  // Setup texture coordinates
-  CRect rect = m_sourceRect;
-  rect.x1 /= renderBuffer->GetWidth();
-  rect.x2 /= renderBuffer->GetWidth();
-  rect.y1 /= renderBuffer->GetHeight();
-  rect.y2 /= renderBuffer->GetHeight();
-
-  // The destination corners are a rotated rectangle: top left, top right, bottom right, bottom left
-  dynamic_cast<CRenderSystemGLES&>(*m_context.Rendering())
-      .DrawGUIQuad(m_rotatedDestCoords[0], m_rotatedDestCoords[1], m_rotatedDestCoords[3], &rect);
-
-  m_context.DisableGUIShader();
+  DrawFrame(alpha, renderBuffer->GetWidth(), renderBuffer->GetHeight());
 }

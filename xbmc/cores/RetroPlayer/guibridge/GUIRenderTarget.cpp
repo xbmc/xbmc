@@ -53,13 +53,12 @@ CGUIRenderFullScreen::CGUIRenderFullScreen(IRenderManager* renderManager,
 
 void CGUIRenderFullScreen::Render()
 {
-  m_renderManager->RenderWindow(true, m_window.GetCoordsRes());
+  m_renderManager->RenderWindow(true, m_window.GetCoordsRes(), false);
 }
 
 void CGUIRenderFullScreen::RenderEx()
 {
-  //! @todo
-  // m_renderManager->RenderWindow(false, m_window.GetCoordsRes());
+  m_renderManager->RenderWindow(false, m_window.GetCoordsRes(), true);
 }
 
 void CGUIRenderFullScreen::ClearBackground()
