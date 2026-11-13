@@ -43,7 +43,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
 #include "tags/VideoTagLoaderNFO.h"
 #include "utils/ArtTypes.h"
@@ -1671,6 +1670,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
   {
+    return tag.m_set.HasTitle() &&
+           UpdateSetInTag(tag, CVideoInfoScannerArt::ReadMovieSetFolder(tag.m_set.GetTitle()));
+  }
+
+  bool CVideoInfoScanner::UpdateMovieSet(CVideoInfoTag& tag) const
+  {
+    return tag.m_set.HasTitle() &&
+           UpdateSetInTag(tag, m_art.GetMovieSetFolder(tag.m_set.GetTitle()));
+  }
+
+  bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag,
+                                         const CVideoInfoScannerArt::MovieSetFolder& folder)
+  {
     // Uses the set information in m_set from a tag of a movie
     // If there is a set, see if the details need to be updated from the
     // Movie Set Information Folder
@@ -1679,29 +1691,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool setUpdated{false};
     ART::Artwork movieSetArt;
-    const std::string movieSetInfoPath{GetMovieSetInfoFolder(tag.m_set.GetTitle())};
+    const std::string& movieSetInfoPath{folder.path};
     if (!movieSetInfoPath.empty())
     {
-      // Look for set.nfo
-      if (const std::unique_ptr setLoader{
-              CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.GetTitle())};
-          setLoader)
+      // From set.nfo
+      if (folder.nfo)
       {
-        CSetInfoTag setTag;
-        InfoType result{setLoader->Load(setTag, false)};
-        if (result != InfoType::NONE && !setTag.IsEmpty())
-        {
-          tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
-          if (!setTag.GetTitle().empty())
-            tag.m_set.SetTitle(setTag.GetTitle());
-          if (setTag.HasSortTitle())
-            tag.m_set.SetSortTitle(setTag.GetSortTitle());
-          if (!setTag.GetOverview().empty())
-            tag.m_set.SetOverview(setTag.GetOverview());
-          if (setTag.HasArt())
-            tag.m_set.SetArt(setTag.GetArt());
-          setUpdated = true;
-        }
+        const CSetInfoTag& setTag{*folder.nfo};
+        tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
+        if (!setTag.GetTitle().empty())
+          tag.m_set.SetTitle(setTag.GetTitle());
+        if (setTag.HasSortTitle())
+          tag.m_set.SetSortTitle(setTag.GetSortTitle());
+        if (!setTag.GetOverview().empty())
+          tag.m_set.SetOverview(setTag.GetOverview());
+        if (setTag.HasArt())
+          tag.m_set.SetArt(setTag.GetArt());
+        setUpdated = true;
       }
 
       // Now look for art
@@ -2643,7 +2649,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       // A look-up has read the set and the movie's art and streams already
       const bool prepared{lookup && lookup->prepared};
-      if ((prepared ? lookup->setUpdated : UpdateSetInTag(*pItem->GetVideoInfoTag())) &&
+      if ((prepared ? lookup->setUpdated : UpdateMovieSet(*pItem->GetVideoInfoTag())) &&
           !AddSet(pItem->GetVideoInfoTag()->m_set))
         return InfoRet::INFO_ERROR;
 
@@ -2761,7 +2767,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           return InfoRet::INFO_ERROR;
 
         // Deal with set
-        if (UpdateSetInTag(*item.GetVideoInfoTag()) && !AddSet(item.GetVideoInfoTag()->m_set))
+        if (UpdateMovieSet(*item.GetVideoInfoTag()) && !AddSet(item.GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
       }
 
@@ -3111,7 +3117,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       lookup.item = std::move(movie);
       return;
     }
-    lookup.setUpdated = UpdateSetInTag(*movie.GetVideoInfoTag());
+    lookup.setUpdated = UpdateMovieSet(*movie.GetVideoInfoTag());
     ApplyEdition(&movie, lookup.edition);
     lookup.prepared = PrepareVideo(&movie, info2, bDirNames, useLocal, nullptr, false,
                                    ContentType::NONE, regexps, lastProbed);
@@ -3361,17 +3367,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     InfoRet ret{
         OnProcessSeriesFolder(files, scraper, useLocal, showInfo, showAffinity, progress, guide)};
 
-    if (ret == InfoRet::ADDED)
+    // A show just added had its season art worked out and written with it, from the same folder
+    // and art its details give, so working it out again here would only write it again
+    if (ret == InfoRet::ADDED && !alreadyHasArt)
     {
       KODI::ART::SeasonsArtwork seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
-      const bool updateSeasonArt{
-          alreadyHasArt ||
-          std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); })};
-      if (updateSeasonArt)
+      if (std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); }))
       {
-        if (!alreadyHasArt && !item->IsPlugin() && scraper->ID() != "metadata.local")
+        if (!item->IsPlugin() && scraper->ID() != "metadata.local")
         {
           CVideoInfoDownloader loader(scraper);
           const CDownloads::CRegistration downloading{m_downloads, loader};

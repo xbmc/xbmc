@@ -34,6 +34,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/tags/SetInfoTagLoaderFactory.h"
 
 #include <algorithm>
 #include <chrono>
@@ -298,12 +299,17 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     if (!pItem->SkipLocalArt())
     {
       bool useFolder = false;
+      // The art looked up for a movie or music video in a folder of its own, and its folder's
+      std::string lookedUp;
       if (bApplyToDir && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
       {
         std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
         std::string directory = URIUtils::GetDirectory(filename);
         if (filename != directory)
+        {
           ART::AddLocalItemArtwork(art, artTypes, filename, addAll, exactName, bApplyToDir);
+          lookedUp = filename;
+        }
       }
 
       // Reset useFolder to false as GetLocalArtBaseFilename may modify it in
@@ -361,13 +367,14 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       }
       else
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
-      ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
+      // Not again where it was looked up above, which would find the same
+      if (path != lookedUp || !isInFolder)
+        ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
     }
 
     if (moviePartOfSet)
     {
-      std::string movieSetInfoPath =
-          CVideoInfoScanner::GetMovieSetInfoFolder(movieDetails.m_set.GetTitle());
+      const std::string& movieSetInfoPath{GetMovieSetFolder(movieDetails.m_set.GetTitle()).path};
       if (!movieSetInfoPath.empty())
       {
         KODI::ART::Artwork movieSetArt;
@@ -572,6 +579,35 @@ const CVideoInfoScannerArt::ActorThumbs& CVideoInfoScannerArt::GetActorThumbs(
   }
   std::call_once(folder->listed, [&] { ListActorThumbs(actorsDir, folder->thumbs); });
   return folder->thumbs;
+}
+
+const CVideoInfoScannerArt::MovieSetFolder& CVideoInfoScannerArt::GetMovieSetFolder(
+    const std::string& setTitle) const
+{
+  ReadMovieSet* set{nullptr};
+  {
+    std::unique_lock lock(m_movieSetsLock);
+    set = &m_movieSets.try_emplace(setTitle).first->second;
+  }
+  std::call_once(set->read, [&] { set->folder = ReadMovieSetFolder(setTitle); });
+  return set->folder;
+}
+
+CVideoInfoScannerArt::MovieSetFolder CVideoInfoScannerArt::ReadMovieSetFolder(
+    const std::string& setTitle)
+{
+  MovieSetFolder folder;
+  folder.path = CVideoInfoScanner::GetMovieSetInfoFolder(setTitle);
+  if (folder.path.empty())
+    return folder;
+
+  if (const std::unique_ptr setLoader{CSetInfoTagLoaderFactory::CreateLoader(setTitle)}; setLoader)
+  {
+    CSetInfoTag setTag;
+    if (setLoader->Load(setTag, false) != CInfoScanner::InfoType::NONE && !setTag.IsEmpty())
+      folder.nfo = std::move(setTag);
+  }
+  return folder;
 }
 
 void CVideoInfoScannerArt::ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs)

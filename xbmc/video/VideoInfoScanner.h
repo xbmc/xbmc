@@ -335,6 +335,13 @@ namespace KODI::VIDEO
      */
     bool CanLookUpMovieAlongside(const CFileItem& item) const;
 
+    //! UpdateSetInTag(), with each set's information folder read once for the scan
+    bool UpdateMovieSet(CVideoInfoTag& tag) const;
+
+    //! UpdateSetInTag() with what the set's information folder holds, read already
+    static bool UpdateSetInTag(CVideoInfoTag& tag,
+                               const CVideoInfoScannerArt::MovieSetFolder& folder);
+
     /*! \brief The part of RetrieveInfoForMovie() that reads the movie's nfo, asks the scraper and
      prepares the movie, which neither writes to the database nor shows a dialog. A disc is prepared
      as it is added, as its playlists are chosen with those the library already has.
@@ -470,6 +477,8 @@ namespace KODI::VIDEO
     /*!
      \param showAffinity the interpreter the show's scraper calls keep to, where what the scraper
      fetched for the show is kept
+     \param alreadyHasArt whether the show was just added with its art, its seasons' included,
+     which isn't then worked out again
      */
     InfoRet RetrieveInfoForEpisodes(CFileItem* item,
                                     long showID,

@@ -11,11 +11,13 @@
 #include "addons/Scraper.h"
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
+#include "video/SetInfoTag.h"
 
 #include <cstdint>
 #include <functional>
 #include <map>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -148,6 +150,22 @@ public:
 
   static void ApplyThumbToFolder(const std::string& folder, const std::string& imdbThumb);
 
+  //! What a movie set's information folder holds
+  struct MovieSetFolder
+  {
+    std::string path; //!< The folder, or empty where the set has none
+    std::optional<CSetInfoTag> nfo; //!< Its set.nfo, where that holds anything
+  };
+
+  /*! \brief A movie set's information folder, read once for each set rather than for each of its
+   movies. Different sets are read at once, and one being read is waited for.
+   \param setTitle the set's title, as a movie's tag gives it
+   */
+  const MovieSetFolder& GetMovieSetFolder(const std::string& setTitle) const;
+
+  //! A movie set's information folder, read each time \sa GetMovieSetFolder
+  static MovieSetFolder ReadMovieSetFolder(const std::string& setTitle);
+
 private:
   enum class ArtRetrievalTiming : uint8_t
   {
@@ -186,6 +204,16 @@ private:
   mutable std::map<std::string, ListedActorThumbs, std::less<>> m_actorThumbs;
   //! Held only to find a folder's entry, not while the folder is listed
   mutable std::mutex m_actorThumbsLock;
+
+  struct ReadMovieSet
+  {
+    std::once_flag read;
+    MovieSetFolder folder;
+  };
+  //! By set title \sa GetMovieSetFolder
+  mutable std::map<std::string, ReadMovieSet, std::less<>> m_movieSets;
+  //! Held only to find a set's entry, not while its folder is read
+  mutable std::mutex m_movieSetsLock;
 };
 
 } // namespace KODI::VIDEO
