@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace XFILE;
@@ -40,7 +41,26 @@ const TiXmlElement* CNfoFile::GetRootElement() const
   if (!m_xmlParsed)
   {
     if (m_headPos < m_doc.size())
-      m_xmlDoc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+    {
+      // Of a document holding several movies, only the one sought: parsing all that follows it as
+      // each is read in turn would take time growing with the square of their number
+      size_t length{std::string::npos};
+      if (m_addonType == AddonType::SCRAPER_MOVIES &&
+          m_doc.find("<movie", m_headPos + 1) != std::string::npos)
+      {
+        static constexpr std::string_view MOVIE_END{"</movie>"};
+        if (const size_t end{m_doc.find(MOVIE_END, m_headPos)}; end != std::string::npos)
+          length = end + MOVIE_END.size() - m_headPos;
+      }
+      // An end tag inside the movie's text or a comment cuts it short, which won't parse: then it
+      // is parsed with all that follows it, as before
+      if (!m_xmlDoc.Parse(m_doc.substr(m_headPos, length), TIXML_ENCODING_UNKNOWN) &&
+          length != std::string::npos)
+      {
+        m_xmlDoc.Clear();
+        m_xmlDoc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+      }
+    }
     m_xmlParsed = true;
   }
   return m_xmlDoc.RootElement();
@@ -144,7 +164,7 @@ CInfoScanner::InfoType CNfoFile::Reparse(int index)
     return NONE;
   }
 
-  // Discard the element parsed previously and re-parse starting from the requested one
+  // Discard the element parsed previously, to parse the requested one
   m_xmlDoc.Clear();
   m_xmlParsed = false;
 
