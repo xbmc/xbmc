@@ -123,7 +123,8 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 // 3. reset the animation transform
 void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  CRect dirtyRegion = m_renderRegion;
+  const CRect renderRegion = m_renderRegion;
+  CRect dirtyRegion = GetDrawnRegion();
 
   bool changed = (m_controlDirtyState & DIRTY_STATE_CONTROL) != 0 || (m_bInvalidated && IsVisible());
   m_controlDirtyState = 0;
@@ -158,11 +159,9 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     Process(currentTime, dirtyregions);
     m_bInvalidated = false;
 
-    if (dirtyRegion != m_renderRegion)
-    {
-      dirtyRegion.Union(m_renderRegion);
+    if (renderRegion != m_renderRegion)
       changed = true;
-    }
+    dirtyRegion.Union(GetDrawnRegion());
 
     if (m_hasCamera)
       CServiceBroker::GetWinSystem()->GetGfxContext().RestoreCameraPosition();

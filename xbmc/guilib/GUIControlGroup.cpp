@@ -91,18 +91,29 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(pos.x, pos.y);
 
   CRect rect;
+  m_childRegion = CRect();
   for (auto *control : m_children)
   {
     control->UpdateVisibility(nullptr);
     unsigned int oldDirty = dirtyregions.size();
     control->DoProcess(currentTime, dirtyregions);
     if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
+    {
       rect.Union(control->GetRenderRegion());
+      m_childRegion.Union(control->GetDrawnRegion());
+    }
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
+}
+
+CRect CGUIControlGroup::GetDrawnRegion() const
+{
+  CRect region = m_renderRegion;
+  region.Union(m_childRegion);
+  return region;
 }
 
 void CGUIControlGroup::Render()
