@@ -98,6 +98,32 @@ struct GameRegion
 
 /*!
  * \ingroup games
+ * \brief How trustworthy a dump is
+ */
+enum class DumpStatus
+{
+  UNKNOWN,
+  BAD,
+  VERIFIED,
+};
+
+/*!
+ * \ingroup games
+ * \brief One version of a game, as far as choosing between versions goes
+ */
+struct GameRelease
+{
+  std::vector<GameRegion> regions;
+  std::string revision; // "Rev 1", "v1.1", empty for the first release
+  ReleaseStatus status{ReleaseStatus::RETAIL};
+  Licence licence{Licence::LICENSED};
+  bool alternate{false};
+  bool modified{false}; // a hack or fan translation
+  DumpStatus dump{DumpStatus::UNKNOWN};
+};
+
+/*!
+ * \ingroup games
  * \brief One file inside a zip, as the zip's own directory describes it
  */
 struct ArchiveMember
