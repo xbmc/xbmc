@@ -42,7 +42,15 @@ public:
 
   static bool GetFileDuration(const std::string& path, int& duration);
 
+  static bool StopProbes();
+  static bool ProbesStillBlocked();
+
 private:
+  static bool ProbeFileStreamDetails(CFileItem* pItem);
+  static bool ProbeFileDuration(const std::string& path, int& duration);
+  static std::unique_ptr<CTexture> ProbeThumbToTexture(const CFileItem& fileItem,
+                                                       int chapterNumber);
+
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
