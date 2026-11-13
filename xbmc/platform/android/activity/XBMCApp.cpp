@@ -1297,6 +1297,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
           iae->DeviceChange();
         m_aeReset = false;
       }
+      else if (encodingsChanged)
+      {
+        // Changed during startup; the next plug event will see them unchanged.
+        m_aeReset = true;
+      }
     }
     if (m_hdmiPlugged && m_wakeUp)
     {
