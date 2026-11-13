@@ -9,10 +9,13 @@ set(SOURCES CPUInfoWasm.cpp
 
 set(HEADERS CPUInfoWasm.h
             GPUInfoWasm.h
+            MseBridge.h
             PlatformWasm.h
             TitanWebApis.h
+            TizenEmss.h
             TizenWebApis.h
             WasmAudioWorkletManager.h
+            WasmMediaLayer.h
             WasmWebApis.h)
 
 core_add_library(platform_wasm)

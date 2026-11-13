@@ -75,4 +75,21 @@ if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
                         VideoPlayerWebOS.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+    list(APPEND SOURCES MediaBackendEmss.cpp
+                        MediaBackendMse.cpp
+                        MediaBackendWasm.cpp
+                        MediaPipelineWasm.cpp
+                        VideoPlayerAudioWasm.cpp
+                        VideoPlayerVideoWasm.cpp
+                        VideoPlayerWasm.cpp)
+    list(APPEND HEADERS MediaBackendEmss.h
+                        MediaBackendMse.h
+                        MediaBackendWasm.h
+                        MediaPipelineWasm.h
+                        VideoPlayerAudioWasm.h
+                        VideoPlayerVideoWasm.h
+                        VideoPlayerWasm.h)
+endif()
+
 core_add_library(VideoPlayer)
