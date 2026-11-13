@@ -31,6 +31,7 @@ class CFileItemList;
 
 namespace KODI::VIDEO
 {
+  class CFilenameAttributes;
   class IVideoInfoTagLoader;
   class ISetInfoTagLoader;
 
@@ -164,6 +165,22 @@ namespace KODI::VIDEO
                                  bool useLocal,
                                  CScraperUrl* pURL,
                                  CGUIDialogProgress* pDlgProgress);
+
+    /*!
+     * \brief Get a movie's identifier (ex. "{tmdb=603}") from its filename or, failing that, from
+     *        the name it is looked up by - its folder's name when folder names are used.
+     * \param[in] item The movie
+     * \param[in] bDirNames Whether the movie is looked up by its folder's name
+     * \param[in] filenameAttributes The attributes of the movie's filename
+     * \param[out] identifierType The identifier's type (ex. "tmdb")
+     * \param[out] identifier The identifier
+     * \return true if an identifier was found
+     */
+    bool GetMovieIdentifier(const CFileItem& item,
+                            bool bDirNames,
+                            const CFilenameAttributes& filenameAttributes,
+                            std::string& identifierType,
+                            std::string& identifier) const;
     InfoRet RetrieveInfoForMusicVideo(CFileItem* pItem,
                                       bool bDirNames,
                                       ADDON::ScraperPtr& scraper,
