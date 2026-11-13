@@ -15,6 +15,7 @@
 #include <deque>
 #include <map>
 #include <memory>
+#include <vector>
 
 namespace KODI
 {
@@ -42,6 +43,8 @@ public:
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
+  bool UseLastRequest();
+  void AddFences(CDRMPlane* plane);
 
   bool m_need_modeset{true};
   bool m_active = true;
@@ -56,6 +59,9 @@ private:
     drmModeAtomicReqPtr Get() const { return m_atomicRequest.get(); }
 
     bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
+    //! \brief Set a blob property; the blob lives as long as the request
+    bool AddProperty(CDRMObject* object, const char* name, CDRMPropertyBlob blob);
+    void RemoveProperty(const char* name);
     void CacheProperties();
     void LogAtomicRequest();
 
@@ -66,6 +72,7 @@ private:
         uint8_t logLevel, std::map<CDRMObject*, std::map<uint32_t, uint64_t>>& atomicRequestItems);
 
     std::map<CDRMObject*, std::map<uint32_t, uint64_t>> m_atomicRequestItems;
+    std::vector<CDRMPropertyBlob> m_blobs;
 
     struct DrmModeAtomicReqDeleter
     {
