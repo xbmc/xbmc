@@ -6,8 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "JSONRPCTestUtils.h"
+#include "ServiceDescription.h"
 #include "interfaces/json-rpc/PVREpgFields.h"
 #include "utils/Variant.h"
+
+#include <set>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -64,4 +69,39 @@ TEST(TestPVREpgFields, TranslateEpgCastSkipsEmptyNames)
   EXPECT_EQ(0, cast[0]["order"].asInteger());
   EXPECT_EQ("Second Actor", cast[1]["name"].asString());
   EXPECT_EQ(1, cast[1]["order"].asInteger());
+}
+
+namespace
+{
+
+std::set<std::string> ShippedEnum(const std::string& type)
+{
+  return EnumValues(ShippedType(type)["items"]);
+}
+
+class TestPVRBroadcastFields : public JSONServiceDescriptionTestBase
+{
+protected:
+  void SetUp() override
+  {
+    JSONServiceDescriptionTestBase::SetUp();
+
+    // PVR.Fields.Broadcast extends Item.Fields.Base, which has to be registered first
+    ASSERT_TRUE(CJSONServiceDescription::AddType(ShippedDefinition("Item.Fields.Base")));
+    ASSERT_TRUE(CJSONServiceDescription::AddType(ShippedDefinition("PVR.Fields.Broadcast")));
+  }
+};
+
+} // unnamed namespace
+
+/*!
+ The schema enum and BroadcastFields() must agree exactly; an empty set on either side is a
+ lookup failure, not agreement.
+ */
+TEST_F(TestPVRBroadcastFields, EveryFieldTheSchemaOffersIsAnswered)
+{
+  const std::set<std::string> offered{ShippedEnum("PVR.Fields.Broadcast")};
+
+  ASSERT_FALSE(offered.empty()) << "the two sides agreeing on nothing is not agreement";
+  EXPECT_EQ(offered, BroadcastFields());
 }
