@@ -447,6 +447,9 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_dateTime = item.m_dateTime;
   m_dwSize = item.m_dwSize;
 
+  // Loader threads may create tags of the source item meanwhile
+  std::scoped_lock lock(m_infoTagSection, item.m_infoTagSection);
+
   if (item.m_musicInfoTag)
   {
     if (m_musicInfoTag)
@@ -555,6 +558,8 @@ void CFileItem::Archive(CArchive& ar)
     ar << static_cast<int>(m_specialSort);
     ar << m_doContentLookup;
 
+    std::unique_lock lock(m_infoTagSection);
+
     if (m_musicInfoTag)
     {
       ar << 1;
@@ -651,17 +656,21 @@ void CFileItem::Serialize(CVariant& value) const
   value["mimetype"] = m_mimetype;
   value["extrainfo"] = m_extrainfo;
 
-  if (m_musicInfoTag)
-    (*m_musicInfoTag).Serialize(value["musicInfoTag"]);
+  {
+    std::unique_lock lock(m_infoTagSection);
 
-  if (m_videoInfoTag)
-    (*m_videoInfoTag).Serialize(value["videoInfoTag"]);
+    if (m_musicInfoTag)
+      (*m_musicInfoTag).Serialize(value["musicInfoTag"]);
 
-  if (m_pictureInfoTag)
-    (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
+    if (m_videoInfoTag)
+      (*m_videoInfoTag).Serialize(value["videoInfoTag"]);
 
-  if (m_gameInfoTag)
-    (*m_gameInfoTag).Serialize(value["gameInfoTag"]);
+    if (m_pictureInfoTag)
+      (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
+
+    if (m_gameInfoTag)
+      (*m_gameInfoTag).Serialize(value["gameInfoTag"]);
+  }
 
   //! @todo Why is property map the only CGUIListItem property which gets serialized?
   //! Why is this implemented here and not in CGUIListItem?
@@ -1385,22 +1394,26 @@ void CFileItem::UpdateInfo(const CFileItem& item,
   { // copy info across
     //! @todo premiered info is normally stored in m_dateTime by the db
 
-    if (item.m_videoInfoTag)
     {
-      if (m_videoInfoTag)
-        *m_videoInfoTag = *item.m_videoInfoTag;
+      std::scoped_lock lock(m_infoTagSection, item.m_infoTagSection);
+
+      if (item.m_videoInfoTag)
+      {
+        if (m_videoInfoTag)
+          *m_videoInfoTag = *item.m_videoInfoTag;
+        else
+          m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
+      }
       else
-        m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
-    }
-    else
-    {
-      if (m_videoInfoTag)
-        delete m_videoInfoTag;
+      {
+        if (m_videoInfoTag)
+          delete m_videoInfoTag;
 
-      m_videoInfoTag = new CVideoInfoTag;
-    }
+        m_videoInfoTag = new CVideoInfoTag;
+      }
 
-    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+      m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+    }
 
     SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
@@ -1485,15 +1498,19 @@ void CFileItem::MergeInfo(const CFileItem& item)
   // TODO: Currently merge the metadata/art info is implemented for video case only
   if (item.HasVideoInfoTag())
   {
-    if (item.m_videoInfoTag)
     {
-      if (m_videoInfoTag)
-        m_videoInfoTag->Merge(*item.m_videoInfoTag);
-      else
-        m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
-    }
+      std::scoped_lock lock(m_infoTagSection, item.m_infoTagSection);
 
-    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+      if (item.m_videoInfoTag)
+      {
+        if (m_videoInfoTag)
+          m_videoInfoTag->Merge(*item.m_videoInfoTag);
+        else
+          m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
+      }
+
+      m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+    }
 
     SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
@@ -1576,10 +1593,14 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     SetFolder(false);
   }
 
-  if (m_videoInfoTag)
-    *m_videoInfoTag = video;
-  else
-    m_videoInfoTag = new CVideoInfoTag(video);
+  {
+    std::unique_lock lock(m_infoTagSection);
+
+    if (m_videoInfoTag)
+      *m_videoInfoTag = video;
+    else
+      m_videoInfoTag = new CVideoInfoTag(video);
+  }
 
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
@@ -2389,12 +2410,16 @@ bool CFileItem::LoadDetails()
 
 bool CFileItem::HasVideoInfoTag() const
 {
+  std::unique_lock lock(m_infoTagSection);
+
   // Note: CPVRRecording is derived from CVideoInfoTag
   return m_pvrRecordingInfoTag != nullptr || m_videoInfoTag != nullptr;
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
 {
+  std::unique_lock lock(m_infoTagSection);
+
   // Note: CPVRRecording is derived from CVideoInfoTag
   if (m_pvrRecordingInfoTag)
     return m_pvrRecordingInfoTag.get();
@@ -2406,30 +2431,80 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
 
 const CVideoInfoTag* CFileItem::GetVideoInfoTag() const
 {
+  std::unique_lock lock(m_infoTagSection);
+
   // Note: CPVRRecording is derived from CVideoInfoTag
   return m_pvrRecordingInfoTag ? m_pvrRecordingInfoTag.get() : m_videoInfoTag;
 }
 
+bool CFileItem::HasPictureInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
+
+  return m_pictureInfoTag != nullptr;
+}
+
 CPictureInfoTag* CFileItem::GetPictureInfoTag()
 {
+  std::unique_lock lock(m_infoTagSection);
+
   if (!m_pictureInfoTag)
     m_pictureInfoTag = new CPictureInfoTag;
 
   return m_pictureInfoTag;
 }
 
+const CPictureInfoTag* CFileItem::GetPictureInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
+
+  return m_pictureInfoTag;
+}
+
+bool CFileItem::HasMusicInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
+
+  return m_musicInfoTag != nullptr;
+}
+
 MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 {
+  std::unique_lock lock(m_infoTagSection);
+
   if (!m_musicInfoTag)
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
   return m_musicInfoTag;
 }
 
+const MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
+
+  return m_musicInfoTag;
+}
+
+bool CFileItem::HasGameInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
+
+  return m_gameInfoTag != nullptr;
+}
+
 CGameInfoTag* CFileItem::GetGameInfoTag()
 {
+  std::unique_lock lock(m_infoTagSection);
+
   if (!m_gameInfoTag)
     m_gameInfoTag = new CGameInfoTag;
+
+  return m_gameInfoTag;
+}
+
+const KODI::GAME::CGameInfoTag* CFileItem::GetGameInfoTag() const
+{
+  std::unique_lock lock(m_infoTagSection);
 
   return m_gameInfoTag;
 }
