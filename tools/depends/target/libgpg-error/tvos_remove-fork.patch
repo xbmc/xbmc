@@ -1,13 +1,13 @@
 --- a/src/spawn-posix.c
 +++ b/src/spawn-posix.c
-@@ -413,12 +413,12 @@
+@@ -431,12 +431,12 @@ my_exec (const char *pgmname, const char *argv[], gpgrt_spawn_actions_t act,
    /* This use case is for assuan pipe connect with no PGMNAME */
    if (pgmname == NULL)
      return 0;
 -
 +/*
-   if (act->environ)
-     execve (pgmname, (char *const *)argv, act->environ);
+   if (act->envp)
+     execve (pgmname, (char *const *)argv, act->envp);
    else
      execv (pgmname, (char *const *)argv);
 -
@@ -15,16 +15,16 @@
    /* No way to print anything, as we have may have closed all streams. */
   leave:
    _exit (127);
-@@ -441,7 +441,7 @@
+@@ -459,7 +459,7 @@ spawn_detached (const char *pgmname, const char *argv[],
      }
  
    _gpgrt_pre_syscall ();
 -  pid = fork ();
 +  pid = -1;
-   _gpgrt_post_syscall ();
    if (pid == (pid_t)(-1))
      {
-@@ -458,7 +458,7 @@
+       _gpgrt_post_syscall ();
+@@ -476,7 +476,7 @@ spawn_detached (const char *pgmname, const char *argv[],
        if (setsid() == -1 || chdir ("/"))
          _exit (1);
  
@@ -33,12 +33,12 @@
        if (pid2 == (pid_t)(-1))
          _exit (1);
        if (pid2)
-@@ -724,7 +724,7 @@
+@@ -752,7 +752,7 @@ _gpgrt_process_spawn (const char *pgmname, const char *argv1[],
      }
  
    _gpgrt_pre_syscall ();
 -  pid = fork ();
 +  pid = -1;
-   _gpgrt_post_syscall ();
    if (pid == (pid_t)(-1))
      {
+       _gpgrt_post_syscall ();
