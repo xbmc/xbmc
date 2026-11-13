@@ -26,6 +26,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "windowing/GraphicContext.h" //! @todo Remove me
+#include "windowing/Resolution.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;
@@ -183,6 +184,37 @@ void CGameWindowFullScreen::OnInitWindow()
 
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(true);
 
+  // At a film rate a game shows 24 of its 60 frames a second, late.
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const RESOLUTION_INFO current = gfx.GetResInfo();
+  m_resolutionBeforeGame = RES_INVALID;
+  if (gfx.IsFullScreenRoot() && current.fRefreshRate < 49.0f)
+  {
+    // Refresh overrides are meant for video, so only the whitelist is searched. It can
+    // still settle on a mode of another size or rate, which wouldn't help.
+    const auto chooseMode = [&gfx, &current](float fps)
+    {
+      RESOLUTION res = gfx.GetVideoResolution();
+      CResolutionUtils::FindResolutionFromWhitelist(fps, current.iScreenWidth,
+                                                    current.iScreenHeight, false, res);
+      const RESOLUTION_INFO info = gfx.GetResInfo(res);
+      const bool suitable = info.fRefreshRate >= 49.0f &&
+                            info.iScreenWidth == current.iScreenWidth &&
+                            info.iScreenHeight == current.iScreenHeight;
+      return suitable ? res : RES_INVALID;
+    };
+
+    RESOLUTION res = chooseMode(60.0f);
+    if (res == RES_INVALID)
+      res = chooseMode(59.94f);
+
+    if (res != RES_INVALID)
+    {
+      m_resolutionBeforeGame = gfx.GetVideoResolution();
+      gfx.SetVideoResolution(res, false);
+    }
+  }
+
   CGUIWindow::OnInitWindow();
 
   GAME::CDialogGameIndicators::SetOverGame(true);
@@ -217,7 +249,12 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
 
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(false);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  gfx.SetFullScreenVideo(false); //! @todo
+
+  // Not if the user has since made Kodi windowed
+  if (m_resolutionBeforeGame != RES_INVALID && gfx.IsFullScreenRoot())
+    gfx.SetVideoResolution(m_resolutionBeforeGame, false);
 }
 
 void CGameWindowFullScreen::TriggerOSD()
