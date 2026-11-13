@@ -189,6 +189,20 @@
 					</control>
 				</control>
 			</control>
+			<control type="list" id="1200">
+				<description>Battery of each player's controller</description>
+				<left>40</left>
+				<top>40</top>
+				<width>180</width>
+				<height>1000</height>
+				<orientation>vertical</orientation>
+				<itemlayout width="180" height="70">
+					<include>GamePlayerBatteryLayout</include>
+				</itemlayout>
+				<focusedlayout width="180" height="70">
+					<include>GamePlayerBatteryLayout</include>
+				</focusedlayout>
+			</control>
 		</control>
 	</controls>
 </window>

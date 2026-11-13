@@ -18,6 +18,9 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #include <mutex>
@@ -115,6 +118,7 @@ void CGUIDialogPeripherals::Show(CPeripherals& manager)
         pSettingsDialog->SetProperty("location", pItem->GetProperty("location"));
         pSettingsDialog->SetProperty("class", pItem->GetProperty("class"));
         pSettingsDialog->SetProperty("version", pItem->GetProperty("version"));
+        pSettingsDialog->SetProperty("battery", pItem->GetProperty("battery"));
 
         // Open settings dialog
         pSettingsDialog->SetFileItem(pItem.get());
@@ -185,5 +189,28 @@ void CGUIDialogPeripherals::UpdatePeripheralsSync()
 
   m_peripherals.Clear();
   m_manager->GetDirectory("peripherals://all/", m_peripherals);
+
+  for (const auto& item : m_peripherals)
+  {
+    const PeripheralPtr peripheral = m_manager->GetByPath(item->GetPath());
+    if (!peripheral)
+      continue;
+
+    const PeripheralBattery battery = peripheral->GetBattery();
+    if (battery.state == PeripheralBatteryState::WIRED)
+    {
+      // "Wired"
+      item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35013));
+    }
+    else if (battery.level >= 0)
+    {
+      // "Battery level"
+      item->SetLabel2(StringUtils::Format(
+          "{}: {}%", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12395),
+          battery.level));
+      item->SetProperty("battery", battery.level);
+    }
+  }
+
   SetItems(m_peripherals);
 }

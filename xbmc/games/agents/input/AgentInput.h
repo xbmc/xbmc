@@ -98,6 +98,13 @@ public:
   float GetGamePortActivation(const std::string& address) const;
   float GetPeripheralActivation(const std::string& peripheralLocation) const;
 
+  /*!
+   * \brief Get the peripherals controlling the game's joysticks
+   *
+   * \return The peripherals in player order, with nullptr for players without one
+   */
+  PERIPHERALS::PeripheralVector GetPlayerPeripherals() const;
+
 private:
   //! @todo De-duplicate these types
   using PortAddress = std::string;
@@ -155,6 +162,7 @@ private:
   int m_initialMouseX{-1};
   int m_initialMouseY{-1};
   std::vector<std::shared_ptr<CAgentController>> m_controllers;
+  PERIPHERALS::PeripheralVector m_playerPeripherals; // In player order, nullptr for an empty port
 
   // Synchronization parameters
   mutable std::mutex m_controllerMutex;
