@@ -23,13 +23,19 @@ namespace JSONRPC
   class CFileOperations : public CFileItemHandler
   {
   public:
-    static JSONRPC_STATUS GetRootDirectory(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetDirectory(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS GetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetRootDirectory(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetDirectory(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS GetFileDetails(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetFileDetails(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS PrepareDownload(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Download(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS PrepareDownload(ITransportLayer* transport,
+                                          IClient* client,
+                                          const CVariant& parameterObject,
+                                          CVariant& result);
+    static JSONRPC_STATUS Download(ITransportLayer* transport,
+                                   IClient* client,
+                                   const CVariant& parameterObject,
+                                   CVariant& result);
 
     static bool FillFileItem(
         const std::shared_ptr<CFileItem>& originalItem,

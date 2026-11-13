@@ -124,7 +124,8 @@ void OverlayCurrentSongTag(CFileItem& item)
 
 } // namespace
 
-JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const CVariant& parameterObject,
+                                                   CVariant& result)
 {
   int activePlayers = GetActivePlayers();
   result = CVariant(CVariant::VariantTypeArray);
@@ -163,7 +164,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GetPlayers(const CVariant& parameterObject, CVariant& result)
 {
   const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
 
@@ -198,7 +199,7 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GetProperties(const CVariant& parameterObject, CVariant& result)
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
 
@@ -219,7 +220,7 @@ JSONRPC_STATUS CPlayerOperations::GetProperties(const std::string &method, ITran
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GetItem(const CVariant& parameterObject, CVariant& result)
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
   CFileItemPtr fileItem;
@@ -350,7 +351,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::PlayPause(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -399,7 +400,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::Stop(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Stop(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -419,11 +420,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const std::string &method, ITransportLaye
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::GetAudioDelay(const std::string& method,
-                                                ITransportLayer* transport,
-                                                IClient* client,
-                                                const CVariant& parameterObject,
-                                                CVariant& result)
+JSONRPC_STATUS CPlayerOperations::GetAudioDelay(const CVariant& parameterObject, CVariant& result)
 {
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -431,10 +428,7 @@ JSONRPC_STATUS CPlayerOperations::GetAudioDelay(const std::string& method,
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::NotifyAudioChainReady(const std::string& method,
-                                                        ITransportLayer* transport,
-                                                        IClient* client,
-                                                        const CVariant& parameterObject,
+JSONRPC_STATUS CPlayerOperations::NotifyAudioChainReady(const CVariant& parameterObject,
                                                         CVariant& result)
 {
   auto& components = CServiceBroker::GetAppComponents();
@@ -442,11 +436,7 @@ JSONRPC_STATUS CPlayerOperations::NotifyAudioChainReady(const std::string& metho
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetAudioDelay(const std::string& method,
-                                                ITransportLayer* transport,
-                                                IClient* client,
-                                                const CVariant& parameterObject,
-                                                CVariant& result)
+JSONRPC_STATUS CPlayerOperations::SetAudioDelay(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -502,7 +492,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioDelay(const std::string& method,
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::SetSpeed(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetSpeed(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -545,11 +535,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const std::string &method, ITransport
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::SetTempo(const std::string& method,
-                                           ITransportLayer* transport,
-                                           IClient* client,
-                                           const CVariant& parameterObject,
-                                           CVariant& result)
+JSONRPC_STATUS CPlayerOperations::SetTempo(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -612,7 +598,7 @@ void HandleResumeOption(const CVariant& optionResume, CFileItem& item)
 }
 } // unnamed namespace
 
-JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Seek(const CVariant& parameterObject, CVariant& result)
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
   switch (player)
@@ -662,7 +648,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::Move(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Move(const CVariant& parameterObject, CVariant& result)
 {
   std::string direction = parameterObject["direction"].asString();
   switch (GetPlayer(parameterObject["playerid"]))
@@ -702,7 +688,7 @@ JSONRPC_STATUS CPlayerOperations::Move(const std::string &method, ITransportLaye
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::Zoom(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Zoom(const CVariant& parameterObject, CVariant& result)
 {
   CVariant zoom = parameterObject["zoom"];
   switch (GetPlayer(parameterObject["playerid"]))
@@ -785,7 +771,7 @@ void GetNewValueForViewModeParameter(const CVariant &parameter, float stepSize, 
   result = std::max(minValue, std::min(result, maxValue));
 }
 
-JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetViewMode(const CVariant& parameterObject, CVariant& result)
 {
   JSONRPC_STATUS jsonStatus = InvalidParams;
   // init with current values from settings
@@ -848,7 +834,7 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
   return jsonStatus;
 }
 
-JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GetViewMode(const CVariant& parameterObject, CVariant& result)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -864,7 +850,7 @@ JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransp
   return OK;
 }
 
-JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Rotate(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -883,7 +869,7 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLa
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Open(const CVariant& parameterObject, CVariant& result)
 {
   CVariant options = parameterObject["options"];
   CVariant optionShuffled = options["shuffled"];
@@ -1142,7 +1128,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   return InvalidParams;
 }
 
-JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::GoTo(const CVariant& parameterObject, CVariant& result)
 {
   CVariant to = parameterObject["to"];
   switch (GetPlayer(parameterObject["playerid"]))
@@ -1205,7 +1191,7 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetShuffle(const CVariant& parameterObject, CVariant& result)
 {
   CVariant shuffle = parameterObject["shuffle"];
   switch (GetPlayer(parameterObject["playerid"]))
@@ -1266,7 +1252,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetRepeat(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -1305,7 +1291,7 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetPartymode(const CVariant& parameterObject, CVariant& result)
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
   switch (player)
@@ -1359,7 +1345,7 @@ JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITrans
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetAudioStream(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -1410,7 +1396,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::AddSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::AddSubtitle(const CVariant& parameterObject, CVariant& result)
 {
   if (GetPlayer(parameterObject["playerid"]) != Video)
     return FailedToExecute;
@@ -1429,7 +1415,7 @@ JSONRPC_STATUS CPlayerOperations::AddSubtitle(const std::string &method, ITransp
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetSubtitle(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetSubtitle(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -1494,7 +1480,7 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const std::string &method, ITransp
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::SetVideoStream(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetVideoStream(const CVariant& parameterObject, CVariant& result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
@@ -2331,11 +2317,7 @@ std::shared_ptr<CPVREpgInfoTag> CPlayerOperations::GetCurrentEpg()
   return currentChannel->GetEPGNow();
 }
 
-JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method,
-                                              ITransportLayer* transport,
-                                              IClient* client,
-                                              const CVariant& parameterObject,
-                                              CVariant& result)
+JSONRPC_STATUS CPlayerOperations::GetChapters(const CVariant& parameterObject, CVariant& result)
 {
   // Return the chapters list of the running video or empty list if none
   switch (GetPlayer(parameterObject["playerid"]))

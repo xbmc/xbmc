@@ -112,13 +112,40 @@ inline const JsonRpcStatusDescription* StatusToDescription(JSONRPC_STATUS status
 }
 
 /*!
- \brief Function pointer for JSON-RPC methods
+ \brief The handler of a JSON-RPC method
+
+ A handler takes the validated parameters and fills in the result. The few that answer
+ differently depending on who is asking also take the transport and the client.
  */
-typedef JSONRPC_STATUS (*MethodCall)(const std::string& method,
-                                     ITransportLayer* transport,
-                                     IClient* client,
-                                     const CVariant& parameterObject,
-                                     CVariant& result);
+class MethodCall
+{
+public:
+  using Handler = JSONRPC_STATUS (*)(const CVariant& parameterObject, CVariant& result);
+  using CallerHandler = JSONRPC_STATUS (*)(ITransportLayer* transport,
+                                           IClient* client,
+                                           const CVariant& parameterObject,
+                                           CVariant& result);
+
+  constexpr MethodCall() = default;
+  constexpr MethodCall(Handler handler) : m_handler(handler) {}
+  constexpr MethodCall(CallerHandler handler) : m_callerHandler(handler) {}
+
+  explicit operator bool() const { return m_handler != nullptr || m_callerHandler != nullptr; }
+
+  JSONRPC_STATUS operator()(ITransportLayer* transport,
+                            IClient* client,
+                            const CVariant& parameterObject,
+                            CVariant& result) const
+  {
+    if (m_handler)
+      return m_handler(parameterObject, result);
+    return m_callerHandler(transport, client, parameterObject, result);
+  }
+
+private:
+  Handler m_handler = nullptr;
+  CallerHandler m_callerHandler = nullptr;
+};
 
 /*!
  \ingroup jsonrpc

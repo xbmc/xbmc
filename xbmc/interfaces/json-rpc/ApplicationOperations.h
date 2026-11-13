@@ -18,12 +18,13 @@ namespace JSONRPC
   class CApplicationOperations : CFileItemHandler
   {
   public:
-    static JSONRPC_STATUS GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetProperties(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS SetVolume(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS SetMute(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS SetVolume(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS SetMute(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Quit(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Quit(const CVariant& parameterObject, CVariant& result);
+
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
   };

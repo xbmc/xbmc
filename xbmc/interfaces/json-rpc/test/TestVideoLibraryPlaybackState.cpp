@@ -220,8 +220,7 @@ TEST_F(TestVideoLibrarySetDetails, ClearingLastPlayedOfAWatchedMovieIsRefused)
 {
   CVariant result;
   EXPECT_EQ(InvalidParams,
-            CVideoLibrary::SetMovieDetails("VideoLibrary.SetMovieDetails", nullptr, nullptr,
-                                           Params("movieid", AddMovie(2), ABSENT), result));
+            CVideoLibrary::SetMovieDetails(Params("movieid", AddMovie(2), ABSENT), result));
 
   ExpectPlayed("movie.mkv", 2, LAST_PLAYED);
   CVideoInfoTag movie;
@@ -233,8 +232,7 @@ TEST_F(TestVideoLibrarySetDetails, MarkingAMovieWatchedWithNoLastPlayedIsRefused
 {
   CVariant result;
   EXPECT_EQ(InvalidParams,
-            CVideoLibrary::SetMovieDetails("VideoLibrary.SetMovieDetails", nullptr, nullptr,
-                                           Params("movieid", AddMovie(0), 1), result));
+            CVideoLibrary::SetMovieDetails(Params("movieid", AddMovie(0), 1), result));
 
   ExpectPlayed("movie.mkv", 0, LAST_PLAYED);
 }
@@ -242,8 +240,7 @@ TEST_F(TestVideoLibrarySetDetails, MarkingAMovieWatchedWithNoLastPlayedIsRefused
 TEST_F(TestVideoLibrarySetDetails, ClearingAMovieWithPlaycountZeroClearsBoth)
 {
   CVariant result;
-  EXPECT_EQ(ACK, CVideoLibrary::SetMovieDetails("VideoLibrary.SetMovieDetails", nullptr, nullptr,
-                                                Params("movieid", AddMovie(2), 0), result));
+  EXPECT_EQ(ACK, CVideoLibrary::SetMovieDetails(Params("movieid", AddMovie(2), 0), result));
 
   ExpectPlayed("movie.mkv", 0, nullptr);
 }
@@ -253,8 +250,7 @@ TEST_F(TestVideoLibrarySetDetails, ClearingLastPlayedOfAWatchedEpisodeIsRefused)
   AddShow(2, 0);
   CVariant result;
   EXPECT_EQ(InvalidParams,
-            CVideoLibrary::SetEpisodeDetails("VideoLibrary.SetEpisodeDetails", nullptr, nullptr,
-                                             Params("episodeid", m_episodeId, ABSENT), result));
+            CVideoLibrary::SetEpisodeDetails(Params("episodeid", m_episodeId, ABSENT), result));
 
   ExpectPlayed("episode1.mkv", 2, LAST_PLAYED);
   CVideoInfoTag episode;
@@ -266,7 +262,6 @@ TEST_F(TestVideoLibrarySetDetails, ClearingLastPlayedOfAWatchedMusicVideoIsRefus
 {
   CVariant result;
   EXPECT_EQ(InvalidParams, CVideoLibrary::SetMusicVideoDetails(
-                               "VideoLibrary.SetMusicVideoDetails", nullptr, nullptr,
                                Params("musicvideoid", AddMusicVideo(2), ABSENT), result));
 
   ExpectPlayed("musicvideo.mkv", 2, LAST_PLAYED);
@@ -279,8 +274,7 @@ TEST_F(TestVideoLibrarySetDetails, ClearingLastPlayedOfAShowWithAWatchedEpisodeI
 {
   CVariant result;
   EXPECT_EQ(InvalidParams,
-            CVideoLibrary::SetTVShowDetails("VideoLibrary.SetTVShowDetails", nullptr, nullptr,
-                                            Params("tvshowid", AddShow(2, 0), ABSENT), result));
+            CVideoLibrary::SetTVShowDetails(Params("tvshowid", AddShow(2, 0), ABSENT), result));
 
   ExpectPlayed("episode1.mkv", 2, LAST_PLAYED);
   ExpectPlayed("episode2.mkv", 0, LAST_PLAYED);
@@ -292,8 +286,7 @@ TEST_F(TestVideoLibrarySetDetails, ClearingLastPlayedOfAShowWithAWatchedEpisodeI
 TEST_F(TestVideoLibrarySetDetails, ClearingAShowWithPlaycountZeroClearsEveryEpisode)
 {
   CVariant result;
-  EXPECT_EQ(ACK, CVideoLibrary::SetTVShowDetails("VideoLibrary.SetTVShowDetails", nullptr, nullptr,
-                                                 Params("tvshowid", AddShow(2, 1), 0), result));
+  EXPECT_EQ(ACK, CVideoLibrary::SetTVShowDetails(Params("tvshowid", AddShow(2, 1), 0), result));
 
   ExpectPlayed("episode1.mkv", 0, nullptr);
   ExpectPlayed("episode2.mkv", 0, nullptr);
