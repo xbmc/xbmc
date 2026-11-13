@@ -682,6 +682,21 @@ void CPVRPlaybackState::SetActiveChannelGroup(
   SetActiveChannelGroup(group);
 }
 
+bool CPVRPlaybackState::RestorePlayingChannelGroup()
+{
+  const std::shared_ptr<CPVRChannelGroupMember> playingMember{GetPlayingChannelGroupMember()};
+  if (!playingMember)
+    return false;
+
+  const std::shared_ptr<const CPVRChannelGroup> activeGroup{
+      GetActiveChannelGroup(playingMember->IsRadio())};
+  if (activeGroup && activeGroup->GroupID() == playingMember->GroupID())
+    return false;
+
+  SetActiveChannelGroup(playingMember);
+  return true;
+}
+
 std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetActiveChannelGroup(bool bRadio) const
 {
   if (bRadio)

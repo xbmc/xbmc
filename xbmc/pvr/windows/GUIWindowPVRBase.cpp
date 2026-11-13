@@ -295,7 +295,9 @@ void CGUIWindowPVRBase::OnInitWindow()
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
 {
   HideProgressDialog();
-  UpdateSelectedItemPath();
+  // Group was switched without selecting one of its channels.
+  if (!CServiceBroker::GetPVRManager().PlaybackState()->RestorePlayingChannelGroup())
+    UpdateSelectedItemPath();
   CGUIMediaWindow::OnDeinitWindow(nextWindowID);
 }
 
