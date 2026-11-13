@@ -195,6 +195,11 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath, const Scrape
    * This call is expensive as it encodes the NFO file into a URL param
    * and executes a python interpreter for each installed python scraper.
   */
+  // What an nfo holds depends on the content its scraper reads, as embedded art is looked for
+  // without one
+  if (!info)
+    return CInfoScanner::InfoType::NONE;
+
   const CInfoScanner::InfoType result = TryParsing(CURL{nfoPath}, info->Content());
   if (result == CInfoScanner::InfoType::ERROR_NFO)
     return CInfoScanner::InfoType::NONE;
