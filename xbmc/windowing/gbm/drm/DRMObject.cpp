@@ -172,7 +172,7 @@ std::optional<bool> CDRMObject::IsPropertyImmutable(std::string_view name) const
   if (property == m_propsInfo.end())
     return {};
 
-  return static_cast<bool>(drm_property_type_is(property->get(), DRM_MODE_PROP_IMMUTABLE));
+  return (property->get()->flags & DRM_MODE_PROP_IMMUTABLE) != 0;
 }
 
 bool CDRMObject::SupportsProperty(std::string_view name)
