@@ -100,10 +100,155 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcaddon
-      /// @brief \python_func{ xbmcaddon.Addon([id]).getSettings() }
+      /// @brief \python_func{ xbmcaddon.Addon([id]).supportsInstanceSettings() }
+      /// Returns true if the requested add-on supports several instances.
+      ///
+      /// @return Returns true if supported, false otherwise
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// supportsInstances = self.Addon('pvr.iptvsimple').supportsInstanceSettings()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      supportsInstanceSettings();
+#else
+      bool supportsInstanceSettings();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getInstanceIds() }
+      /// Returns the list of known available instance ids.
+      ///
+      /// @return List of used add-on instances
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// usedInstances = self.Addon('pvr.iptvsimple').getInstanceIds()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getInstanceIds();
+#else
+      std::vector<unsigned int> getInstanceIds();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getFreeNewInstanceId() }
+      /// Get free add-on instance id to set new independent instance and settings about.
+      ///
+      /// @note After setting the new instance settings a @ref setInstanceState() call is required.
+      ///
+      /// @return Next usable and free instance id
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// addon = xbmcaddon.Addon('pvr.iptvsimple')
+      /// newinstanceid = addon.getFreeNewInstanceId()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getFreeNewInstanceId();
+#else
+      unsigned int getFreeNewInstanceId();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).setInstanceState(id, enabled, [name]) }
+      /// Set changed state on add-on instance system.
+      ///
+      /// @param instance unsigned integer - Instance identifier to use.
+      /// @param enabled boolean - To enable or disable the instance
+      /// @param name [opt] string or unicode - The instance name used inside Kodi
+      ///             @warning Needs on new added instances set.
+      /// @return True if the setting the instance change was successful, false otherwise
+      ///
+      /// @note To add or Enable/Disable an instance this function needs to be called.
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      ///
+      /// addon = xbmcaddon.Addon('pvr.iptvsimple')
+      /// newinstanceid = addon.getFreeNewInstanceId()
+      ///
+      /// settings = addon.getSettings(newinstanceid)
+      /// settings.setInt('m3uPathType', 0)
+      /// settings.setString('m3uPath', '/SOME_PATH_OF_YOU')
+      /// ...
+      /// addon.setInstanceState(newinstanceid, True, 'Example by Python added')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setInstanceState(...);
+#else
+      bool setInstanceState(unsigned int instance, bool enabled, const String& name = emptyString);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).deleteInstance(id) }
+      /// Delete selected instance settings from storage.
+      ///
+      /// @param instance unsigned integer - Instance identifier to use.
+      /// @return true on success, false otherwise.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// instance = 1;
+      /// self.Addon('pvr.iptvsimple').deleteInstance(instance)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      deleteInstance(...);
+#else
+      bool deleteInstance(unsigned int instance);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getSettings([instance]) }
       /// Returns a wrapper around the addon's settings.
       ///
-      /// @return                        @ref python_settings wrapper
+      /// @param instance [opt] unsigned integer - used id of the requested add-on instance setting
+      ///                 @note use 0 to access regular settings.xml.
+      /// @return @ref python_settings wrapper
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -119,7 +264,7 @@ namespace XBMCAddon
       ///
       getSettings(...);
 #else
-      Settings* getSettings();
+      Settings* getSettings(unsigned int instance = 0);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -427,8 +572,12 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcaddon
-      /// @brief \python_func{ xbmcaddon.Addon([id]).openSettings() }
+      /// @brief \python_func{ xbmcaddon.Addon([id]).openSettings([instance]) }
       /// Opens this scripts settings dialog.
+      ///
+      /// @param instance [opt] unsigned integer - used id of the requested add-on instance setting
+      ///                 @note use 0 to access regular settings.xml.
+      ///
       ///
       ///-----------------------------------------------------------------------
       ///
@@ -441,7 +590,7 @@ namespace XBMCAddon
       ///
       openSettings();
 #else
-      void openSettings();
+      void openSettings(unsigned int instance = 0);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
