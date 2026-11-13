@@ -48,6 +48,24 @@ std::vector<uint8_t> UnknownExtension()
   return ext;
 }
 
+//! A DTS-HD MA extension at peak bit rate, where an XLL frame straddles the substream frame: the
+//! word after the header is XLL payload, here one that happens to read as the XCH sync.
+std::vector<uint8_t> StraddlingExtension()
+{
+  std::vector<uint8_t> ext = HdExtension();
+  const uint8_t xchLookalike[] = {0x5A, 0x5A, 0x5A, 0x5A};
+  std::copy(std::begin(xchLookalike), std::end(xchLookalike), ext.begin() + 16);
+  return ext;
+}
+
+std::vector<uint8_t> StraddlingFrame()
+{
+  std::vector<uint8_t> frame = CoreFrame();
+  const std::vector<uint8_t> ext = StraddlingExtension();
+  frame.insert(frame.end(), ext.begin(), ext.end());
+  return frame;
+}
+
 std::vector<uint8_t> MaFrame()
 {
   std::vector<uint8_t> frame = CoreFrame();
@@ -62,9 +80,12 @@ void Append(std::vector<uint8_t>& stream, const std::vector<uint8_t>& bytes)
 }
 
 //! The type the parser reported for every frame it handed out, fed at most \p chunk bytes a call.
-std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream, size_t chunk = SIZE_MAX)
+std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream,
+                                           size_t chunk = SIZE_MAX,
+                                           bool knownMa = false)
 {
   CAEStreamParser parser;
+  parser.SetDTSHDMA(knownMa);
   std::vector<CAEStreamInfo::DataType> types;
   size_t pos = 0;
   while (pos < stream.size())
@@ -153,4 +174,51 @@ TEST(TestAEStreamParser, ACoreOnlyStreamIsStillDts)
   ASSERT_FALSE(types.empty());
   for (const CAEStreamInfo::DataType type : types)
     EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTS_512, type);
+}
+
+//! At peak bit rate the word after an MA extension header can be XLL payload that reads as the XCH
+//! sync. Taking such frames as DTS-HD HRA packs 8320-byte MA frames into 8192-byte HRA bursts.
+TEST(TestAEStreamParser, AnMaStreamStaysMaThroughXllPayloadThatLooksLikeXch)
+{
+  std::vector<uint8_t> stream = MaFrame();
+  for (int i = 0; i < 4; ++i)
+    Append(stream, StraddlingFrame());
+  Append(stream, MaFrame());
+
+  // One frame per call, as the demuxer delivers them.
+  const std::vector<CAEStreamInfo::DataType> types = Parse(stream, CORE_SIZE + HD_SIZE);
+
+  ASSERT_EQ(6u, types.size());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
+}
+
+//! A resume or chapter jump can start inside a straddling run, before any XLL sync is seen. The
+//! codec knows the stream is MA from the demuxer's profile and tells the parser.
+TEST(TestAEStreamParser, AKnownMaStreamStartingInsideAStraddlingRunIsMa)
+{
+  std::vector<uint8_t> stream;
+  for (int i = 0; i < 4; ++i)
+    Append(stream, StraddlingFrame());
+  Append(stream, MaFrame());
+
+  const std::vector<CAEStreamInfo::DataType> types = Parse(stream, CORE_SIZE + HD_SIZE, true);
+
+  ASSERT_EQ(5u, types.size());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
+}
+
+//! The MA latch must not catch a real DTS-HD HRA stream, which never carries an XLL sync.
+TEST(TestAEStreamParser, ADtsHdHraStreamIsStillHra)
+{
+  std::vector<uint8_t> stream;
+  for (int i = 0; i < 4; ++i)
+    Append(stream, StraddlingFrame());
+
+  const std::vector<CAEStreamInfo::DataType> types = Parse(stream, CORE_SIZE + HD_SIZE);
+
+  ASSERT_EQ(4u, types.size());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD, type);
 }

@@ -1,4 +1,5 @@
 set(SOURCES TestAEBitstreamPacker.cpp
+            TestAEPackIEC61937.cpp
             TestAEStreamParser.cpp
             TestPackerMAT.cpp)
 

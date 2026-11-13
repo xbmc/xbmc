@@ -48,6 +48,7 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   m_parser.SetCoreOnly(false);
+  m_parser.SetDTSHDMA(m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
