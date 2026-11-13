@@ -266,5 +266,8 @@ namespace OVERLAY {
     // to detect arrival/disappearance transitions (image/SPU have no
     // per-frame change signal of their own, unlike libass detect_change).
     bool m_prevHadImageSpu{false};
+    // The image/SPU overlays of the last prepared frame. A disc menu can drop some of its
+    // images and keep the others, which adds no new overlay.
+    std::vector<const CDVDOverlay*> m_prevImageSpu;
   };
 }
