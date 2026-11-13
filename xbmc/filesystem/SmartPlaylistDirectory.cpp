@@ -30,6 +30,7 @@
 #include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 
+#include <algorithm>
 #include <memory>
 
 #define PROPERTY_PATH_DB            "path.db"
@@ -294,22 +295,30 @@ namespace XFILE
       items.SetProperty(PROPERTY_GROUP_MIXED, playlist.IsGroupMixed());
     }
 
-    // sort grouped list by label unless random was specified for musicvideo artists
-    if (items.Size() > 1 && !group.empty())
+    // The database can't order the groups of a grouped list by the order of the playlist. So sort
+    // them by label, or randomly if the playlist asks for it. A limit only has a meaning for
+    // a random list, and the database doesn't apply it to every kind of group, so apply it here.
+    // A playlist with a group setting that is not applied ("none" or a mixed group) is not grouped,
+    // so the order of the database is kept, unless the playlist has no order.
+    if (items.Size() > 1 && (isGrouped || (!group.empty() && playlist.GetOrder() == SortBy::NONE)))
     {
-      if (playlist.GetOrder() == SortBy::RANDOM && group == "actors" &&
-          playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS)
-        items.Sort(SortBy::RANDOM, SortOrder::ASCENDING,
-                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                       CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
-                       ? SortAttributeIgnoreArticle
-                       : SortAttributeNone);
-      else
-        items.Sort(SortBy::LABEL, SortOrder::ASCENDING,
-                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                       CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
-                       ? SortAttributeIgnoreArticle
-                       : SortAttributeNone);
+      items.Sort(playlist.GetOrder() == SortBy::RANDOM ? SortBy::RANDOM : SortBy::LABEL,
+                 SortOrder::ASCENDING,
+                 CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                     CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                     ? SortAttributeIgnoreArticle
+                     : SortAttributeNone);
+
+      if (isGrouped && playlist.GetOrder() == SortBy::RANDOM && playlist.GetLimit() > 0)
+      {
+        // Virtual folders are sorted on top and don't count. The database can discard them,
+        // e.g. when grouping movies by sets, so count the ones that are left.
+        const size_t numOnTop = static_cast<size_t>(std::count_if(
+            items.begin(), items.end(), [](const auto& item) { return item->SortsOnTop(); }));
+        const size_t maxItems = numOnTop + playlist.GetLimit();
+        while (static_cast<size_t>(items.Size()) > maxItems)
+          items.Remove(items.Size() - 1);
+      }
     }
 
     if (auto watchedMode = playlist.GetWatchedMode(); watchedMode.has_value())

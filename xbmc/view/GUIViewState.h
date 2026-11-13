@@ -78,6 +78,20 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList& items, const LABEL_MASKS& label_masks);
 
+  /*! \brief Get the sort order defined in a smartplaylist
+   \param items the list of items for the view state.
+   \return the sort order defined in the smartplaylist, SortBy::NONE if there is none.
+   */
+  static SortBy GetPlaylistSortBy(const CFileItemList& items);
+
+  /*! \brief Add the sort order of a smartplaylist if it is random
+   The views of lists that are not specific to playlists, e.g. the groups of a grouped
+   smartplaylist, would sort the list by label and so discard a random order.
+   \param items the list of items for the view state.
+   \param label_masks the label masks for formatting items.
+   */
+  void AddRandomPlaylistOrder(const CFileItemList& items, const LABEL_MASKS& label_masks);
+
   void AddSortMethod(SortBy sortBy,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks,
