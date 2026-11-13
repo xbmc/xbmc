@@ -12,6 +12,8 @@ in vec2 v_tex;
 out vec4 fragColor;
 uniform sampler2D u_samp;
 uniform float u_sdrPeak; // SDR peak in normalized PQ (e.g. 100/10000 = 0.01)
+uniform float u_ootfGamma; // HLG: OOTF gamma (1.2 for BT.2100 1000-nit ref)
+                           // PQ: 0.0
 
 // ST2084 (PQ) constants
 const float ST2084_m1 = 0.1593017578125;   // 2610/16384
@@ -51,19 +53,47 @@ void main()
   // BT.709 -> BT.2020 gamut mapping
   linear = bt709_to_bt2020 * linear;
 
-  // scale to PQ luminance range: SDR content at u_sdrPeak of 10000 nits
-  linear *= u_sdrPeak;
+  vec3 result;
 
-  // linear -> PQ
-  vec3 pq = forwardPQ(linear);
+  if (u_ootfGamma > 0.0)
+  {
+    // HLG path: direct computation following libplacebo pl_color_delinearize.
+    // BT.2100 reference display: 1000 nits. GUI white (linear 1.0) = 203 nits
+    // (BT.2408 reference white) should map to 75% HLG signal.
+    //
+    // Step 1: normalize to display-peak-relative units
+    // Step 2: inverse OOTF with 12x prescale for OETF input domain
+    // Step 3: HLG OETF (ARIB STD-B67) piecewise: sqrt for <=1, log for >1
+    const float csp_max = 1000.0 / 203.0; // display peak in ref-white units
+    const float HLG_A = 0.17883277;
+    const float HLG_B = 0.28466892;
+    const float HLG_C = 0.55991073;
+
+    vec3 scene = linear / csp_max;
+    float Y = dot(scene, vec3(0.2627, 0.6780, 0.0593));
+    scene *= 12.0 * pow(max(1e-6, Y), (1.0 - u_ootfGamma) / u_ootfGamma);
+
+    // HLG OETF piecewise (threshold at scene-light 1.0)
+    vec3 lo = vec3(0.5) * sqrt(max(scene, vec3(0.0)));
+    vec3 hi = vec3(HLG_A) * log(max(scene - vec3(HLG_B), vec3(1e-6))) + vec3(HLG_C);
+    result = mix(lo, hi, step(vec3(1.0), scene));
+  }
+  else
+  {
+    // scale to PQ luminance range: SDR content at u_sdrPeak of 10000 nits
+    linear *= u_sdrPeak;
+
+    // linear -> PQ
+    result = forwardPQ(linear);
+  }
 
   // Limited-range encoding at the BO write boundary. Canonical normalized
   // ratios (bit-depth-agnostic in float space; BO write quantizes to the
   // active surface bit depth).
 #ifdef KODI_LIMITED_RANGE
-  pq = pq * ((235.0 - 16.0) / 255.0) + (16.0 / 255.0);
+  result = result * ((235.0 - 16.0) / 255.0) + (16.0 / 255.0);
 #endif
 
-  // The FBO holds coverage; squaring it compensates for PQ blending and keeps opaque GUI opaque.
-  fragColor = vec4(pq, gui.a * gui.a);
+  // The FBO holds coverage; squaring compensates for PQ/HLG blending and keeps opaque GUI opaque.
+  fragColor = vec4(result, gui.a * gui.a);
 }
