@@ -1701,6 +1701,20 @@ bool CApplication::Stop(int exitCode)
   const auto appPlayer = GetComponent<CApplicationPlayer>();
   appPlayer->ClosePlayer();
 
+  // the stop message is no longer processed, so notify its listeners here
+  static constexpr std::array playbackStopped{GUI_MSG_PLAYBACK_STOPPED, 0};
+  if (CGUIComponent* gui = CServiceBroker::GetGUI();
+      gui && gui->GetWindowManager().RemoveThreadMessageByMessageIds(playbackStopped.data()) > 0)
+  {
+    CVariant data(CVariant::VariantTypeObject);
+    data["end"] = false;
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
+                                                       CurrentFileItemPtr(), data);
+#ifdef HAS_PYTHON
+    CServiceBroker::GetXBPython().OnPlayBackStopped();
+#endif
+  }
+
   {
     // close inbound port
     CServiceBroker::UnregisterAppPort();
