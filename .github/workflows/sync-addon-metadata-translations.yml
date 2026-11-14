@@ -35,18 +35,18 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           path: project
 
       - name: Checkout sync_addon_metadata_translations repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           repository: xbmc/sync_addon_metadata_translations
           path: sync_addon_metadata_translations
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -65,7 +65,7 @@ jobs:
         working-directory: ./project/addons
 
       - name: Create PR for sync-addon-metadata-translations changes
-        uses: peter-evans/create-pull-request@v3.10.0
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: Sync of addon metadata translations
           title: Sync of addon metadata translations
