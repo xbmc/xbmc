@@ -407,6 +407,24 @@ TEST_F(TestVideoInfoScannerArt, EachOfSeveralIsosInAFolderHasOnlyTheArtNamedAfte
   EXPECT_EQ("", posterOf("D"));
 }
 
+// The art named for the movie wins over the folder's plain art, whichever the folder lists first:
+// here, in a listing in name order, the plain art comes last
+TEST_F(TestVideoInfoScannerArt, AMovieInAFolderOfItsOwnPrefersItsOwnPoster)
+{
+  const std::string folder{Folder(m_root, "M3GAN")};
+  File(folder, "M3GAN.mkv");
+  File(folder, "M3GAN.nfo", "<movie><title>M3GAN</title></movie>");
+  const std::string poster{File(folder, "M3GAN-poster.jpg")};
+  File(folder, "poster.jpg");
+  const std::string fanart{File(folder, "fanart.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(poster, MovieArt("poster"));
+  EXPECT_EQ(fanart, MovieArt("fanart"));
+}
+
 // A disc without versions has the plain art beside BDMV, and none named for a version
 TEST_F(TestVideoInfoScannerArt, ABlurayRipWithoutVersionsHasThePlainArtBesideBDMV)
 {

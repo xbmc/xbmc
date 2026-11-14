@@ -78,7 +78,8 @@ std::string GetLocalFanart(const CFileItem& item);
  \param itemPath path of the item whose folder is searched
  \param addAll whether to take any valid art type found, rather than only those wanted
  \param exactName whether an art type has to match a wanted one exactly
- \param isInFolder whether the item is alone in its folder, so unprefixed art belongs to it
+ \param isInFolder whether the item is alone in its folder, so unprefixed art belongs to it. Art
+ named for the item wins over it.
  \sa GetLocalArtBaseFilename
  */
 void AddLocalItemArtwork(Artwork& itemArt,
