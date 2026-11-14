@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/windows/DolbyVisionEffect.h"
+#include "cores/VideoPlayer/VideoRenderers/windows/RendererShaders.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -35,15 +36,7 @@ EINTERLACEMETHOD CProcessInfoWin10::GetFallbackDeintMethod()
 
 std::vector<AVPixelFormat> CProcessInfoWin10::GetRenderFormats()
 {
-  return {
-    AV_PIX_FMT_D3D11VA_VLD,
-    AV_PIX_FMT_NV12,
-    AV_PIX_FMT_YUV420P,
-    AV_PIX_FMT_P010,
-    AV_PIX_FMT_YUV420P10,
-    AV_PIX_FMT_P016,
-    AV_PIX_FMT_YUV420P16
-  };
+  return CRendererShaders::GetRenderFormats();
 }
 
 bool CProcessInfoWin10::WantsDolbyVisionRpu()

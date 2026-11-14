@@ -104,6 +104,14 @@ extern "C"
     /// X in the high 16 bits. Matches DRM_FORMAT_XRGB16161616F. HDR float path.
     VIDEOCODEC_FORMAT_XRGB16161616F,
 
+    /// @brief Planar RGB 4:4:4 8-bit, three full size planes in G, B, R order.
+    /// Matches AV_PIX_FMT_GBRP.
+    VIDEOCODEC_FORMAT_GBRP,
+    /// @brief Planar RGB 4:4:4 10-bit in 16-bit samples. Matches AV_PIX_FMT_GBRP10.
+    VIDEOCODEC_FORMAT_GBRP10,
+    /// @brief Planar RGB 4:4:4 12-bit in 16-bit samples. Matches AV_PIX_FMT_GBRP12.
+    VIDEOCODEC_FORMAT_GBRP12,
+
     /// @brief The maximum value to use in a list.
     VIDEOCODEC_FORMAT_MAXFORMATS
   };
