@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DebugInfo.h"
+#include "DebugThreadUsage.h"
 #include "OverlayRenderer.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesAdapter.h"
@@ -45,6 +46,7 @@ protected:
   };
 
   CRenderer m_overlayRenderer;
+  CDebugThreadUsage m_threadUsage;
 
 private:
   CSubtitlesAdapter* m_adapter{nullptr};

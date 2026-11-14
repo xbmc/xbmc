@@ -8,8 +8,11 @@
 
 #include "DebugRenderer.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/log.h"
 
@@ -80,6 +83,19 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
   m_adapter->AddSubtitle(info.audio, 0., 5000000.);
   m_adapter->AddSubtitle(info.video, 0., 5000000.);
   m_adapter->AddSubtitle(info.player, 0., 5000000.);
+
+  const auto& advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (advancedSettings->m_videoDebugThreads)
+  {
+    const std::string& threadUsage =
+        m_threadUsage.GetSummary(advancedSettings->m_videoDebugThreadsCount);
+    if (!threadUsage.empty())
+    {
+      std::string threads = "Threads: " + threadUsage;
+      m_adapter->AddSubtitle(threads, 0., 5000000.);
+    }
+  }
+
   m_adapter->AddSubtitle(info.vsync, 0., 5000000.);
   if (!info.contentGeometry.empty())
     m_adapter->AddSubtitle(info.contentGeometry, 0., 5000000.);

@@ -32,6 +32,13 @@ enum CpuFeature
   CPU_FEATURE_NEON = 1 << 11,
 };
 
+struct ThreadCpuTime
+{
+  int id = 0;
+  std::string name;
+  double seconds = 0.0; //!< CPU time used since the thread started
+};
+
 struct CoreInfo
 {
   int m_id = 0;
@@ -77,6 +84,8 @@ public:
   static std::shared_ptr<CCPUInfo> GetCPUInfo();
 
   virtual bool SupportsCPUUsage() const { return true; }
+  //! CPU time used by each of Kodi's threads, empty where the platform cannot tell
+  virtual std::vector<ThreadCpuTime> GetThreadCpuTimes() { return {}; }
 
   virtual int GetUsedPercentage() = 0;
   virtual float GetCPUFrequency() = 0;
