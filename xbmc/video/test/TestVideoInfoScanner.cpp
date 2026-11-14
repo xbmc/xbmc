@@ -882,6 +882,70 @@ TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
 }
 #endif
 
+// A bluray's streams are read from its playlist as the scan chooses it, so the disc isn't probed.
+// Its subtitles are looked for all the same, as the player looks for them: beside the folder
+// holding the disc, named by that folder.
+TEST_F(TestVideoInfoScanner, ABlurayRipHasTheSubtitleBesideIt)
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string disc{BlurayRip(folder)};
+  File(folder, "Film (2010).en.srt", "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+  // The disc's main playlist, with the streams the scan has read from it
+  const auto playlist{std::make_shared<CFileItem>(URIUtils::GetBlurayPlaylistPath(disc, 0), false)};
+  playlist->GetVideoInfoTag()->SetTitle("Film");
+  auto* video{new CStreamDetailVideo()};
+  video->m_iWidth = 1920;
+  playlist->GetVideoInfoTag()->m_streamDetails.AddStream(video);
+  CFileItemList playlists;
+  playlists.Add(playlist);
+
+  TestScanner scanner{m_settings};
+  ASSERT_EQ(CInfoScanner::InfoRet::ADDED, scanner.AddPlaylists(playlists));
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, m_db.GetMovieId(playlist->GetDynPath())));
+  ASSERT_TRUE(m_db.GetStreamDetails(tag));
+  EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
+  EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
+  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1));
+}
+
+// A stack of bluray rips has the streams of its first disc's playlist, and the subtitle the player
+// loads as it plays that disc: beside the folder holding the disc, named by that folder
+TEST_F(TestVideoInfoScanner, ABlurayStackHasItsFirstDiscsSubtitle)
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const std::string first{Folder(m_root, "Film (2010) Disc 1")};
+  const std::string second{Folder(m_root, "Film (2010) Disc 2")};
+  const std::string firstDisc{BlurayRip(first)};
+  const std::string secondDisc{BlurayRip(second)};
+  File(first, "Film (2010) Disc 1.en.srt", "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+  File(second, "Film (2010) Disc 2.de.srt", "1\n00:00:00,000 --> 00:00:01,000\nHallo\n");
+  // The stack of the discs' main playlists, with the streams the scan has read from the first
+  const std::string playlists{"stack://" + URIUtils::GetBlurayPlaylistPath(firstDisc, 0) + " , " +
+                              URIUtils::GetBlurayPlaylistPath(secondDisc, 0)};
+  const auto stack{std::make_shared<CFileItem>(playlists, false)};
+  stack->GetVideoInfoTag()->SetTitle("Film");
+  auto* video{new CStreamDetailVideo()};
+  video->m_iWidth = 1920;
+  stack->GetVideoInfoTag()->m_streamDetails.AddStream(video);
+  CFileItemList stacks;
+  stacks.Add(stack);
+
+  TestScanner scanner{m_settings};
+  ASSERT_EQ(CInfoScanner::InfoRet::ADDED, scanner.AddPlaylists(stacks));
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, m_db.GetMovieId(stack->GetDynPath())));
+  ASSERT_TRUE(m_db.GetStreamDetails(tag));
+  EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
+  EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
+  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1));
+}
+
 TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)
 {
   const std::string disc{File(Folder(m_root, "Film (2010)"), "FILM.iso")};
