@@ -23,8 +23,12 @@
 #include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "jobs/JobManager.h"
 #include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
@@ -52,14 +56,17 @@
 
 #include <algorithm>
 #include <chrono>
+#include <condition_variable>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <future>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
+#include <thread>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -3199,4 +3206,211 @@ TEST_F(TestVideoInfoScannerTvShows, AnExistingShowKeepsItsScraperWhenItsNfoNames
 
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+}
+
+namespace
+{
+constexpr const char* PYTHON_SCRAPER_ID = "metadata.test.videoinfoscanner.python";
+
+//! A movie scraper run by python, as the scrapers Kodi comes with are
+constexpr const char* PYTHON_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python" name="Test python scraper" version="1.0.0"
+       provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+//! What the runs of the python scraper share: how many have started, the threads they ran on, and
+//! whether they may end
+struct SPythonRuns
+{
+  std::mutex lock;
+  std::condition_variable changed;
+  int started{0};
+  std::vector<int> threads;
+  bool end{false};
+  //! The options each run was given, as "?action=find&title=..."
+  std::vector<std::string> calls;
+};
+
+/*!
+ \brief Stands in for the python interpreter running a scraper whose every call waits on a server
+ that doesn't answer, as a blocking socket read does: the call ends, finding nothing, only once the
+ test lets it
+ */
+class CBlockingInvoker : public ILanguageInvoker
+{
+public:
+  CBlockingInvoker(ILanguageInvocationHandler* handler, SPythonRuns& runs)
+    : ILanguageInvoker(handler),
+      m_runs(runs)
+  {
+  }
+
+protected:
+  bool execute(const std::string& script, const std::vector<std::string>& arguments) override
+  {
+    setState(InvokerStateRunning);
+    // As a plugin is run: its url, handle and options
+    const int handle{std::stoi(arguments[1])};
+    {
+      std::unique_lock lock(m_runs.lock);
+      ++m_runs.started;
+      m_runs.calls.push_back(arguments.size() > 2 ? arguments[2] : std::string{});
+      if (std::ranges::find(m_runs.threads, GetId()) == m_runs.threads.end())
+        m_runs.threads.push_back(GetId());
+      m_runs.changed.notify_all();
+      m_runs.changed.wait_for(lock, std::chrono::seconds{30}, [this] { return m_runs.end; });
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    setState(InvokerStateScriptDone);
+    return true;
+  }
+
+  bool stop(bool abort) override { return true; }
+
+private:
+  SPythonRuns& m_runs;
+};
+
+class CBlockingHandler : public ILanguageInvocationHandler
+{
+public:
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override
+  {
+    return std::make_shared<CBlockingInvoker>(this, m_runs);
+  }
+
+  SPythonRuns m_runs;
+};
+
+//! A movie source looked up with a python scraper, whose scripts a stand-in runs
+class TestVideoInfoScannerPython : public TestVideoInfoScanner
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScanner::SetUp();
+    // Python itself isn't run by the tests, so its scripts can be run by the stand-in
+    if (Scripts().HasLanguageInvoker("scraper.py"))
+      GTEST_SKIP() << "python scripts are run by python";
+    Scripts().RegisterLanguageInvocationHandler(&m_handler, ".py");
+    m_registered = true;
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    static_cast<void>(XFILE::CDirectory::Create(addons));
+    m_pythonScraper = Folder(addons, PYTHON_SCRAPER_ID);
+    File(m_pythonScraper, "addon.xml", PYTHON_SCRAPER_ADDON);
+    File(m_pythonScraper, "scraper.py");
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(PYTHON_SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
+                                                        ADDON::CAddonVersion{"1.0.0"}));
+    ASSERT_TRUE(m_db.ExecuteQuery(
+        m_db.PrepareSQL("UPDATE path SET strScraper='%s', strSettings='' WHERE idPath=%i",
+                        PYTHON_SCRAPER_ID, m_db.GetPathId(m_root))));
+  }
+
+  void TearDown() override
+  {
+    if (m_registered)
+    {
+      LetRunsEnd();
+      // The threads kept to run the scraper again go once another script is run
+      static_cast<void>(Scripts().GetReusablePluginHandle("another.py"));
+      std::vector<int> threads;
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        threads = m_handler.m_runs.threads;
+      }
+      const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+      for (const int id : threads)
+      {
+        while (Scripts().IsRunning(id) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        EXPECT_FALSE(Scripts().IsRunning(id));
+      }
+      Scripts().UnregisterLanguageInvocationHandler(&m_handler);
+      CServiceBroker::GetAddonMgr().UnloadAddon(PYTHON_SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_pythonScraper);
+    }
+    TestVideoInfoScanner::TearDown();
+  }
+
+  static CScriptInvocationManager& Scripts() { return CScriptInvocationManager::GetInstance(); }
+
+  //! Whether \p count of the scraper's runs have started
+  bool RunsStarted(int count)
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    return m_handler.m_runs.changed.wait_for(lock, std::chrono::seconds{5}, [this, count]
+                                             { return m_handler.m_runs.started >= count; });
+  }
+
+  void LetRunsEnd()
+  {
+    {
+      std::unique_lock lock(m_handler.m_runs.lock);
+      m_handler.m_runs.end = true;
+    }
+    m_handler.m_runs.changed.notify_all();
+  }
+
+  CBlockingHandler m_handler;
+  bool m_registered{false};
+  std::string m_pythonScraper;
+};
+} // namespace
+
+// A python scraper's call can't be cancelled, and the stop of a scan can't interrupt a socket read
+// the script waits in. The scan stops waiting for it instead.
+TEST_F(TestVideoInfoScannerPython, AStoppedScanStopsWaitingForAScrapersCall)
+{
+  // Searched for on two look-up threads
+  File(m_root, "Alpha (2001).mkv");
+  File(m_root, "Beta (2002).mkv");
+  TestScanner scanner{m_settings};
+  std::future<void> scan{
+      std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); })};
+  const bool searching{RunsStarted(2)};
+
+  scanner.Stop();
+  const bool stopped{scan.wait_for(std::chrono::seconds{1}) == std::future_status::ready};
+  LetRunsEnd();
+  scan.wait();
+
+  EXPECT_TRUE(searching);
+  EXPECT_TRUE(stopped);
+  EXPECT_EQ(0, CountMovies());
+}
+
+// A movie whose file's name holds no identifier is looked up by the one in the name it is looked up
+// by, its folder's when folder names are used, on a look-up thread as by a refresh
+TEST_F(TestVideoInfoScannerPython, AMovieIsLookedUpByTheIdentifierInItsFolderName)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET useFolderNames=1 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  File(Folder(m_root, "Film (2010) {tmdb=603}"), "movie.mkv");
+  LetRunsEnd();
+  // An identifier names one of the metadata sources the scan knows
+  auto& sources{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoScannerMetadataSources};
+  const auto previous{sources};
+  sources = {"tmdb", "imdb"};
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+  sources = previous;
+
+  std::unique_lock lock(m_handler.m_runs.lock);
+  EXPECT_TRUE(std::ranges::any_of(m_handler.m_runs.calls,
+                                  [](const std::string& call)
+                                  {
+                                    return call.find("action=getdetails") != std::string::npos &&
+                                           call.find("603") != std::string::npos;
+                                  }));
 }

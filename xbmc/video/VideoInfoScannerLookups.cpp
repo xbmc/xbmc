@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/IFileTypes.h"
 #include "filesystem/StackDirectory.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -36,11 +37,13 @@ void CVideoLookups::Run(size_t count,
                         const std::atomic<bool>& stop,
                         size_t window /* = 0 */)
 {
-  // A video whose look-up throws is still handed back, on one thread as on several
-  const auto lookUpOrLog{[&lookUp, count](size_t i)
+  // A video whose look-up throws is still handed back, on one thread as on several. A scraper's
+  // call it makes is no longer waited for once the scan stops: it then fails, and the look-up ends.
+  const auto lookUpOrLog{[&lookUp, &stop, count](size_t i)
                          {
                            try
                            {
+                             const CScriptRunner::CAbandonWhen abandonOnStop{stop};
                              lookUp(i);
                            }
                            catch (...)

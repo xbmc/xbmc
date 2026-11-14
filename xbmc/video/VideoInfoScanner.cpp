@@ -34,6 +34,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "resources/LocalizeStrings.h"
@@ -192,6 +193,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Process()
   {
+    // Once the scan stops, a scraper's call in flight on this thread is no longer waited for, as
+    // one a look-up makes isn't (CVideoLookups::Run())
+    const CScriptRunner::CAbandonWhen abandonOnStop{m_bStop};
     try
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
