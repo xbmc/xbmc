@@ -24,6 +24,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <optional>
+
 using namespace Microsoft::WRL;
 
 namespace
@@ -49,6 +51,9 @@ bool IsHdrStream(const VideoPicture& picture, bool canRenderDolbyVision)
          (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
           picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
 }
+
+// Windows HDR state before playback, kept while renderers are replaced during the playback
+std::optional<bool> hdrStateBeforePlayback;
 } // namespace
 
 void CRenderBuffer::AppendPicture(const VideoPicture& picture)
@@ -180,11 +185,8 @@ CRendererBase::~CRendererBase()
   // Is not need set swap chain color space because toggling HDR re-creates swap chain
   if (m_AutoSwitchHDR)
   {
-    if (m_initialHdrEnabled != DX::Windowing()->IsHDROutput())
-    {
-      CLog::LogF(LOGDEBUG, "Restoring {} rendering", m_initialHdrEnabled ? "HDR" : "SDR");
-      DX::Windowing()->ToggleHDR();
-    }
+    if (!m_keepHdrState)
+      RestoreHdrStateBeforePlayback();
   }
   else // swap chain is not re-created, set proper color space
   {
@@ -215,6 +217,19 @@ CRenderInfo CRendererBase::GetRenderInfo()
   return info;
 }
 
+void CRendererBase::RestoreHdrStateBeforePlayback()
+{
+  if (!hdrStateBeforePlayback)
+    return;
+
+  if (*hdrStateBeforePlayback != DX::Windowing()->IsHDROutput())
+  {
+    CLog::LogF(LOGDEBUG, "Restoring {} rendering", *hdrStateBeforePlayback ? "HDR" : "SDR");
+    DX::Windowing()->ToggleHDR();
+  }
+  hdrStateBeforePlayback.reset();
+}
+
 bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned orientation)
 {
   m_iNumBuffers = 0;
@@ -240,13 +255,21 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   // Auto switch HDR only if supported and "Settings/Player/Use HDR display capabilities" = ON
   if (m_AutoSwitchHDR)
   {
-    m_initialHdrEnabled = DX::Windowing()->IsHDROutput();
-    CLog::LogF(LOGDEBUG, "Storing Windows HDR state: {}", m_initialHdrEnabled ? "ON" : "OFF");
+    if (!hdrStateBeforePlayback)
+    {
+      hdrStateBeforePlayback = DX::Windowing()->IsHDROutput();
+      CLog::LogF(LOGDEBUG, "Storing Windows HDR state: {}", *hdrStateBeforePlayback ? "ON" : "OFF");
+    }
 
     const bool streamIsHDR = IsHdrStream(picture, m_canRenderDolbyVision);
 
     if (streamIsHDR != DX::Windowing()->IsHDROutput())
       DX::Windowing()->ToggleHDR();
+  }
+  else
+  {
+    // the setting was turned off during a playback in which a replaced renderer switched HDR
+    RestoreHdrStateBeforePlayback();
   }
 
   return true;
