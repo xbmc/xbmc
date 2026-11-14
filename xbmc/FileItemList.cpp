@@ -766,7 +766,12 @@ void CFileItemList::Stack()
 
           // Only expect one media file per folder (if >1 should be a file stack)
           if (items.GetFileCount() == 1)
-            playPath = items[0]->GetPath();
+          {
+            // The part is that file, as the folder may hold folders too (e.g. Subs)
+            const auto file{std::ranges::find_if(items.GetList(), [](const auto& listed)
+                                                 { return !listed->IsFolder(); })};
+            playPath = (*file)->GetPath();
+          }
           else
           {
             CLog::LogF(LOGDEBUG,
