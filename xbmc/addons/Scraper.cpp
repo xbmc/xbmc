@@ -1431,8 +1431,15 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
     return true;
   }
 
+  // Asked once more, as a request the scraper makes can fail now and then (a dropped connection),
+  // which it reports only as no details
   if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
-    return false;
+  {
+    CLog::LogF(LOGDEBUG, "No details read from '{}' using {} scraper, trying once more",
+               scurl.GetFirstThumbUrl(), Name());
+    if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
+      return false;
+  }
 
   if (m_detailsCache.size() >= MAX_CACHED_RESULTS)
     m_detailsCache.clear();
