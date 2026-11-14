@@ -343,7 +343,8 @@ public:
                        int param1,
                        int param2,
                        std::shared_ptr<void> payload,
-                       CEvent& abortEvent);
+                       CEvent& abortEvent,
+                       std::string strParam = "");
 
   /*!
    * \brief Send a non-blocking message and return immediately
