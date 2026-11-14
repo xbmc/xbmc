@@ -11,6 +11,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -31,9 +32,13 @@ public:
   std::shared_ptr<ILanguageInvoker> GetInvoker() const { return m_invoker; }
   bool Reuseable(const std::string& script) const
   {
-    return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
+    // Not while a run given to it is yet to start, as its last run's state is still to be reset
+    return !m_bStop && !m_restart && m_reusable && GetState() == InvokerStateScriptDone &&
+           m_script == script;
   };
   virtual void Release();
+  //! Whether a run given to it is yet to start
+  bool RunPending() const { return m_restart; }
 
   /*!
    * \brief Wait for the thread to end.
@@ -62,6 +67,6 @@ private:
 
   std::mutex m_mutex;
   std::condition_variable m_condition;
-  bool m_restart = false;
+  std::atomic<bool> m_restart{false};
   bool m_reusable = false;
 };

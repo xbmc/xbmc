@@ -15,6 +15,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <string>
 #include <vector>
 
 class CLanguageInvokerThread;
@@ -30,13 +31,28 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::string &extension);
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
-  bool HasLanguageInvoker(const std::string &script) const;
-  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
+  bool HasLanguageInvoker(const std::string& script) const;
 
   /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
+   * \brief The invoker to run \p script with: that of the thread claimed with \p pluginHandle if it
+   * can run the script again, without a handle that of a free thread kept for the script, else a
+   * new one. A thread taken for a run without a handle is free again once its run ends.
+   */
+  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script,
+                                                       int pluginHandle = -1);
+
+  /*!
+   * \brief Claims a thread that has run \p script and waits to run it again, so that no other run
+   * takes it until ReleasePluginHandle().
+   * \return the plugin handle the thread was first run with, which the script can have kept, or -1
+   * if no such thread is free
+   */
   int GetReusablePluginHandle(const std::string& script);
+
+  /*!
+   * \brief Frees the thread claimed with \p pluginHandle for another run of its script.
+   */
+  void ReleasePluginHandle(int pluginHandle);
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -152,10 +168,27 @@ private:
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
 
+  //! A thread kept to run its script again
+  struct ReusableThread
+  {
+    std::shared_ptr<CLanguageInvokerThread> thread;
+    std::string script;
+    //! The plugin handle it was first run with
+    int pluginHandle;
+    //! Whether a run has taken it
+    bool claimed;
+  };
+
+  //! Lets the free threads kept for scripts other than \p script go, and forgets those that ended
+  void ReleaseReusableThreads(const std::string& script);
+
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
-  std::shared_ptr<CLanguageInvokerThread> m_lastInvokerThread;
-  int m_lastPluginHandle = -1;
+
+  //! The most threads kept to run their script again. Runs alongside these have threads of their
+  //! own, which end with them.
+  static constexpr size_t MAX_REUSABLE_THREADS{4};
+  std::vector<ReusableThread> m_reusableThreads;
 
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
