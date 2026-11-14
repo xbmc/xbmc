@@ -138,6 +138,57 @@ TEST_P(TestEnumerateEpisodes, EnumerateEpisodeItem)
 
 INSTANTIATE_TEST_SUITE_P(EnumerateEpisodeItem, TestEnumerateEpisodes, ValuesIn(TestData));
 
+struct DateTestEntry
+{
+  const char* path;
+  KODI::VIDEO::EPISODE episode;
+  //! yyyy-mm-dd, or empty for an episode found by its number
+  const char* date;
+};
+
+static const DateTestEntry DateTestData[] = {
+    // in the file's name
+    {"/Show/Show.2023-11-05.mkv", {}, "2023-11-05"},
+    {"/Show/Show.11.05.2023.mkv", {}, "2023-11-05"},
+    {"/Show/2023-11-04/Show.2023-11-05.mkv", {}, "2023-11-05"},
+    // in a folder's name, for a file whose name holds neither a date nor an episode
+    {"/Show/2023-11-05/episode.mkv", {}, "2023-11-05"},
+    {"/Show/11-05-2023/episode.mkv", {}, "2023-11-05"},
+    // in a folder's name, for a file whose name holds only a bare number, which may be a year
+    {"/Show/Recorded 2023-11-05/Show 105.mkv", {}, "2023-11-05"},
+    {"/Show/2023-11-05/Show_BBC_2023_11_05.wtv", {}, "2023-11-05"},
+    // in a folder's name, for a file whose name holds an episode
+    {"/Show/Recorded 2023-11-05/Show S01E05.mkv", {1, 5}, ""},
+    {"/Show/Recorded 2023-11-05/Show 1x05.mkv", {1, 5}, ""},
+    {"/Show/Recorded 11-05-2023/Show 1x05.mkv", {1, 5}, ""},
+    {"/Show/Recorded 2023-11-05/Show.Part.5.mkv", {1, 5}, ""},
+    {"C:\\Show\\Recorded 2023-11-05\\Show 1x05.mkv", {1, 5}, ""},
+    {"/Show/Recorded 2023-11-05/Part 5.mkv", {1, 5}, ""},
+    {"C:\\Show\\Recorded 2023-11-05\\Part 5.mkv", {1, 5}, ""},
+    // a Part in a folder's name is no episode
+    {"/Show/2023-11-05/Show.Part.5.extra/video.mkv", {}, "2023-11-05"},
+    {"C:\\Show\\2023-11-05\\Show.Part.5.extra\\video.mkv", {}, "2023-11-05"},
+};
+
+class TestEnumerateEpisodesByDate : public Test, public WithParamInterface<DateTestEntry>
+{
+};
+
+TEST_P(TestEnumerateEpisodesByDate, EnumerateEpisodeItem)
+{
+  const DateTestEntry& entry = GetParam();
+  SCOPED_TRACE(entry.path);
+
+  CFileItem item(entry.path, false);
+  KODI::VIDEO::EPISODELIST result;
+  ASSERT_TRUE(CEpisodeUtils::EnumerateEpisodeItem(&item, result));
+  ASSERT_EQ(1U, result.size());
+  EXPECT_EQ(entry.episode, result[0]);
+  EXPECT_EQ(entry.date, result[0].cDate.IsValid() ? result[0].cDate.GetAsDBDate() : "");
+}
+
+INSTANTIATE_TEST_SUITE_P(EnumerateEpisodeItem, TestEnumerateEpisodesByDate, ValuesIn(DateTestData));
+
 TEST(TestEnumerateEpisodes, EnumerateEpisodeItemByTitle)
 {
   CFileItem item("/foo.special.mp4", false);
