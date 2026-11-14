@@ -106,6 +106,10 @@ protected:
   int m_synctype;
   int m_prevsynctype;
 
+  //! The audio engine gave no stream, so the audio is dropped until a retry gets one
+  bool m_noAudioSink{false};
+  XbmcThreads::EndTime<> m_audioSinkRetry;
+
   bool m_holdPending{false};
   double m_holdDelivered{0.0};
   //! Set by the player thread, taken by this one at the first frame of the playback

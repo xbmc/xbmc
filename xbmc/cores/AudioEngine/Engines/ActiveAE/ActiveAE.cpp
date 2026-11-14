@@ -566,6 +566,17 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             break;
         }
       }
+      else if (port == &m_dataPort)
+      {
+        switch (signal)
+        {
+          case CActiveAEDataProtocol::NEWSTREAM:
+            msg->Reply(CActiveAEDataProtocol::ERR);
+            return;
+          default:
+            break;
+        }
+      }
       else if (port == NULL) // timeout
       {
         switch (signal)
@@ -3736,6 +3747,8 @@ IAE::StreamPtr CActiveAE::MakeStream(AEAudioFormat& audioFormat,
       return stream;
     }
     reply->Release();
+    // A refusal is the caller's to report
+    return nullptr;
   }
 
   CLog::Log(LOGERROR, "ActiveAE::{} - could not create stream", __FUNCTION__);

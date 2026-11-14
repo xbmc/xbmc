@@ -45,11 +45,6 @@ CAudioSinkAE::~CAudioSinkAE()
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
 {
-  CLog::Log(LOGINFO, "Creating audio stream (codec: {}, channels: {}, sample rate: {}, {})",
-            avcodec_get_name(codec), audioframe.format.m_channelLayout.Count(),
-            audioframe.format.m_sampleRate,
-            audioframe.passthrough ? "pass-through" : "no pass-through");
-
   // if passthrough isset do something else
   std::unique_lock lock(m_critSection);
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
@@ -63,6 +58,11 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   );
   if (!m_pAudioStream)
     return false;
+
+  CLog::Log(LOGINFO, "Creating audio stream (codec: {}, channels: {}, sample rate: {}, {})",
+            avcodec_get_name(codec), audioframe.format.m_channelLayout.Count(),
+            audioframe.format.m_sampleRate,
+            audioframe.passthrough ? "pass-through" : "no pass-through");
 
   m_dataFormat = audioframe.format.m_dataFormat;
   m_sampleRate = audioframe.format.m_sampleRate;
@@ -99,7 +99,14 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
   std::unique_lock lock(m_critSection);
 
   if (!m_pAudioStream)
-    return 0;
+  {
+    // Without a stream the audio is dropped, at the pace it would have played
+    const unsigned int frames = audioframe.nb_frames - audioframe.framesOut;
+    lock.unlock();
+    KODI::TIME::Sleep(std::chrono::duration<double>(audioframe.duration / DVD_TIME_BASE * frames /
+                                                    audioframe.nb_frames));
+    return frames;
+  }
 
   CAESyncInfo info = m_pAudioStream->GetSyncInfo();
   if (info.state == CAESyncInfo::SYNC_INSYNC)
