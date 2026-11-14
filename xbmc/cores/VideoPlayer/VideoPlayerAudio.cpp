@@ -31,6 +31,12 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+//! How long the audio is dropped before an audio stream is asked for again
+constexpr std::chrono::seconds AUDIO_SINK_RETRY{1};
+} // namespace
+
 class CDVDMsgAudioCodecChange : public CDVDMsg
 {
 public:
@@ -527,15 +533,25 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     const bool playbackStart = m_playbackStart.exchange(false);
 
     // we have successfully decoded an audio frame, setup renderer to match
-    if (!m_audioSink.IsValidFormat(audioframe))
+    if (!m_audioSink.IsValidFormat(audioframe) && m_audioSinkRetry.IsTimePast())
     {
       if (m_speed)
         m_audioSink.Drain();
 
       m_audioSink.Destroy(false);
 
-      if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE))
-        CLog::Log(LOGERROR, "{} - failed to create audio renderer", __FUNCTION__);
+      const bool created =
+          m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE);
+      if (!created)
+      {
+        if (!m_noAudioSink)
+        {
+          CLog::Log(LOGWARNING, "{} - failed to create audio renderer, playing without sound",
+                    __FUNCTION__);
+        }
+        m_noAudioSink = true;
+        m_audioSinkRetry.Set(AUDIO_SINK_RETRY);
+      }
       else if (playbackStart || m_holdPending)
       {
         // Armed here, resolved once real audio has reached the sink: whether the wire format
@@ -543,6 +559,12 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
         // replaced before then still belongs to the start.
         m_holdPending = true;
         m_holdDelivered = 0.0;
+      }
+
+      if (created && m_noAudioSink)
+      {
+        CLog::Log(LOGINFO, "{} - audio renderer created, sound resumes", __FUNCTION__);
+        m_noAudioSink = false;
       }
 
       m_prevsynctype = -1;

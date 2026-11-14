@@ -12,6 +12,7 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -258,4 +259,34 @@ TEST_F(TestActiveAEErrorRetry, SettingChangeWakesTheErrorRetry)
 
   EXPECT_TRUE(CFakeDriver::WaitForAttemptOn(SPEAKERS, before, 1s))
       << "the engine did not try the newly selected device within a second of the change";
+}
+
+// The receiver is off, so no device opens. A player starting a file with sound asks for a stream
+// and waits for the answer before it decodes on, so the answer has to come at once. Once the
+// receiver returns, the next request gets a stream.
+TEST_F(TestActiveAEErrorRetry, NewStreamIsAnsweredWhileNoDeviceOpens)
+{
+  StartAndFailCycles(1);
+
+  AEAudioFormat format;
+  format.m_dataFormat = AE_FMT_FLOAT;
+  format.m_sampleRate = 48000;
+  format.m_channelLayout = AE_CH_LAYOUT_2_0;
+
+  const auto start = std::chrono::steady_clock::now();
+  const IAE::StreamPtr refused = m_engine->MakeStream(format, AESTREAM_PAUSED, nullptr);
+  const auto waited = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::steady_clock::now() - start);
+
+  EXPECT_FALSE(refused);
+  EXPECT_LT(waited, 1s) << "the engine took " << waited.count() << " ms to answer";
+
+  CFakeDriver::SetReceiverAvailable(true);
+  const size_t before = CFakeDriver::AttemptCount();
+  m_engine->DeviceCountChange(DRIVER);
+  ASSERT_TRUE(CFakeDriver::WaitForAttemptOn(RECEIVER, before, 1s))
+      << "the engine did not reopen the receiver within a second of it returning";
+
+  const IAE::StreamPtr granted = m_engine->MakeStream(format, AESTREAM_PAUSED, nullptr);
+  EXPECT_TRUE(granted);
 }
