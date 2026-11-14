@@ -37,6 +37,7 @@ public:
 
   // Implementation of IRenderBuffer via CBaseRenderBuffer
   bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
+  DataAccess GetMemoryAccess() const override;
   size_t GetFrameSize() const override;
   uint8_t* GetMemory() override;
   void ReleaseMemory() override;
@@ -59,10 +60,12 @@ protected:
 private:
   void CreateTexture();
   void DeleteTexture();
+  bool CreateImage(IBufferObject& bo);
   bool RequiresCoherencyWorkaround() const;
 
   std::unique_ptr<CEGLImage> m_egl;
   std::unique_ptr<IBufferObject> m_bo;
+  bool m_writeOnly{false}; //!< A GBM buffer, mapped for writing only
 
   // CPU access to the buffer
   std::mutex m_memoryMutex;

@@ -324,8 +324,15 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
     renderBuffer->SetRotation(orientationDegCCW);
   }
 
-  // Cache frame if it arrived after being paused
-  if (m_speed == 0.0)
+  // Cache frame if it arrived after being paused. One that can't be read back
+  // mustn't leave an older frame in its place.
+  if (m_speed == 0.0 && submittedBuffer != nullptr &&
+      submittedBuffer->GetMemoryAccess() == DataAccess::WRITE_ONLY)
+  {
+    m_cachedFrame.clear();
+    m_bHasCachedFrame = false;
+  }
+  else if (m_speed == 0.0)
   {
     std::vector<uint8_t> cachedFrame = std::move(m_cachedFrame);
 
@@ -901,7 +908,7 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
     if (!renderBuffer->IsLoaded())
     {
       bUploaded = renderBuffer->UploadTexture();
-      renderBuffer->SetLoaded(true);
+      renderBuffer->SetLoaded(bUploaded);
     }
 
     if (bUploaded)
