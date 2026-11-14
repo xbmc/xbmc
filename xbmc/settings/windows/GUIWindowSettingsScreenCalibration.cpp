@@ -156,6 +156,14 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
+    case GUI_MSG_REFRESH_TIMER:
+    {
+      // the labels are processed scaled, see DoProcess()
+      m_needsScaling = true;
+      const bool result = CGUIWindow::OnMessage(message);
+      m_needsScaling = false;
+      return result;
+    }
     case GUI_MSG_WINDOW_DEINIT:
     {
       CDisplaySettings::GetInstance().UpdateCalibrations();
