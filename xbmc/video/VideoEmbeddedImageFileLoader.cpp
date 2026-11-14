@@ -14,8 +14,7 @@
 #include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
-#include "video/tags/IVideoInfoTagLoader.h"
-#include "video/tags/VideoInfoTagLoaderFactory.h"
+#include "video/tags/VideoTagLoaderFFmpeg.h"
 
 namespace KODI::VIDEO
 {
@@ -25,38 +24,34 @@ bool CVideoEmbeddedImageFileLoader::CanLoad(const std::string& specialType) cons
   return StringUtils::StartsWith(specialType, "video_");
 }
 
-namespace
-{
-bool GetEmbeddedThumb(const std::string& path, const std::string& type, EmbeddedArt& art)
+bool CVideoEmbeddedImageFileLoader::GetEmbeddedArt(const std::string& path,
+                                                   const std::string& type,
+                                                   EmbeddedArt& art)
 {
   CFileItem item(path, false);
   std::vector<EmbeddedArt> artv;
 
-  if (const std::unique_ptr<IVideoInfoTagLoader> loader{
-          CVideoInfoTagLoaderFactory::CreateLoader(item, ADDON::ScraperPtr(), false)};
-      loader)
-  {
-    CVideoInfoTag tag;
-    loader->Load(tag, false, &artv);
-  }
+  // The file's own loader, as the factory would give an nfo beside the file, which holds no art
+  CVideoTagLoaderFFmpeg loader{item, nullptr, false};
+  CVideoInfoTag tag;
+  loader.Load(tag, false, &artv);
 
   for (const auto& it : artv)
   {
     if (it.m_type == type)
     {
       art = it;
-      break;
+      return !art.Empty();
     }
   }
-  return !art.Empty();
+  return false;
 }
-} // namespace
 
 std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(
     const IMAGE_FILES::CImageFileURL& imageFile) const
 {
   EmbeddedArt art;
-  if (GetEmbeddedThumb(imageFile.GetTargetFile(), imageFile.GetSpecialType().substr(6), art))
+  if (GetEmbeddedArt(imageFile.GetTargetFile(), imageFile.GetSpecialType().substr(6), art))
     return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime);
   return {};
 }

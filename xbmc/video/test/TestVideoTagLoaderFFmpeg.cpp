@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "addons/Scraper.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
@@ -14,10 +15,15 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/EmbeddedArt.h"
 #include "utils/URIUtils.h"
+#include "video/VideoEmbeddedImageFileLoader.h"
 #include "video/VideoInfoTag.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 
+#include <cstdint>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -57,17 +63,34 @@ constexpr const char* SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8"?>
 
 constexpr const char* URL = "http://imdb.invalid/title/tt0111161/";
 
+//! A png of one pixel
+constexpr uint8_t POSTER[]{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+                           0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+                           0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+                           0x0D, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+                           0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
+                           0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82};
+
 //! An mp4 or mkv holding a subtitle track with no samples, and the tags a test gives it. An mp4's
 //! tags are written as named metadata, which keeps a track as the text given, rather than as the
 //! number the iTunes track tag holds.
 class TestVideoTagLoaderFFmpeg : public ::testing::Test
 {
 protected:
+  void SetUp() override { m_useTags = Settings()->GetBool(CSettings::SETTING_MYVIDEOS_USETAGS); }
+
   void TearDown() override
   {
+    Settings()->SetBool(CSettings::SETTING_MYVIDEOS_USETAGS, m_useTags);
     XFILE::CFile::Delete(m_path);
+    XFILE::CFile::Delete(m_nfo);
     XFILE::CFile::Delete(m_mkv);
     XFILE::CDirectory::RemoveRecursive(m_scraper);
+  }
+
+  static std::shared_ptr<CSettings> Settings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetSettings();
   }
 
   bool WriteMp4(const char* track)
@@ -89,6 +112,43 @@ protected:
                        avformat_write_header(context, &options) >= 0 &&
                        av_write_trailer(context) >= 0};
     av_dict_free(&options);
+    avio_closep(&context->pb);
+    avformat_free_context(context);
+    return written;
+  }
+
+  //! An mp4 with a title and a poster, written as iTunes tags, as only they hold a poster
+  bool WriteMp4WithPoster()
+  {
+    AVFormatContext* context{nullptr};
+    if (avformat_alloc_output_context2(&context, nullptr, "mp4", m_path.c_str()) < 0)
+      return false;
+
+    AVStream* stream{avformat_new_stream(context, nullptr)};
+    stream->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+    stream->codecpar->codec_id = AV_CODEC_ID_MOV_TEXT;
+    stream->time_base = {1, 1000};
+    AVStream* poster{avformat_new_stream(context, nullptr)};
+    poster->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+    poster->codecpar->codec_id = AV_CODEC_ID_PNG;
+    poster->codecpar->width = 1;
+    poster->codecpar->height = 1;
+    poster->disposition = AV_DISPOSITION_ATTACHED_PIC;
+    av_dict_set(&context->metadata, "title", "Film", 0);
+
+    uint8_t picture[sizeof(POSTER)];
+    std::memcpy(picture, POSTER, sizeof(POSTER));
+    AVPacket* packet{av_packet_alloc()};
+    packet->data = picture;
+    packet->size = sizeof(picture);
+    packet->stream_index = poster->index;
+    packet->pts = 0;
+    packet->dts = 0;
+    packet->flags = AV_PKT_FLAG_KEY;
+    const bool written{avio_open(&context->pb, m_path.c_str(), AVIO_FLAG_WRITE) >= 0 &&
+                       avformat_write_header(context, nullptr) >= 0 &&
+                       av_write_frame(context, packet) >= 0 && av_write_trailer(context) >= 0};
+    av_packet_free(&packet);
     avio_closep(&context->pb);
     avformat_free_context(context);
     return written;
@@ -159,10 +219,13 @@ protected:
 
   const std::string m_path{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mp4")};
+  const std::string m_nfo{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.nfo")};
   const std::string m_mkv{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mkv")};
   const std::string m_scraper{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg/")};
+  bool m_useTags{false};
 };
 } // namespace
 
@@ -251,4 +314,42 @@ TEST_F(TestVideoTagLoaderFFmpeg, AnMkvsOverrideNfoNamingNoUrlIsAnOverride)
   EXPECT_EQ(CInfoScanner::InfoType::OVERRIDE, loader.Load(tag, false, nullptr));
   EXPECT_FALSE(loader.ScraperUrl().HasUrls());
   EXPECT_EQ("Override", tag.m_strTitle);
+}
+
+// The poster an mp4 holds is loaded with an nfo beside it, which holds none, as when a library
+// exported to nfos has its thumbnails cleared
+TEST_F(TestVideoTagLoaderFFmpeg, AnMp4sPosterLoadsWithAnNfoBesideIt)
+{
+  // As when the library was scanned and the poster found
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_USETAGS, true);
+  ASSERT_TRUE(WriteMp4WithPoster());
+  XFILE::CFile nfo;
+  ASSERT_TRUE(nfo.OpenForWrite(m_nfo, true));
+  const std::string movie{"<movie><title>Film</title></movie>"};
+  nfo.Write(movie.data(), movie.size());
+  nfo.Close();
+
+  EmbeddedArt art;
+  ASSERT_TRUE(KODI::VIDEO::CVideoEmbeddedImageFileLoader::GetEmbeddedArt(m_path, "poster", art));
+  EXPECT_EQ("poster", art.m_type);
+  ASSERT_EQ(sizeof(POSTER), art.m_size);
+  EXPECT_EQ(0, std::memcmp(POSTER, art.m_data.data(), sizeof(POSTER)));
+}
+
+// A file that is gone holds no poster, as when its library item's poster is looked for after
+TEST_F(TestVideoTagLoaderFFmpeg, AFileThatIsGoneHoldsNoPoster)
+{
+  EmbeddedArt art;
+  EXPECT_FALSE(KODI::VIDEO::CVideoEmbeddedImageFileLoader::GetEmbeddedArt(m_path, "poster", art));
+}
+
+// A lookup that finds no image says so, though the art it is given holds one found before
+TEST_F(TestVideoTagLoaderFFmpeg, ALookupFindingNoImageSaysSoThoughItsArtHoldsOne)
+{
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_USETAGS, true);
+  ASSERT_TRUE(WriteMp4WithPoster());
+  EmbeddedArt art;
+  ASSERT_TRUE(KODI::VIDEO::CVideoEmbeddedImageFileLoader::GetEmbeddedArt(m_path, "poster", art));
+
+  EXPECT_FALSE(KODI::VIDEO::CVideoEmbeddedImageFileLoader::GetEmbeddedArt(m_path, "fanart", art));
 }

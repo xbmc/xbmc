@@ -143,6 +143,10 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
                                                    bool prioritise,
                                                    std::vector<EmbeddedArt>* art)
 {
+  // A file that didn't open, as HasInfo() reports, where the loader is made without asking it
+  if (!m_file)
+    return CInfoScanner::InfoType::NONE;
+
   if (m_item.IsType(".mkv"))
     return LoadMKV(tag, prioritise, art);
   else if (m_item.IsType(".mp4"))
