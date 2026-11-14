@@ -1,6 +1,7 @@
 set(SOURCES UPnP.cpp
             UPnPInternal.cpp
             UPnPPlayer.cpp
+            UPnPPlayerController.cpp
             UPnPRenderer.cpp
             UPnPServer.cpp
             UPnPSettings.cpp)
@@ -8,6 +9,7 @@ set(SOURCES UPnP.cpp
 set(HEADERS UPnP.h
             UPnPInternal.h
             UPnPPlayer.h
+            UPnPPlayerController.h
             UPnPRenderer.h
             UPnPServer.h
             UPnPSettings.h)
