@@ -24,6 +24,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
@@ -116,6 +117,8 @@ protected:
     std::erase_if(CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO),
                   [this](const CMediaSource& source) { return source.strPath == m_root; });
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL, m_artworkLevel);
+    Settings()->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST, m_movieArtWhitelist);
 
     // First, as its jobs are cancelled with the job manager
     CServiceBroker::UnregisterTextureCache();
@@ -137,6 +140,15 @@ protected:
   static std::shared_ptr<CSettings> Settings()
   {
     return CServiceBroker::GetSettingsComponent()->GetSettings();
+  }
+
+  //! Art of the types the CUSTOM artwork level adds for movies, versions and sets
+  static void SetMovieArtWhitelist(const std::vector<std::string>& artTypes)
+  {
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_CUSTOM);
+    Settings()->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST,
+                        {artTypes.begin(), artTypes.end()});
   }
 
   static std::string Folder(const std::string& parent, const std::string& name)
@@ -309,6 +321,9 @@ protected:
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   const bool m_retrieveAllArt{
       Settings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)};
+  const int m_artworkLevel{Settings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
+  const std::vector<CVariant> m_movieArtWhitelist{
+      Settings()->GetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST)};
 };
 } // namespace
 
@@ -506,6 +521,23 @@ TEST_F(TestVideoInfoScannerArt, AVersionWithoutArtOfItsOwnHasThePlainArtBesideBD
   EXPECT_EQ(fanart, MovieArt("fanart"));
   EXPECT_EQ(poster, VersionArt("poster"));
   EXPECT_EQ(fanart, VersionArt("fanart"));
+}
+
+// At the CUSTOM artwork level, a version has the types the movie whitelist adds, as its movie has
+TEST_F(TestVideoInfoScannerArt, AVersionHasTheArtTheMovieWhitelistAdds)
+{
+  SetMovieArtWhitelist({"clearlogo"});
+  const std::string folder{BlurayRipWithTwoVersions()};
+  const std::string clearlogo800{File(folder, "00800-clearlogo.png")};
+  const std::string clearlogo801{File(folder, "00801-clearlogo.png")};
+  File(folder, "00801-discart.png");
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(clearlogo800, MovieArt("clearlogo"));
+  EXPECT_EQ(clearlogo801, VersionArt("clearlogo"));
+  EXPECT_EQ("", VersionArt("discart"));
 }
 
 // An extra of the movie on its disc, such as a featurette, has its own art beside BDMV, but not

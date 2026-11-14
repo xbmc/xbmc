@@ -116,6 +116,8 @@ std::string ContentToMediaType(ContentType content, bool folder)
     using enum ContentType;
     case MOVIES:
       return NameOf(KODI::MEDIA::TYPE::MOVIE);
+    case MOVIE_VERSIONS:
+      return NameOf(KODI::MEDIA::TYPE::VIDEO_VERSION);
     case MUSICVIDEOS:
       return NameOf(KODI::MEDIA::TYPE::MUSIC_VIDEO);
     case TVSHOWS:
