@@ -16,6 +16,7 @@
 #include "utils/Geometry.h"
 #include "video/VideoInfoTag.h"
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <string>
@@ -180,7 +181,9 @@ public:
   virtual std::string GetFileName();
   virtual CURL GetURL();
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
-  virtual void Abort() {}
+  // may be called from another thread; the demuxer stops reading once it's set
+  virtual void Abort() { m_aborted = true; }
+  bool Aborted() const { return m_aborted; }
   virtual int GetBlockSize() { return 0; }
   virtual bool CanSeek() { return true; } //! @todo drop this
   virtual bool CanPause() { return false; }
@@ -292,4 +295,5 @@ protected:
   CFileItem m_item;
   bool m_contentLookup;
   bool m_realtime;
+  std::atomic_bool m_aborted{false};
 };

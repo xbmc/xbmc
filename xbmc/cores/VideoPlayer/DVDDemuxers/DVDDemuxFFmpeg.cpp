@@ -224,11 +224,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   if (m_timeout.IsTimePast())
     return true;
 
-  std::shared_ptr<CDVDInputStreamFFmpeg> input = std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
-  if (input && input->Aborted())
-    return true;
-
-  return false;
+  return m_pInput && m_pInput->Aborted();
 }
 
 bool CDVDDemuxFFmpeg::IsStreaming() const
