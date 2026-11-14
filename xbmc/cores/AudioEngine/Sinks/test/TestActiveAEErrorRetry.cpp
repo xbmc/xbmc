@@ -16,6 +16,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <memory>
@@ -189,7 +190,7 @@ std::string DeviceString(const char* name)
 
 // Opening the configured device and, when that fails, the first enumerated device are two
 // attempts per configure cycle. The engine's first cycle is the INIT; every later one is a
-// retry from the error state.
+// retry while its output goes to the null sink.
 constexpr size_t ATTEMPTS_PER_CYCLE = 2;
 
 class TestActiveAEErrorRetry : public ::testing::Test
@@ -244,9 +245,9 @@ protected:
 // than when the next backed-off retry happens to fire.
 TEST_F(TestActiveAEErrorRetry, SettingChangeWakesTheErrorRetry)
 {
-  // Four failed cycles: INIT, then retries after 500 ms, 500 ms and 1 s. The next retry is
-  // two seconds out, so a wake-up inside one second can only come from the setting change.
-  StartAndFailCycles(4);
+  // Three failed cycles: INIT, then retries after 500 ms and 1 s. The next retry is two
+  // seconds out, so a wake-up inside one second can only come from the setting change.
+  StartAndFailCycles(3);
   const size_t before = CFakeDriver::AttemptCount();
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -258,4 +259,48 @@ TEST_F(TestActiveAEErrorRetry, SettingChangeWakesTheErrorRetry)
 
   EXPECT_TRUE(CFakeDriver::WaitForAttemptOn(SPEAKERS, before, 1s))
       << "the engine did not try the newly selected device within a second of the change";
+}
+
+// The receiver is off, so no device opens. A player starting a file with sound gets a stream at
+// once, which takes its audio at the pace a device would. When the receiver returns, the engine
+// moves to it and stops retrying.
+TEST_F(TestActiveAEErrorRetry, StreamPlaysWhileNoDeviceOpens)
+{
+  StartAndFailCycles(1);
+
+  AEAudioFormat format;
+  format.m_dataFormat = AE_FMT_FLOAT;
+  format.m_sampleRate = 48000;
+  format.m_channelLayout = AE_CH_LAYOUT_2_0;
+
+  auto start = std::chrono::steady_clock::now();
+  const IAE::StreamPtr stream = m_engine->MakeStream(format, 0, nullptr);
+  const auto waited = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::steady_clock::now() - start);
+  ASSERT_TRUE(stream);
+  EXPECT_LT(waited, 1s) << "the engine took " << waited.count() << " ms to answer";
+
+  constexpr unsigned int TOTAL = 2 * 48000;
+  std::vector<float> chunk(4800 * 2, 0.0f);
+  const uint8_t* planes[] = {reinterpret_cast<const uint8_t*>(chunk.data())};
+  unsigned int written = 0;
+  start = std::chrono::steady_clock::now();
+  while (written < TOTAL && std::chrono::steady_clock::now() - start < 6s)
+  {
+    written += stream->AddData(planes, 0, std::min(4800u, TOTAL - written), nullptr);
+  }
+  const auto took = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::steady_clock::now() - start);
+  EXPECT_EQ(TOTAL, written) << "the stream stopped taking audio after " << took.count() << " ms";
+  EXPECT_GT(took, 500ms) << "two seconds of audio were taken in " << took.count() << " ms";
+
+  CFakeDriver::SetReceiverAvailable(true);
+  const size_t before = CFakeDriver::AttemptCount();
+  m_engine->DeviceCountChange(DRIVER);
+  ASSERT_TRUE(CFakeDriver::WaitForAttemptOn(RECEIVER, before, 1s))
+      << "the engine did not reopen the receiver within a second of it returning";
+
+  const size_t opened = CFakeDriver::AttemptCount();
+  std::this_thread::sleep_for(1500ms);
+  EXPECT_EQ(opened, CFakeDriver::AttemptCount()) << "the engine kept retrying after it opened";
 }

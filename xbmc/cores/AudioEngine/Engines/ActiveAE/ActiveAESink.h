@@ -42,6 +42,7 @@ struct SinkReply
   float cacheTotal;
   float latency;
   bool hasVolume;
+  bool fallback;
 };
 
 class CSinkControlProtocol : public Protocol
@@ -140,6 +141,8 @@ protected:
   bool m_extAppFocused;
   bool m_extStreaming;
   bool m_extReserved{false};
+  //! No device could be opened, so output goes to the null sink until the engine reconfigures
+  bool m_extFallback{false};
   std::chrono::duration<double> m_reservedCacheTotal{};
   std::chrono::duration<double> m_reservedLatency{};
   XbmcThreads::EndTime<> m_extSilenceTimer;

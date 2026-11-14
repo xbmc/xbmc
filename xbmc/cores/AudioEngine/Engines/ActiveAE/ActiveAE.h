@@ -360,6 +360,9 @@ protected:
   std::chrono::milliseconds m_extTimeout;
   bool m_extError;
   unsigned int m_extErrorRetries{0};
+  //! No device opened, so the sink discards output; the device is retried on a backoff
+  bool m_sinkFallback{false};
+  XbmcThreads::EndTime<> m_fallbackRetry;
   bool m_extDrain;
   XbmcThreads::EndTime<> m_extDrainTimer;
   std::chrono::milliseconds m_extKeepConfig;

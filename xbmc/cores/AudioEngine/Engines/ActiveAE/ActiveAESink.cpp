@@ -264,6 +264,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
+          m_extFallback = false;
           m_extSilenceTimer.Set(0ms);
           m_extStreaming = false;
           ReturnBuffers();
@@ -285,6 +286,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             reply.cacheTotal = m_sink->GetCacheTotal();
             reply.latency = m_sink->GetLatency();
             reply.hasVolume = m_sink->HasVolume();
+            reply.fallback = m_extFallback;
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10s;
             m_sinkLatency = (int64_t)(reply.latency * 1000);
@@ -969,9 +971,10 @@ void CActiveAESink::OpenSink()
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
 
-  if (m_extReserved)
+  if (m_extReserved || m_extFallback)
   {
-    CLog::LogF(LOGDEBUG, "device {} is reserved, discarding output", device);
+    CLog::LogF(LOGDEBUG, "device {} is {}, discarding output", device,
+               m_extReserved ? "reserved" : "not available");
     auto nullSink = std::make_unique<CAESinkNULL>(m_reservedCacheTotal, m_reservedLatency);
     if (nullSink->Initialize(m_sinkFormat, device))
       m_sink = std::move(nullSink);
@@ -991,6 +994,21 @@ void CActiveAESink::OpenSink()
       m_sinkFormat = m_requestedFormat;
       CLog::LogF(LOGDEBUG, "trying to open device {}", device);
       m_sink = CAESinkFactory::Create(device, m_sinkFormat);
+    }
+
+    // Opened under the NULL driver, so the engine sees the device as absent and reopens it
+    // when devices change. The null sink takes PCM, and a raw stream only once IEC packed.
+    if (!m_sink && (!passthrough || m_needIecPack))
+    {
+      CLog::LogF(LOGWARNING, "no device could be opened, discarding output");
+      m_sinkFormat = m_requestedFormat;
+      auto nullSink = std::make_unique<CAESinkNULL>(m_reservedCacheTotal, m_reservedLatency);
+      device = "NULL:" + dev.name;
+      if (nullSink->Initialize(m_sinkFormat, device))
+      {
+        m_sink = std::move(nullSink);
+        m_extFallback = true;
+      }
     }
   }
 
@@ -1019,7 +1037,7 @@ void CActiveAESink::OpenSink()
     m_sinkFormat.m_dataFormat = AE_FMT_S32NE;
 #endif
 
-  if (!m_extReserved)
+  if (!m_extReserved && !m_extFallback)
   {
     m_reservedCacheTotal = std::chrono::duration<double>(m_sink->GetCacheTotal());
     m_reservedLatency = std::chrono::duration<double>(m_sink->GetLatency());
