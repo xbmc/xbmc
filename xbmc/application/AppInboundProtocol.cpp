@@ -105,7 +105,7 @@ void CAppInboundProtocol::HandleEvents()
         // Reset the screensaver
         const auto appPower = m_pApp.GetComponent<CApplicationPowerHandling>();
         appPower->ResetScreenSaver();
-        appPower->WakeUpScreenSaverAndDPMS();
+        appPower->WakeUpOnInput();
         // Send a mouse motion event with no dx,dy for getting the current guiitem selected
         m_pApp.OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x),
                                 static_cast<float>(newEvent.focus.y), 0, 0));

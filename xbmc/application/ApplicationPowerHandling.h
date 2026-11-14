@@ -64,6 +64,18 @@ public:
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
 
+  /*!
+   * \brief Wake up from the screensaver and / or DPMS in response to user input.
+   *
+   * Does what WakeUpScreenSaverAndDPMS() does and, if the setting
+   * powermanagement.wakemanualdpms is enabled, also wakes a display that was
+   * switched off manually.
+   *
+   * \param powerOffKeyPressed the input is going to power the system off
+   * \return true if woken up
+   */
+  bool WakeUpOnInput(bool powerOffKeyPressed = false);
+
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
@@ -75,6 +87,7 @@ protected:
   void InhibitScreenSaver(bool inhibit);
   void ResetScreenSaverTimer();
   bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
+  bool WakeUp(bool powerOffKeyPressed, bool wakeManualDPMS);
 
   void InhibitIdleShutdown(bool inhibit);
 
