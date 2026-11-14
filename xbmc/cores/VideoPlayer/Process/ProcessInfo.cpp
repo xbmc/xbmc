@@ -13,6 +13,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#include <cmath>
 #include <memory>
 #include <mutex>
 
@@ -301,17 +302,43 @@ bool CProcessInfo::GetVideoInterlaced()
   return m_videoIsInterlaced;
 }
 
-void CProcessInfo::AddVideoFrameSize(uint32_t size, char type)
+namespace
+{
+constexpr double AUDIO_SLOT_SECONDS = 0.05;
+constexpr int64_t AUDIO_SLOTS_PER_SECOND = 20;
+
+int64_t TimeToAudioSlot(double time)
+{
+  return static_cast<int64_t>(std::floor(time / AUDIO_SLOT_SECONDS));
+}
+} // namespace
+
+void CProcessInfo::AddVideoFrameSize(uint32_t size, char type, double time)
 {
   std::unique_lock lock(m_videoFramesSection);
 
   if (m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX)
-    m_videoFrames.push_back({size, type});
+    m_videoFrames.push_back({size, type, time});
   else
-    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, type};
+    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, type, time};
 
   m_videoFrameCount++;
   m_videoFrameSerial++;
+}
+
+void CProcessInfo::AddAudioPacketSize(uint32_t size, double time)
+{
+  if (std::isnan(time))
+    return;
+
+  std::unique_lock lock(m_videoFramesSection);
+
+  const int64_t slot = TimeToAudioSlot(time);
+  auto& entry = m_audioSlots[static_cast<size_t>(slot) % m_audioSlots.size()];
+  if (entry.slot != slot)
+    entry = {slot, 0};
+  entry.bytes += size;
+  m_audioSlotsUsed = true;
 }
 
 void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
@@ -333,6 +360,34 @@ void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
   info.count = m_videoFrameCount;
   info.serial = m_videoFrameSerial;
   info.fps = fps;
+
+  info.audioRates.clear();
+  if (!m_audioSlotsUsed)
+    return;
+
+  // Audio and video are matched by time stamp, as they are decoded independently.
+  // Frames whose audio has not been decoded yet get no value, rather than a dip.
+  info.audioRates.reserve(info.frames.size());
+  for (const auto& frame : info.frames)
+  {
+    float rate = NAN;
+    if (!std::isnan(frame.time))
+    {
+      const int64_t last = TimeToAudioSlot(frame.time);
+      if (m_audioSlots[static_cast<size_t>(last) % m_audioSlots.size()].slot == last)
+      {
+        uint64_t bytes = 0;
+        for (int64_t slot = last - AUDIO_SLOTS_PER_SECOND + 1; slot <= last; ++slot)
+        {
+          const auto& entry = m_audioSlots[static_cast<size_t>(slot) % m_audioSlots.size()];
+          if (entry.slot == slot)
+            bytes += entry.bytes;
+        }
+        rate = static_cast<float>(static_cast<double>(bytes) * 8 / 1e6);
+      }
+    }
+    info.audioRates.push_back(rate);
+  }
 }
 
 bool CProcessInfo::IsVideoFrameGraphShown()

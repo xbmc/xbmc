@@ -28,11 +28,27 @@ constexpr uint32_t COLOR_I_FRAME = 0xFFFFB547;
 constexpr uint32_t COLOR_B_FRAME = 0xFF3F8CFF;
 constexpr uint32_t COLOR_AVERAGE = 0xFFFFFFFF;
 constexpr uint32_t COLOR_CURSOR = 0xB0FFFFFF;
+constexpr uint32_t COLOR_AUDIO = 0xFFFF6AD5;
 
 constexpr double LOG_MIN = 4e3;
 constexpr double LOG_MAX = 4e6;
 constexpr unsigned int SWEEP_GAP = 16;
 constexpr float GRAPH_MARGIN = 0.03f;
+constexpr double AUDIO_BAND_SPLIT = 0.78; //!< share of the height for the video in band mode
+
+//! Round up to 1, 2 or 5 times a power of ten
+double NiceCeil(double value)
+{
+  if (value <= 0.0)
+    return 1.0;
+  const double magnitude = std::pow(10.0, std::floor(std::log10(value)));
+  for (const double step : {1.0, 2.0, 5.0, 10.0})
+  {
+    if (step * magnitude >= value)
+      return step * magnitude;
+  }
+  return 10.0 * magnitude;
+}
 } // namespace
 
 CDebugFrameGraph::CDebugFrameGraph() = default;
@@ -50,6 +66,11 @@ void CDebugFrameGraph::SetFrames(const DEBUG_INFO_FRAMES& frames)
     m_dirty = true;
   }
   m_heightPercent = settings->m_videoDebugGraphHeight;
+  if (settings->m_videoDebugGraphAudio != m_audioMode)
+  {
+    m_audioMode = settings->m_videoDebugGraphAudio;
+    m_dirty = true;
+  }
 
   if (frames.serial == m_frames.serial)
     return;
@@ -72,6 +93,21 @@ size_t CDebugFrameGraph::VisibleCount() const
   // In sweep mode the oldest columns ahead of the cursor stay empty
   const size_t columns = m_sweep && m_width > SWEEP_GAP ? m_width - SWEEP_GAP : m_width;
   return std::min(m_frames.frames.size(), columns);
+}
+
+double CDebugFrameGraph::AudioScaleMax() const
+{
+  const auto& rates = m_frames.audioRates;
+  if (m_audioMode == 0 || rates.size() != m_frames.frames.size())
+    return 0.0;
+
+  double maxRate = -1.0;
+  for (size_t i = rates.size() - VisibleCount(); i < rates.size(); ++i)
+  {
+    if (!std::isnan(rates[i]))
+      maxRate = std::max(maxRate, static_cast<double>(rates[i]));
+  }
+  return maxRate < 0.0 ? 0.0 : NiceCeil(maxRate * 1.1);
 }
 
 std::string CDebugFrameGraph::GetLegend() const
@@ -99,10 +135,20 @@ std::string CDebugFrameGraph::GetLegend() const
   const bool frameTypes = std::any_of(frames.begin(), frames.end(), [](const auto& frame)
                                       { return frame.type == 'P' || frame.type == 'B'; });
 
+  std::string audio;
+  if (const double scaleMax = AudioScaleMax(); scaleMax > 0.0)
+  {
+    const auto& rates = m_frames.audioRates;
+    const auto latest =
+        std::find_if(rates.rbegin(), rates.rend(), [](float rate) { return !std::isnan(rate); });
+    audio = StringUtils::Format(", pink audio {:.1f} Mb/s (0-{:g} Mb/s)",
+                                static_cast<double>(*latest), scaleMax);
+  }
+
   return StringUtils::Format(
-      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, grid {}, {}",
+      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, grid {}, {}{}",
       m_logScale ? "log" : "lin", m_sweep ? "sweep" : "scroll", peak / 1e6, rate, grid,
-      frameTypes ? "amber I, green P, blue B" : "amber = keyframe");
+      frameTypes ? "amber I, green P, blue B" : "amber = keyframe", audio);
 }
 
 void CDebugFrameGraph::Render(const CRect& view)
@@ -168,6 +214,12 @@ void CDebugFrameGraph::Draw()
   const size_t count = VisibleCount();
   const size_t first = frames.size() - count;
 
+  // In band mode the video uses the upper part and the audio gets its own band below
+  const double audioMax = AudioScaleMax();
+  const bool band = audioMax > 0.0 && m_audioMode == 2;
+  const int videoHeight =
+      band ? std::max(1, static_cast<int>(std::lround(h * AUDIO_BAND_SPLIT))) : h;
+
   double linearMax = 1.0;
   for (size_t i = first; i < frames.size(); ++i)
     linearMax = std::max(linearMax, static_cast<double>(frames[i].size));
@@ -179,7 +231,7 @@ void CDebugFrameGraph::Draw()
                                     (std::log(LOG_MAX) - std::log(LOG_MIN))
                               : size / linearMax;
     ratio = std::clamp(ratio, 0.0, 1.0);
-    return h - 1 - static_cast<int>(std::lround(ratio * (h - 1)));
+    return videoHeight - 1 - static_cast<int>(std::lround(ratio * (videoHeight - 1)));
   };
   const auto toX = [&](size_t i)
   {
@@ -240,6 +292,36 @@ void CDebugFrameGraph::Draw()
     vline(x, fromY + 1, y + 1, COLOR_AVERAGE);
     prevX = x;
     prevY = y;
+  }
+
+  if (audioMax > 0.0)
+  {
+    const int audioTop = band ? videoHeight + 4 : 0;
+    if (band)
+    {
+      for (int x = 0; x < w; ++x)
+        put(x, videoHeight + 1, COLOR_GRID);
+    }
+
+    const auto& rates = m_frames.audioRates;
+    int prevAudioX = -1;
+    int prevAudioY = 0;
+    for (size_t i = first; i < frames.size(); ++i)
+    {
+      if (std::isnan(rates[i]))
+      {
+        prevAudioX = -1;
+        continue;
+      }
+      const double ratio = std::clamp(static_cast<double>(rates[i]) / audioMax, 0.0, 1.0);
+      const int x = toX(i);
+      const int y = h - 1 - static_cast<int>(std::lround(ratio * (h - 1 - audioTop)));
+      const int fromY = prevAudioX >= 0 && x == prevAudioX + 1 ? prevAudioY : y;
+      vline(x, fromY, y, COLOR_AUDIO);
+      vline(x, fromY - 1, y - 1, COLOR_AUDIO);
+      prevAudioX = x;
+      prevAudioY = y;
+    }
   }
 
   if (m_sweep && count > 0)

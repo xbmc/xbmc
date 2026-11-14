@@ -42,6 +42,7 @@ struct DEBUG_INFO_FRAME
 {
   uint32_t size;
   char type; //!< 'I', 'P', 'B', or 0 if unknown
+  double time; //!< decode time stamp in seconds, NAN if unknown
 };
 
 struct DEBUG_INFO_FRAMES
@@ -50,4 +51,6 @@ struct DEBUG_INFO_FRAMES
   uint64_t count{0}; //!< packets since the video codec was opened
   uint64_t serial{0}; //!< changes whenever frames changes
   float fps{0.0f};
+  //! Audio bitrate in Mb/s over the second up to each frame, NAN where unknown
+  std::vector<float> audioRates;
 };

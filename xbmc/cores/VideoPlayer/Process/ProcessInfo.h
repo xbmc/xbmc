@@ -14,6 +14,7 @@
 #include "cores/VideoSettings.h"
 #include "threads/CriticalSection.h"
 
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <list>
@@ -58,7 +59,8 @@ public:
   int GetVideoQueueDataLevel();
   void SetVideoInterlaced(bool interlaced);
   bool GetVideoInterlaced();
-  void AddVideoFrameSize(uint32_t size, char type);
+  void AddVideoFrameSize(uint32_t size, char type, double time);
+  void AddAudioPacketSize(uint32_t size, double time);
   void GetVideoFrameSizes(DEBUG_INFO_FRAMES& info);
   //! True while the debug renderer polls the frame sizes, i.e. the graph is shown
   bool IsVideoFrameGraphShown();
@@ -174,6 +176,13 @@ protected:
   uint64_t m_videoFrameCount{0};
   uint64_t m_videoFrameSerial{0};
   std::chrono::steady_clock::time_point m_videoFramesRead;
+  struct AudioSlot
+  {
+    int64_t slot{INT64_MIN};
+    uint32_t bytes{0};
+  };
+  std::array<AudioSlot, 4096> m_audioSlots; //!< audio bytes per 50 ms, by time stamp
+  bool m_audioSlotsUsed{false};
   CVideoBufferManager m_videoBufferManager;
   std::vector<AVPixelFormat> m_pixFormats;
 

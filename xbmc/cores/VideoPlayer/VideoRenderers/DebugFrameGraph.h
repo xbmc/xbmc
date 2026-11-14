@@ -37,11 +37,14 @@ private:
   void Draw();
   unsigned int AverageWindow() const;
   size_t VisibleCount() const;
+  //! Upper end of the audio scale in Mb/s, 0 if there is no audio to show
+  double AudioScaleMax() const;
 
   DEBUG_INFO_FRAMES m_frames;
   bool m_logScale{true};
   bool m_sweep{true};
   int m_heightPercent{35};
+  int m_audioMode{0}; //!< 0 off, 1 overlay, 2 band
   bool m_dirty{false};
 
   unsigned int m_width{0};
