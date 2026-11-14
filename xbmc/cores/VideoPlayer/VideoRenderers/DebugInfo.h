@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 struct DEBUG_INFO_PLAYER
 {
@@ -32,4 +34,20 @@ struct DEBUG_INFO_RENDER
 {
   std::string renderFlags;
   std::string videoOutput;
+};
+
+constexpr unsigned int DEBUG_INFO_FRAMES_MAX = 3840;
+
+struct DEBUG_INFO_FRAME
+{
+  uint32_t size;
+  char type; //!< 'I', 'P', 'B', or 0 if unknown
+};
+
+struct DEBUG_INFO_FRAMES
+{
+  std::vector<DEBUG_INFO_FRAME> frames; //!< most recent video packets, oldest first
+  uint64_t count{0}; //!< packets since the video codec was opened
+  uint64_t serial{0}; //!< changes whenever frames changes
+  float fps{0.0f};
 };

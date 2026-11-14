@@ -245,6 +245,10 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_videoFpsDetect = 1;
+  m_videoDebugGraphLogScale = true;
+  m_videoDebugGraphSweep = true;
+  m_videoDebugGraphFrameTypes = false;
+  m_videoDebugGraphHeight = 35;
   m_gamesPacingMarginMs = 2.5f;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
@@ -852,6 +856,24 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
     XMLUtils::GetFloat(pElement, "maxtempo", m_maxTempo, 1.5, 2.0);
     XMLUtils::GetBoolean(pElement, "preferstereostream", m_videoPreferStereoStream);
+
+    const TiXmlElement* pDebugGraph = pElement->FirstChildElement("debugframegraph");
+    if (pDebugGraph)
+    {
+      std::string value;
+      if (XMLUtils::GetString(pDebugGraph, "scale", value))
+      {
+        if (StringUtils::EqualsNoCase(value, "lin") || StringUtils::EqualsNoCase(value, "linear"))
+          m_videoDebugGraphLogScale = false;
+        else if (StringUtils::EqualsNoCase(value, "log") ||
+                 StringUtils::EqualsNoCase(value, "logarithmic"))
+          m_videoDebugGraphLogScale = true;
+      }
+      if (XMLUtils::GetString(pDebugGraph, "mode", value))
+        m_videoDebugGraphSweep = !StringUtils::EqualsNoCase(value, "scroll");
+      XMLUtils::GetBoolean(pDebugGraph, "frametypes", m_videoDebugGraphFrameTypes);
+      XMLUtils::GetInt(pDebugGraph, "height", m_videoDebugGraphHeight, 10, 90);
+    }
 
     // Store global display latency settings
     const TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
