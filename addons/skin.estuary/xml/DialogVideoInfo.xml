@@ -35,7 +35,7 @@
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-skin-info-service-DialogVideoInfo.xml) | Window.IsVisible(script-skin-info-service-DialogActorInfo.xml) | Window.IsVisible(script-skin-info-service-DialogImageViewer.xml)">Conditional</animation>
 			<control type="group">
 				<top>150</top>
 				<left>66</left>
@@ -189,20 +189,20 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
-						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
+						<param name="onclick_condition" value="System.AddonIsEnabled(script.skin.info.service) + [!String.IsEmpty(ListItem.DBID) | [!String.IsEmpty(ListItem.UniqueID(tmdb)) + !String.IsEqual(ListItem.DBType,episode)]]" />
+						<param name="onclick" value="RunScript(script.skin.info.service,action=dialog_actor_info,crew=director,dbid=$INFO[ListItem.DBID],dbtype=$INFO[ListItem.DBType],tmdb_id=$INFO[ListItem.UniqueID(tmdb)])" />
+						<param name="altclick_condition" value="System.AddonIsEnabled(script.skin.info.service) + [!String.IsEmpty(ListItem.DBID) | [!String.IsEmpty(ListItem.UniqueID(tmdb)) + !String.IsEqual(ListItem.DBType,episode)]]" />
+						<param name="altclick" value="RunScript(script.skin.info.service,action=dialog_actor_info,crew=director,dbid=$INFO[ListItem.DBID],dbtype=$INFO[ListItem.DBType],tmdb_id=$INFO[ListItem.UniqueID(tmdb)])" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="148" />
 						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Writer,$LOCALIZE[20417]: ]" />
-						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
-						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
+						<param name="onclick_condition" value="System.AddonIsEnabled(script.skin.info.service) + [!String.IsEmpty(ListItem.DBID) | [!String.IsEmpty(ListItem.UniqueID(tmdb)) + !String.IsEqual(ListItem.DBType,episode)]]" />
+						<param name="onclick" value="RunScript(script.skin.info.service,action=dialog_actor_info,crew=writer,dbid=$INFO[ListItem.DBID],dbtype=$INFO[ListItem.DBType],tmdb_id=$INFO[ListItem.UniqueID(tmdb)])" />
+						<param name="altclick_condition" value="System.AddonIsEnabled(script.skin.info.service) + [!String.IsEmpty(ListItem.DBID) | [!String.IsEmpty(ListItem.UniqueID(tmdb)) + !String.IsEqual(ListItem.DBType,episode)]]" />
+						<param name="altclick" value="RunScript(script.skin.info.service,action=dialog_actor_info,crew=writer,dbid=$INFO[ListItem.DBID],dbtype=$INFO[ListItem.DBType],tmdb_id=$INFO[ListItem.UniqueID(tmdb)])" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
 					</include>
 					<include content="InfoDialogMetadata">
@@ -330,9 +330,9 @@
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
-					<onup condition="System.AddonIsEnabled(script.embuary.info) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.embuary.info,call=person,query='$ESCINFO[Container(50).ListItem.Label]')</onup>
-					<onup condition="System.HasAddon(script.embuary.info) + !System.AddonIsEnabled(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">EnableAddon(script.embuary.info)</onup>
-					<onup condition="!System.HasAddon(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.embuary.info)</onup>
+					<onup condition="System.AddonIsEnabled(script.skin.info.service) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set) + [!String.IsEmpty(ListItem.DBID) | [!String.IsEmpty(ListItem.UniqueID(tmdb)) + !String.IsEqual(ListItem.DBType,episode)]]">RunScript(script.skin.info.service,action=dialog_actor_info,"name=$INFO[Container(50).ListItem.Label]","role=$INFO[Container(50).ListItem.Label2]",dbid=$INFO[ListItem.DBID],dbtype=$INFO[ListItem.DBType],tmdb_id=$INFO[ListItem.UniqueID(tmdb)])</onup>
+					<onup condition="System.HasAddon(script.skin.info.service) + !System.AddonIsEnabled(script.skin.info.service) + !String.IsEqual(ListItem.DBType,set)">EnableAddon(script.skin.info.service)</onup>
+					<onup condition="!System.HasAddon(script.skin.info.service) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.skin.info.service)</onup>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<ondown>140</ondown>
@@ -685,10 +685,10 @@
 						<item>
 							<label>$LOCALIZE[31034]</label>
 							<icon>icons/infodialogs/info.png</icon>
-							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)">RunScript(script.embuary.info,call=movie,dbid=$INFO[ListItem.DBID])</onclick>
-							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)">RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])</onclick>
-							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)">RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])</onclick>
-							<visible>System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]</visible>
+							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)">RunScript(script.skin.info.service,action=dialog_video_info,dbid=$INFO[ListItem.DBID],dbtype=movie)</onclick>
+							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)">RunScript(script.skin.info.service,action=dialog_video_info,dbid=$INFO[ListItem.DBID],dbtype=tvshow)</onclick>
+							<onclick condition="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)">RunScript(script.skin.info.service,action=dialog_video_info,dbid=$INFO[ListItem.TvShowDBID],dbtype=tvshow)</onclick>
+							<visible>System.AddonIsEnabled(script.skin.info.service) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[31028]</label>
@@ -783,7 +783,7 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-skin-info-service-DialogVideoInfo.xml) | Window.IsVisible(script-skin-info-service-DialogActorInfo.xml) | Window.IsVisible(script-skin-info-service-DialogImageViewer.xml)">Conditional</animation>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
 			<bottom>10</bottom>
