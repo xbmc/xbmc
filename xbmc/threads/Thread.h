@@ -99,6 +99,9 @@ public:
 
   static CThread* GetCurrentThread();
 
+  //! Set by StopThread(), i.e. once the owner may be blocked waiting for this thread
+  CEvent& GetStopEvent() { return m_StopEvent; }
+
   virtual void OnException(){} // signal termination handler
 
 protected:
@@ -107,9 +110,6 @@ protected:
   virtual void Process();
 
   std::atomic<bool> m_bStop;
-
-  //! Set by StopThread(), i.e. once the owner may be blocked waiting for this thread
-  CEvent& GetStopEvent() { return m_StopEvent; }
 
   enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
 

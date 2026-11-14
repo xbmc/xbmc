@@ -197,6 +197,40 @@ bool CApplicationMessenger::SendMsgAbortable(
   return claimed->load();
 }
 
+int CApplicationMessenger::SendMsgAbortable(
+    uint32_t messageId, int param1, int param2, std::shared_ptr<void> payload, CEvent& abortEvent)
+{
+  if (m_guiThreadId == CThread::GetCurrentThreadId())
+    return SendMsg(messageId, param1, param2, payload.get());
+
+  if (m_bStop || abortEvent.Signaled())
+    return -1;
+
+  auto waitEvent = std::make_shared<CEvent>(true);
+  auto result = std::make_shared<int>(-1);
+  auto claimed = std::make_shared<std::atomic<bool>>(false);
+  ThreadMessage* msg = new ThreadMessage{messageId, param1, param2, payload.get()};
+  msg->payloadOwner = std::move(payload);
+  msg->waitEvent = waitEvent;
+  msg->result = result;
+  msg->claimed = claimed;
+  Enqueue(msg); // msg may be deleted from here on
+
+  // ensure the thread doesn't hold the graphics lock
+  std::optional<CSingleExit> exit;
+  if (CWinSystemBase* winSystem = CServiceBroker::GetWinSystem(); winSystem)
+    exit.emplace(winSystem->GetGfxContext());
+
+  XbmcThreads::CEventGroup group{waitEvent.get(), &abortEvent};
+  if (group.wait() == &abortEvent)
+  {
+    // drop it, unless the app thread has already taken it
+    claimed->exchange(true);
+    return -1;
+  }
+  return *result;
+}
+
 int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
 {
   return SendMsg(ThreadMessage{messageId, param1, param2, payload, std::move(strParam),
