@@ -332,6 +332,20 @@ public:
       uint32_t messageId, int param1, int param2, void* payload, CEvent& abortEvent);
 
   /*!
+   * \brief As above, for a payload the message owns
+   *
+   * The payload outlives this call, so the wait also ends while the message is being processed,
+   * which then finishes without the sender.
+   *
+   * \return the message's result, or -1 if it was dropped or the wait ended first
+   */
+  int SendMsgAbortable(uint32_t messageId,
+                       int param1,
+                       int param2,
+                       std::shared_ptr<void> payload,
+                       CEvent& abortEvent);
+
+  /*!
    * \brief Send a non-blocking message and return immediately
    *
    * If and what the response is depends entirely on the message being sent and

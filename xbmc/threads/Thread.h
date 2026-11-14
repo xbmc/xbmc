@@ -99,6 +99,9 @@ public:
 
   static CThread* GetCurrentThread();
 
+  //! Set once another thread is blocked in StopThread() waiting for this one
+  CEvent& GetStopWaitEvent() { return m_StopWaitEvent; }
+
   virtual void OnException(){} // signal termination handler
 
 protected:
@@ -134,6 +137,7 @@ private:
 
   bool m_bAutoDelete = false;
   CEvent m_StopEvent;
+  CEvent m_StopWaitEvent{true};
   CEvent m_StartEvent;
   CCriticalSection m_CriticalSection;
   IRunnable* m_pRunnable;
