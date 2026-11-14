@@ -140,6 +140,11 @@ CInfoScanner::InfoType CNfoFile::TryParsing(const CURL& nfoPath, ADDON::ContentT
   if (Load(nfoPath) != 0) // Setup m_doc and m_headPos
     return CInfoScanner::InfoType::ERROR_NFO;
 
+  return TryParsingDocument(contentType);
+}
+
+CInfoScanner::InfoType CNfoFile::TryParsingDocument(ADDON::ContentType contentType)
+{
   m_addonType = ScraperTypeFromContent(contentType);
 
   if (m_addonType == ADDON::AddonType::SCRAPER_MOVIES && !SeekToMovieIndex(1))
@@ -204,6 +209,18 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath, const Scrape
   if (result == CInfoScanner::InfoType::ERROR_NFO)
     return CInfoScanner::InfoType::NONE;
   return SearchNfoForScraperUrls(result, info);
+}
+
+CInfoScanner::InfoType CNfoFile::CreateFromText(const std::string& text, const ScraperPtr& info)
+{
+  // As Create(): what the text holds depends on the content its scraper reads, and an empty text,
+  // as an empty file, holds nothing
+  if (!info || text.empty())
+    return CInfoScanner::InfoType::NONE;
+
+  Close();
+  m_doc = text;
+  return SearchNfoForScraperUrls(TryParsingDocument(info->Content()), info);
 }
 
 CInfoScanner::InfoType CNfoFile::SearchNfoForScraperUrls(CInfoScanner::InfoType parseResult,

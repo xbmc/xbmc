@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IVideoInfoTagLoader.h"
+#include "NfoFile.h"
 
 #include <string>
 #include <vector>
@@ -50,9 +51,14 @@ protected:
   XFILE::CFile* m_file = nullptr; //!< VFS file handle for file
   mutable int m_metadata_stream = -1; //!< Stream holding kodi metadata (mkv)
   mutable bool m_override_data = false; //!< Data is for overriding
+  CNfoFile m_overrideNfo; //!< The nfo overriding a scraper's details (mkv), once read
+  bool m_overrideRead = false; //!< Whether the overriding nfo has been read
+  CInfoScanner::InfoType m_overrideResult = CInfoScanner::InfoType::NONE; //!< What it was read as
 
   //! \brief Load tags from MKV file.
-  CInfoScanner::InfoType LoadMKV(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
+  CInfoScanner::InfoType LoadMKV(CVideoInfoTag& tag,
+                                 bool prioritise,
+                                 std::vector<EmbeddedArt>* art);
 
   //! \brief Load tags from MP4 file.
   CInfoScanner::InfoType LoadMP4(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);

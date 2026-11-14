@@ -34,6 +34,15 @@ public:
 
   CInfoScanner::InfoType Create(const std::string& nfoPath, const ADDON::ScraperPtr& info);
 
+  /*! \brief Read an nfo's text, as Create() reads the file's, where no file holds it.
+   As a video file's tags hold an nfo, or a url alone. The text is classified and searched for the
+   scraper's url, as a file's is, and nothing is loaded.
+   \param text the nfo's text
+   \param info the scraper to read it for
+   \return what the text holds, NONE without a scraper or a text
+   */
+  CInfoScanner::InfoType CreateFromText(const std::string& text, const ADDON::ScraperPtr& info);
+
   /*! \brief Parse the already loaded document's nth <movie> element.
    Only valid after a successful Create(), and only for movie documents - nothing else can hold
    more than one entry.
@@ -80,6 +89,7 @@ public:
 private:
   CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
   CInfoScanner::InfoType TryParsing(const CURL& nfoPath, ADDON::ContentType contentType);
+  CInfoScanner::InfoType TryParsingDocument(ADDON::ContentType contentType);
   CInfoScanner::InfoType SearchNfoForScraperUrls(CInfoScanner::InfoType parseResult,
                                                  const ADDON::ScraperPtr& info);
   bool SeekToMovieIndex(int index);

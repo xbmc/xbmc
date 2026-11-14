@@ -7,25 +7,68 @@
  */
 
 #include "FileItem.h"
+#include "addons/Scraper.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/FFmpeg.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 
+#include <cstring>
+#include <memory>
 #include <string>
+#include <utility>
 
 #include <gtest/gtest.h>
 
 namespace
 {
-//! An mp4 holding a subtitle track with no samples, tagged with a title and a track. The tags are
-//! written as named metadata, which keeps the track as the text given, rather than as the number
-//! the iTunes track tag holds.
+constexpr const char* SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videotagloaderffmpeg" name="Test scraper" version="1.0.0"
+       provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+//! A movie scraper that recognises a url to imdb.invalid, as the IMDb scraper recognises its own.
+//! A scraper that can't search does nothing else either.
+constexpr const char* SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1">
+  <NfoUrl dest="3">
+    <RegExp input="$$1" output="&lt;url&gt;http://imdb.invalid/title/\1/&lt;/url&gt;" dest="3">
+      <expression>imdb\.invalid/title/(tt[0-9]+)</expression>
+    </RegExp>
+  </NfoUrl>
+  <CreateSearchUrl dest="3">
+    <RegExp input="$$1" output="&lt;url&gt;http://imdb.invalid/search&lt;/url&gt;" dest="3">
+      <expression/>
+    </RegExp>
+  </CreateSearchUrl>
+</scraper>)";
+
+constexpr const char* URL = "http://imdb.invalid/title/tt0111161/";
+
+//! An mp4 or mkv holding a subtitle track with no samples, and the tags a test gives it. An mp4's
+//! tags are written as named metadata, which keeps a track as the text given, rather than as the
+//! number the iTunes track tag holds.
 class TestVideoTagLoaderFFmpeg : public ::testing::Test
 {
 protected:
-  void TearDown() override { XFILE::CFile::Delete(m_path); }
+  void TearDown() override
+  {
+    XFILE::CFile::Delete(m_path);
+    XFILE::CFile::Delete(m_mkv);
+    XFILE::CDirectory::RemoveRecursive(m_scraper);
+  }
 
   bool WriteMp4(const char* track)
   {
@@ -51,8 +94,75 @@ protected:
     return written;
   }
 
+  //! An mkv with a tag, or with an attachment holding an nfo to override a scraper's details
+  bool WriteMkv(const char* key, const char* value, const std::string& overrideNfo = {})
+  {
+    AVFormatContext* context{nullptr};
+    if (avformat_alloc_output_context2(&context, nullptr, "matroska", m_mkv.c_str()) < 0)
+      return false;
+
+    AVStream* stream{avformat_new_stream(context, nullptr)};
+    stream->codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+    stream->codecpar->codec_id = AV_CODEC_ID_SUBRIP;
+    stream->time_base = {1, 1000};
+    if (key)
+      av_dict_set(&context->metadata, key, value, 0);
+
+    if (!overrideNfo.empty())
+    {
+      AVStream* attachment{avformat_new_stream(context, nullptr)};
+      attachment->codecpar->codec_type = AVMEDIA_TYPE_ATTACHMENT;
+      attachment->codecpar->extradata =
+          static_cast<uint8_t*>(av_mallocz(overrideNfo.size() + AV_INPUT_BUFFER_PADDING_SIZE));
+      std::memcpy(attachment->codecpar->extradata, overrideNfo.data(), overrideNfo.size());
+      attachment->codecpar->extradata_size = static_cast<int>(overrideNfo.size());
+      av_dict_set(&attachment->metadata, "filename", "kodi-override-metadata", 0);
+      av_dict_set(&attachment->metadata, "mimetype", "text/xml", 0);
+    }
+
+    // A subtitle, as the demuxer reading an mkv without a cluster takes the ids of its seek head
+    // for elements, and carries on looking for one
+    uint8_t text[]{'F', 'i', 'l', 'm'};
+    AVPacket* packet{av_packet_alloc()};
+    packet->data = text;
+    packet->size = sizeof(text);
+    packet->pts = 0;
+    packet->dts = 0;
+    packet->duration = 1000;
+    const bool written{avio_open(&context->pb, m_mkv.c_str(), AVIO_FLAG_WRITE) >= 0 &&
+                       avformat_write_header(context, nullptr) >= 0 &&
+                       av_write_frame(context, packet) >= 0 && av_write_trailer(context) >= 0};
+    av_packet_free(&packet);
+    avio_closep(&context->pb);
+    avformat_free_context(context);
+    return written;
+  }
+
+  //! The scraper a scan of the mkv's folder would use
+  ADDON::ScraperPtr Scraper() const
+  {
+    if (!XFILE::CDirectory::Create(m_scraper))
+      return {};
+    for (const auto& [name, content] :
+         {std::pair{"addon.xml", SCRAPER_ADDON}, std::pair{"scraper.xml", SCRAPER_XML}})
+    {
+      XFILE::CFile file;
+      if (!file.OpenForWrite(URIUtils::AddFileToFolder(m_scraper, name), true))
+        return {};
+      file.Write(content, std::strlen(content));
+    }
+    const ADDON::AddonInfoPtr info{ADDON::CAddonInfoBuilder::Generate(m_scraper)};
+    if (!info)
+      return {};
+    return std::make_shared<ADDON::CScraper>(info, ADDON::AddonType::SCRAPER_MOVIES);
+  }
+
   const std::string m_path{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mp4")};
+  const std::string m_mkv{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mkv")};
+  const std::string m_scraper{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg/")};
 };
 } // namespace
 
@@ -82,4 +192,63 @@ TEST_F(TestVideoTagLoaderFFmpeg, AnMp4TrackTagThatIsNotANumberIsPassedOver)
 
   EXPECT_EQ("Film", tag.m_strTitle);
   EXPECT_EQ(-1, tag.m_iTrack);
+}
+
+// The url an mkv's tag names is given to the scraper to recognise, not downloaded as an nfo
+TEST_F(TestVideoTagLoaderFFmpeg, AnMkvsUrlTagIsGivenToItsScraper)
+{
+  ASSERT_TRUE(WriteMkv("IMDBURL", URL));
+  const ADDON::ScraperPtr scraper{Scraper()};
+  ASSERT_TRUE(scraper);
+  const CFileItem item{m_mkv, false};
+  CVideoTagLoaderFFmpeg loader{item, scraper, false};
+  ASSERT_TRUE(loader.HasInfo());
+
+  CVideoInfoTag tag;
+  EXPECT_EQ(CInfoScanner::InfoType::URL, loader.Load(tag, false, nullptr));
+  ASSERT_TRUE(loader.ScraperUrl().HasUrls());
+  EXPECT_EQ(URL, loader.ScraperUrl().GetFirstUrlByType().m_url);
+}
+
+// The nfo an mkv holds to override a scraper's details is read, with the url it names, both as the
+// file is read and again over the scraper's details
+TEST_F(TestVideoTagLoaderFFmpeg, AnMkvsOverrideNfoIsRead)
+{
+  ASSERT_TRUE(
+      WriteMkv(nullptr, nullptr, std::string{"<movie><title>Override</title></movie>\n"} + URL));
+  const ADDON::ScraperPtr scraper{Scraper()};
+  ASSERT_TRUE(scraper);
+  const CFileItem item{m_mkv, false};
+  CVideoTagLoaderFFmpeg loader{item, scraper, false};
+  ASSERT_TRUE(loader.HasInfo());
+
+  CVideoInfoTag tag;
+  EXPECT_EQ(CInfoScanner::InfoType::COMBINED, loader.Load(tag, false, nullptr));
+  ASSERT_TRUE(loader.ScraperUrl().HasUrls());
+  EXPECT_EQ(URL, loader.ScraperUrl().GetFirstUrlByType().m_url);
+  EXPECT_EQ("Override", tag.m_strTitle);
+
+  CVideoInfoTag scraped;
+  scraped.SetTitle("Scraped");
+  scraped.SetPlot("From the scraper");
+  EXPECT_EQ(CInfoScanner::InfoType::COMBINED, loader.Load(scraped, true, nullptr));
+  EXPECT_EQ("Override", scraped.m_strTitle);
+  EXPECT_EQ("From the scraper", scraped.m_strPlot);
+}
+
+// An mkv's override nfo naming no url is still one to override a scraper's details with, rather
+// than a full nfo of its own
+TEST_F(TestVideoTagLoaderFFmpeg, AnMkvsOverrideNfoNamingNoUrlIsAnOverride)
+{
+  ASSERT_TRUE(WriteMkv(nullptr, nullptr, "<movie><title>Override</title></movie>"));
+  const ADDON::ScraperPtr scraper{Scraper()};
+  ASSERT_TRUE(scraper);
+  const CFileItem item{m_mkv, false};
+  CVideoTagLoaderFFmpeg loader{item, scraper, false};
+  ASSERT_TRUE(loader.HasInfo());
+
+  CVideoInfoTag tag;
+  EXPECT_EQ(CInfoScanner::InfoType::OVERRIDE, loader.Load(tag, false, nullptr));
+  EXPECT_FALSE(loader.ScraperUrl().HasUrls());
+  EXPECT_EQ("Override", tag.m_strTitle);
 }
