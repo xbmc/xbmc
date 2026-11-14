@@ -15,7 +15,9 @@
 
 #include <atomic>
 #include <memory>
+#include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 // forward declarations
@@ -64,6 +66,10 @@ public:
                       KODI::VIDEO::EPISODELIST& details,
                       CGUIDialogProgress* pProgress = NULL);
 
+  /*! \brief Show a scraper's error that has a title in a dialog, or log it instead while the
+   thread holds a CLoggedScraperErrors.
+   \param sce the error.
+   */
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
 protected:
@@ -93,3 +99,26 @@ protected:
   int InternalFindMovie(const std::string& movieTitle, int movieYear, MOVIELIST& movielist, bool cleanChars = true);
 };
 
+/*! \brief While a thread holds one, CVideoInfoDownloader::ShowErrorDialog() logs a scraper's error
+ and adds it to the event log, once for each title and message, rather than show it. A library
+ scan holds one while it runs, as a dialog would stop it until someone answered.
+ */
+class CLoggedScraperErrors
+{
+public:
+  CLoggedScraperErrors();
+  ~CLoggedScraperErrors();
+  CLoggedScraperErrors(const CLoggedScraperErrors&) = delete;
+  CLoggedScraperErrors& operator=(const CLoggedScraperErrors&) = delete;
+
+  /*! \brief Log a scraper's error, if the thread holds a CLoggedScraperErrors.
+   \param error the error.
+   \return true if it was logged, false if it is to be shown.
+   */
+  static bool Log(const ADDON::CScraperError& error);
+
+private:
+  CLoggedScraperErrors* m_previous;
+  //! The titles and messages added to the event log
+  std::set<std::pair<std::string, std::string>, std::less<>> m_added;
+};

@@ -37,6 +37,7 @@
 #include "utils/URIUtils.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -186,6 +187,7 @@ public:
   //! As Start() and Process() do
   void Scan(const std::string& directory)
   {
+    CLoggedScraperErrors loggedScraperErrors;
     m_pathsToScan.insert(directory);
     std::vector<std::pair<int, std::string>> subPaths;
     m_database.GetSubPaths(directory, subPaths);
@@ -1127,6 +1129,29 @@ TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
 
   EXPECT_GT(m_db.GetMovieId(second), 0);
   EXPECT_EQ(1, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, AScraperErrorWithATitleIsAddedToTheEventLogOnceForAScan)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  for (const std::string title : {"Afilm", "Bfilm"})
+  {
+    ScraperFile("search-" + title + ".xml",
+                "<error><title>Site down</title><message>Try again later</message></error>");
+    File(m_root, title + ".mkv");
+  }
+  CEventLog* eventLog{CServiceBroker::GetEventLog()};
+  ASSERT_NE(nullptr, eventLog);
+  const size_t errors{eventLog->Get(EventLevel::Error).size()};
+
+  const auto summary{Scan()};
+
+  // Both are looked up, and the scan goes on past each
+  EXPECT_EQ(2u, summary.failed.size());
+  const Events added{eventLog->Get(EventLevel::Error)};
+  ASSERT_EQ(errors + 1, added.size());
+  EXPECT_EQ("Site down", added.back()->GetLabel());
+  EXPECT_EQ("Try again later", added.back()->GetDescription());
 }
 
 TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterASearchFailed)

@@ -8,7 +8,10 @@
 
 #include "VideoInfoDownloader.h"
 
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "filesystem/HttpClientFactory.h"
 #include "filesystem/IHttpClient.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -22,6 +25,12 @@ using namespace std::chrono_literals;
 #ifndef __GNUC__
 #pragma warning (disable:4018)
 #endif
+
+namespace
+{
+//! The CLoggedScraperErrors the thread holds, if any
+thread_local CLoggedScraperErrors* loggedScraperErrors{nullptr};
+} // unnamed namespace
 
 CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr& scraper)
   : CThread("VideoInfoDownloader"), m_info(scraper)
@@ -50,8 +59,35 @@ int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int m
 
 void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
 {
-  if (!sce.Title().empty())
+  if (!sce.Title().empty() && !CLoggedScraperErrors::Log(sce))
     HELPERS::ShowOKDialogText(CVariant{ sce.Title() }, CVariant{ sce.Message() });
+}
+
+CLoggedScraperErrors::CLoggedScraperErrors() : m_previous{loggedScraperErrors}
+{
+  loggedScraperErrors = this;
+}
+
+CLoggedScraperErrors::~CLoggedScraperErrors()
+{
+  loggedScraperErrors = m_previous;
+}
+
+bool CLoggedScraperErrors::Log(const ADDON::CScraperError& error)
+{
+  if (!loggedScraperErrors)
+    return false;
+
+  CLog::Log(LOGERROR, "VideoInfoDownloader: The scraper reported an error: {}: {}", error.Title(),
+            error.Message());
+
+  // Every video the scraper is asked for may give the same error
+  if (!loggedScraperErrors->m_added.emplace(error.Title(), error.Message()).second)
+    return true;
+  if (auto* eventLog{CServiceBroker::GetEventLog()}; eventLog)
+    eventLog->Add(
+        std::make_shared<CNotificationEvent>(error.Title(), error.Message(), EventLevel::Error));
+  return true;
 }
 
 // threaded functions

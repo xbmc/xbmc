@@ -180,6 +180,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Process()
   {
+    // A scraper's error is logged, as a dialog would stop the scan until someone answered it
+    CLoggedScraperErrors loggedScraperErrors;
+
     try
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();

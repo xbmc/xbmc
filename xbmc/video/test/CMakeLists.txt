@@ -12,6 +12,7 @@ set(SOURCES TestBookmark.cpp
             TestVideoDbPaths.cpp
             TestVideoDbUrl.cpp
             TestVideoFileItemClassify.cpp
+            TestVideoInfoDownloader.cpp
             TestVideoInfoScanner.cpp
             TestVideoInfoScannerArt.cpp
             TestVideoInfoScannerExtras.cpp
