@@ -258,14 +258,22 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
   const DirectFormat* direct = FindDirectFormat(buf->av_format);
-  if (direct && direct->texture == target.GetFormat())
+  const bool written = (direct && direct->texture == target.GetFormat())
+                           ? WriteDirect(*direct, *buf, target)
+                           : Convert(buf, target);
+
+  // a target that was not written holds nothing for the next render of this picture to reuse
+  if (!written)
   {
-    if (!WriteDirect(*direct, *buf, target))
-      m_intermediateState = {};
-    ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
-    return;
+    m_intermediateState = {};
   }
 
+  // rotate initial rect
+  ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+}
+
+bool CRendererSoftware::Convert(CRenderBuffer* buf, CD3DTexture& target)
+{
   const AVPixelFormat dstFormat = (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
                                       ? AV_PIX_FMT_X2BGR10LE
                                       : AV_PIX_FMT_BGRA;
@@ -308,8 +316,7 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
 
   if (!m_sw_scale_ctx)
   {
-    m_intermediateState = {};
-    return;
+    return false;
   }
 
   // swscale takes an RGB source through YUV and back, so both ways must use the same coefficients
@@ -335,23 +342,24 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
                                    av_pix_fmt_count_planes(buf->av_format));
     AVFrame* dstFrame = WrapPlanes(dstFormat, width, rows, &dst, &dstStride, 1);
 
-    if (!srcFrame || !dstFrame || sws_scale_frame(m_sw_scale_ctx, dstFrame, srcFrame) < 0)
+    const bool converted =
+        srcFrame && dstFrame && sws_scale_frame(m_sw_scale_ctx, dstFrame, srcFrame) >= 0;
+    if (!converted)
+    {
       CLog::LogF(LOGERROR, "failed to convert the picture.");
+    }
 
     av_frame_free(&srcFrame);
     av_frame_free(&dstFrame);
 
     if (!target.UnlockRect(0))
       CLog::LogF(LOGERROR, "failed to unlock swtarget texture.");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
-    m_intermediateState = {};
+
+    return converted;
   }
 
-  // rotate initial rect
-  ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+  CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
+  return false;
 }
 
 void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
