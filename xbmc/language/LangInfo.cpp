@@ -17,6 +17,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonType.h"
 #include "language/i18n/Iso3166_1.h"
+#include "language/i18n/LanguageTable.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "resources/LocalizeStrings.h"
@@ -914,6 +915,11 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
       }
     }
   }
+
+  // An addon may name a language Kodi's own tables do not
+  std::map<std::string, std::string> addonLanguages;
+  GetAddonsLanguageCodes(addonLanguages);
+  CLanguageTable::GetInstance().DeclareNames(addonLanguages);
 
   CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language);
   if (!Load(language))

@@ -5898,7 +5898,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (stream.name.empty())
         stream.name = info.name;
 
-      if (stream.language.IsUndetermined())
+      if (stream.language.IsUndetermined() && info.language.IsValid())
         stream.language = info.language;
 
       if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)

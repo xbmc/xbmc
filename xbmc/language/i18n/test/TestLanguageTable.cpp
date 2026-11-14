@@ -6,8 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "language/LanguageTag.h"
 #include "language/i18n/LanguageTable.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <map>
 #include <string>
@@ -123,6 +128,27 @@ TEST_F(LanguageTableTest, ADeclaredCodeIsALanguageLikeAnyOther)
   EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), language);
   EXPECT_TRUE(CLanguageTag::TryParse("ZZZ").has_value());
   EXPECT_TRUE(CLanguageTag::ParseStreamLanguage("zzz").Matches(language));
+}
+
+TEST_F(LanguageTableTest, AdvancedSettingsDeclaresItsLanguageCodes)
+{
+  const std::string file{"special://temp/TestLanguageTable-advancedsettings.xml"};
+  const std::string xml{"<advancedsettings><languagecodes>"
+                        "<code><short>es-419</short><long>Spanish - Latin America</long></code>"
+                        "<code><short>zzz</short><long>High Valyrian</long></code>"
+                        "</languagecodes></advancedsettings>"};
+  CXBMCTinyXML document;
+  ASSERT_TRUE(document.Parse(xml));
+  ASSERT_TRUE(document.SaveFile(file));
+
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->ParseSettingsFile(file);
+
+  EXPECT_EQ(CLanguageTag::Parse("Spanish - Latin America").ToString(), "es-419");
+  EXPECT_EQ(CLanguageTag::Parse("es-419").ToEnglishName(), "Spanish - Latin America");
+  EXPECT_TRUE(CLanguageTag::TryParse("zzz").has_value());
+  EXPECT_EQ(CLanguageTag::Parse("High Valyrian").ToString(), "zzz");
+
+  CLangCodeExpander::Clear();
 }
 
 TEST_F(LanguageTableTest, AnAddonNamesALanguageOnlyWhereNothingElseDoes)

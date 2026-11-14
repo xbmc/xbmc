@@ -13,6 +13,7 @@
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
 #include "language/LangInfo.h"
+#include "language/i18n/LanguageTable.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
@@ -41,6 +42,36 @@ using namespace ADDON;
 
 namespace
 {
+
+/*!
+ * \brief Take the languages declared in a <languagecodes> block into the language table.
+ * \param[in] element The block, or nullptr when the file has none.
+ */
+void LoadLanguageCodes(const TiXmlElement* element)
+{
+  if (element == nullptr)
+    return;
+
+  std::map<std::string, std::string> languages;
+  for (const TiXmlElement* code = element->FirstChildElement("code"); code != nullptr;
+       code = code->NextSiblingElement("code"))
+  {
+    const TiXmlNode* shortCode = code->FirstChildElement("short");
+    const TiXmlNode* longName = code->FirstChildElement("long");
+
+    if (shortCode != nullptr && shortCode->FirstChild() != nullptr && longName != nullptr &&
+        longName->FirstChild() != nullptr)
+    {
+      languages.emplace(shortCode->FirstChild()->Value(), longName->FirstChild()->Value());
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "<languagecodes>: a <code> needs both <short> and <long>, ignored");
+    }
+  }
+
+  KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Declare(languages);
+}
 
 bool ValidateVideoStackRegex(const CRegExp& regex)
 {
@@ -1125,6 +1156,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   URIUtils::AddSlashAtEnd(m_cachePath);
 
   CLangCodeExpander::LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+  LoadLanguageCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // trailer matching regexps
   const TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
