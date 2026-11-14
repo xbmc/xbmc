@@ -226,9 +226,6 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_renderOrientation = orientation;
 
   std::tie(m_useDithering, m_ditherDepth) = DX::Windowing()->GetDitherSettings();
-  // TODO: DX does not support Auto dithering yet; treat as 8-bit (previous default)
-  if (m_ditherDepth == 0)
-    m_ditherDepth = 8;
 
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_INVALID;
@@ -247,6 +244,12 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
 
     if (streamIsHDR != DX::Windowing()->IsHDROutput())
       DX::Windowing()->ToggleHDR();
+  }
+
+  // Auto follows the swap chain, which the HDR switch above can recreate in another format
+  if (m_ditherDepth == 0)
+  {
+    m_ditherDepth = DX::Windowing()->GetOutputBitDepth();
   }
 
   return true;
