@@ -117,6 +117,7 @@ protected:
     std::erase_if(CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO),
                   [this](const CMediaSource& source) { return source.strPath == m_root; });
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, m_movieSetsFolder);
     Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL, m_artworkLevel);
     Settings()->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST, m_movieArtWhitelist);
 
@@ -313,6 +314,30 @@ protected:
         type.c_str()));
   }
 
+  //! A movie of a set, Saga, whose information folder holds a poster, a clearlogo and a discart
+  //! \return the set's information folder
+  std::string MovieOfASetWithArt()
+  {
+    const std::string sets{Folder(m_root, "Sets")};
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+    const std::string saga{Folder(sets, "Saga")};
+    for (const std::string image : {"poster.jpg", "clearlogo.png", "discart.png"})
+      File(saga, image);
+    const std::string folder{Folder(m_root, "First")};
+    File(folder, "First.mkv");
+    File(folder, "First.nfo", "<movie><title>First</title><set><name>Saga</name></set></movie>");
+    return saga;
+  }
+
+  //! The art of the set, Saga
+  KODI::ART::Artwork SetArt()
+  {
+    KODI::ART::Artwork art;
+    m_db.GetArtForItem(m_db.GetSingleValueInt("SELECT idSet FROM sets WHERE strSet='Saga'"),
+                       KODI::MEDIA::TYPE::VIDEO_COLLECTION, art);
+    return art;
+  }
+
   std::string m_root;
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
@@ -321,6 +346,8 @@ protected:
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   const bool m_retrieveAllArt{
       Settings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)};
+  const std::string m_movieSetsFolder{
+      Settings()->GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER)};
   const int m_artworkLevel{Settings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
   const std::vector<CVariant> m_movieArtWhitelist{
       Settings()->GetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST)};
@@ -688,6 +715,78 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
   ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
   EXPECT_EQ(moviePoster, MovieArt("poster"));
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
+}
+
+// The art in a set's information folder follows the artwork level, as a movie's does: none at the
+// NONE level...
+TEST_F(TestVideoInfoScannerArt, ASetHasNoArtAtTheArtworkLevelNone)
+{
+  MovieOfASetWithArt();
+  Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                     CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE);
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM sets"));
+  EXPECT_EQ(KODI::ART::Artwork{}, SetArt());
+}
+
+// ...and at the CUSTOM level only a set's own types and those the whitelist adds
+TEST_F(TestVideoInfoScannerArt, ASetHasItsOwnArtAndTheWhitelistsAtTheArtworkLevelCustom)
+{
+  const std::string saga{MovieOfASetWithArt()};
+  SetMovieArtWhitelist({"clearlogo"});
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM sets"));
+  EXPECT_EQ((KODI::ART::Artwork{{"clearlogo", URIUtils::AddFileToFolder(saga, "clearlogo.png")},
+                                {"poster", URIUtils::AddFileToFolder(saga, "poster.jpg")}}),
+            SetArt());
+}
+
+// So does the art a set's set.nfo names, taken where its folder holds none, and the scraper's art
+// for a set, taken without a folder for it. At the ALL level, all of it is taken.
+TEST_F(TestVideoInfoScannerArt, ASetsArtFromItsNfoOrItsScraperFollowsTheArtworkLevel)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  File(Folder(sets, "Saga"), "set.nfo",
+       "<set><title>Saga</title><art><poster>poster.jpg</poster><clearlogo>clearlogo.png"
+       "</clearlogo><discart>discart.png</discart></art></set>");
+  // The set's art, from the folder given, or from the scraper without one
+  const auto setArt = [](const std::string& setsFolder)
+  {
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, setsFolder);
+    CVideoInfoTag tag;
+    tag.m_set.SetTitle("Saga");
+    // As a scraper gives it with a movie's details, other than set.nfo's, so each is told apart
+    tag.m_strPictureURL.SetData(
+        "<thumb aspect=\"set.poster\">http://images.invalid/poster.jpg</thumb>"
+        "<thumb aspect=\"set.clearlogo\">http://images.invalid/clearlogo.png</thumb>"
+        "<thumb aspect=\"set.discart\">http://images.invalid/discart.png</thumb>");
+    CVideoInfoScanner::UpdateSetInTag(tag);
+    return tag.m_set.GetArt();
+  };
+
+  for (const std::string& setsFolder : {sets, std::string{}})
+  {
+    SCOPED_TRACE(setsFolder.empty() ? "the scraper's" : "set.nfo's");
+    // Only the source the set's art is to come from
+    const std::string at{setsFolder.empty() ? "http://images.invalid/" : ""};
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL);
+    EXPECT_EQ((KODI::ART::Artwork{{"clearlogo", at + "clearlogo.png"},
+                                  {"discart", at + "discart.png"},
+                                  {"poster", at + "poster.jpg"}}),
+              setArt(setsFolder));
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE);
+    EXPECT_EQ(KODI::ART::Artwork{}, setArt(setsFolder));
+    SetMovieArtWhitelist({"clearlogo"});
+    EXPECT_EQ(
+        (KODI::ART::Artwork{{"clearlogo", at + "clearlogo.png"}, {"poster", at + "poster.jpg"}}),
+        setArt(setsFolder));
+  }
 }
 
 namespace
