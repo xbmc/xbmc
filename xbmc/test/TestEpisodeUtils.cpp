@@ -105,6 +105,10 @@ static const TestEntry TestData[] = {
     {"foo.S02E03_20231105123456.mkv", {{2, 3}}, {{2, 3}}}, // timestamp
     {"foo.S02E03-special.mkv", {{2, 3}}, {{2, 3}}}, // comment (starting with s)
     {"foo.S02E03-extended.mkv", {{2, 3}}, {{2, 3}}}, // comment (starting with e)
+    {"foo.S01E01_2023-11-05.mkv", {{1, 1}}, {{1, 1}}}, // date
+    {"foo.S01E01-2023-11-05.mkv", {{1, 1}}, {{1, 1}}}, // date
+    {"foo.S01E01_x264.mkv", {{1, 1}}, {{1, 1}}}, // codec
+    {"foo.S01E01-x264.mkv", {{1, 1}}, {{1, 1}}}, // codec
 };
 
 class TestEnumerateEpisodes : public Test, public WithParamInterface<TestEntry>

@@ -365,7 +365,9 @@ void CAdvancedSettings::Initialize()
       false,
       "[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$");
 
-  m_tvshowMultiPartEnumRegExp = "^([-_ex]+)([0-9]+)(.*)";
+  // E02, _E02, -E02, x02 or -02 after an episode. An episode's number has at most three digits, so
+  // a date or a codec after one (_2023-11-05, _x264) gives no more episodes.
+  m_tvshowMultiPartEnumRegExp = "^([-_]?e|x|-)([0-9]{1,3})(?![0-9])(.*)";
 
   // Build regex inserting local specific spelling of disc (xxx)
   // [ _.-]*\((?:xxx|dis[ck])[ _.-]*\d{1,3}\)$
