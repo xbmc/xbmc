@@ -195,16 +195,33 @@ double CActiveAEStream::CalcResampleRatio(double error)
   double clockspeed = 1.0;
   if (m_pClock)
   {
-    clockspeed = m_pClock->GetClockSpeed();
+    clockspeed = GetForwardClockSpeed();
     if (m_clockSpeed != clockspeed)
       m_resampleIntegral = 0;
     m_clockSpeed = clockspeed;
   }
 
-  double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
+  double ret = RatioForSpeed(clockspeed, proportional + m_resampleIntegral);
   //CLog::Log(LOGINFO,"----- error: {:f}, rr: {:f}, prop: {:f}, int: {:f}",
   //                    error, ret, proportional, m_resampleIntegral);
   return ret;
+}
+
+double CActiveAEStream::RatioForSpeed(double clockSpeed, double correction)
+{
+  // Correct the speed audio plays at rather than the ratio, its inverse, so corrections act the
+  // same at any clock speed. Catch up at no more than twice the clock speed.
+  return 1.0 / std::clamp(clockSpeed - correction, 0.5 * clockSpeed, 2.0 * clockSpeed);
+}
+
+double CActiveAEStream::GetForwardClockSpeed() const
+{
+  return ForwardSpeed(m_pClock ? m_pClock->GetClockSpeed() : 1.0);
+}
+
+double CActiveAEStream::ForwardSpeed(double clockSpeed)
+{
+  return clockSpeed > 0.0 ? clockSpeed : 1.0;
 }
 
 std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
@@ -671,6 +688,7 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   {
     buf = m_atempoBuffers->m_outputSamples.front();
     m_atempoBuffers->m_outputSamples.pop_front();
+    buf->mediaSpeed = 1.0 / GetRR();
     m_outputSamples.push_back(buf);
     busy = true;
   }

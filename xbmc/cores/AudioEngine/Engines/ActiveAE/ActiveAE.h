@@ -16,6 +16,7 @@
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
+#include <deque>
 #include <list>
 #include <memory>
 #include <queue>
@@ -189,8 +190,15 @@ class CEngineStats
 public:
   void Reset(unsigned int sampleRate, bool pcm);
   void UpdateSinkDelay(const AEDelayStatus& status, int samples);
-  void AddSamples(int samples, const std::list<CActiveAEStream*>& streams);
+  void AddSamples(int samples, const std::list<CActiveAEStream*>& streams, double mediaSpeed = 1.0);
   void GetDelay(AEDelayStatus& status);
+  /*!
+   * \brief Speed of the samples between the engine and the sink's output.
+   *
+   * \return media time covered per output time by the samples that are buffered or queued in the
+   *         sink, weighted by their duration
+   */
+  double GetQueuedMediaSpeed();
   void AddStream(unsigned int streamid);
   void RemoveStream(unsigned int streamid);
   void UpdateStream(CActiveAEStream *stream);
@@ -230,6 +238,16 @@ protected:
     CAESyncInfo::AESyncState m_syncState;
   };
   std::vector<StreamStats> m_streamStats;
+  // Output time in seconds of samples or, when not outputting PCM, packets
+  double OutputTime(int samples) const;
+  struct QueuedOutput
+  {
+    double m_duration;
+    double m_mediaSpeed;
+  };
+  // Output added, oldest first, until it has left the sink
+  std::deque<QueuedOutput> m_queuedOutput;
+  double m_queuedDuration{0.0};
 };
 
 class CActiveAE : public IAE, public IDispResource, private CThread

@@ -76,6 +76,7 @@ CSampleBuffer* CActiveAEBufferPool::GetFreeBuffer()
     m_freeSamples.pop_front();
     buf->refCount = 1;
     buf->centerMixLevel = M_SQRT1_2;
+    buf->mediaSpeed = 1.0;
   }
   return buf;
 }
@@ -691,12 +692,13 @@ float CActiveAEBufferPoolAtempo::GetDelay()
 
 void CActiveAEBufferPoolAtempo::SetTempo(float tempo)
 {
-  if (tempo > 2.0f)
-    tempo = 2.0;
+  if (tempo > 100.0f)
+    tempo = 100.0;
   else if (tempo < 0.5f)
     tempo = 0.5;
 
-  if (tempo != m_tempo)
+  // Drain and re-create the filter only when the tempo can't be changed in place
+  if (tempo != m_tempo && (m_changeFilter || !m_pTempoFilter->ChangeTempo(tempo)))
     m_changeFilter = true;
 
   m_tempo = tempo;

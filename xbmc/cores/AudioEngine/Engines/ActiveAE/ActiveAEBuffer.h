@@ -55,6 +55,8 @@ public:
   int pkt_start_offset = 0;
   int refCount = 0;
   double centerMixLevel;
+  // Media time the samples cover per output time, the speed they were produced at
+  double mediaSpeed = 1.0;
 };
 
 class CActiveAEBufferPool

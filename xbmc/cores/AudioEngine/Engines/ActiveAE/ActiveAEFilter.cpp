@@ -7,9 +7,12 @@
  */
 
 #include "ActiveAEFilter.h"
-#include "utils/log.h"
+
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include <algorithm>
+#include <cmath>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -20,6 +23,20 @@ extern "C" {
 }
 
 using namespace ActiveAE;
+
+namespace
+{
+// atempo skips input above a tempo of 2, so higher tempos are split across chained instances
+int AtempoStages(float tempo)
+{
+  return std::max(1, static_cast<int>(std::ceil(std::log2(tempo))));
+}
+
+std::string AtempoStageName(int stage)
+{
+  return StringUtils::Format("atempo{}", stage);
+}
+} // namespace
 
 CActiveAEFilter::CActiveAEFilter()
 {
@@ -45,6 +62,8 @@ void CActiveAEFilter::Init(AVSampleFormat fmt, int sampleRate, uint64_t channelL
   m_tempo = 1.0;
   m_SamplesIn = 0;
   m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
+  m_frameTempo = 1.0f;
 }
 
 bool CActiveAEFilter::SetTempo(float tempo)
@@ -67,6 +86,25 @@ bool CActiveAEFilter::SetTempo(float tempo)
 
   m_SamplesIn = 0;
   m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
+  m_frameTempo = m_tempo;
+  return true;
+}
+
+bool CActiveAEFilter::ChangeTempo(float tempo)
+{
+  if (!IsActive() || m_tempo == 1.0f || tempo == 1.0f || AtempoStages(tempo) != m_atempoStages)
+    return false;
+
+  const std::string arg = StringUtils::Format("{:f}", std::pow(tempo, 1.0f / m_atempoStages));
+  for (int stage = 0; stage < m_atempoStages; ++stage)
+  {
+    if (avfilter_graph_send_command(m_pFilterGraph, AtempoStageName(stage).c_str(), "tempo",
+                                    arg.c_str(), nullptr, 0, 0) < 0)
+      return false;
+  }
+
+  m_tempo = tempo;
   return true;
 }
 
@@ -112,21 +150,31 @@ bool CActiveAEFilter::CreateAtempoFilter()
   const AVFilter *atempo;
 
   atempo = avfilter_get_by_name("atempo");
-  m_pFilterCtxAtempo = avfilter_graph_alloc_filter(m_pFilterGraph, atempo, "atempo");
-  std::string args = StringUtils::Format("tempo={:f}", m_tempo);
-  int ret = avfilter_init_str(m_pFilterCtxAtempo, args.c_str());
+  m_atempoStages = AtempoStages(m_tempo);
+  std::string args = StringUtils::Format("tempo={:f}", std::pow(m_tempo, 1.0f / m_atempoStages));
+  AVFilterContext* previous = m_pFilterCtxIn;
+  int ret{0};
 
-  if (ret < 0)
+  for (int stage = 0; stage < m_atempoStages; ++stage)
   {
-    CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_init_str failed");
-    return false;
-  }
+    m_pFilterCtxAtempo =
+        avfilter_graph_alloc_filter(m_pFilterGraph, atempo, AtempoStageName(stage).c_str());
+    ret = avfilter_init_str(m_pFilterCtxAtempo, args.c_str());
 
-  ret = avfilter_link(m_pFilterCtxIn, 0, m_pFilterCtxAtempo, 0);
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_link failed for in filter");
-    return false;
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CActiveAEFilter::CreateAtempoFilter - avfilter_init_str failed");
+      return false;
+    }
+
+    ret = avfilter_link(previous, 0, m_pFilterCtxAtempo, 0);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR,
+                "CActiveAEFilter::CreateAtempoFilter - avfilter_link failed for in filter");
+      return false;
+    }
+    previous = m_pFilterCtxAtempo;
   }
 
   ret = avfilter_link(m_pFilterCtxAtempo, 0, m_pFilterCtxOut, 0);
@@ -184,6 +232,7 @@ void CActiveAEFilter::CloseFilter()
 
   m_SamplesIn = 0;
   m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
 
   m_ptsInitialized = false;
 }
@@ -288,7 +337,11 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       return -1;
     }
 
+    // The previous frame ends where this one starts
+    m_samplesConsumed +=
+        static_cast<double>(outFrame->pts - m_SamplesOut) * static_cast<double>(m_frameTempo);
     m_SamplesOut = outFrame->pts;
+    m_frameTempo = m_tempo;
 
     if (m_needConvert)
     {
@@ -356,7 +409,7 @@ bool CActiveAEFilter::IsActive() const
 
 int CActiveAEFilter::GetBufferedSamples() const
 {
-  int ret = m_SamplesIn - (m_SamplesOut * m_tempo);
+  int ret = static_cast<int>(static_cast<double>(m_SamplesIn) - m_samplesConsumed);
   if (m_hasData)
   {
     ret += (m_pOutFrame->nb_samples - m_sampleOffset);
