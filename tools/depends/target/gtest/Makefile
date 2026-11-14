@@ -1,7 +1,6 @@
 include ../../Makefile.include GTEST-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile GTEST-VERSION ../../download-files.include \
-                        01-win-stl_algorithms_cxxflag.patch \
-                        02-win-pdb_install_paths.patch
+                        01-win-stl_algorithms_cxxflag.patch
 
 CMAKE_OPTIONS := -DBUILD_GMOCK:BOOL=OFF
 
@@ -19,7 +18,6 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(TARGET_PLATFORM),windows)
 	cd $(PLATFORM); patch -p1 -i ../01-win-stl_algorithms_cxxflag.patch
-	cd $(PLATFORM); patch -p1 -i ../02-win-pdb_install_paths.patch
 endif
 	cd $(PLATFORM); $(CMAKE) -B build $(CMAKE_OPTIONS)
 	touch $@

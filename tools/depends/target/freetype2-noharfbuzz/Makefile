@@ -11,7 +11,8 @@ CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
               -DFT_DISABLE_BZIP2=ON \
               -DFT_DISABLE_PNG=ON \
               -DFT_DISABLE_HARFBUZZ=ON \
-              -DFT_DISABLE_BROTLI=ON
+              -DFT_DISABLE_BROTLI=ON \
+              -DFT_DISABLE_HVF=ON
 
 ifeq ($(OS), darwin_embedded)
   # We need SDKROOT without the /SDKs/*.sdk for IOS_DEVELOPER_ROOT
