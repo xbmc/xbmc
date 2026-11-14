@@ -7534,7 +7534,10 @@ msgctxt "#13427"
 msgid "Allow hardware acceleration - DXVA2"
 msgstr ""
 
-#empty string with id 13428
+#: system/settings/linux.xml
+msgctxt "#13428"
+msgid "Allow hardware acceleration - NVDEC"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13429"
@@ -20892,7 +20895,11 @@ msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
-#empty string with id 36159
+#. Description of setting with label #13428 "Allow hardware acceleration - NVDEC"
+#: system/settings/linux.xml
+msgctxt "#36159"
+msgid "Enable NVDEC hardware decoding of video files on NVIDIA graphics. Frames stay in GPU memory (CUDA-GL interop)."
+msgstr ""
 
 #. Description of setting with label #13429 "Allow hardware acceleration (VDADecoder)"
 #: system/settings/settings.xml
