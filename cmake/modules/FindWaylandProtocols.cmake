@@ -26,6 +26,9 @@ if(PC_WAYLAND_PROTOCOLS_FOUND)
     list(APPEND WAYLAND_PROTOCOLS_XMLS "${WAYLAND_PROTOCOLS_DIR}/staging/color-management/color-management-v1.xml")
   endif()
 
+  # draft protocol (wayland-protocols MR 518), carried until a release has it
+  list(APPEND WAYLAND_PROTOCOLS_XMLS "${CMAKE_SOURCE_DIR}/xbmc/windowing/wayland/protocols/content-frame-rate-v1.xml")
+
   # pkg-config finding the package is not evidence the descriptions were installed with it
   foreach(xml IN LISTS WAYLAND_PROTOCOLS_XMLS)
     if(NOT EXISTS "${xml}")

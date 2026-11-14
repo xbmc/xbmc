@@ -254,6 +254,8 @@ public:
    *
    */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
+  /// Frame rate of the video on screen, 0 when none, for compositors that pick the refresh rate
+  virtual void SetContentFrameRate(float fps) {}
   // UWP refreshes cached HDR state on the UI thread when this is queried.
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }

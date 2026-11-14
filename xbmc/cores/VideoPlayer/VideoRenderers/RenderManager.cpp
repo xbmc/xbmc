@@ -415,6 +415,10 @@ void CRenderManager::UnInit()
   m_picture.Reset();
   m_bRenderGUI = false;
 
+  if (auto* winSystem = CServiceBroker::GetWinSystem();
+      winSystem && CServiceBroker::GetAppMessenger()->IsProcessThread())
+    winSystem->SetContentFrameRate(0.0f);
+
   m_initEvent.Set();
 }
 
@@ -817,6 +821,7 @@ void CRenderManager::UpdateResolution()
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(
             m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+        CServiceBroker::GetWinSystem()->SetContentFrameRate(m_fps);
         UpdateLatencyTweak();
         if (m_pRenderer)
           m_pRenderer->Update();
