@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IDirectory.h"
+#include "media/MediaSection.h"
 
 #include <memory>
 #include <vector>
@@ -65,6 +66,11 @@ namespace XFILE
 
     /*! \brief Returns true if `path` is a path or subpath of the repository directory, otherwise false */
     static bool IsRepoDirectory(const CURL& path);
+
+    /*! \brief The addons:// path listing the add-ons that provide content to \p section, empty
+     when \p section has none.
+     */
+    static std::string SourcesPathOf(KODI::MEDIA::MediaSection section);
 
   private:
     bool GetSearchResults(const CURL& path, CFileItemList &items);

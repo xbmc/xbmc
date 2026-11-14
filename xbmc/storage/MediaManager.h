@@ -221,23 +221,6 @@ private:
    */
   void LoadAddonSources() const;
 
-  /*! \brief Get the addons root source for the given section
-   \param section the section whose add-ons are wanted
-   \return the given CMediaSource for the addon root directory, empty for a section with no
-   add-ons of its own
-   */
-  CMediaSource GetRootAddonTypeSource(KODI::MEDIA::MediaSection section) const;
-
-  /*! \brief Generate the addons source for the given content type
-   \param type the type of addon content desired
-   \param label the name of the addons source
-   \param thumb image to use as the icon
-   \return the given CMediaSource for the addon root directory
-   */
-  CMediaSource ComputeRootAddonTypeSource(const std::string& type,
-                                          const std::string& label,
-                                          const std::string& thumb) const;
-
   std::unique_ptr<IStorageProvider> m_platformStorage;
 #ifdef HAS_OPTICAL_DRIVE
   std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
