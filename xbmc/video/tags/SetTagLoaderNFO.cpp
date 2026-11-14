@@ -8,21 +8,13 @@
 
 #include "SetTagLoaderNFO.h"
 
-#include "NfoFile.h"
 #include "URL.h"
-#include "addons/AddonManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoInfoScanner.h"
-
-#include <utility>
-
-#include <ServiceBroker.h>
-
-using namespace XFILE;
-using namespace ADDON;
 
 CSetTagLoaderNFO::CSetTagLoaderNFO(const std::string& title) : ISetInfoTagLoader(title)
 {
@@ -40,45 +32,23 @@ bool CSetTagLoaderNFO::HasInfo() const
 
 CInfoScanner::InfoType CSetTagLoaderNFO::Load(CSetInfoTag& tag, const bool prioritise)
 {
-  CNfoFile nfoReader;
-  AddonPtr addon;
-  CServiceBroker::GetAddonMgr().GetAddon("metadata.local", addon, ADDON::OnlyEnabled::CHOICE_YES);
-  const ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
-  const CInfoScanner::InfoType result{nfoReader.Create(m_path, scraper)};
-
-  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
-    nfoReader.GetDetails(tag, nullptr);
+  // Read as it is, as no scraper reads sets: classified as a scraper's nfo, it read as an album's.
+  // As before, what parses of a document with an error in it is read.
+  CXBMCTinyXML doc;
+  doc.LoadFile(m_path);
+  const bool loaded{tag.Load(doc.RootElement(), true, prioritise)};
 
   // ** Get set name from originally passed if needed
   if (tag.GetTitle().empty())
     tag.SetTitle(m_title);
 
-  std::string type;
-  switch (result)
+  if (!loaded)
   {
-    case CInfoScanner::InfoType::COMBINED:
-      type = "mixed";
-      break;
-    case CInfoScanner::InfoType::FULL:
-      type = "full";
-      break;
-    case CInfoScanner::InfoType::URL:
-      type = "URL";
-      break;
-    case CInfoScanner::InfoType::NONE:
-      type = "";
-      break;
-    case CInfoScanner::InfoType::OVERRIDE:
-      type = "override";
-      break;
-    default:
-      type = "malformed";
-  }
-  if (result != CInfoScanner::InfoType::NONE)
-    CLog::LogF(LOGDEBUG, "Found matching {} NFO file: {}", type, CURL::GetRedacted(m_path));
-  else
     CLog::LogF(LOGDEBUG, "No NFO file found. Using title search for '{}'",
                CURL::GetRedacted(m_path));
+    return CInfoScanner::InfoType::NONE;
+  }
 
-  return result;
+  CLog::LogF(LOGDEBUG, "Found matching full NFO file: {}", CURL::GetRedacted(m_path));
+  return CInfoScanner::InfoType::FULL;
 }
