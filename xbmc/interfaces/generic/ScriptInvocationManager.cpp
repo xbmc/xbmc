@@ -12,6 +12,7 @@
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -281,6 +282,9 @@ int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
     }
     // Still finishing a run its caller has done with: this run has a thread of its own
     else if (std::chrono::steady_clock::now() >= finishedBy)
+      return -1;
+    // A caller that has stopped waits no longer, and starts no run (CRunningScriptsHandler)
+    if (CScriptRunner::CAbandonWhen::IsSet())
       return -1;
     m_released.wait_for(lock, RELEASE_POLL);
   }

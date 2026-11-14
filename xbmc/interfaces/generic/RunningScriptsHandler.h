@@ -37,6 +37,12 @@ protected:
 
     // reuse an existing script handle or get a new one if necessary
     int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(addon->LibPath());
+    // a caller that has stopped, before or while it waited for a thread, starts no run
+    if (CAbandonWhen::IsSet())
+    {
+      CScriptInvocationManager::GetInstance().ReleasePluginHandle(handle);
+      return false;
+    }
     if (handle < 0)
       handle = GetNewScriptHandle(script);
     else
@@ -45,9 +51,9 @@ protected:
     // run the script
     auto result = CScriptRunner::RunScript(addon, url, handle, resume);
 
-    // remove the script handle if necessary
+    // remove the script handle, so that a run no longer waited for reaches nothing as it ends
     RemoveScriptHandle(handle);
-    // then let another run take its thread, which will reuse the handle
+    // then let another run take its thread once its run has ended, which will reuse the handle
     CScriptInvocationManager::GetInstance().ReleasePluginHandle(handle);
 
     return result;

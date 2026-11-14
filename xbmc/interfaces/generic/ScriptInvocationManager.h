@@ -48,7 +48,8 @@ public:
    * \brief Claims a thread that has run \p script and waits to run it again, so that no other run
    * takes it until ReleasePluginHandle().
    * \return the plugin handle the thread was first run with, which the script can have kept, or -1
-   * if no such thread is free
+   * if no such thread is free, or if the caller stopped while it waited for one (see
+   * CScriptRunner::CAbandonWhen)
    */
   int GetReusablePluginHandle(const std::string& script);
 
