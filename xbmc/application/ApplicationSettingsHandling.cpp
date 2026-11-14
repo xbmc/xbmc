@@ -56,15 +56,10 @@ void CApplicationSettingsHandling::RegisterSettings()
   settingsMgr->RegisterCallback(this, {
                                           CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
                                           CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
-                                          CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
                                           CSettings::SETTING_AUDIOCDS_SETTINGS,
                                           CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
                                           CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT,
                                           CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT,
-                                          CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
-                                          CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
-                                          CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER,
-                                          CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS,
                                           CSettings::SETTING_SOURCE_VIDEOS,
                                           CSettings::SETTING_SOURCE_MUSIC,
                                           CSettings::SETTING_SOURCE_PICTURES,
@@ -149,9 +144,10 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
 
   if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
   {
-    if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(
-          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), true);
+    CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
+    if (winSystem->GetGfxContext().IsFullScreenRoot())
+      winSystem->GetGfxContext().SetVideoResolution(winSystem->GetGfxContext().GetVideoResolution(),
+                                                    true);
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {
@@ -228,13 +224,13 @@ void CApplicationSettingsHandling::ApplyRasterSettings()
 
 void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  auto& windowManager{CServiceBroker::GetGUI()->GetWindowManager()};
   if (!setting)
     return;
 
+  auto& windowManager{CServiceBroker::GetGUI()->GetWindowManager()};
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SKIN_SETTINGS);
+    windowManager.ActivateWindow(WINDOW_SKIN_SETTINGS);
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
     ADDON::AddonPtr addon;
