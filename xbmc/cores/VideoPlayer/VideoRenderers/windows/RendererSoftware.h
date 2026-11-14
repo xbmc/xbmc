@@ -34,7 +34,13 @@ protected:
   void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4]) override;
 
 private:
+  //! \brief Converts the picture into \p target with swscale
+  bool Convert(CRenderBuffer* buf, CD3DTexture& target);
+
   SwsContext* m_sw_scale_ctx = nullptr;
+  // swscale rewrites some formats in the context, so what it was made for is kept here
+  AVPixelFormat m_scalerSrcFormat = AV_PIX_FMT_NONE;
+  AVPixelFormat m_scalerDstFormat = AV_PIX_FMT_NONE;
   SwsFilter* m_srcFilter = nullptr;
   bool m_restoreMultithreadProtectedOff = false;
 };

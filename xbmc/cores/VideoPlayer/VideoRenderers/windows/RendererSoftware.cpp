@@ -16,6 +16,12 @@
 #include <algorithm>
 #include <cstring>
 
+extern "C"
+{
+#include <libavutil/frame.h>
+#include <libavutil/imgutils.h>
+}
+
 using namespace Microsoft::WRL;
 
 namespace
@@ -58,7 +64,8 @@ const DirectFormat* FindDirectFormat(AVPixelFormat format)
   return it != std::end(DIRECT_FORMATS) ? &*it : nullptr;
 }
 
-void WriteDirect(const DirectFormat& format, CRenderBuffer& buf, const CD3DTexture& target)
+//! \return False when nothing was written
+bool WriteDirect(const DirectFormat& format, CRenderBuffer& buf, const CD3DTexture& target)
 {
   uint8_t* planes[YuvImage::MAX_PLANES];
   int strides[YuvImage::MAX_PLANES];
@@ -68,7 +75,7 @@ void WriteDirect(const DirectFormat& format, CRenderBuffer& buf, const CD3DTextu
   if (!target.LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
   {
     CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
-    return;
+    return false;
   }
 
   const uint8_t* src = planes[0];
@@ -78,6 +85,78 @@ void WriteDirect(const DirectFormat& format, CRenderBuffer& buf, const CD3DTextu
     format.writeRow(src, dst, buf.GetWidth());
 
   target.UnlockRect(0);
+  return true;
+}
+
+SwsContext* CreateScaler(int width,
+                         int height,
+                         AVPixelFormat srcFormat,
+                         AVPixelFormat dstFormat,
+                         int flags,
+                         SwsFilter* srcFilter)
+{
+  SwsContext* context = sws_alloc_context();
+  if (!context)
+    return nullptr;
+
+  context->src_w = width;
+  context->src_h = height;
+  context->src_format = srcFormat;
+  context->dst_w = width;
+  context->dst_h = height;
+  context->dst_format = dstFormat;
+  context->flags = flags;
+  // As many threads as swscale chooses, except for 8 bit packed RGB to BGRA: that is only a
+  // copy, which more threads slow down
+  context->threads = (srcFormat == AV_PIX_FMT_BGR0 && dstFormat == AV_PIX_FMT_BGRA) ? 1 : 0;
+
+  if (sws_init_context(context, srcFilter, nullptr) < 0)
+  {
+    sws_freeContext(context);
+    return nullptr;
+  }
+  return context;
+}
+
+void KeepMemory(void*, uint8_t*)
+{
+}
+
+// A frame over memory swscale does not own. Each plane carries a buffer reference, without which
+// sws_scale_frame copies a source and allocates its own destination.
+AVFrame* WrapPlanes(AVPixelFormat format,
+                    int width,
+                    int height,
+                    uint8_t* const planes[],
+                    const int strides[],
+                    int count)
+{
+  AVFrame* frame = av_frame_alloc();
+  if (!frame)
+    return nullptr;
+
+  frame->format = format;
+  frame->width = width;
+  frame->height = height;
+
+  ptrdiff_t linesizes[4] = {};
+  for (int i = 0; i < count; ++i)
+    linesizes[i] = strides[i];
+  size_t sizes[4] = {};
+  av_image_fill_plane_sizes(sizes, format, height, linesizes);
+
+  for (int i = 0; i < count; ++i)
+  {
+    frame->data[i] = planes[i];
+    frame->linesize[i] = strides[i];
+    frame->buf[i] = av_buffer_create(planes[i], sizes[i], KeepMemory, nullptr, 0);
+    if (!frame->buf[i])
+    {
+      av_frame_free(&frame);
+      return nullptr;
+    }
+  }
+  return frame;
 }
 } // namespace
 
@@ -179,13 +258,22 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
   const DirectFormat* direct = FindDirectFormat(buf->av_format);
-  if (direct && direct->texture == target.GetFormat())
+  const bool written = (direct && direct->texture == target.GetFormat())
+                           ? WriteDirect(*direct, *buf, target)
+                           : Convert(buf, target);
+
+  // a target that was not written holds nothing for the next render of this picture to reuse
+  if (!written)
   {
-    WriteDirect(*direct, *buf, target);
-    ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
-    return;
+    m_intermediateState = {};
   }
 
+  // rotate initial rect
+  ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+}
+
+bool CRendererSoftware::Convert(CRenderBuffer* buf, CD3DTexture& target)
+{
   const AVPixelFormat dstFormat = (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
                                       ? AV_PIX_FMT_X2BGR10LE
                                       : AV_PIX_FMT_BGRA;
@@ -215,14 +303,20 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   }
 
   // 1. convert yuv to rgb
-  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx, buf->GetWidth(), buf->GetHeight(),
-                                        buf->av_format, buf->GetWidth(), buf->GetHeight(),
-                                        dstFormat, swsFlags, m_srcFilter, nullptr, nullptr);
+  const int width = static_cast<int>(buf->GetWidth());
+  const int height = static_cast<int>(buf->GetHeight());
+  if (!m_sw_scale_ctx || m_sw_scale_ctx->src_w != width || m_sw_scale_ctx->src_h != height ||
+      m_scalerSrcFormat != buf->av_format || m_scalerDstFormat != dstFormat)
+  {
+    sws_freeContext(m_sw_scale_ctx);
+    m_sw_scale_ctx = CreateScaler(width, height, buf->av_format, dstFormat, swsFlags, m_srcFilter);
+    m_scalerSrcFormat = buf->av_format;
+    m_scalerDstFormat = dstFormat;
+  }
 
   if (!m_sw_scale_ctx)
   {
-    m_intermediateState = {};
-    return;
+    return false;
   }
 
   // swscale takes an RGB source through YUV and back, so both ways must use the same coefficients
@@ -240,22 +334,32 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   D3D11_MAPPED_SUBRESOURCE mapping;
   if (target.LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
   {
-    uint8_t *dst[] = { static_cast<uint8_t*>(mapping.pData), nullptr, nullptr };
-    int dstStride[] = { static_cast<int>(mapping.RowPitch), 0, 0 };
+    uint8_t* dst = static_cast<uint8_t*>(mapping.pData);
+    const int dstStride = static_cast<int>(mapping.RowPitch);
+    const int rows = std::min(static_cast<int>(target.GetHeight()), height);
 
-    sws_scale(m_sw_scale_ctx, src, srcStride, 0, std::min(target.GetHeight(), buf->GetHeight()), dst, dstStride);
+    AVFrame* srcFrame = WrapPlanes(buf->av_format, width, height, src, srcStride,
+                                   av_pix_fmt_count_planes(buf->av_format));
+    AVFrame* dstFrame = WrapPlanes(dstFormat, width, rows, &dst, &dstStride, 1);
+
+    const bool converted =
+        srcFrame && dstFrame && sws_scale_frame(m_sw_scale_ctx, dstFrame, srcFrame) >= 0;
+    if (!converted)
+    {
+      CLog::LogF(LOGERROR, "failed to convert the picture.");
+    }
+
+    av_frame_free(&srcFrame);
+    av_frame_free(&dstFrame);
 
     if (!target.UnlockRect(0))
       CLog::LogF(LOGERROR, "failed to unlock swtarget texture.");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
-    m_intermediateState = {};
+
+    return converted;
   }
 
-  // rotate initial rect
-  ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+  CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
+  return false;
 }
 
 void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
