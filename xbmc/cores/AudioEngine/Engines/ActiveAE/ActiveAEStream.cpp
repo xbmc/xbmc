@@ -592,10 +592,6 @@ bool CActiveAEStream::HasSinkFormatChanged() const
   return m_sinkFormatChanged;
 }
 
-{
-}
-
-
 void CActiveAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
 }
