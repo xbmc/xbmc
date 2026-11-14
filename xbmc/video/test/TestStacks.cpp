@@ -21,6 +21,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -54,7 +55,17 @@ class TestStacks : public ::testing::Test
 {
 protected:
   TestStacks() = default;
-  ~TestStacks() override = default;
+  ~TestStacks() override
+  {
+    // Put back the stack expressions a test may have changed
+    m_advancedSettings->m_folderStackRegExps = m_folderStackRegExps;
+    m_advancedSettings->m_videoStackRegExps = m_videoStackRegExps;
+  }
+
+  const std::shared_ptr<CAdvancedSettings> m_advancedSettings{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const std::vector<CRegExp> m_folderStackRegExps{m_advancedSettings->m_folderStackRegExps};
+  const std::vector<CRegExp> m_videoStackRegExps{m_advancedSettings->m_videoStackRegExps};
 };
 
 TEST_F(TestStacks, TestMovieFilesStackFilesAB)
@@ -250,6 +261,36 @@ TEST_F(TestStacks, TestFolderStacksIgnoreAnyFurtherCapturesOfTheirExpression)
   EXPECT_EQ(items.Size(), 1);
 
   advancedSettings->m_folderStackRegExps = folderStackRegExps;
+}
+
+TEST_F(TestStacks, TestOneVolumeWithOtherSeparatorsIsNotAnotherPart)
+{
+  // "cd1" and "-cd1" are the same part twice, so the files are not a stack of three parts
+  EXPECT_EQ(SizeAfterStacking({"Movie cd1.mkv", "Movie-cd1.mkv", "Movie cd2.mkv"}), 3);
+}
+
+TEST_F(TestStacks, TestFilesStackWithoutFolderExpressions)
+{
+  // An empty <folderstacking> stops folder stacking, not file stacking
+  m_advancedSettings->m_folderStackRegExps.clear();
+
+  EXPECT_EQ(SizeAfterStacking({"Movie part1.mkv", "Movie part2.mkv"}), 1);
+}
+
+TEST_F(TestStacks, TestFoldersStackWithoutFileExpressions)
+{
+  // An empty <moviestacking> stops file stacking, not folder stacking
+  m_advancedSettings->m_videoStackRegExps.clear();
+
+  const std::string movieFolder{
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)")};
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, "", DIR_FLAG_DEFAULTS);
+  ASSERT_EQ(items.Size(), 3);
+
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_TRUE(items.Get(0)->IsStack());
 }
 
 TEST_F(TestStacks, TestLoneFolderStackPartStaysAFolder)
