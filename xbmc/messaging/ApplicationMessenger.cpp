@@ -197,11 +197,15 @@ bool CApplicationMessenger::SendMsgAbortable(
   return claimed->load();
 }
 
-int CApplicationMessenger::SendMsgAbortable(
-    uint32_t messageId, int param1, int param2, std::shared_ptr<void> payload, CEvent& abortEvent)
+int CApplicationMessenger::SendMsgAbortable(uint32_t messageId,
+                                            int param1,
+                                            int param2,
+                                            std::shared_ptr<void> payload,
+                                            CEvent& abortEvent,
+                                            std::string strParam)
 {
   if (m_guiThreadId == CThread::GetCurrentThreadId())
-    return SendMsg(messageId, param1, param2, payload.get());
+    return SendMsg(messageId, param1, param2, payload.get(), std::move(strParam));
 
   if (m_bStop || abortEvent.Signaled())
     return -1;
@@ -209,7 +213,8 @@ int CApplicationMessenger::SendMsgAbortable(
   auto waitEvent = std::make_shared<CEvent>(true);
   auto result = std::make_shared<int>(-1);
   auto claimed = std::make_shared<std::atomic<bool>>(false);
-  ThreadMessage* msg = new ThreadMessage{messageId, param1, param2, payload.get()};
+  ThreadMessage* msg =
+      new ThreadMessage{messageId, param1, param2, payload.get(), std::move(strParam), {}};
   msg->payloadOwner = std::move(payload);
   msg->waitEvent = waitEvent;
   msg->result = result;
