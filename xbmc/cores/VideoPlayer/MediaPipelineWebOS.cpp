@@ -8,6 +8,7 @@
 
 #include "MediaPipelineWebOS.h"
 
+#include "AudioBypassWebOS.h"
 #include "Buffers/VideoBufferStarfish.h"
 #include "CompileInfo.h"
 #include "DVDCodecs/Audio/DVDAudioCodecFFmpeg.h"
@@ -27,6 +28,7 @@
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -124,6 +126,11 @@ unsigned int SelectTranscodingSampleRate(const unsigned int sampleRate)
     default:
       return 48000;
   }
+}
+
+bool UsesAudioBypass(const CDVDStreamInfo& hint)
+{
+  return CAudioBypassWebOS::GetPassthroughType(hint) || CAudioBypassWebOS::GetPCMFormat(hint);
 }
 
 unsigned int ParseAACSampleRate(const uint8_t* data, const size_t size)
@@ -309,6 +316,61 @@ void CMediaPipelineWebOS::FlushAudioMessages()
   m_messageQueueAudio.Flush();
 }
 
+void CMediaPipelineWebOS::OpenAudioBypass(CDVDStreamInfo& audioHint)
+{
+  m_audioBypass = nullptr;
+  m_audioCodec = nullptr;
+  m_audioEncoder = nullptr;
+  m_audioResample = nullptr;
+  m_encoderBuffers = nullptr;
+  if (const auto type = CAudioBypassWebOS::GetPassthroughType(audioHint);
+      type && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                  CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
+    m_audioBypass = std::make_unique<CAudioBypassWebOS>(m_processInfo, *type, audioHint.profile);
+  else if (const auto format = CAudioBypassWebOS::GetPCMFormat(audioHint))
+  {
+    m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
+    if (CDVDCodecOptions options; m_audioCodec->Open(audioHint, options))
+      m_audioBypass = std::make_unique<CAudioBypassWebOS>(*format);
+    else
+      m_audioCodec = nullptr;
+  }
+}
+
+void CMediaPipelineWebOS::UpdateAudioBypass()
+{
+  if (!m_audioBypass)
+  {
+    if (!m_paused && !std::exchange(m_audioBypassable, UsesAudioBypass(m_audioHint)) &&
+        m_audioBypassable)
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
+    return;
+  }
+
+  if (m_audioBypass->IsBitstream() || m_audioBypass->IsDecoding())
+  {
+    const bool passthrough = CAudioBypassWebOS::GetPassthroughType(m_audioHint).has_value();
+    if (m_audioBypass->IsDecoding() && passthrough)
+    {
+      m_audioCodec = nullptr;
+      m_audioResample = nullptr;
+      m_encoderBuffers = nullptr;
+      m_audioBypass->Bitstream();
+      m_processInfo.SetAudioDecoderName(m_audioBypass->GetName());
+    }
+    else if (m_audioBypass->IsBitstream() && !passthrough)
+    {
+      auto codec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
+      if (CDVDCodecOptions options; codec->Open(m_audioHint, options))
+      {
+        m_audioCodec = std::move(codec);
+        m_audioBypass->Decode();
+      }
+    }
+  }
+  m_audioBypass->Update(m_started);
+}
+
 bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
 {
   m_audioHint = audioHint;
@@ -319,7 +381,27 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
     m_fedAudioPts = NO_PTS;
     m_started = false;
 
-    if (m_webOSVersion >= 6)
+    const bool bypassed = m_audioBypass != nullptr;
+    if (bypassed && m_pipeline)
+    {
+      CWorkerGate::Lock audioLock(m_audioGate);
+      OpenAudioBypass(audioHint);
+      FlushAudioMessages();
+      if (m_audioBypass)
+      {
+        m_audioBypass->Attach(static_cast<GstElement*>(m_pipeline->pipeline),
+                              static_cast<GstElement*>(m_pipeline->videoSink),
+                              m_mediaAPIs->getMediaID());
+        m_processInfo.SetAudioChannels(CAEUtil::GetAEChannelLayout(audioHint.channellayout));
+        m_processInfo.SetAudioSampleRate(audioHint.samplerate);
+        m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
+        m_processInfo.SetAudioDecoderName(m_audioBypass->GetName());
+        m_audioClosed = false;
+        return true;
+      }
+    }
+
+    if (m_webOSVersion >= 6 && !bypassed && !UsesAudioBypass(audioHint))
     {
       CWorkerGate::Lock audioLock(m_audioGate);
       CVariant optInfo = CVariant::VariantTypeObject;
@@ -446,6 +528,8 @@ void CMediaPipelineWebOS::Flush(bool sync)
 
   if (!m_mediaAPIs->flush())
     CLog::LogF(LOGDEBUG, "Failed to flush media APIs");
+  if (m_audioBypass)
+    m_audioBypass->Flush();
   FlushAudioMessages();
   FlushVideoMessages();
   if (m_bitstream)
@@ -525,6 +609,10 @@ void CMediaPipelineWebOS::SetSpeed(const int speed)
 {
   if (!m_loaded)
     return;
+
+  m_paused = speed == DVD_PLAYSPEED_PAUSE;
+  if (m_audioBypass)
+    m_audioBypass->SetPlaying(speed == DVD_PLAYSPEED_NORMAL);
 
   if (speed == DVD_PLAYSPEED_PAUSE)
   {
@@ -675,14 +763,10 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   p["option"]["appId"] = CCompileInfo::GetPackage();
   contents["codec"]["video"] = ms_codecMap.at(videoHint.codec).data();
 
-  if (audioHint.codec == AV_CODEC_ID_NONE)
-  {
-    m_audioCodec = nullptr;
-    m_audioEncoder = nullptr;
-    m_audioResample = nullptr;
-    m_encoderBuffers = nullptr;
+  OpenAudioBypass(audioHint);
+
+  if (audioHint.codec == AV_CODEC_ID_NONE || m_audioBypass)
     p["option"]["needAudio"] = false;
-  }
   else
   {
     const std::string audioCodec = SetupAudio(audioHint, contents);
@@ -802,7 +886,9 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
       m_processInfo.SetAudioChannels(CAEUtil::GuessChLayout(audioHint.channels));
     m_processInfo.SetAudioSampleRate(audioHint.samplerate);
     m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-    if (Supports(audioHint))
+    if (m_audioBypass)
+      m_processInfo.SetAudioDecoderName(m_audioBypass->GetName());
+    else if (Supports(audioHint))
       m_processInfo.SetAudioDecoderName(std::string("starfish-") +
                                         ms_codecMap.at(audioHint.codec).data());
     else if (m_audioEncoder)
@@ -863,6 +949,7 @@ void CMediaPipelineWebOS::Unload(const bool sync)
   CThread::StopThread(true);
   if (m_audioThread.joinable())
     m_audioThread.join();
+  m_audioBypass = nullptr;
 
   if (!m_mediaAPIs->Unload())
     CLog::LogF(LOGERROR, "Unload failed");
@@ -1136,6 +1223,19 @@ bool CMediaPipelineWebOS::FeedAudioData(const std::shared_ptr<CDVDMsg>& msg)
   if (m_started && fedAudioPts != NO_PTS && fedAudioPts - m_pts.load() > MAX_FEED_AHEAD_TIME)
     return false;
 
+  if (m_audioBypass)
+  {
+    if (packet->iStreamId == RESAMPLED_STREAM_ID && m_audioBypass->IsBitstream())
+      return true;
+
+    if (!m_audioBypass->AddPacket(*packet))
+      return false;
+
+    m_fedAudioPts = pts;
+    m_audioStats.AddSampleBytes(packet->iSize);
+    return true;
+  }
+
   CVariant payload;
   payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(packet->pData));
   payload["bufferSize"] = packet->iSize;
@@ -1349,6 +1449,8 @@ unsigned int CMediaPipelineWebOS::GetQueuedBytes(const StreamType type) const
       if (m_pipeline->audioSinkQueue)
         g_object_get(m_pipeline->audioSinkQueue, "current-level-bytes", &queuedSinkBytes, nullptr);
     }
+    if (m_audioBypass)
+      queuedSrcBytes += m_audioBypass->GetQueuedBytes();
   }
   else if (type == StreamType::VIDEO)
   {
@@ -1454,6 +1556,8 @@ void CMediaPipelineWebOS::ProcessAudio()
   {
     m_audioGate.Checkpoint();
 
+    UpdateAudioBypass();
+
     std::shared_ptr<CDVDMsg> msg = nullptr;
     int priority = 0;
     m_messageQueueAudio.Get(msg, 10ms, priority);
@@ -1475,13 +1579,19 @@ void CMediaPipelineWebOS::ProcessAudio()
           {
             if (!m_audioResample)
             {
-              AEAudioFormat dstFormat = m_audioCodec->GetFormat();
-              dstFormat.m_sampleRate = SelectTranscodingSampleRate(dstFormat.m_sampleRate);
-              dstFormat.m_dataFormat = AE_FMT_FLOATP;
-              dstFormat.m_streamInfo.m_type = WebOSTVPlatformConfig::SupportsEAC3()
-                                                  ? CAEStreamInfo::DataType::STREAM_TYPE_EAC3
-                                                  : CAEStreamInfo::DataType::STREAM_TYPE_AC3;
-              m_audioEncoder->Initialize(dstFormat, true);
+              AEAudioFormat dstFormat =
+                  m_audioBypass ? m_audioBypass->GetFormat() : m_audioCodec->GetFormat();
+              if (m_audioBypass)
+                dstFormat.m_frames = MIN_AUDIO_RESAMPLE_BUFFER_SIZE;
+              else
+              {
+                dstFormat.m_sampleRate = SelectTranscodingSampleRate(dstFormat.m_sampleRate);
+                dstFormat.m_dataFormat = AE_FMT_FLOATP;
+                dstFormat.m_streamInfo.m_type = WebOSTVPlatformConfig::SupportsEAC3()
+                                                    ? CAEStreamInfo::DataType::STREAM_TYPE_EAC3
+                                                    : CAEStreamInfo::DataType::STREAM_TYPE_AC3;
+                m_audioEncoder->Initialize(dstFormat, true);
+              }
               const std::shared_ptr<CSettings> settings =
                   CServiceBroker::GetSettingsComponent()->GetSettings();
               auto quality = static_cast<AEQuality>(
@@ -1492,7 +1602,8 @@ void CMediaPipelineWebOS::ProcessAudio()
               const double sublevel =
                   settings->GetNumber(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL) / 100.0;
               m_audioResample->Create(
-                  0, false, settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX),
+                  0, m_audioBypass && dstFormat.m_channelLayout.Count() == 8,
+                  settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX),
                   !settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME),
                   static_cast<float>(sublevel));
               m_audioResample->FillBuffer();
@@ -1503,7 +1614,8 @@ void CMediaPipelineWebOS::ProcessAudio()
               m_encoderBuffers->Create(0);
 
               // Update process info with audio details
-              m_processInfo.SetAudioDecoderName((m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
+              m_processInfo.SetAudioDecoderName(m_audioBypass ? m_audioBypass->GetName()
+                                                : (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
                                                     ? "starfish-EAC3 (transcoding)"
                                                     : "starfish-AC3 (transcoding)");
               m_processInfo.SetAudioChannels(frame.format.m_channelLayout);
@@ -1548,9 +1660,11 @@ void CMediaPipelineWebOS::ProcessAudio()
             {
               for (const auto& buf : m_audioResample->m_outputSamples)
               {
-                const unsigned int maxSize = (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
-                                                 ? EAC3_MAX_SYNC_FRAME_SIZE
-                                                 : AC3_MAX_SYNC_FRAME_SIZE;
+                const unsigned int maxSize =
+                    m_audioBypass ? buf->pkt->nb_samples * buf->pkt->config.channels *
+                                        buf->pkt->bytes_per_sample
+                    : (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3) ? EAC3_MAX_SYNC_FRAME_SIZE
+                                                                         : AC3_MAX_SYNC_FRAME_SIZE;
                 auto p = std::make_shared<CDVDMsgDemuxerPacket>(
                     CDVDDemuxUtils::AllocateDemuxPacket(maxSize));
 
@@ -1579,9 +1693,12 @@ void CMediaPipelineWebOS::ProcessAudio()
                 p->m_packet->pts = static_cast<double>(buf->timestamp);
                 p->m_packet->iSize = maxSize;
                 p->m_packet->iStreamId = RESAMPLED_STREAM_ID;
-                p->m_packet->iSize =
-                    m_audioEncoder->Encode(buf->pkt->data[0], buf->pkt->planes * buf->pkt->linesize,
-                                           p->m_packet->pData, p->m_packet->iSize);
+                if (m_audioBypass)
+                  std::copy_n(buf->pkt->data[0], maxSize, p->m_packet->pData);
+                else
+                  p->m_packet->iSize = m_audioEncoder->Encode(
+                      buf->pkt->data[0], buf->pkt->planes * buf->pkt->linesize, p->m_packet->pData,
+                      p->m_packet->iSize);
                 buf->Return();
                 if (!canConsume || !FeedAudioData(p))
                 {
@@ -1705,6 +1822,10 @@ void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, c
           static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
       m_pipeline = pipeline->GetGStreamerElements(
           {0, MIN_SRC_BUFFER_LEVEL_VIDEO, MAX_SRC_BUFFER_LEVEL_VIDEO, MAX_BUFFER_LEVEL});
+      if (m_audioBypass && m_pipeline)
+        m_audioBypass->Attach(static_cast<GstElement*>(m_pipeline->pipeline),
+                              static_cast<GstElement*>(m_pipeline->videoSink),
+                              m_mediaAPIs->getMediaID());
 
       if (acb)
       {

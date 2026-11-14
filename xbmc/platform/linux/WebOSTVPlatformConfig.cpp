@@ -13,6 +13,11 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <array>
+#include <charconv>
+#include <string_view>
+
 namespace
 {
 constexpr const char* LUNA_GET_CONFIG = "luna://com.webos.service.config/getConfigs";
@@ -29,9 +34,22 @@ constexpr const char* PLATFORM_CODE = "tv.nyx.platformCode";
 constexpr const char* DTS = "dts";
 
 constexpr const char* LUNA_ARC_STATUS = "luna://com.webos.service.arccontroller/getARCState";
+constexpr const char* LUNA_GET_SYSTEM_SETTINGS =
+    "luna://com.webos.settingsservice/getSystemSettings";
+
+constexpr const char* SETTINGS = "settings";
+constexpr const char* SOUND_OUTPUT_DIGITAL = "soundOutputDigital";
+constexpr const char* PASS_THROUGH = "passThrough";
 
 constexpr const char* ARC_ACTIVATION = "arcActivation";
 constexpr const char* EARC_CAPABILITY = "earcCapability";
+constexpr const char* ADVANCED_EARC_CAPABILITY = "advancedEarcCapability";
+constexpr const char* AUDIO_CODING_TYPE = "audioCodingType";
+constexpr const char* HEX_SAD = "hexSAD";
+constexpr const char* PCM = "PCM";
+constexpr std::array<std::string_view, 5> EARC_FORMATS{"TrueHD", "DTSHD_MA", "DTS", "DD", "DD+"};
+constexpr std::array<unsigned int, 7> SAD_SAMPLE_RATES{32000, 44100,  48000, 88200,
+                                                       96000, 176400, 192000};
 constexpr const char* SUPPORT_EARCDDPlus = "eARCDDPlus";
 constexpr const char* EARC = "eARC";
 constexpr const char* DDPLUS = "DD+";
@@ -100,6 +118,27 @@ void WebOSTVPlatformConfig::LoadARCStatus()
     }
 
     const std::string arcActivation = parsed[ARC_ACTIVATION].asString();
+    m_eARCActive = arcActivation == EARC;
+
+    const CVariant& sads = parsed[ADVANCED_EARC_CAPABILITY];
+    unsigned int formats = 0;
+    std::uint64_t pcm = 0;
+    for (auto sad = sads.begin_array(); m_eARCActive && sad != sads.end_array(); ++sad)
+    {
+      const std::string type = (*sad)[AUDIO_CODING_TYPE].asString();
+      if (const auto format = std::ranges::find(EARC_FORMATS, std::string_view(type));
+          format != EARC_FORMATS.end())
+        formats |= 1u << (format - EARC_FORMATS.begin());
+
+      const std::string hex = (*sad)[HEX_SAD].asString();
+      unsigned int value = 0;
+      if (type == PCM &&
+          std::from_chars(hex.data(), hex.data() + hex.size(), value, 16).ec == std::errc())
+        for (unsigned int channel = 0; channel <= ((value >> 16) & 7); ++channel)
+          pcm |= static_cast<std::uint64_t>((value >> 8) & 0x7f) << (channel * 8);
+    }
+    m_eARCFormats = formats;
+    m_eARCPCM = pcm;
 
     if (arcActivation == EARC)
     {
@@ -112,7 +151,7 @@ void WebOSTVPlatformConfig::LoadARCStatus()
     return true;
   };
 
-  if (HLunaServiceCall(LUNA_ARC_STATUS, "{}", m_requestContextARC.get()))
+  if (HLunaServiceCall(LUNA_ARC_STATUS, R"({"subscribe":true})", m_requestContextARC.get()))
   {
     CLog::LogF(LOGWARNING, "Luna ARC controller request call failed");
   }
@@ -121,4 +160,67 @@ void WebOSTVPlatformConfig::LoadARCStatus()
 bool WebOSTVPlatformConfig::SupportsEAC3()
 {
   return m_eAC3Supported;
+}
+
+void WebOSTVPlatformConfig::LoadSoundOutputStatus()
+{
+  m_requestContextSoundOutput->pub = true;
+  m_requestContextSoundOutput->multiple = true;
+  m_requestContextSoundOutput->callback = [](LSHandle* sh, LSMessage* msg, void* ctx) -> bool
+  {
+    CVariant parsed;
+    if (CJSONVariantParser::Parse(HLunaServiceMessage(msg), parsed) &&
+        parsed[SETTINGS].isMember(SOUND_OUTPUT_DIGITAL))
+      m_digitalPassThrough = parsed[SETTINGS][SOUND_OUTPUT_DIGITAL].asString() == PASS_THROUGH;
+    return true;
+  };
+
+  if (HLunaServiceCall(LUNA_GET_SYSTEM_SETTINGS,
+                       R"({"category":"sound","keys":["soundOutputDigital"],"subscribe":true})",
+                       m_requestContextSoundOutput.get()))
+    CLog::LogF(LOGWARNING, "Luna sound output settings request call failed");
+}
+
+bool WebOSTVPlatformConfig::SupportsEARCPassthrough()
+{
+  return m_eARCActive && m_digitalPassThrough;
+}
+
+bool WebOSTVPlatformConfig::SupportsEARCFormat(std::string_view type)
+{
+  const auto format = std::ranges::find(EARC_FORMATS, type);
+  return format != EARC_FORMATS.end() && m_eARCFormats & (1u << (format - EARC_FORMATS.begin()));
+}
+
+unsigned int WebOSTVPlatformConfig::GetEARCPCMRate(unsigned int channels, unsigned int sampleRate)
+{
+  if (channels < 1 || channels > 8 || sampleRate == 0)
+    return 0;
+
+  const std::uint64_t rates = m_eARCPCM >> ((channels - 1) * 8);
+  unsigned int multiple = 0;
+  unsigned int above = 0;
+  unsigned int divisor = 0;
+  unsigned int below = 0;
+  for (std::size_t i = 0; i < SAD_SAMPLE_RATES.size(); ++i)
+  {
+    const unsigned int rate = SAD_SAMPLE_RATES[i];
+    if (!(rates & (1u << i)))
+      continue;
+
+    if (rate < sampleRate)
+    {
+      below = rate;
+      if (sampleRate % rate == 0)
+        divisor = rate;
+    }
+    else
+    {
+      if (above == 0)
+        above = rate;
+      if (multiple == 0 && rate % sampleRate == 0)
+        multiple = rate;
+    }
+  }
+  return multiple ? multiple : above ? above : divisor ? divisor : below;
 }

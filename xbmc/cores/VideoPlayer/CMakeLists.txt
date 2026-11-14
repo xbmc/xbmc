@@ -69,11 +69,13 @@ set(HEADERS AudioSinkAE.h
             Interface/TimingConstants.h)
 
 if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
-    list(APPEND SOURCES MediaPipelineWebOS.cpp
+    list(APPEND SOURCES AudioBypassWebOS.cpp
+                        MediaPipelineWebOS.cpp
                         VideoPlayerAudioWebOS.cpp
                         VideoPlayerVideoWebOS.cpp
                         VideoPlayerWebOS.cpp)
-    list(APPEND HEADERS MediaPipelineWebOS.h
+    list(APPEND HEADERS AudioBypassWebOS.h
+                        MediaPipelineWebOS.h
                         VideoPlayerAudioWebOS.h
                         VideoPlayerVideoWebOS.h
                         VideoPlayerWebOS.h)
