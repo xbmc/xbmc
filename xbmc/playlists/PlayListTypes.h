@@ -151,7 +151,8 @@ enum class Advance
  */
 enum class Wrap
 {
-  None,
+  //! Not None: X11 defines that name as a macro
+  Off,
   ToStart
 };
 
