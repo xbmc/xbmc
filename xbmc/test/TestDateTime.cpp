@@ -195,14 +195,11 @@ TEST_F(TestDateTime, SetFromDBDate)
   EXPECT_EQ(dateTime.GetDay(), 2);
 }
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-TEST_F(TestDateTime, DISABLED_SetFromDBTime)
-#else
 TEST_F(TestDateTime, SetFromDBTime)
-#endif
 {
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
+  GTEST_SKIP() << "mktime does not handle dates before 1900 on this platform";
+#endif
   CDateTime dateTime1;
   EXPECT_TRUE(dateTime1.SetFromDBTime("12:34"));
   EXPECT_EQ(dateTime1.GetHour(), 12);

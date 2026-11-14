@@ -21,12 +21,11 @@ protected:
   TestGPUInfo() = default;
 };
 
-#if defined(TARGET_WINDOWS)
-TEST_F(TestGPUInfo, DISABLED_GetTemperatureFromCmd)
-#else
 TEST_F(TestGPUInfo, GetTemperatureFromCmd)
-#endif
 {
+#if defined(TARGET_WINDOWS)
+  GTEST_SKIP() << "Kodi does not read the GPU temperature on Windows";
+#endif
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gpuTempCmd = "echo '50 c'";
   std::unique_ptr<CGPUInfo> gpuInfo = CGPUInfo::GetGPUInfo();
   EXPECT_NE(gpuInfo, nullptr);
