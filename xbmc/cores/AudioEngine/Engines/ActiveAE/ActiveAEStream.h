@@ -190,7 +190,6 @@ public:
 
   unsigned int GetSampleRate() const override ;
   enum AEDataFormat GetDataFormat() const override;
-  bool SupportsPassthroughSilence() const override;
   bool HasSinkFormatChanged() const override;
 
   double GetResampleRatio() override;
