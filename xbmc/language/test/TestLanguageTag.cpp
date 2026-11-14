@@ -427,7 +427,7 @@ TEST(TestLanguageTag, DoesNotReadARegionCodeAsALanguage)
 
 TEST(TestLanguageTag, KnowsWhichLanguagesAreWrittenRightToLeft)
 {
-  for (const auto* text : {"he", "he-IL", "iw", "ar", "ar-EG", "fa", "ur", "yi", "ckb"})
+  for (const auto* text : {"he", "he-IL", "iw", "ar", "ar-EG", "fa", "ur", "yi", "ckb", "nqo"})
     EXPECT_TRUE(CLanguageTag::Parse(text).IsRightToLeft()) << text;
 
   for (const auto* text : {"en", "en-GB", "de", "ru", "ja", "zh-Hant-TW", "ku"})

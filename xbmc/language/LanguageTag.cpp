@@ -351,12 +351,13 @@ bool CLanguageTag::IsRightToLeft() const
 
   // Languages usually written in a right-to-left script, by their primary subtag as canonical
   // BCP 47 spells it. Canonicalization has already replaced the deprecated iw and ji.
-  static constexpr std::array<std::string_view, 11> rightToLeftLanguages = {
+  static constexpr std::array<std::string_view, 12> rightToLeftLanguages = {
       "ar", // Arabic
       "ckb", // Central Kurdish
       "dv", // Dhivehi
       "fa", // Persian
       "he", // Hebrew
+      "nqo", // N'Ko
       "ps", // Pashto
       "sd", // Sindhi
       "syr", // Syriac
