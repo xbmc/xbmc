@@ -15,15 +15,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DENABLE_DOCUMENTATION=OFF
                    -DENABLE_UTILS=OFF
                    -DENABLE_EXAMPLES=OFF
+                   -DENABLE_TLS=OFF
                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 
     if(WIN32 OR WINDOWS_STORE)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "/sdl-")
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS "/sdl-")
-
-      set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE}/01-MSUWP-compat.patch")
-      generate_patchcommand("${patches}")
-      unset(patches)
     endif()
 
     BUILD_DEP_TARGET()
