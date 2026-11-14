@@ -133,7 +133,7 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
            av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
            av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
   }
-  else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
+  else if (m_item.IsType(".mp4|.m4v") || m_item.IsType(".avi"))
     return av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
   else
     return false;
@@ -149,7 +149,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
 
   if (m_item.IsType(".mkv"))
     return LoadMKV(tag, prioritise, art);
-  else if (m_item.IsType(".mp4"))
+  else if (m_item.IsType(".mp4|.m4v"))
     return LoadMP4(tag, art);
   else if (m_item.IsType(".avi"))
     return LoadAVI(tag, art);

@@ -83,6 +83,7 @@ protected:
   {
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_USETAGS, m_useTags);
     XFILE::CFile::Delete(m_path);
+    XFILE::CFile::Delete(m_m4v);
     XFILE::CFile::Delete(m_nfo);
     XFILE::CFile::Delete(m_mkv);
     XFILE::CDirectory::RemoveRecursive(m_scraper);
@@ -93,10 +94,12 @@ protected:
     return CServiceBroker::GetSettingsComponent()->GetSettings();
   }
 
-  bool WriteMp4(const char* track)
+  bool WriteMp4(const char* track) { return WriteMp4(track, m_path); }
+
+  bool WriteMp4(const char* track, const std::string& path)
   {
     AVFormatContext* context{nullptr};
-    if (avformat_alloc_output_context2(&context, nullptr, "mp4", m_path.c_str()) < 0)
+    if (avformat_alloc_output_context2(&context, nullptr, "mp4", path.c_str()) < 0)
       return false;
 
     AVStream* stream{avformat_new_stream(context, nullptr)};
@@ -108,7 +111,7 @@ protected:
 
     AVDictionary* options{nullptr};
     av_dict_set(&options, "movflags", "use_metadata_tags", 0);
-    const bool written{avio_open(&context->pb, m_path.c_str(), AVIO_FLAG_WRITE) >= 0 &&
+    const bool written{avio_open(&context->pb, path.c_str(), AVIO_FLAG_WRITE) >= 0 &&
                        avformat_write_header(context, &options) >= 0 &&
                        av_write_trailer(context) >= 0};
     av_dict_free(&options);
@@ -219,6 +222,8 @@ protected:
 
   const std::string m_path{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mp4")};
+  const std::string m_m4v{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.m4v")};
   const std::string m_nfo{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.nfo")};
   const std::string m_mkv{
@@ -233,6 +238,21 @@ TEST_F(TestVideoTagLoaderFFmpeg, AnMp4TrackTagIsReadAsANumber)
 {
   ASSERT_TRUE(WriteMp4("3/12"));
   const CFileItem item{m_path, false};
+  CVideoTagLoaderFFmpeg loader{item, nullptr, false};
+  ASSERT_TRUE(loader.HasInfo());
+
+  CVideoInfoTag tag;
+  EXPECT_EQ(CInfoScanner::InfoType::TITLE, loader.Load(tag, false, nullptr));
+
+  EXPECT_EQ("Film", tag.m_strTitle);
+  EXPECT_EQ(3, tag.m_iTrack);
+}
+
+// An m4v is an mp4 by another name, whose tags are read as an mp4's are
+TEST_F(TestVideoTagLoaderFFmpeg, AnM4vIsReadAsAnMp4)
+{
+  ASSERT_TRUE(WriteMp4("3/12", m_m4v));
+  const CFileItem item{m_m4v, false};
   CVideoTagLoaderFFmpeg loader{item, nullptr, false};
   ASSERT_TRUE(loader.HasInfo());
 
