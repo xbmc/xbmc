@@ -68,6 +68,7 @@
 #include "windows/GUIWindowStartup.h"
 #include "windows/GUIWindowSystemInfo.h"
 
+#include <cmath>
 #include <mutex>
 
 namespace
@@ -1461,6 +1462,15 @@ bool CGUIWindowManager::Render()
 
   // one frame more than needed, as some platforms report a fixed buffer age
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions(bufferAge + 1);
+  // whole pixels, as textures snap their edges to pixels and a region computed through the
+  // projection can end just short of a half pixel the texture still covers
+  for (auto& region : dirtyRegions)
+  {
+    region.x1 = std::floor(region.x1);
+    region.y1 = std::floor(region.y1);
+    region.x2 = std::ceil(region.x2);
+    region.y2 = std::ceil(region.y2);
+  }
 
   bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
