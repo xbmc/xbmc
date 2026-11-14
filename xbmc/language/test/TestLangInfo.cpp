@@ -6,7 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "language/LangInfo.h"
+#include "language/i18n/LanguageTable.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 
 #include <algorithm>
 
@@ -22,6 +26,7 @@ public:
 };
 
 using KODI::LANGUAGE::CLanguageTag;
+using KODI::LANGUAGE::I18N::CLanguageTable;
 
 } // namespace
 
@@ -70,12 +75,38 @@ TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
   // The setting can arrive hand-edited or over JSON-RPC; a value naming no language must be
   // rejected rather than stored, or callers prefer a language no stream can ever match
   langInfo.SetAudioLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetAudioLanguage(false).IsEmpty());
-  EXPECT_FALSE(langInfo.GetAudioLanguage(true).IsEmpty());
+  EXPECT_TRUE(langInfo.GetAudioLanguage(false).IsUndetermined());
+  EXPECT_FALSE(langInfo.GetAudioLanguage(true).IsUndetermined());
 
   langInfo.SetSubtitleLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsEmpty());
-  EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsEmpty());
+  EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsUndetermined());
+  EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsUndetermined());
+}
+
+TEST(TestLangInfo, SetLanguageNamesTheLanguagesOfTheInstalledAddons)
+{
+  CLangInfoTest langInfo;
+  ASSERT_TRUE(langInfo.SetLanguage("resource.language.en_gb", false));
+
+  // The name the installed addon gives, rather than one composed from the subtags
+  EXPECT_EQ(CLanguageTag::Parse("en-GB").ToEnglishName(), "English");
+
+  // Both are process-wide
+  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
+  CLanguageTable::GetInstance().Reset();
+}
+
+TEST(TestLangInfo, AStoredAddonLanguageNameIsALanguage)
+{
+  // The audio and subtitle language settings offer the names language addons give, which are
+  // declared under the codes GetAddonsLanguageCodes gives them
+  CLanguageTable::GetInstance().DeclareNames({{"en-au", "English (Australia)"}});
+
+  CLangInfoTest langInfo;
+  langInfo.SetAudioLanguage("English (Australia)");
+  EXPECT_EQ(langInfo.GetAudioLanguage(false).ToString(), "en-AU");
+
+  CLanguageTable::GetInstance().Reset();
 }
 
 TEST(TestLangInfo, RegionalDateFormatsAreTheRegions)

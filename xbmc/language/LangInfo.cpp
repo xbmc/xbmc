@@ -17,6 +17,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonType.h"
 #include "language/i18n/Iso3166_1.h"
+#include "language/i18n/LanguageTable.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "resources/LocalizeStrings.h"
@@ -239,7 +240,7 @@ namespace
  */
 CLanguageTag DiscLanguage(const CLanguageTag& language, const std::string& fallback)
 {
-  return language.IsEmpty() ? CLanguageTag::Parse(fallback) : language;
+  return language.IsUndetermined() ? CLanguageTag::Parse(fallback) : language;
 }
 
 /*!
@@ -915,6 +916,11 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
     }
   }
 
+  // An addon may name a language Kodi's own tables do not
+  std::map<std::string, std::string> addonLanguages;
+  GetAddonsLanguageCodes(addonLanguages);
+  CLanguageTable::GetInstance().DeclareNames(addonLanguages);
+
   CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language);
   if (!Load(language))
   {
@@ -959,7 +965,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
 
 const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_audioLanguage.IsEmpty())
+  if (allowFallback && m_audioLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_audioLanguage;
@@ -972,7 +978,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
 
 const CLanguageTag& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_subtitleLanguage.IsEmpty())
+  if (allowFallback && m_subtitleLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_subtitleLanguage;

@@ -403,7 +403,7 @@ void AddPlaylists(const CURL& url,
 template<typename Streams>
 std::string LanguagesOf(const Streams& streams)
 {
-  const auto language = [](const auto& stream) { return stream.language.AsBcp47(); };
+  const auto language = [](const auto& stream) { return stream.language.ToString(); };
   return fmt::format("{}", fmt::join(streams | std::views::transform(language), ","));
 }
 } // namespace

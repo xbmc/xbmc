@@ -6,7 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
+#include "language/LanguageTag.h"
 #include "language/i18n/LanguageTable.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <map>
 #include <string>
@@ -14,6 +20,7 @@
 
 #include <gtest/gtest.h>
 
+using KODI::LANGUAGE::CLanguageTag;
 using namespace KODI::LANGUAGE::I18N;
 
 namespace
@@ -104,6 +111,44 @@ TEST_F(LanguageTableTest, DeclaredLanguagesAreFoundLikeAnyOther)
   // Whichever separator the declaration was written with
   Table().Declare({{"pt_BR", "Brazilian"}});
   EXPECT_EQ(Table().NameOf("pt-BR"), "Brazilian");
+  EXPECT_EQ(CLanguageTag::Parse("pt-BR").ToEnglishName(), "Brazilian");
+}
+
+TEST_F(LanguageTableTest, ADeclaredCodeIsALanguageLikeAnyOther)
+{
+  // Media tagged with a code no standard assigns is the reason the feature exists
+  Table().Declare({{"zzz", "High Valyrian"}});
+
+  const CLanguageTag language{CLanguageTag::Parse("zzz")};
+  EXPECT_TRUE(language.IsValid());
+  EXPECT_EQ(language.ToString(), "zzz");
+  EXPECT_EQ(language.AsIso6392B(), "zzz");
+  EXPECT_EQ(language.ToEnglishName(), "High Valyrian");
+
+  EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), language);
+  EXPECT_TRUE(CLanguageTag::TryParse("ZZZ").has_value());
+  EXPECT_TRUE(CLanguageTag::ParseStreamLanguage("zzz").Matches(language));
+}
+
+TEST_F(LanguageTableTest, AdvancedSettingsDeclaresItsLanguageCodes)
+{
+  const std::string file{"special://temp/TestLanguageTable-advancedsettings.xml"};
+  const std::string xml{"<advancedsettings><languagecodes>"
+                        "<code><short>es-419</short><long>Spanish - Latin America</long></code>"
+                        "<code><short>zzz</short><long>High Valyrian</long></code>"
+                        "</languagecodes></advancedsettings>"};
+  CXBMCTinyXML document;
+  ASSERT_TRUE(document.Parse(xml));
+  ASSERT_TRUE(document.SaveFile(file));
+
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->ParseSettingsFile(file);
+
+  EXPECT_EQ(CLanguageTag::Parse("Spanish - Latin America").ToString(), "es-419");
+  EXPECT_EQ(CLanguageTag::Parse("es-419").ToEnglishName(), "Spanish - Latin America");
+  EXPECT_TRUE(CLanguageTag::TryParse("zzz").has_value());
+  EXPECT_EQ(CLanguageTag::Parse("High Valyrian").ToString(), "zzz");
+
+  CLangCodeExpander::Clear();
 }
 
 TEST_F(LanguageTableTest, AnAddonNamesALanguageOnlyWhereNothingElseDoes)
@@ -144,6 +189,10 @@ TEST_F(LanguageTableTest, ADeclarationMayRenameALanguageOntoAnother)
   Table().Declare({{"en-GB", "French"}});
 
   EXPECT_EQ(Table().CodeOf("French"), "en-gb");
+
+  // The tag that comes of it is spelled the way BCP 47 spells it, as any parsed tag is
+  EXPECT_EQ(CLanguageTag::Parse("French").ToString(), "en-GB");
+  EXPECT_EQ(CLanguageTag::Parse("French").GetTerritory().ToString(), "GB");
 }
 
 TEST_F(LanguageTableTest, ResetRestoresTheStandardLanguages)

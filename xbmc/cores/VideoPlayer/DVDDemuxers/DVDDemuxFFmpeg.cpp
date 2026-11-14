@@ -102,6 +102,20 @@ bool AttachmentIsFont(const AVDictionaryEntry* dict)
   }
   return false;
 }
+
+//! A language tag written inside curly braces in a track title, as "Commentary {en-GB}"
+std::optional<CLanguageTag> LanguageInTitle(std::string_view title)
+{
+  const std::size_t begin = title.find('{');
+  if (begin == std::string_view::npos)
+    return std::nullopt;
+
+  const std::size_t end = title.find('}', begin + 1);
+  if (end == std::string_view::npos)
+    return std::nullopt;
+
+  return CLanguageTag::TryParse(std::string{title.substr(begin + 1, end - begin - 1)});
+}
 } // namespace
 
 std::string CDemuxStreamAudioFFmpeg::GetStreamName()
@@ -2260,14 +2274,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       // A transport stream can carry several ISO 639 language descriptors for one track, which
       // ffmpeg joins with commas ("deu,eng" for dual mono, or one entry per DVB subtitle page)
       const std::string_view language{langTag->value};
-      stream->language = CLanguageTag::Parse(std::string{language.substr(0, language.find(','))});
+      stream->language = CLanguageTag::ParseStreamLanguage(std::string{language.substr(0, language.find(','))});
       //! @todo ffmpeg does not read the Matroska v4 LanguageBCP47 element, which takes priority
       //! over Language when present, so every track is reported with the value of Language. The
       //! curly-brace tag in the title field is the interim way to state a track's real language.
       AVDictionaryEntry* title = av_dict_get(pStream->metadata, "title", NULL, 0);
       if (title && title->value)
       {
-        if (const auto tag = CLanguageTag::FindInText(title->value); tag.has_value())
+        if (const auto tag = LanguageInTitle(title->value); tag.has_value())
           stream->language = *tag;
       }
     }
@@ -2312,7 +2326,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       const auto bluray{std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)};
       std::string blurayLanguage;
       bluray->GetStreamInfo(pStream->id, blurayLanguage);
-      stream->language = CLanguageTag::Parse(blurayLanguage);
+      stream->language = CLanguageTag::ParseStreamLanguage(blurayLanguage);
 
       // The transport stream of a bluray carries no disposition, so the default audio and subtitle
       // streams have to be flagged from the clip information (see IsDefaultStream)

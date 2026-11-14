@@ -974,7 +974,7 @@ TEST_P(TestExternalStreamDetails, GetExternalStreamDetailsFromFilename)
   const ExternalStreamInfo info =
       CUtil::GetExternalStreamDetailsFromFilename(GetParam().videoPath, GetParam().associatedFile);
 
-  EXPECT_EQ(info.language.AsBcp47(), GetParam().language);
+  EXPECT_EQ(info.language.ToString(), GetParam().language);
   EXPECT_EQ(info.flag, GetParam().flag);
 }
 
@@ -1486,7 +1486,7 @@ TEST(TestUtil, ExternalStreamDetailsOfABlurayVersionsSubtitle)
   {
     const ExternalStreamInfo info{CUtil::GetExternalStreamDetailsFromFilename(
         URIUtils::GetBlurayPlaylistPath(disc, 800), subtitle)};
-    EXPECT_EQ(info.language.AsBcp47(), "en") << subtitle;
+    EXPECT_EQ(info.language.ToString(), "en") << subtitle;
     EXPECT_EQ(info.flag, StreamFlags::FLAG_FORCED) << subtitle;
     EXPECT_EQ(info.name, external) << subtitle;
   }
@@ -1817,7 +1817,7 @@ TEST(TestUtil, ExternalStreamDetailsOfAnEpisodesSubtitle)
   {
     const ExternalStreamInfo info{
         CUtil::GetExternalStreamDetailsFromFilename(video, subtitle, &tag)};
-    EXPECT_EQ(info.language.AsBcp47(), "en") << subtitle;
+    EXPECT_EQ(info.language.ToString(), "en") << subtitle;
     EXPECT_EQ(info.flag, StreamFlags::FLAG_FORCED) << subtitle;
     EXPECT_EQ(info.name, external) << subtitle;
   }
