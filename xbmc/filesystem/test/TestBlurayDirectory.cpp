@@ -10,6 +10,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/BlurayCallback.h"
 #include "filesystem/BlurayDirectory.h"
 #include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
@@ -364,4 +365,38 @@ TEST_F(TestBlurayDirectory, GetPlaylists_IgnoresOtherFilesNamedAfterAPlaylist)
   EXPECT_TRUE(found);
   ASSERT_EQ(items.Size(), 1);
   EXPECT_EQ(items[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger(), 888);
+}
+
+// libbluray looks in folders a disc needn't have: one missing is opened as no folder, and one there
+// is listed
+TEST(TestBlurayCallback, AFolderADiscDoesNotHaveIsNoFolder)
+{
+  const std::string disc{
+      CSpecialProtocol::TranslatePath("special://temp/TestBlurayCallback/Disc/")};
+  CDirectory::RemoveRecursive(disc);
+  const std::string library{URIUtils::AddFileToFolder(disc, "BDMV", "META", "DL")};
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV")));
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV", "META")));
+  ASSERT_TRUE(CDirectory::Create(library));
+  {
+    CFile file;
+    ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(library, "bdmt_eng.xml"), true));
+  }
+
+  std::string base{disc};
+  BD_DIR_H* const listed{CBlurayCallback::dir_open(&base, "BDMV/META/DL")};
+  BD_DIR_H* const missing{CBlurayCallback::dir_open(&base, "BDMV/META/TN")};
+  std::string name;
+  if (listed)
+  {
+    BD_DIRENT entry;
+    if (listed->read(listed, &entry) == 0)
+      name = entry.d_name;
+    listed->close(listed);
+  }
+  CDirectory::RemoveRecursive(disc);
+
+  ASSERT_NE(nullptr, listed);
+  EXPECT_EQ("bdmt_eng.xml", name);
+  EXPECT_EQ(nullptr, missing);
 }

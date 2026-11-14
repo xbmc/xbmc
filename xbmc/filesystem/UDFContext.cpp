@@ -60,20 +60,32 @@ bool CUDFContext::Mount(const std::string& image)
 
 std::shared_ptr<CUDFContext> CUDFContext::Get(const std::string& image)
 {
-  std::unique_lock lock(g_mountLock);
-
-  if (const auto it{g_mounts.find(image)}; it != g_mounts.end())
   {
-    if (std::shared_ptr<CUDFContext> context{it->second.lock()}; context)
-      return context;
+    std::unique_lock lock(g_mountLock);
+    if (const auto it{g_mounts.find(image)}; it != g_mounts.end())
+    {
+      if (std::shared_ptr<CUDFContext> context{it->second.lock()}; context)
+        return context;
 
-    g_mounts.erase(it);
+      g_mounts.erase(it);
+    }
   }
 
+  // Mounting reads the volume, which over a network takes long enough to hold up the mounts of
+  // other images, so it is done without the lock.
   // Cannot use make_shared as the constructor is private
   std::shared_ptr<CUDFContext> context{new CUDFContext()};
   if (!context->Mount(image))
     return nullptr;
+
+  std::unique_lock lock(g_mountLock);
+
+  // One mounted meanwhile is shared, and this one let go of
+  if (const auto it{g_mounts.find(image)}; it != g_mounts.end())
+  {
+    if (std::shared_ptr<CUDFContext> mounted{it->second.lock()}; mounted)
+      return mounted;
+  }
 
   // One line per mount, so a run of reads that is sharing one mount is distinguishable from one
   // that is re-mounting for every file

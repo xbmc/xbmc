@@ -67,4 +67,23 @@ inline const ClipInformation* GetLongestPlayItemClip(const BlurayPlaylistInforma
 
   return &playItem->angleClips.front();
 }
+
+// The clip files a playlist's streams are read from (CM2TSParser::GetStreams()): the first angle
+// clip of its longest play item and, where it has one, its first stereo clip. Playlists playing the
+// same files have the same streams. Empty if the playlist has no such clip.
+inline std::string GetStreamClipFiles(const BlurayPlaylistInformation& playlist)
+{
+  const ClipInformation* clip{GetLongestPlayItemClip(playlist)};
+  if (!clip)
+    return {};
+
+  std::string files{std::to_string(clip->clip) + "." + clip->codec};
+  if (!playlist.extensionSubPlayItems.empty() &&
+      !playlist.extensionSubPlayItems.front().clips.empty())
+  {
+    const ClipInformation& stereo{playlist.extensionSubPlayItems.front().clips.front()};
+    files += "+" + std::to_string(stereo.clip) + "." + stereo.codec;
+  }
+  return files;
+}
 } // namespace XFILE
