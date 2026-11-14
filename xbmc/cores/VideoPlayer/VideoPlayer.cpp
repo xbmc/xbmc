@@ -4528,6 +4528,10 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   CDemuxStream* stream = NULL;
   CDVDStreamInfo hint;
 
+  // CloseFile() is waiting for this thread
+  if (m_bStop)
+    return false;
+
   CLog::Log(LOGINFO, "Opening stream: {} source: {}", iStream, source);
 
   if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUB)
@@ -4670,7 +4674,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   }
   else
   {
-    if(stream)
+    if (stream && !m_bStop)
     {
       /* mark stream as disabled, to disallow further attempts*/
       CLog::Log(LOGWARNING, "{} - Unsupported stream {}. Stream disabled.", __FUNCTION__,
@@ -4786,7 +4790,11 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
                                                    (hint.fpsrate * (hint.interlaced ? 2 : 1)));
 
       RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+      // CloseFile() blocks the app thread in StopThread(), don't wait for it past that
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false,
+                                                                         &GetStopEvent());
+      if (m_bStop)
+        return false;
       m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
     }
   }

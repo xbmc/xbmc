@@ -99,6 +99,9 @@ public:
 
   static CThread* GetCurrentThread();
 
+  //! Set by StopThread(), i.e. once the owner may be blocked waiting for this thread
+  CEvent& GetStopEvent() { return m_StopEvent; }
+
   virtual void OnException(){} // signal termination handler
 
 protected:

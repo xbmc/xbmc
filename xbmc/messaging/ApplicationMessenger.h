@@ -12,6 +12,7 @@
 #include "messaging/ThreadMessage.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <queue>
@@ -313,6 +314,39 @@ public:
   int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
 
   /*!
+   * \brief Send a blocking message, but stop waiting once abortEvent is set
+   *
+   * For a thread that the app thread may itself be waiting on. If abortEvent is set before the
+   * app thread takes the message, the message is dropped and never processed. If it is already
+   * being processed, this still waits for it to finish. On the app thread it is processed straight
+   * away. Either way the payload is not touched once this returns.
+   *
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in] payload this is a void pointer that is meant to send larger objects to the receiver
+   * \param [in] abortEvent ends the wait when set
+   * \return true if the message was processed, false if it was dropped
+   */
+  bool SendMsgAbortable(
+      uint32_t messageId, int param1, int param2, void* payload, CEvent& abortEvent);
+
+  /*!
+   * \brief As above, for a payload the message owns
+   *
+   * The payload outlives this call, so the wait also ends while the message is being processed,
+   * which then finishes without the sender.
+   *
+   * \return the message's result, or -1 if it was dropped or the wait ended first
+   */
+  int SendMsgAbortable(uint32_t messageId,
+                       int param1,
+                       int param2,
+                       std::shared_ptr<void> payload,
+                       CEvent& abortEvent,
+                       std::string strParam = "");
+
+  /*!
    * \brief Send a non-blocking message and return immediately
    *
    * If and what the response is depends entirely on the message being sent and
@@ -431,6 +465,7 @@ private:
   CApplicationMessenger const& operator=(CApplicationMessenger const&) = delete;
 
   int SendMsg(ThreadMessage&& msg, bool wait);
+  void Enqueue(ThreadMessage* msg);
   void ProcessMessage(ThreadMessage *pMsg);
 
   std::queue<ThreadMessage*> m_vecMessages; /*!< queue for regular messages */
@@ -439,7 +474,7 @@ private:
   CCriticalSection m_critSection;
   std::thread::id m_guiThreadId;
   std::thread::id m_processThreadId;
-  bool m_bStop{ false };
+  std::atomic<bool> m_bStop{false};
 };
 }
 }
