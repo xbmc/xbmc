@@ -241,6 +241,19 @@ static_assert(std::ranges::all_of(
     [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
     &ISO639_1::name));
 
+struct KODI_LANGUAGE_CODE
+{
+  std::string_view code; // the code Kodi gave the language
+  std::string_view tag; // the BCP 47 tag for it
+};
+
+// The codes in these tables that no standard assigns, so the subtag registry does not hold them,
+// with the tag BCP 47 writes the language as
+inline constexpr std::array<KODI_LANGUAGE_CODE, 2> TableKodiLanguageCodes = {{
+    {"pb", "pt-BR"},
+    {"pob", "pt-BR"},
+}};
+
 constexpr auto CreateTableISO639_1ByAlpha3B()
 {
   auto codes{TableISO639_1};

@@ -364,6 +364,25 @@ TEST(TestLanguageTag, PrefersTheCurrentCodeOverTheDeprecatedOne)
   EXPECT_TRUE(CLanguageTag::Parse("iw").Matches(CLanguageTag::Parse("he")));
 }
 
+TEST(TestLanguageTag, ReadsKodisOwnCodesForBrazilianPortugueseAsTheStandardTag)
+{
+  // pb and pob are codes Kodi gave Brazilian Portuguese, which no standard assigns
+  for (const std::string text : {"pb", "pob", "Portuguese (Brazil)", "pt_BR"})
+  {
+    EXPECT_EQ(CLanguageTag::Parse(text).ToString(), "pt-BR") << text;
+    EXPECT_TRUE(CLanguageTag::TryParse(text).has_value()) << text;
+  }
+
+  // The language lists offer the name, and a track may be tagged either way
+  EXPECT_TRUE(CLanguageTag::Parse("Portuguese (Brazil)").Matches(CLanguageTag::Parse("pob")));
+  EXPECT_TRUE(CLanguageTag::Parse("Portuguese (Brazil)").Matches(CLanguageTag::Parse("pt-BR")));
+  EXPECT_TRUE(CLanguageTag::Parse("pb").Matches(CLanguageTag::Parse("pob")));
+
+  EXPECT_EQ(CLanguageTag::Parse("pob").ToEnglishName(), "Portuguese (Brazil)");
+  EXPECT_EQ(CLanguageTag::Parse("pob").AsIso6392B(), "por");
+  EXPECT_EQ(CLanguageTag::Parse("pb").AsIso6391(), "pt");
+}
+
 TEST(TestLanguageTag, WritesSerboCroatianAsScr)
 {
   // ISO 639-2 withdrew scr, but it is still the code Serbo-Croatian is written with

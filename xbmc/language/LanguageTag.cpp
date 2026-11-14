@@ -13,6 +13,7 @@
 #include "language/i18n/Iso639.h"
 #include "language/i18n/IsoCodes.h"
 #include "language/i18n/LanguageTable.h"
+#include "language/i18n/TableLanguageCodes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -260,6 +261,16 @@ std::optional<Parsed> AsIso6392Code(const std::string& code)
   return std::nullopt;
 }
 
+//! A code Kodi gave a language, answered by the tag BCP 47 writes the language as
+std::optional<Parsed> AsKodiCode(const std::string& code)
+{
+  const auto kodiCode = std::ranges::find(TableKodiLanguageCodes, code, &KODI_LANGUAGE_CODE::code);
+  if (kodiCode == TableKodiLanguageCodes.end())
+    return std::nullopt;
+
+  return AsRegisteredTag(std::string{kodiCode->tag});
+}
+
 //! A code advancedsettings.xml declares, which is a language by declaration whether or not any
 //! standard assigns it
 std::optional<Parsed> AsDeclaredCode(const std::string& code)
@@ -273,6 +284,9 @@ std::optional<Parsed> AsDeclaredCode(const std::string& code)
 //! A language written as a code in any notation Kodi recognizes
 std::optional<Parsed> FromCode(const std::string& code)
 {
+  if (auto parsed = AsKodiCode(code); parsed.has_value())
+    return parsed;
+
   if (auto parsed = AsIso6392Code(code); parsed.has_value())
     return parsed;
 
