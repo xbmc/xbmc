@@ -34,6 +34,10 @@ TEST(TestGUIDialogNumeric, BackspaceInTheSecondsRemovesASecondsDigit)
 
 TEST(TestGUIDialogNumeric, TheSecondsCanBeReachedAfterTextInput)
 {
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
+  GTEST_SKIP() << "mktime does not handle dates before 1900 on this platform";
+#endif
+
   CGUIDialogNumeric dialog;
   dialog.SetMode(KODI::DIALOGS::NUMERIC_MODE::TIME_SECONDS, "01:42:00");
 
