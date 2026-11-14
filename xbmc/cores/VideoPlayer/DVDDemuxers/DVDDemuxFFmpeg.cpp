@@ -2274,7 +2274,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       // A transport stream can carry several ISO 639 language descriptors for one track, which
       // ffmpeg joins with commas ("deu,eng" for dual mono, or one entry per DVB subtitle page)
       const std::string_view language{langTag->value};
-      stream->language = CLanguageTag::ParseStreamLanguage(std::string{language.substr(0, language.find(','))});
+      stream->language = CLanguageTag::Parse(std::string{language.substr(0, language.find(','))});
       //! @todo ffmpeg does not read the Matroska v4 LanguageBCP47 element, which takes priority
       //! over Language when present, so every track is reported with the value of Language. The
       //! curly-brace tag in the title field is the interim way to state a track's real language.
@@ -2326,7 +2326,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       const auto bluray{std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)};
       std::string blurayLanguage;
       bluray->GetStreamInfo(pStream->id, blurayLanguage);
-      stream->language = CLanguageTag::ParseStreamLanguage(blurayLanguage);
+      stream->language = CLanguageTag::Parse(blurayLanguage);
 
       // The transport stream of a bluray carries no disposition, so the default audio and subtitle
       // streams have to be flagged from the clip information (see IsDefaultStream)

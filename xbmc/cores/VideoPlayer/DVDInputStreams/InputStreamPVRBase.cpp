@@ -348,7 +348,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
     dStream->codec = (AVCodecID)stream.iCodecId;
     dStream->uniqueId = stream.iPID;
-    dStream->language = CLanguageTag::ParseStreamLanguage(stream.strLanguage);
+    dStream->language = CLanguageTag::Parse(stream.strLanguage);
 
     newStreamMap[stream.iPID] = dStream;
   }

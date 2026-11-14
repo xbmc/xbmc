@@ -65,27 +65,18 @@ public:
    * \brief Build a tag from a language in any notation: 2-Char (ISO 639-1), 3-Char (ISO 639-2/B
    *        or /T), a BCP 47 language tag, a POSIX locale name (en_GB), or a full English
    *        language name.
+   *
+   * Text that names no language becomes und, which is what BCP 47 says for a language that is
+   * present but not known: such text cannot be chosen, matched, named or narrowed as a language.
+   * A language no standard assigns is declared in advancedsettings.xml <languagecodes>, and then
+   * parses like any other.
+   *
+   * \note Empty text gives an empty tag, so a source that declared no language is still
+   *       distinguishable from one whose declaration could not be read.
    * \param[in] text The language.
-   * \return The tag. Text that cannot be recognized is kept verbatim rather than discarded, so a
-   *         value from an NFO, an addon or advancedsettings.xml survives a round trip.
+   * \return The tag, und where the text names no language, or an empty tag for empty text.
    */
   static CLanguageTag Parse(const std::string& text);
-
-  /*!
-   * \brief Build a tag from the language a media stream declares.
-   *
-   * As Parse is, except that text naming no language becomes und rather than being kept. A
-   * stream's declared language is published on interfaces that promise BCP 47, and und is what
-   * BCP 47 says for a language that is present but not known - which is exactly true of a
-   * declaration that cannot be read. Containers carry values like "undefined" and "unknown"
-   * that name nothing, and passing those on states them as though they were languages.
-   *
-   * \note Only a declaration that says nothing at all stays empty, so a stream that named no
-   *       language is still distinguishable from one whose language could not be read.
-   * \param[in] text The language the stream declares.
-   * \return The tag, or und where the declaration names no language.
-   */
-  static CLanguageTag ParseStreamLanguage(const std::string& text);
 
   /*!
    * \brief Build a tag from text only if the text names a language.
@@ -112,12 +103,12 @@ public:
   static CLanguageTag English();
 
   /*!
-   * \brief Whether the text this was parsed from named a language.
+   * \brief Whether the tag holds a language, und included.
    * \note An empty projection is a different question: AsIso6391 is empty for a valid language
    *       that has no ISO 639-1 code.
-   * \return true where the text named a language.
+   * \return true for every tag but an empty one.
    */
-  bool IsValid() const { return m_valid; }
+  bool IsValid() const { return !m_tag.empty(); }
 
   /*!
    * \brief Whether the tag names English, in any of its varieties.
@@ -154,9 +145,7 @@ public:
 
   /*!
    * \brief The canonical form, which is a BCP 47 language tag.
-   * \note Unrecognized text is answered as it was given, so this is a BCP 47 tag only where
-   *       IsValid is true. An interface contracting to serve BCP 47 needs that first.
-   * \return The tag, or the unrecognized text it was built from.
+   * \return The tag, or an empty string for an empty tag.
    */
   const std::string& ToString() const { return m_tag; }
 
@@ -166,7 +155,7 @@ public:
    * Narrowing: region, script and variant subtags have no ISO 639 equivalent and are dropped.
    *
    * \return The code, or the primary language subtag when ISO 639-2 assigns the language
-   *         none. Text that named no language is returned as given.
+   *         none.
    */
   std::string AsIso6392B() const;
 
@@ -177,7 +166,7 @@ public:
    * spelled the same for every other.
    *
    * \return The code, or the primary language subtag when ISO 639-2 assigns the language
-   *         none. Text that named no language is returned as given.
+   *         none.
    */
   std::string AsIso6392T() const;
 
@@ -228,9 +217,8 @@ public:
    *       zh-yue names Chinese here and matches zh. RFC 5646 canonicalizes zh-yue to yue, which
    *       names a language of its own and does not match.
    *
-   * \note A tag naming no language matches only another naming no language, so an empty tag does
-   *       not match und even though IsUndetermined is true of both. IsUndetermined answers that
-   *       question instead.
+   * \note An empty tag matches only another empty one, so it does not match und even though
+   *       IsUndetermined is true of both. IsUndetermined answers that question instead.
    *
    * \param[in] other The tag to compare against.
    * \return true when both name the same language.
@@ -275,7 +263,7 @@ public:
 
 private:
   /*!
-   * \brief A tag that named a language, with where the parse found its parts.
+   * \brief A tag, with where the parse found its parts.
    * \param[in] tag The canonical form.
    * \param[in] languageLength The length of the primary language subtag, which the tag starts
    *            with.
@@ -295,13 +283,9 @@ private:
       m_scriptOffset(scriptOffset),
       m_scriptLength(scriptLength),
       m_regionOffset(regionOffset),
-      m_regionLength(regionLength),
-      m_valid(true)
+      m_regionLength(regionLength)
   {
   }
-
-  //! Text that named no language, kept as it was given
-  explicit CLanguageTag(std::string text) : m_tag(std::move(text)) {}
 
   //! The script subtag, as canonical BCP 47 spells it, or empty where the tag states none
   std::string_view Script() const { return {m_tag.data() + m_scriptOffset, m_scriptLength}; }
@@ -316,6 +300,5 @@ private:
   std::size_t m_scriptLength{0};
   std::size_t m_regionOffset{0};
   std::size_t m_regionLength{0};
-  bool m_valid{false};
 };
 } // namespace KODI::LANGUAGE

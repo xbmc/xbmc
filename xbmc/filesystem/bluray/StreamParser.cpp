@@ -225,7 +225,7 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
       break;
   }
 
-  asi.language = CLanguageTag::ParseStreamLanguage(stream.language);
+  asi.language = CLanguageTag::Parse(stream.language);
 
   return asi;
 }
@@ -381,7 +381,7 @@ void AddStream(const StreamInformation& stream,
     {
       SubtitleStreamInfo ssi;
       ssi.valid = true;
-      ssi.language = CLanguageTag::ParseStreamLanguage(stream.language);
+      ssi.language = CLanguageTag::Parse(stream.language);
       if (defaults.subtitle == stream.packetIdentifier)
         ssi.flags = static_cast<StreamFlags>(ssi.flags | StreamFlags::FLAG_DEFAULT);
 

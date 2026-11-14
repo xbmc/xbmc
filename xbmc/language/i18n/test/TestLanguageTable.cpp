@@ -127,7 +127,7 @@ TEST_F(LanguageTableTest, ADeclaredCodeIsALanguageLikeAnyOther)
 
   EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), language);
   EXPECT_TRUE(CLanguageTag::TryParse("ZZZ").has_value());
-  EXPECT_TRUE(CLanguageTag::ParseStreamLanguage("zzz").Matches(language));
+  EXPECT_TRUE(CLanguageTag::Parse("zzz").Matches(language));
 }
 
 TEST_F(LanguageTableTest, AdvancedSettingsDeclaresItsLanguageCodes)

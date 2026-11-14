@@ -351,9 +351,6 @@ bool CLanguageTag::IsUndetermined() const
 
 bool CLanguageTag::IsRightToLeft() const
 {
-  if (!m_valid)
-    return false;
-
   // ISO 15924 codes of the scripts written right to left
   static constexpr std::array<std::string_view, 10> rightToLeftScripts = {
       "Adlm", "Arab", "Hebr", "Mand", "Mend", "Nkoo", "Rohg", "Samr", "Syrc", "Thaa",
@@ -388,46 +385,24 @@ CLanguageTag CLanguageTag::Parse(const std::string& text)
   if (text.empty())
     return {};
 
-  if (auto parsed = CanonicalBcp47(text); parsed.has_value())
-  {
-    return CLanguageTag(std::move(parsed->tag), parsed->languageLength, parsed->scriptOffset,
-                        parsed->scriptLength, parsed->regionOffset, parsed->regionLength);
-  }
-
-  return CLanguageTag(text);
-}
-
-CLanguageTag CLanguageTag::ParseStreamLanguage(const std::string& text)
-{
-  // A stream that declares nothing is not a stream whose declaration could not be read
-  if (text.empty())
-    return {};
-
-  CLanguageTag tag{Parse(text)};
-  if (!tag.IsValid())
-  {
-    CLog::LogF(LOGDEBUG, "stream declares a language of '{}', which names none - taking it as {}",
-               text, UNDETERMINED);
-    return Undetermined();
-  }
-
-  return tag;
+  return TryParse(text).value_or(Undetermined());
 }
 
 std::optional<CLanguageTag> CLanguageTag::TryParse(const std::string& text)
 {
-  if (CLanguageTag tag{Parse(text)}; tag.IsValid())
-    return tag;
+  if (text.empty())
+    return std::nullopt;
 
-  return std::nullopt;
+  auto parsed = CanonicalBcp47(text);
+  if (!parsed.has_value())
+    return std::nullopt;
+
+  return CLanguageTag(std::move(parsed->tag), parsed->languageLength, parsed->scriptOffset,
+                      parsed->scriptLength, parsed->regionOffset, parsed->regionLength);
 }
 
 std::string CLanguageTag::AsIso6392B() const
 {
-  // Text that names no language has no code to narrow to, and is answered as it was given
-  if (!m_valid)
-    return m_tag;
-
   const std::string_view language{Language()};
 
   if (language.length() == ALPHA2_CODE_LENGTH)
@@ -472,18 +447,13 @@ std::string CLanguageTag::AsIso6391() const
 
 bool CLanguageTag::Matches(const CLanguageTag& other) const
 {
-  // Two tags that are already the same name the same language, which is the only way text that
-  // named none can match
-  if (StringUtils::EqualsNoCase(m_tag, other.m_tag))
-    return true;
-
   // The primary subtag is the language each tag names, with everything qualifying it dropped
-  return m_valid && other.m_valid && Language() == other.Language();
+  return Language() == other.Language();
 }
 
 bool CLanguageTag::IsWithin(const CLanguageTag& macrolanguage) const
 {
-  if (!m_valid || !macrolanguage.m_valid)
+  if (!IsValid() || !macrolanguage.IsValid())
     return false;
 
   const auto subTag{

@@ -9,6 +9,7 @@
 #include "ServiceManager.h"
 #include "application/Application.h"
 #include "language/LanguageTag.h"
+#include "language/i18n/LanguageTable.h"
 
 #include <memory>
 #include <utility>
@@ -48,7 +49,7 @@ TEST(TestLanguageTag, TakesThePosixSpellingOfTheSubtagSeparator)
 
   EXPECT_TRUE(CLanguageTag::TryParse("fr_CA").has_value());
 
-  EXPECT_EQ(CLanguageTag::Parse("1080p_x264").ToString(), "1080p_x264");
+  EXPECT_FALSE(CLanguageTag::TryParse("1080p_x264").has_value());
 }
 
 TEST(TestLanguageTag, TakesThePosixCodesetAndModifier)
@@ -134,7 +135,6 @@ TEST(TestLanguageTag, NamesTheTerminologyForm)
   EXPECT_EQ(CLanguageTag::Parse("en-AU").AsIso6392T(), "eng");
 
   EXPECT_EQ(CLanguageTag().AsIso6392T(), "");
-  EXPECT_EQ(CLanguageTag::Parse("not a language").AsIso6392T(), "not a language");
 }
 
 TEST(TestLanguageTag, NamesTheAlpha2Form)
@@ -168,7 +168,6 @@ TEST(TestLanguageTag, SaysWhetherTheTextNamedALanguage)
 
   EXPECT_FALSE(CLanguageTag{}.IsValid());
   EXPECT_FALSE(CLanguageTag::Parse("").IsValid());
-  EXPECT_FALSE(CLanguageTag::Parse("not a language").IsValid());
 
   // TryParse asks the same question before building anything
   EXPECT_TRUE(CLanguageTag::TryParse("en").has_value());
@@ -183,54 +182,44 @@ TEST(TestLanguageTag, SaysWhetherTheTextNamedALanguage)
   EXPECT_FALSE(CLanguageTag::TryParse("").has_value());
 }
 
-TEST(TestLanguageTag, KeepsUnrecognizedTextVerbatim)
+TEST(TestLanguageTag, TakesTextNamingNoLanguageAsUndetermined)
 {
-  // A value from a NFO, an addon or as.xml must survive rather than be discarded
-  const CLanguageTag tag = CLanguageTag::Parse("not a language");
-
-  EXPECT_NE(tag, CLanguageTag{});
-  EXPECT_EQ(tag.ToString(), "not a language");
-  EXPECT_EQ(tag.AsIso6392B(), "not a language");
-}
-
-TEST(TestLanguageTag, TakesAnUnreadableStreamDeclarationAsUndetermined)
-{
-  // A stream's language reaches interfaces that promise BCP 47, so text naming no language must
-  // not be passed on as though it were one
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("undefined").ToString(), "und");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("unknown").ToString(), "und");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("not a language").ToString(), "und");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("1080p_x264").ToString(), "und");
+  // Text naming no language cannot be chosen, matched, named or narrowed as one, so it is und
+  for (const std::string text : {"undefined", "unknown", "not a language", "1080p_x264"})
+  {
+    const CLanguageTag tag{CLanguageTag::Parse(text)};
+    EXPECT_EQ(tag, CLanguageTag::Undetermined()) << text;
+    EXPECT_EQ(tag.AsIso6392B(), "und") << text;
+    EXPECT_FALSE(tag.Matches(CLanguageTag::Parse("en"))) << text;
+  }
 
   // The two spellings a container can use for the same fact both arrive as the same tag
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("und").ToString(), "und");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("Undetermined").ToString(), "und");
+  EXPECT_EQ(CLanguageTag::Parse("und"), CLanguageTag::Undetermined());
+  EXPECT_EQ(CLanguageTag::Parse("Undetermined"), CLanguageTag::Undetermined());
 
-  // A stream declaring no language at all is not a stream whose declaration could not be read
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage(""), CLanguageTag{});
-  EXPECT_NE(CLanguageTag::ParseStreamLanguage(""), CLanguageTag::Undetermined());
+  // Declaring no language at all is not declaring one that cannot be read
+  EXPECT_EQ(CLanguageTag::Parse(""), CLanguageTag{});
+  EXPECT_NE(CLanguageTag::Parse(""), CLanguageTag::Undetermined());
 
   // zxx states that there is no speech to have a language, which is a declaration, not a failure
   // to read one
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("zxx").ToString(), "zxx");
-  EXPECT_FALSE(CLanguageTag::ParseStreamLanguage("zxx").IsUndetermined());
+  EXPECT_EQ(CLanguageTag::Parse("zxx").ToString(), "zxx");
+  EXPECT_FALSE(CLanguageTag::Parse("zxx").IsUndetermined());
 }
 
-TEST(TestLanguageTag, LeavesAReadableStreamDeclarationAlone)
+TEST(TestLanguageTag, KeepsALanguageDeclaredInAdvancedSettings)
 {
-  // Whatever a container spells its language as, a language it names survives unchanged
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("en").ToString(), "en");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("eng").ToString(), "en");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("en-GB").ToString(), "en-GB");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("en_GB").ToString(), "en-GB");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("English").ToString(), "en");
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("zh-Hant-HK").ToString(), "zh-Hant-HK");
+  // A language Kodi does not know is kept by declaring it in <languagecodes>
+  I18N::CLanguageTable::GetInstance().Declare({{"zzz", "High Valyrian"}});
 
-  // A language with no ISO 639-1 code is still a language
-  EXPECT_EQ(CLanguageTag::ParseStreamLanguage("ady").ToString(), "ady");
+  const CLanguageTag tag{CLanguageTag::Parse("zzz")};
+  EXPECT_EQ(tag.ToString(), "zzz");
+  EXPECT_EQ(tag.AsIso6392B(), "zzz");
+  EXPECT_EQ(tag.ToEnglishName(), "High Valyrian");
+  EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), tag);
+  EXPECT_EQ(CLanguageTag::Parse(tag.AsIso6392B()), tag);
 
-  // Unlike Parse, which keeps unrecognized text so that stored values survive a round trip
-  EXPECT_EQ(CLanguageTag::Parse("undefined").ToString(), "undefined");
+  I18N::CLanguageTable::GetInstance().Reset();
 }
 
 TEST(TestLanguageTag, ComparesTagsRatherThanLanguages)
@@ -294,7 +283,6 @@ TEST(TestLanguageTag, TreatsAbsentAndUndeterminedAlike)
   EXPECT_FALSE(CLanguageTag::Parse("zxx").IsUndetermined());
 
   EXPECT_FALSE(CLanguageTag::Parse("en").IsUndetermined());
-  EXPECT_FALSE(CLanguageTag::Parse("not a language").IsUndetermined());
 }
 
 TEST(TestLanguageTag, ALanguageIsWithinItsMacrolanguage)
@@ -333,10 +321,6 @@ TEST(TestLanguageTag, MatchesTheSameLanguageInAnyNotation)
   // The tags remain distinguishable, matching is a question about the language they name
   EXPECT_NE(CLanguageTag::Parse("en-AU"), CLanguageTag::Parse("en-GB"));
 
-  // Unrecognized text is compared as it stands, so a value from a NFO or an addon still matches
-  EXPECT_TRUE(CLanguageTag::Parse("not a language").Matches(CLanguageTag::Parse("not a language")));
-  EXPECT_FALSE(CLanguageTag::Parse("not a language").Matches(CLanguageTag::Parse("en")));
-
   // "no linguistic content" is a language of its own, and undetermined is not English
   EXPECT_FALSE(CLanguageTag::Parse("zxx").Matches(CLanguageTag::Parse("en")));
   EXPECT_FALSE(CLanguageTag::Undetermined().Matches(CLanguageTag::Parse("en")));
@@ -348,9 +332,8 @@ TEST(TestLanguageTag, NamesTheLanguageInEnglish)
   EXPECT_EQ(CLanguageTag::Parse("eng").ToEnglishName(), "English");
   EXPECT_EQ(CLanguageTag::Parse("en-AU").ToEnglishName(), "English (Australia)");
 
-  // Unrecognized languages have no name, and the caller decides what to show instead
+  // An empty tag has no name, and the caller decides what to show instead
   EXPECT_EQ(CLanguageTag().ToEnglishName(), "");
-  EXPECT_EQ(CLanguageTag::Parse("not a language").ToEnglishName(), "");
 }
 
 TEST(TestLanguageTag, PrefersTheCurrentCodeOverTheDeprecatedOne)

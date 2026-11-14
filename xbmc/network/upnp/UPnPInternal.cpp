@@ -863,13 +863,14 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       else
         preferredLanguage = setting->ToString();
 
-      const KODI::LANGUAGE::CLanguageTag preferredTag{
-          KODI::LANGUAGE::CLanguageTag::Parse(preferredLanguage)};
+      // The setting also holds choices that name no language, such as none and original
+      const auto preferredTag{KODI::LANGUAGE::CLanguageTag::TryParse(preferredLanguage)};
 
       for (const std::string& subtitle : subtitles)
       {
-        if (CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitle)
-                .language.Matches(preferredTag))
+        if (preferredTag.has_value() &&
+            CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitle)
+                .language.Matches(*preferredTag))
         {
           subtitlePath = subtitle;
           break;

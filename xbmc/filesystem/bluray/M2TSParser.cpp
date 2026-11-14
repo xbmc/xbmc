@@ -561,8 +561,7 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
 
       // ISO 639 language descriptor
       if (desc_tag == 0x0A && desc_length >= 4)
-        language = KODI::LANGUAGE::CLanguageTag::ParseStreamLanguage(
-            GetString(section, descriptorOffset + 2, 3));
+        language = KODI::LANGUAGE::CLanguageTag::Parse(GetString(section, descriptorOffset + 2, 3));
 
       descriptorOffset += 2 + desc_length;
     }
