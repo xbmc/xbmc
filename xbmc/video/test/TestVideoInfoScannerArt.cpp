@@ -19,12 +19,15 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/ItemProperties.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
 #include <memory>
@@ -670,6 +673,40 @@ protected:
         m_db.GetPathId(m_root))));
   }
 
+  void TearDown() override
+  {
+    AdvancedSettings()->m_caseSensitiveLocalArtMatch = m_caseSensitiveLocalArtMatch;
+    TestVideoInfoScannerArt::TearDown();
+  }
+
+  static std::shared_ptr<CAdvancedSettings> AdvancedSettings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  }
+
+  //! A show holding episode 1 of season 1, read from its nfo
+  //! \return the show's folder
+  std::string ShowOfOneEpisode()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    File(show, "Show.S01E01.mkv");
+    File(show, "Show.S01E01.nfo",
+         "<episodedetails><title>First</title><season>1</season><episode>1</episode>"
+         "</episodedetails>");
+    return show;
+  }
+
+  std::string SeasonArt(int season, const std::string& type)
+  {
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT art.url FROM art JOIN seasons ON art.media_id = seasons.idSeason "
+                        "WHERE art.media_type='season' AND art.type='%s' AND seasons.season=%i",
+                        type.c_str(), season));
+  }
+
+  const bool m_caseSensitiveLocalArtMatch{AdvancedSettings()->m_caseSensitiveLocalArtMatch};
+
   //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, read from the disc's nfo
   //! \return the folder holding BDMV
   std::string BlurayRipOfTwoEpisodes()
@@ -837,4 +874,59 @@ TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAVideoFileHasItsOwnArtBeside
   ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
   EXPECT_EQ(thumb7, EpisodeArt(7, "thumb"));
   EXPECT_EQ("", EpisodeArt(8, "thumb"));
+}
+
+// With local art matched in any case, a season's art named with a capital is found, and counts
+// as a season of the show's, as one without does
+TEST_F(TestVideoInfoScannerArtTvShows, ASeasonsArtNamedWithACapitalIsFound)
+{
+  AdvancedSettings()->m_caseSensitiveLocalArtMatch = false;
+  const std::string show{ShowOfOneEpisode()};
+  const std::string poster1{File(show, "Season01-poster.jpg")};
+  const std::string poster2{File(show, "Season02-poster.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(poster1, SeasonArt(1, "poster"));
+  EXPECT_EQ(poster2, SeasonArt(2, "poster"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnImageNamedLikeASeasonInsideAnotherNameAddsNoSeason)
+{
+  const std::string show{ShowOfOneEpisode()};
+  File(show, "preseason03-poster.jpg");
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(0, m_db.GetSingleValueInt("SELECT COUNT(*) FROM seasons WHERE season > 1"));
+}
+
+// By default "season" is matched in its case and the rest of the name in any, as a season's art is
+// looked up. Whichever the setting asks for, it is matched so with one regexp cache for both.
+TEST_F(TestVideoInfoScannerArtTvShows, ASeasonsArtIsCountedInTheCaseItIsMatchedIn)
+{
+  const std::string show{Folder(m_root, "Show")};
+  const std::string poster1{File(show, "season01-poster.JPG")};
+  const std::string poster2{File(show, "Season02-poster.jpg")};
+  CVideoInfoTag tag;
+  tag.m_strPath = show;
+  KODI::REGEXP::RegExpCache cache;
+  const auto seasonsArt = [&tag, &cache]
+  {
+    KODI::ART::SeasonsArtwork art;
+    CVideoInfoScannerArt::GetSeasonThumbs(tag, art, {"poster"}, true,
+                                          CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES,
+                                          &cache);
+    return art;
+  };
+
+  KODI::ART::SeasonsArtwork matchedInCase{seasonsArt()};
+  EXPECT_FALSE(matchedInCase.contains(2));
+  EXPECT_EQ(poster1, matchedInCase[1]["poster"]);
+
+  AdvancedSettings()->m_caseSensitiveLocalArtMatch = false;
+  KODI::ART::SeasonsArtwork matchedInAnyCase{seasonsArt()};
+  EXPECT_EQ(poster2, matchedInAnyCase[2]["poster"]);
 }
