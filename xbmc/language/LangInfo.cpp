@@ -11,6 +11,7 @@
 #include "DatabaseManager.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
@@ -241,6 +242,14 @@ namespace
 CLanguageTag DiscLanguage(const CLanguageTag& language, const std::string& fallback)
 {
   return language.IsUndetermined() ? CLanguageTag::Parse(fallback) : language;
+}
+
+//! An addon may name a language Kodi's own tables do not
+void DeclareAddonLanguageNames()
+{
+  std::map<std::string, std::string> addonLanguages;
+  CLangInfo::GetAddonsLanguageCodes(addonLanguages);
+  CLanguageTable::GetInstance().DeclareNames(addonLanguages);
 }
 
 /*!
@@ -916,10 +925,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
     }
   }
 
-  // An addon may name a language Kodi's own tables do not
-  std::map<std::string, std::string> addonLanguages;
-  GetAddonsLanguageCodes(addonLanguages);
-  CLanguageTable::GetInstance().DeclareNames(addonLanguages);
+  DeclareAddonLanguageNames();
 
   CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language);
   if (!Load(language))
@@ -961,6 +967,17 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   }
 
   return true;
+}
+
+void CLangInfo::OnAddonEvent(const ADDON::AddonEvent& event)
+{
+  // Installing or updating an addon reloads it, which is announced as one of these two
+  if ((typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled)) &&
+      CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::RESOURCE_LANGUAGE))
+  {
+    DeclareAddonLanguageNames();
+  }
 }
 
 const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const

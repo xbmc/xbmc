@@ -7,6 +7,7 @@
  */
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "language/LangInfo.h"
 #include "language/i18n/LanguageTable.h"
 #include "resources/LocalizeStrings.h"
@@ -107,6 +108,30 @@ TEST(TestLangInfo, AStoredAddonLanguageNameIsALanguage)
   EXPECT_EQ(langInfo.GetAudioLanguage(false).ToString(), "en-AU");
 
   CLanguageTable::GetInstance().Reset();
+}
+
+TEST(TestLangInfo, ALanguageAddonInstalledOrEnabledLaterNamesItsLanguage)
+{
+  // The language settings offer every installed language addon by name, so one installed,
+  // updated or enabled after the language loaded must name its language too
+  CLangInfoTest langInfo;
+  const std::string addon{"resource.language.en_gb"};
+
+  for (const bool enabled : {true, false})
+  {
+    ASSERT_FALSE(CLanguageTable::GetInstance().NameOf("en-GB").has_value());
+    if (enabled)
+      langInfo.OnAddonEvent(ADDON::AddonEvents::Enabled(addon));
+    else
+      langInfo.OnAddonEvent(ADDON::AddonEvents::ReInstalled(addon));
+
+    EXPECT_EQ(CLanguageTag::Parse("en-GB").ToEnglishName(), "English");
+    CLanguageTable::GetInstance().Reset();
+  }
+
+  // Nothing is declared for another kind of event
+  langInfo.OnAddonEvent(ADDON::AddonEvents::Disabled(addon));
+  EXPECT_FALSE(CLanguageTable::GetInstance().NameOf("en-GB").has_value());
 }
 
 TEST(TestLangInfo, RegionalDateFormatsAreTheRegions)
