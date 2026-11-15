@@ -200,9 +200,8 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  for (int i=0;i<items.Size();++i )
-    if (StringUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
-      items.Remove(i);
+  erase_if(items, [](const std::shared_ptr<CFileItem>& item)
+           { return StringUtils::EqualsNoCase(item->GetLabel(), "folder.jpg"); });
 
   KODI::PICTURE::GroupLivePhotos(items);
 
