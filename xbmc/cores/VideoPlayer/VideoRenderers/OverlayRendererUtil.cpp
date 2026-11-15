@@ -281,6 +281,90 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   return true;
 }
 
+bool convert_quad_pages(ASS_Image* images, std::vector<SQuads>& pages, int maxTextureSize)
+{
+  pages.clear();
+  if (maxTextureSize < 4)
+    return false;
+
+  struct Tile
+  {
+    ASS_Image image;
+    int left;
+    int top;
+    int right;
+    int bottom;
+  };
+  std::vector<Tile> tiles;
+  for (ASS_Image* image = images; image; image = image->next)
+  {
+    if ((image->color & 0xff) == 0xff || image->w <= 0 || image->h <= 0)
+      continue;
+    const int tileWidth = image->w < maxTextureSize ? image->w : maxTextureSize - 3;
+    const int tileHeight = image->h < maxTextureSize ? image->h : maxTextureSize - 3;
+    for (int y = 0; y < image->h; y += tileHeight)
+    {
+      for (int x = 0; x < image->w; x += tileWidth)
+      {
+        const int width = std::min(image->w - x, tileWidth);
+        const int height = std::min(image->h - y, tileHeight);
+        Tile tile{*image, x > 0, y > 0, x + width < image->w, y + height < image->h};
+        // Include neighbouring texels for GL_LINEAR at internal tile edges.
+        // Only the original tile area will be drawn, so these borders never overlap.
+        tile.image.w = width + tile.left + tile.right;
+        tile.image.h = height + tile.top + tile.bottom;
+        tile.image.bitmap += static_cast<size_t>(y - tile.top) * image->stride + x - tile.left;
+        tile.image.dst_x += x - tile.left;
+        tile.image.dst_y += y - tile.top;
+        tile.image.next = nullptr;
+        tiles.push_back(tile);
+      }
+    }
+  }
+
+  size_t begin = 0;
+  while (begin < tiles.size())
+  {
+    // Match convert_quad's shelf packing, including its one-pixel gutter.
+    int x = 0;
+    int y = 0;
+    int rowHeight = 0;
+    size_t end = begin;
+    for (; end < tiles.size(); ++end)
+    {
+      const ASS_Image& tile = tiles[end].image;
+      if (x + tile.w >= maxTextureSize)
+      {
+        y += rowHeight + 1;
+        x = 0;
+        rowHeight = 0;
+      }
+      if (y + std::max(rowHeight, tile.h) + 1 > maxTextureSize)
+        break;
+      x += tile.w + 1;
+      rowHeight = std::max(rowHeight, tile.h);
+    }
+
+    for (size_t i = begin; i < end; ++i)
+      tiles[i].image.next = i + 1 < end ? &tiles[i + 1].image : nullptr;
+    pages.emplace_back();
+    convert_quad(&tiles[begin].image, pages.back(), maxTextureSize);
+    for (size_t i = begin; i < end; ++i)
+    {
+      const Tile& tile = tiles[i];
+      SQuad& quad = pages.back().quad[i - begin];
+      quad.u += tile.left;
+      quad.v += tile.top;
+      quad.x += tile.left;
+      quad.y += tile.top;
+      quad.w -= tile.left + tile.right;
+      quad.h -= tile.top + tile.bottom;
+    }
+    begin = end;
+  }
+  return !pages.empty();
+}
+
 bool ShouldConvertPQPaletteToSRGB(bool isHDROverlay)
 {
   if (!isHDROverlay)
