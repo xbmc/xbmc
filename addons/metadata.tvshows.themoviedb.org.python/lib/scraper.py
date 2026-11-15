@@ -263,6 +263,8 @@ def _getepisodelist(handle, api, params, settings):
         org_s = ep.get('org_seasonnum', snum)
         org_e = ep.get('org_epnum', enum)
         ep_url = '{}/{}/{}'.format(show_id, org_s, org_e)
+        if (snum, enum) != (org_s, org_e):
+            ep_url += '/{}/{}'.format(snum, enum)
         xbmcplugin.addDirectoryItem(
             handle=handle, url=ep_url,
             listitem=li, isFolder=False,
@@ -280,6 +282,8 @@ def _getepisodedetails(handle, api, params, settings):
     try:
         season_num = int(parts[1])
         episode_num = int(parts[2])
+        display_season = int(parts[3]) if len(parts) > 3 else season_num
+        display_episode = int(parts[4]) if len(parts) > 3 else episode_num
     except (ValueError, IndexError):
         _fail(handle)
         return
@@ -299,6 +303,9 @@ def _getepisodedetails(handle, api, params, settings):
     _populate_episode(
         li, ep, season_num, episode_num, settings, show_imdb_id
     )
+    vtag = li.getVideoInfoTag()
+    vtag.setSeason(display_season)
+    vtag.setEpisode(display_episode)
     xbmcplugin.setResolvedUrl(handle, True, li)
 
 
