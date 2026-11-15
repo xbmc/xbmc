@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "ShellSurfaceWebOSShell.h"
 #include "VideoRenderers/HwDecRender/RendererStarfish.h"
+#include "application/AppInboundProtocol.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "input/actions/Action.h"
@@ -186,6 +187,8 @@ void CWinSystemWaylandWebOS::OnConfigure(std::uint32_t serial,
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_STOP)));
     }
+    if (const auto appPort = CServiceBroker::GetAppPort())
+      appPort->SetRenderGUI(false);
   }
   else
   {
@@ -203,7 +206,11 @@ bool CWinSystemWaylandWebOS::OnAppLifecycleEvent(LSHandle* sh, LSMessage* reply)
 
   IShellSurface* shellSurface = GetShellSurface();
   if (event["event"] == "relaunch" && shellSurface)
+  {
+    if (const auto appPort = CServiceBroker::GetAppPort())
+      appPort->SetRenderGUI(true);
     shellSurface->SetFullScreen(nullptr, 60.0f);
+  }
 
   return true;
 }
