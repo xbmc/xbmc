@@ -11,7 +11,6 @@
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for std::vector<CMediaSource>
 #include "jobs/IJobCallback.h"
-#include "media/MediaSection.h"
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
