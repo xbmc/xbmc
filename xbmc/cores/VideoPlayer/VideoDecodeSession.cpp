@@ -97,7 +97,14 @@ bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
 
   CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
 
-  for (int attemptsLeft = demuxer.GetNrOfStreams() * 160; attemptsLeft >= 0; attemptsLeft--)
+  // The packets of the other streams are dropped, so only the video packets count against the
+  // budget: lossless audio alone brings dozens per video frame. The amount read is limited too.
+  constexpr int MAX_VIDEO_PACKETS = 640;
+  constexpr int64_t MAX_READ_BYTES = 64 * 1024 * 1024;
+
+  int videoPacketsLeft = MAX_VIDEO_PACKETS;
+  int64_t bytesLeft = MAX_READ_BYTES;
+  while (videoPacketsLeft > 0 && bytesLeft > 0)
   {
     DemuxPacket* pPacket = demuxer.Read();
     packetsTried++;
@@ -105,11 +112,19 @@ bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
     if (!pPacket)
       break;
 
+    bytesLeft -= pPacket->iSize;
+
     if (pPacket->iStreamId != videoStream)
     {
+      // A read that returned nothing counts like a video packet, so that a stalled source ends too
+      if (pPacket->iSize == 0)
+        --videoPacketsLeft;
+
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       continue;
     }
+
+    --videoPacketsLeft;
 
     codec.AddData(*pPacket);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
