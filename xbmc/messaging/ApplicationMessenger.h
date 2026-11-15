@@ -12,6 +12,7 @@
 #include "messaging/ThreadMessage.h"
 #include "threads/Thread.h"
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <queue>
@@ -376,6 +377,9 @@ public:
    * \param [in] params value depends on the message being sent, kept for backward compatibility
    */
   void PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
+
+  //! \brief Queue a callback whose captures are released even if it is discarded.
+  void PostCallback(std::function<void()> callback);
 
   /*!
    * \brief Called from any thread to dispatch messages

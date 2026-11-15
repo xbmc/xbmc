@@ -200,6 +200,16 @@ void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, 
           false);
 }
 
+void CApplicationMessenger::PostCallback(std::function<void()> callback)
+{
+  if (!callback)
+    return;
+
+  ThreadMessage message{TMSG_CALLBACK};
+  message.callback = std::move(callback);
+  SendMsg(std::move(message), false);
+}
+
 void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
@@ -231,8 +241,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   //special case for this that we handle ourselves
   if (pMsg->dwMessage == TMSG_CALLBACK)
   {
-    ThreadMessageCallback *callback = static_cast<ThreadMessageCallback*>(pMsg->lpVoid);
-    callback->callback(callback->userptr);
+    if (pMsg->callback)
+      pMsg->callback();
+    else
+    {
+      ThreadMessageCallback* callback = static_cast<ThreadMessageCallback*>(pMsg->lpVoid);
+      callback->callback(callback->userptr);
+    }
     return;
   }
 
