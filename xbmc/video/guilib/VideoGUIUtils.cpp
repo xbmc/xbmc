@@ -147,7 +147,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
 
   if (item->IsFolder())
   {
-    if (!item->IsPlugin())
+    if (!item->IsPlugin() && !item->GetDynURL().IsPlugin())
     {
       // check if it's a folder with dvd or bluray files, then just add the relevant file
       const std::string mediapath = VIDEO::UTILS::GetOpticalMediaPath(*item);
