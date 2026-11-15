@@ -261,7 +261,9 @@ void CVideoPlayerVideo::OpenFrameTypeParser(const CDVDStreamInfo& hint)
   m_frameTypeParser.reset();
   m_frameTypeContext.reset();
 
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDebugGraphFrameTypes)
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  m_collectFrameSizes = settings->m_videoDebugGraph;
+  if (!m_collectFrameSizes || !settings->m_videoDebugGraphFrameTypes)
     return;
 
   m_frameTypeParser.reset(av_parser_init(hint.codec));
@@ -746,8 +748,9 @@ void CVideoPlayerVideo::Process()
         }
 
         m_videoStats.AddSampleBytes(pPacket->iSize);
-        m_processInfo.AddVideoFrameSize(static_cast<uint32_t>(pPacket->iSize),
-                                        GetFrameType(*pPacket));
+        if (m_collectFrameSizes)
+          m_processInfo.AddVideoFrameSize(static_cast<uint32_t>(pPacket->iSize),
+                                          GetFrameType(*pPacket));
         UpdatePlayerInfo();
 
         if (ProcessDecoderOutput(frametime, pts))

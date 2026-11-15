@@ -157,6 +157,7 @@ protected:
     void operator()(AVCodecParserContext* parser) const;
     void operator()(AVCodecContext* context) const;
   };
+  bool m_collectFrameSizes{false};
   std::unique_ptr<AVCodecParserContext, FrameTypeParserDeleter> m_frameTypeParser;
   std::unique_ptr<AVCodecContext, FrameTypeParserDeleter> m_frameTypeContext;
 

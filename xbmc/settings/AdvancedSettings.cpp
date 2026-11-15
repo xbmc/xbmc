@@ -245,6 +245,7 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_videoFpsDetect = 1;
+  m_videoDebugGraph = false;
   m_videoDebugGraphLogScale = true;
   m_videoDebugGraphSweep = true;
   m_videoDebugGraphFrameTypes = false;
@@ -860,6 +861,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     const TiXmlElement* pDebugGraph = pElement->FirstChildElement("debugframegraph");
     if (pDebugGraph)
     {
+      XMLUtils::GetBoolean(pDebugGraph, "enabled", m_videoDebugGraph);
       std::string value;
       if (XMLUtils::GetString(pDebugGraph, "scale", value))
       {
