@@ -15,6 +15,7 @@ set(SOURCES TestGUIColorManager.cpp
             TestGUIListItemLayout.cpp
             TestGUITextLayout.cpp
             TestGUITexture.cpp
+            TestGUIWindowAnimations.cpp
             TestGUIWindowOnAction.cpp
             TestSkinMapManager.cpp
 )
