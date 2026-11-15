@@ -1,0 +1,20 @@
+libnfs_zdr_bytes() checks a decoded length against the buffer as
+zdrs->pos + (int)*size, so a length with its top bit set turns negative
+and passes, and the length is then used as is. A broken or malicious
+server could make libnfs read or write outside the buffer. Reject
+lengths over 1 GB first, as libnfs 7.0.0 does (3c23b77d82).
+
+--- a/lib/libnfs-zdr.c
++++ b/lib/libnfs-zdr.c
+@@ -176,6 +176,11 @@
+ 		return FALSE;
+ 	}
+ 
++        /* Clamp max size we handle to 1GB */
++        if (*size > 1024 * 1024 * 1024) {
++		return FALSE;
++        }
++
+ 	if (zdrs->pos + (int)*size > zdrs->size) {
+ 		return FALSE;
+ 	}
