@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -78,7 +79,8 @@ public:
       strParam(std::move(other.strParam)),
       params(std::move(other.params)),
       waitEvent(std::move(other.waitEvent)),
-      result(std::move(other.result))
+      result(std::move(other.result)),
+      claimed(std::move(other.claimed))
   {
   }
 
@@ -95,6 +97,7 @@ public:
     params = other.params;
     waitEvent = other.waitEvent;
     result = other.result;
+    claimed = other.claimed;
     return *this;
   }
 
@@ -111,6 +114,7 @@ public:
     params = std::move(other.params);
     waitEvent = std::move(other.waitEvent);
     result = std::move(other.result);
+    claimed = std::move(other.claimed);
     return *this;
   }
 
@@ -138,6 +142,8 @@ public:
 protected:
   std::shared_ptr<CEvent> waitEvent;
   std::shared_ptr<int> result;
+  //! set by whichever of processing or an aborting sender gets there first
+  std::shared_ptr<std::atomic<bool>> claimed;
 };
 }
 }
