@@ -1,0 +1,20 @@
+libnfs_zdr_string() checks a decoded length against its buffer as
+zdrs->pos + (int)size, so a length with its top bit set turns negative
+and passes, and is then used as is. A broken or malicious server could
+make libnfs read or write outside the buffer with a string, such as an
+NFSv3 file name or link target. Reject a string longer than the buffer
+first, as libnfs 7.0.0 does (55c18ea33a).
+
+--- a/lib/libnfs-zdr.c
++++ b/lib/libnfs-zdr.c
+@@ -289,7 +289,9 @@
+ 	if (!libnfs_zdr_u_int(zdrs, &size)) {
+ 		return FALSE;
+ 	}
+-
++	if (size > zdrs->size) {
++		return FALSE;
++	}
+ 	if (zdrs->pos + (int)size > zdrs->size) {
+ 		return FALSE;
+ 	}
