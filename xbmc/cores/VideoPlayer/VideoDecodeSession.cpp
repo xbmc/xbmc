@@ -104,6 +104,7 @@ bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
 
   int videoPacketsLeft = MAX_VIDEO_PACKETS;
   int64_t bytesLeft = MAX_READ_BYTES;
+  bool keyFrameSeen = !demuxer.ReportsKeyFrames();
   while (videoPacketsLeft > 0 && bytesLeft > 0)
   {
     DemuxPacket* pPacket = demuxer.Read();
@@ -125,6 +126,14 @@ bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
     }
 
     --videoPacketsLeft;
+
+    // A seek can land between keyframes, nothing before the first one can be decoded
+    keyFrameSeen = keyFrameSeen || pPacket->m_keyFrame;
+    if (!keyFrameSeen)
+    {
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      continue;
+    }
 
     codec.AddData(*pPacket);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
