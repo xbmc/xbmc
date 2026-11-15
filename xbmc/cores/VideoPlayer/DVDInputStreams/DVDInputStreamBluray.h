@@ -161,6 +161,26 @@ public:
   void ReleaseClipStart() { m_clipStartHeld = false; }
   bool IsClipStartHeld() const { return !m_navmode && m_clipStartHeld && !m_clipStart.empty(); }
 
+  /*!
+   * \brief Select an audio stream of the current play item in libbluray in navigation mode, so
+   *        that the disc program and later play items keep it.
+   * \param pid The packet identifier of the stream
+   * \return True if the play item presents the stream, false otherwise or while an event is held
+   */
+  bool SetActiveAudioStream(int pid);
+
+  /*!
+   * \brief Select a subtitle stream of the current play item in libbluray in navigation mode, so
+   *        that the disc program and later play items keep it.
+   * \param pid The packet identifier of the stream
+   * \param visible Whether the subtitle stream is shown
+   * \return True if the play item presents the stream, false otherwise or while an event is held
+   */
+  bool SetActiveSubtitleStream(int pid, bool visible);
+
+  //! show or hide the presentation graphic stream libbluray last reported, in navigation mode
+  void SetSubtitleVisible(bool visible);
+
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
@@ -267,6 +287,7 @@ protected:
      */
     bool GetClipStreamLanguage(int pid, std::string& language) const;
     void OpenClipSpan();
+    bool CanSelectStream() const;
 
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
@@ -298,4 +319,5 @@ protected:
     size_t m_clipStartOffset{0};
     bool m_clipStartHeld{false};
     uint64_t m_clipStartEnd{0};
+    uint32_t m_pgStreamNumber{0};
 };
