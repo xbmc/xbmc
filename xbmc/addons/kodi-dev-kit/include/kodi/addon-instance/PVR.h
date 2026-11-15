@@ -22,6 +22,9 @@
 
 #ifdef __cplusplus
 
+#include <cstddef>
+#include <cstring>
+
 /*!
  * @internal
  * @brief PVR "C++" API interface
@@ -635,8 +638,9 @@ public:
   //============================================================================
   /// @brief Get the disk space reported by the backend (if supported).
   ///
-  /// @param[in] total The total disk space in KiB.
-  /// @param[in] used The used disk space in KiB.
+  /// @param[in] total The total disk space, in KiB unless the add-on has set
+  ///                  another unit with @ref PVRCapabilities::SetDriveSpaceUnit().
+  /// @param[in] used The used disk space, in the same unit as total.
   /// @return @ref PVR_ERROR_NO_ERROR if the drive space has been fetched
   ///         successfully.
   ///
@@ -2939,9 +2943,19 @@ private:
   inline static PVR_ERROR ADDON_GetCapabilities(const AddonInstance_PVR* instance,
                                                 PVR_ADDON_CAPABILITIES* capabilities)
   {
-    PVRCapabilities cppCapabilities(capabilities);
-    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->GetCapabilities(cppCapabilities);
+    auto* client = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance);
+    if (client->IsInstanceAPIVersionAtLeast(9, 3, 0))
+    {
+      PVRCapabilities cppCapabilities(capabilities);
+      return client->GetCapabilities(cppCapabilities);
+    }
+
+    // Kodi allocates the structure, an older Kodi's one ends before driveSpaceUnit
+    PVR_ADDON_CAPABILITIES addonCapabilities = {};
+    PVRCapabilities cppCapabilities(&addonCapabilities);
+    const PVR_ERROR error = client->GetCapabilities(cppCapabilities);
+    std::memcpy(capabilities, &addonCapabilities, offsetof(PVR_ADDON_CAPABILITIES, driveSpaceUnit));
+    return error;
   }
 
   inline static PVR_ERROR ADDON_FreeCapabilities(const AddonInstance_PVR* instance,
