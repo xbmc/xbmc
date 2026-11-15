@@ -20,6 +20,7 @@
 #include <atomic>
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <set>
 #include <string>
 #include <string_view>
@@ -166,6 +167,10 @@ namespace KODI::VIDEO
   protected:
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
+
+    using ScanPathsByContent = std::map<ADDON::ContentType, std::set<std::string, std::less<>>>;
+    ScanPathsByContent GetScanPathsByContent();
+    bool UpdateScanProgress(ScanPathsByContent& pathsByContent) const;
 
     InfoRet RetrieveInfoForTvShow(CFileItem* pItem,
                                   bool bDirNames,
