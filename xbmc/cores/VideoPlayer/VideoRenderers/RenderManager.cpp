@@ -179,6 +179,7 @@ bool CRenderManager::Configure()
 
   if (m_pRenderer)
   {
+    m_pRenderer->PrepareForReconfigure();
     DeleteRenderer();
   }
 
