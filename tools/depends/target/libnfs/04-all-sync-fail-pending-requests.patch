@@ -1,0 +1,15 @@
+When a synchronous call fails because its connection has died, fail the
+requests still queued on it, as libnfs 6.0.2 does. Otherwise they keep a
+pointer to the caller's stack, and destroying the context later runs their
+callbacks on it.
+
+--- a/lib/libnfs-sync.c
++++ b/lib/libnfs-sync.c
+@@ -283,6 +283,7 @@
+ 			if (revents != -1)
+ 				nfs_set_error(nfs, "nfs_service failed");
+ 			cb_data->status = -EIO;
++			rpc_error_all_pdus(nfs->rpc, "RPC ERROR: Failed to reconnect async");
+ 			break;
+ 		}
+ 	}

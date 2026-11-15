@@ -17,14 +17,17 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DENABLE_EXAMPLES=OFF
                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-all-sync-fail-pending-requests.patch")
+
     if(WIN32 OR WINDOWS_STORE)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "/sdl-")
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS "/sdl-")
 
-      set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE}/01-MSUWP-compat.patch")
-      generate_patchcommand("${patches}")
-      unset(patches)
+      list(PREPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-MSUWP-compat.patch")
     endif()
+
+    generate_patchcommand("${patches}")
+    unset(patches)
 
     BUILD_DEP_TARGET()
 
