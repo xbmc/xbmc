@@ -25,6 +25,7 @@
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/AddonsDirectory.h"
 #include "filesystem/SourcesDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -172,7 +173,8 @@ void CGUIWindowPictures::UpdateButtons()
   // check we can slideshow or recursive slideshow
   int nFolders = m_vecItems->GetFolderCount();
   if (nFolders == m_vecItems->Size() ||
-      m_vecItems->GetPath() == "addons://sources/image/")
+      m_vecItems->GetPath() ==
+          XFILE::CAddonsDirectory::SourcesPathOf(MEDIA::MediaSection::PICTURES))
   {
     CONTROL_DISABLE(CONTROL_BTNSLIDESHOW);
   }
@@ -183,7 +185,8 @@ void CGUIWindowPictures::UpdateButtons()
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
     nFolders--;
   if (m_vecItems->Size() == 0 || nFolders == 0 ||
-      m_vecItems->GetPath() == "addons://sources/image/")
+      m_vecItems->GetPath() ==
+          XFILE::CAddonsDirectory::SourcesPathOf(MEDIA::MediaSection::PICTURES))
   {
     CONTROL_DISABLE(CONTROL_BTNSLIDESHOW_RECURSIVE);
   }
@@ -611,7 +614,7 @@ std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
 {
   if (StringUtils::EqualsNoCase(dir, "plugins") ||
       StringUtils::EqualsNoCase(dir, "addons"))
-    return "addons://sources/image/";
+    return XFILE::CAddonsDirectory::SourcesPathOf(MEDIA::MediaSection::PICTURES);
 
   SetupShares();
   std::vector<CMediaSource> shares;

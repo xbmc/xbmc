@@ -16,6 +16,7 @@
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogMediaSource.h"
+#include "filesystem/AddonsDirectory.h"
 #include "filesystem/SourcesDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -155,7 +156,7 @@ std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
 {
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "plugins" || lower == "addons")
-    return "addons://sources/executable/";
+    return XFILE::CAddonsDirectory::SourcesPathOf(KODI::MEDIA::MediaSection::PROGRAMS);
   else if (lower == "androidapps")
     return "androidapp://sources/apps/";
 

@@ -46,6 +46,7 @@
 using namespace KODI;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 namespace XFILE
 {
@@ -797,6 +798,16 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     return Browse(path, items);
   }
+}
+
+std::string CAddonsDirectory::SourcesPathOf(MediaSection section)
+{
+  const auto source{
+      std::ranges::find(ADDONS::SECTION_SOURCES, section, &ADDONS::SectionSource::section)};
+  if (source == ADDONS::SECTION_SOURCES.end())
+    return {};
+  const std::string_view content{CAddonInfo::SubContentNameOf(source->type)};
+  return std::string{ADDONS::SOURCES}.append(content).append("/");
 }
 
 bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
