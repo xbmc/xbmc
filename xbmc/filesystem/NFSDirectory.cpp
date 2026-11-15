@@ -59,25 +59,29 @@ KODI::TIME::FileTime GetDirEntryTime(const struct nfsdirent* dirent)
   return localTime;
 }
 
-bool ResolveSymlink(const std::string& dirName, struct nfsdirent* dirent, std::string& resolvedPath)
+// locks the context for each call made on it
+bool ResolveSymlink(CNfsContext& context,
+                    const std::string& dirName,
+                    struct nfsdirent* dirent,
+                    std::string& resolvedPath)
 {
-  std::unique_lock lock(gNfsConnection);
-
   bool retVal{true};
   std::string fullpath{dirName + dirent->name};
 
   char resolvedLink[NFS_MAX_PATH];
-  int ret{
-      nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH)};
+  std::unique_lock lock(context);
+  int ret{nfs_readlink(context.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH)};
 
   if (ret == 0)
   {
+    lock.unlock();
     nfs_stat_64 tmpBuffer{};
+    std::string error;
 
     CURL resolvedUrl;
     resolvedUrl.SetPort(2049);
     resolvedUrl.SetProtocol("nfs");
-    resolvedUrl.SetHostName(gNfsConnection.GetConnectedIp());
+    resolvedUrl.SetHostName(context.GetConnectedIp());
 
     // special case - if link target is absolute it could be even another export
     // intervolume symlinks baby ...
@@ -94,14 +98,17 @@ bool ResolveSymlink(const std::string& dirName, struct nfsdirent* dirent, std::s
     else
     {
       fullpath = dirName + resolvedLink;
-      ret = nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
-      resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);
+      lock.lock();
+      ret = nfs_stat64(context.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+      if (ret != 0)
+        error = nfs_get_error(context.GetNfsContext());
+      lock.unlock();
+      resolvedUrl.SetFileName(context.GetConnectedExport() + fullpath);
     }
 
     if (ret != 0)
     {
-      CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve ({})", fullpath,
-                 nfs_get_error(gNfsConnection.GetNfsContext()));
+      CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve ({})", fullpath, error);
       retVal = false;
     }
     else
@@ -149,7 +156,7 @@ bool ResolveSymlink(const std::string& dirName, struct nfsdirent* dirent, std::s
   else
   {
     CLog::LogF(LOGERROR, "Failed to readlink '{}' ({})", fullpath,
-               nfs_get_error(gNfsConnection.GetNfsContext()));
+               nfs_get_error(context.GetNfsContext()));
     retVal = false;
   }
   return retVal;
@@ -218,10 +225,9 @@ std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetServerList() const
 bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
-  std::unique_lock lock(gNfsConnection);
-
   std::string strDirName = "";
-  if (!gNfsConnection.Connect(url, strDirName))
+  const CNfsContextLease context = gNfsConnection.GetContext(url, strDirName);
+  if (!context)
   {
     //connect has failed - so try to get the exported filesystems if no path is given to the url
     if (url.GetShareName().empty())
@@ -236,12 +242,16 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
 
   struct nfsdir* nfsdir = nullptr;
-  if (nfs_opendir(gNfsConnection.GetNfsContext(), strDirName.c_str(), &nfsdir) != 0)
+  std::unique_lock lock(*context);
+  if (nfs_opendir(context->GetNfsContext(), strDirName.c_str(), &nfsdir) != 0)
   {
     CLog::LogF(LOGERROR, "Failed to open '{}' ({})", strDirName,
-               nfs_get_error(gNfsConnection.GetNfsContext()));
+               nfs_get_error(context->GetNfsContext()));
     return false;
   }
+  // nfs_readdir() only walks the entries nfs_opendir() read, in an nfsdir that nothing else on the
+  // context touches until nfs_closedir() returns it to the context's cache. So the context is
+  // locked only for the calls that use it, and other users of a shared context get in between.
   lock.unlock();
 
   std::string myStrPath(url.Get());
@@ -251,14 +261,14 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string resolvedPath;
   std::vector<std::shared_ptr<CFileItem>> fileItems;
   struct nfsdirent* dirent = nullptr;
-  while ((dirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != nullptr)
+  while ((dirent = nfs_readdir(context->GetNfsContext(), nfsdir)) != nullptr)
   {
     const std::string& name = dirent->name;
 
     //resolve symlinks
     //resolve symlink changes dirent and name
     const bool isSymLink = dirent->type == NF3LNK;
-    if (isSymLink && !ResolveSymlink(strDirName, dirent, resolvedPath))
+    if (isSymLink && !ResolveSymlink(*context, strDirName, dirent, resolvedPath))
       continue;
 
     if (name == "." || name == ".." || name == "lost+found")
@@ -286,8 +296,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   items.AddItems(std::move(fileItems));
 
   lock.lock();
-  nfs_closedir(gNfsConnection.GetNfsContext(), nfsdir); //close the dir
-  lock.unlock();
+  nfs_closedir(context->GetNfsContext(), nfsdir); //close the dir
   return true;
 }
 
@@ -296,21 +305,22 @@ bool CNFSDirectory::Create(const CURL& url2)
   int ret = 0;
   bool success=true;
 
-  std::unique_lock lock(gNfsConnection);
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//mkdir fails if a slash is at the end!!!
   CURL url(folderName);
   folderName = "";
 
-  if(!gNfsConnection.Connect(url,folderName))
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
+  if (!context)
     return false;
 
-  ret = nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
+  std::unique_lock lock(*context);
+  ret = nfs_mkdir(context->GetNfsContext(), folderName.c_str());
 
   success = (ret == 0 || -EEXIST == ret);
   if (!success)
     CLog::LogF(LOGERROR, "Failed to create '{}' ({})", folderName,
-               nfs_get_error(gNfsConnection.GetNfsContext()));
+               nfs_get_error(context->GetNfsContext()));
   return success;
 }
 
@@ -318,21 +328,22 @@ bool CNFSDirectory::Remove(const CURL& url2)
 {
   int ret = 0;
 
-  std::unique_lock lock(gNfsConnection);
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//rmdir fails if a slash is at the end!!!
   CURL url(folderName);
   folderName = "";
 
-  if(!gNfsConnection.Connect(url,folderName))
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
+  if (!context)
     return false;
 
-  ret = nfs_rmdir(gNfsConnection.GetNfsContext(), folderName.c_str());
+  std::unique_lock lock(*context);
+  ret = nfs_rmdir(context->GetNfsContext(), folderName.c_str());
 
-  if (ret != 0 && errno != ENOENT)
+  if (ret != 0 && ret != -ENOENT)
   {
     CLog::LogF(LOGERROR, "Failed to remove '{}' ({})", folderName,
-               nfs_get_error(gNfsConnection.GetNfsContext()));
+               nfs_get_error(context->GetNfsContext()));
     return false;
   }
   return true;
@@ -342,17 +353,18 @@ bool CNFSDirectory::Exists(const CURL& url2)
 {
   int ret = 0;
 
-  std::unique_lock lock(gNfsConnection);
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//remove slash at end or URIUtils::GetFileName won't return what we want...
   CURL url(folderName);
   folderName = "";
 
-  if(!gNfsConnection.Connect(url,folderName))
+  const CNfsContextLease context = gNfsConnection.GetContext(url, folderName);
+  if (!context)
     return false;
 
   nfs_stat_64 info;
-  ret = nfs_stat64(gNfsConnection.GetNfsContext(), folderName.c_str(), &info);
+  std::unique_lock lock(*context);
+  ret = nfs_stat64(context->GetNfsContext(), folderName.c_str(), &info);
 
   if (ret != 0)
   {
