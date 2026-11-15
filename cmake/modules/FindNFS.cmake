@@ -28,6 +28,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/06-win-millisecond-clock.patch")
     endif()
 
+    list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/07-all-nfs4-readlink-length.patch")
+
     generate_patchcommand("${patches}")
     unset(patches)
 

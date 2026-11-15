@@ -1,0 +1,28 @@
+An NFSv4 READLINK result is not NUL-terminated, but libnfs 5.0.2 copies it
+with strdup(), reading past its end. A link whose target has no padding
+after it, such as one 4 or 8 characters long, then gets trailing garbage,
+and Kodi leaves it out of the listing. Copy the result by its length, as
+libnfs 6.0.0 does (1918e4d3). That uses strndup(), which libnfs 5.0.2
+provides on Windows only for MinGW, so use malloc() and memcpy().
+
+--- a/lib/nfs_v4.c
++++ b/lib/nfs_v4.c
+@@ -2902,13 +2902,17 @@
+ 
+         rlresok = &res->resarray.resarray_val[i].nfs_resop4_u.opreadlink.READLINK4res_u.resok4;
+ 
+-        target = strdup(rlresok->link.utf8string_val);
++        /* The link is not NUL-terminated on the wire */
++        target = malloc(rlresok->link.utf8string_len + 1);
+         if (target == NULL) {
+                 data->cb(-ENOMEM, nfs, "Failed to allocate memory",
+                          data->private_data);
+                 free_nfs4_cb_data(data);
+                 return;
+         }
++        memcpy(target, rlresok->link.utf8string_val,
++               rlresok->link.utf8string_len);
++        target[rlresok->link.utf8string_len] = '\0';
+         data->filler.blob0.val  = target;
+         data->filler.blob0.free = free;        
+         data->cb(0, nfs, target, data->private_data);

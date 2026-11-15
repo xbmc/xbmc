@@ -2,7 +2,8 @@ include ../../Makefile.include LIBNFS-VERSION ../../download-files.include
 DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.include \
                   01-MSUWP-compat.patch \
                   04-all-sync-fail-pending-requests.patch \
-                  05-all-udp-sendto-address-length.patch
+                  05-all-udp-sendto-address-length.patch \
+                  07-all-nfs4-readlink-length.patch
 
 ifeq ($(OS),wasm)
 DEPS+= 02-wasm-zdr-callback-signature.patch \
@@ -31,6 +32,7 @@ ifeq ($(OS),wasm)
 endif
 	cd $(PLATFORM); patch -p1 -i ../04-all-sync-fail-pending-requests.patch
 	cd $(PLATFORM); patch -p1 -i ../05-all-udp-sendto-address-length.patch
+	cd $(PLATFORM); patch -p1 -i ../07-all-nfs4-readlink-length.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 
