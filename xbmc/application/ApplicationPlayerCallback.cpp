@@ -354,6 +354,12 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
                                                    const CBookmark& bookmarkParam)
 {
+  SaveFileState(file, bookmarkParam);
+}
+
+void CApplicationPlayerCallback::SaveFileState(const CFileItem& file,
+                                               const CBookmark& bookmarkParam)
+{
   auto& components{CServiceBroker::GetAppComponents()};
   const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
@@ -409,6 +415,20 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     if (VIDEO::IsVideo(fileItem))
       stackHelper->SetStackFileIds(fileItem.GetVideoInfoTag()->m_iFileId);
   }
+}
+
+void CApplicationPlayerCallback::OnPlaybackSuspended()
+{
+  const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
+  if (!appPlayer->IsPlayingVideo())
+    return;
+
+  CBookmark bookmark;
+  bookmark.timeInSeconds = static_cast<double>(appPlayer->GetTime()) / 1000.0;
+  bookmark.totalTimeInSeconds = static_cast<double>(appPlayer->GetTotalTime()) / 1000.0;
+  bookmark.player = appPlayer->GetCurrentPlayer();
+  bookmark.playerState = appPlayer->GetPlayerState();
+  SaveFileState(g_application.CurrentUnstackedItem(), bookmark);
 }
 
 void CApplicationPlayerCallback::OnPlayBackPaused()

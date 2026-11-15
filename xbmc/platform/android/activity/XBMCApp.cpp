@@ -366,6 +366,7 @@ void CXBMCApp::onPause()
     {
       if (!appPlayer->IsPaused() && !m_hasReqVisible)
       {
+        g_application.OnPlaybackSuspended();
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                    static_cast<void*>(new CAction(ACTION_PAUSE)));
         m_bResumePlayback = true;

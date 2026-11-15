@@ -24,6 +24,7 @@ public:
   void OnPlayBackEnded() override;
   void OnPlayBackStarted(const CFileItem& file) override;
   void OnPlayerCloseFile(const CFileItem& file, const CBookmark& bookmark) override;
+  void OnPlaybackSuspended();
   void OnPlayBackPaused() override;
   void OnPlayBackResumed() override;
   void OnPlayBackStopped() override;
@@ -36,4 +37,7 @@ public:
   void OnAVStarted(const CFileItem& file) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
   void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
+
+private:
+  void SaveFileState(const CFileItem& file, const CBookmark& bookmark);
 };
