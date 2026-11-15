@@ -1,0 +1,45 @@
+Without clock_gettime(CLOCK_MONOTONIC_COARSE), rpc_current_time() falls
+back to time(NULL) * 1000, which steps in whole seconds. On Windows:
+
+- The first privileged source port is that time modulo 400, so every
+  process started at port 512 or 712. A connection from an earlier run
+  still in TIME_WAIT on one of those ports made the connect, and so the
+  mount, fail.
+- Every timeout is lengthened by a second to make up for the steps, so a
+  1 s timeout took 1 to 2 s.
+
+Use GetTickCount64() on Windows, and drop the extra second there.
+
+--- a/lib/init.c
++++ b/lib/init.c
+@@ -66,6 +66,8 @@
+ 
+ 	clock_gettime(CLOCK_MONOTONIC_COARSE, &tp);
+ 	return (uint64_t)tp.tv_sec * 1000 + tp.tv_nsec / 1000000;
++#elif defined(WIN32)
++	return GetTickCount64();
+ #else
+ 	return (uint64_t)time(NULL) * 1000;
+ #endif
+--- a/lib/libnfs-sync.c
++++ b/lib/libnfs-sync.c
+@@ -204,7 +204,7 @@
+ 
+ 	if (rpc->timeout > 0) {
+ 		timeout = rpc_current_time() + rpc->timeout;
+-#ifndef HAVE_CLOCK_GETTIME
++#if !defined(HAVE_CLOCK_GETTIME) && !defined(WIN32)
+ 		/* If we do not have GETTIME we fallback to time() which
+ 		 * has 1s granularity for its timestamps.
+ 		 * We thus need to bump the timeout by 1000ms
+--- a/lib/pdu.c
++++ b/lib/pdu.c
+@@ -254,7 +254,7 @@
+ 
+ 	if (rpc->timeout > 0) {
+ 		pdu->timeout = rpc_current_time() + rpc->timeout;
+-#ifndef HAVE_CLOCK_GETTIME
++#if !defined(HAVE_CLOCK_GETTIME) && !defined(WIN32)
+ 		/* If we do not have GETTIME we fallback to time() which
+ 		 * has 1s granularity for its timestamps.
+ 		 * We thus need to bump the timeout by 1000ms
