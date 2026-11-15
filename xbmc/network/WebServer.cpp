@@ -986,7 +986,9 @@ MHD_RESULT CWebServer::SendErrorResponse(const HTTPRequest& request,
   return SendResponse(request, errorType, response);
 }
 
-void* CWebServer::UriRequestLogger(void* cls, const char* uri)
+void* CWebServer::UriRequestLogger(void* cls,
+                                   const char* uri,
+                                   struct MHD_Connection* /*connection*/)
 {
   CWebServer* webServer = reinterpret_cast<CWebServer*>(cls);
 
