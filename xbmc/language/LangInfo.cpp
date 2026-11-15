@@ -270,9 +270,8 @@ CLanguageTag LanguageFromSetting(const std::string& language,
     return {};
   }
 
-  // Parse would keep text it does not recognize. An unrecognized setting must become an empty
-  // tag instead: a kept one leaves callers preferring a language no stream can match, and the
-  // fallback to the UI language never engages
+  // Parse would give und for text it does not recognize. An unrecognized setting must become an
+  // empty tag instead, or the fallback to the UI language never engages
   if (const auto tag = CLanguageTag::TryParse(language); tag.has_value())
     return *tag;
 
