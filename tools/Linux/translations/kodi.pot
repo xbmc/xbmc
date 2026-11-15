@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 22:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tools/Linux/kodi.metainfo.xml.in:8
+msgid "Ultimate entertainment center"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:18
+msgid ""
+"Kodi allows users to play and view videos, music, podcasts, and other "
+"digital media files from local storage, network storage and the internet. "
+"It's optimized for a 10-foot user interface to be used with televisions and "
+"remote controls."
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:23
+msgid ""
+"Kodi spawned from the love of media. It is an entertainment hub that brings "
+"all your digital media together into a beautiful and user friendly package. "
+"It is 100% free and open source, very customisable and runs on a wide "
+"variety of devices. It is supported by a dedicated team of volunteers and a "
+"huge community."
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:32
+msgid "audio"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:33
+msgid "video"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:34
+msgid "media"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:35
+msgid "media center"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:36
+msgid "music"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:37
+msgid "tv"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:38
+msgid "television"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:39
+msgid "remote control"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:45
+msgid "The homescreen keeps your media organized"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:49
+msgid "Easily browse your movies and series"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:53
+msgid "Get additional infos about your movies or series"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:57
+msgid "Browse TV shows by seasons"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:61
+msgid "Use the music library to organize and read about your artists"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:65
+msgid "Use the EPG to manage your TV stations"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:69
+msgid "Extend what Kodi can do, just use addons"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:73
+msgid "Keep the weather in check"
+msgstr ""
+
+#: tools/Linux/kodi.metainfo.xml.in:77
+msgid "The webinterface enables you to manage your Kodi from other devices"
+msgstr ""
