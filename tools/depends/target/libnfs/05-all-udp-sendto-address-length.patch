@@ -1,0 +1,26 @@
+Pass sendto() the length of the destination's address family, not of
+struct sockaddr_storage. macOS and the BSDs reject the longer length, so
+nfs_find_local_servers() found no servers there.
+
+--- a/lib/pdu.c
++++ b/lib/pdu.c
+@@ -273,11 +273,17 @@
+ 	/* for udp we dont queue, we just send it straight away */
+ 	if (rpc->is_udp != 0) {
+ 		unsigned int hash;
++		socklen_t addrlen;
+ 
+-// XXX add a rpc->udp_dest_sock_size  and get rid of sys/socket.h and netinet/in.h
++		/* Some systems, such as macOS and the BSDs, reject an
++		 * address length longer than the address family's own.
++		 */
++		addrlen = rpc->udp_dest.ss_family == AF_INET6 ?
++			sizeof(struct sockaddr_in6) :
++			sizeof(struct sockaddr_in);
+ 		if (sendto(rpc->fd, pdu->zdr.buf, size, MSG_DONTWAIT,
+                            (struct sockaddr *)&rpc->udp_dest,
+-                           sizeof(rpc->udp_dest)) < 0) {
++                           addrlen) < 0) {
+ 			rpc_set_error(rpc, "Sendto failed with errno %s", strerror(errno));
+ 			rpc_free_pdu(rpc, pdu);
+ 			return -1;
