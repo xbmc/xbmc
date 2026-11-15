@@ -26,6 +26,7 @@ public:
   void Initialize();
   void Dispose();
   void SetInfo(DEBUG_INFO_PLAYER& info, const DEBUG_INFO_FRAMES& frames);
+  bool IsFrameGraphUpdateDue() { return m_frameGraph.IsUpdateDue(); }
   void SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render);
   void Render(CRect& src, CRect& dst, CRect& view);
   void Flush();

@@ -33,6 +33,8 @@ constexpr uint32_t COLOR_AUDIO = 0xFFFF6AD5;
 constexpr double LOG_MIN = 4e3;
 constexpr double LOG_MAX = 4e6;
 constexpr unsigned int SWEEP_GAP = 16;
+constexpr unsigned int STRIP_WIDTH = 256;
+constexpr auto UPDATE_INTERVAL = std::chrono::milliseconds(250);
 constexpr float GRAPH_MARGIN = 0.03f;
 constexpr double AUDIO_BAND_SPLIT = 0.78; //!< share of the height for the video in band mode
 
@@ -63,20 +65,32 @@ void CDebugFrameGraph::SetFrames(const DEBUG_INFO_FRAMES& frames)
   {
     m_logScale = settings->m_videoDebugGraphLogScale;
     m_sweep = settings->m_videoDebugGraphSweep;
-    m_dirty = true;
+    m_redrawAll = true;
   }
   m_heightPercent = settings->m_videoDebugGraphHeight;
   if (settings->m_videoDebugGraphAudio != m_audioMode)
   {
     m_audioMode = settings->m_videoDebugGraphAudio;
-    m_dirty = true;
+    m_redrawAll = true;
   }
 
   if (frames.serial == m_frames.serial)
     return;
 
+  // A new stream starts counting again
+  if (frames.count < m_frames.count)
+    m_redrawAll = true;
   m_frames = frames;
-  m_dirty = true;
+}
+
+bool CDebugFrameGraph::IsUpdateDue()
+{
+  const auto now = std::chrono::steady_clock::now();
+  if (now - m_lastUpdate < UPDATE_INTERVAL)
+    return false;
+
+  m_lastUpdate = now;
+  return true;
 }
 
 unsigned int CDebugFrameGraph::AverageWindow() const
@@ -161,48 +175,133 @@ void CDebugFrameGraph::Render(const CRect& view)
   const unsigned int height = std::max(
       static_cast<unsigned int>(view.Height() * static_cast<float>(m_heightPercent) / 100), 1u);
 
-  if (width != m_width || height != m_height || !m_texture)
+  if (width != m_width || height != m_height || m_strips.empty())
   {
     m_width = width;
     m_height = height;
-    m_pixels.assign(static_cast<size_t>(width) * height, 0);
-    m_texture = CTexture::CreateTexture(width, height, XB_FMT_A8R8G8B8);
-    m_dirty = true;
+    // CTexture::Update() reads a padded texture's full width, also from the last row
+    m_pixels.assign(static_cast<size_t>(width) * height + STRIP_WIDTH, 0);
+    m_strips.clear();
+    for (unsigned int x = 0; x < width; x += STRIP_WIDTH)
+    {
+      m_strips.push_back(
+          CTexture::CreateTexture(std::min(STRIP_WIDTH, width - x), height, XB_FMT_A8R8G8B8));
+      if (!m_strips.back())
+      {
+        m_strips.clear();
+        return;
+      }
+    }
+    m_stripChanged.assign(m_strips.size(), false);
+    m_redrawAll = true;
   }
 
-  if (!m_texture)
-    return;
+  DrawChanged();
 
-  if (m_dirty)
+  for (size_t i = 0; i < m_strips.size(); ++i)
   {
-    Draw();
-    m_texture->Update(width, height, width * 4, XB_FMT_A8R8G8B8,
-                      reinterpret_cast<const unsigned char*>(m_pixels.data()), false);
-    m_dirty = false;
+    if (!m_stripChanged[i])
+      continue;
+    const unsigned int x = static_cast<unsigned int>(i) * STRIP_WIDTH;
+    m_strips[i]->Update(m_strips[i]->GetWidth(), height, width * 4, XB_FMT_A8R8G8B8,
+                        reinterpret_cast<const unsigned char*>(m_pixels.data() + x), false);
+    m_stripChanged[i] = false;
   }
 
+  // In scroll mode the newest column is drawn at the right edge
+  const unsigned int shift =
+      m_sweep ? 0 : static_cast<unsigned int>((m_width - m_frames.count % m_width) % m_width);
   const float bottom = view.y2 - view.Height() * GRAPH_MARGIN;
-  const CRect rect(view.x1, bottom - static_cast<float>(height), view.x2, bottom);
-  // The texture may be padded, e.g. to a power of two
-  const CRect texCoords(0.0f, 0.0f,
-                        static_cast<float>(m_texture->GetWidth()) /
-                            static_cast<float>(m_texture->GetTextureWidth()),
-                        static_cast<float>(m_texture->GetHeight()) /
-                            static_cast<float>(m_texture->GetTextureHeight()));
-  CGUITexture::DrawQuad(rect, 0xFFFFFFFF, m_texture.get(), &texCoords, -1.0f);
+  const float top = bottom - static_cast<float>(height);
+
+  for (size_t i = 0; i < m_strips.size(); ++i)
+  {
+    const CTexture& strip = *m_strips[i];
+    const unsigned int stripX = static_cast<unsigned int>(i) * STRIP_WIDTH;
+    const unsigned int stripWidth = strip.GetWidth();
+    // The texture may be padded, e.g. to a power of two
+    const float u = static_cast<float>(stripWidth) / static_cast<float>(strip.GetTextureWidth());
+    const float v = static_cast<float>(height) / static_cast<float>(strip.GetTextureHeight());
+
+    // A strip that crosses the right edge after shifting continues at the left edge
+    const unsigned int x = (stripX + shift) % m_width;
+    const unsigned int part = std::min(stripWidth, m_width - x);
+    const CRect rect(view.x1 + static_cast<float>(x), top, view.x1 + static_cast<float>(x + part),
+                     bottom);
+    const CRect texCoords(0.0f, 0.0f, u * static_cast<float>(part) / static_cast<float>(stripWidth),
+                          v);
+    CGUITexture::DrawQuad(rect, 0xFFFFFFFF, m_strips[i].get(), &texCoords, -1.0f);
+    if (part < stripWidth)
+    {
+      const CRect restRect(view.x1, top, view.x1 + static_cast<float>(stripWidth - part), bottom);
+      const CRect restCoords(texCoords.x2, 0.0f, u, v);
+      CGUITexture::DrawQuad(restRect, 0xFFFFFFFF, m_strips[i].get(), &restCoords, -1.0f);
+    }
+  }
 }
 
-void CDebugFrameGraph::Draw()
+double CDebugFrameGraph::LinearMax() const
+{
+  const auto& frames = m_frames.frames;
+  double linearMax = 1.0;
+  for (size_t i = frames.size() - VisibleCount(); i < frames.size(); ++i)
+    linearMax = std::max(linearMax, static_cast<double>(frames[i].size));
+  return linearMax * 1.05;
+}
+
+void CDebugFrameGraph::DrawChanged()
+{
+  const int w = static_cast<int>(m_width);
+  const uint64_t count = m_frames.count;
+  if (!m_redrawAll && count == m_drawnCount)
+    return;
+
+  const double linearMax = m_logScale ? 0.0 : LinearMax();
+  const double audioMax = AudioScaleMax();
+
+  // A scale change moves everything, and so does more than a screen width of new packets
+  if (m_redrawAll || linearMax != m_drawnLinearMax || audioMax != m_drawnAudioMax ||
+      count - m_drawnCount + SWEEP_GAP + 5 >= m_width)
+  {
+    Draw(0, w - 1);
+  }
+  else
+  {
+    // The new packets, the previous newest one and the dots reaching into them, and in
+    // sweep mode the cursor and the gap ahead of it
+    const int first = static_cast<int>((m_drawnCount + m_width - 3) % m_width);
+    const int length =
+        static_cast<int>(count - m_drawnCount) + 5 + (m_sweep ? static_cast<int>(SWEEP_GAP) : 0);
+    const int last = first + length - 1;
+    Draw(first, std::min(last, w - 1));
+    if (last >= w)
+      Draw(0, last - w);
+  }
+
+  m_redrawAll = false;
+  m_drawnCount = count;
+  m_drawnLinearMax = linearMax;
+  m_drawnAudioMax = audioMax;
+}
+
+void CDebugFrameGraph::Draw(int x1, int x2)
 {
   const int w = static_cast<int>(m_width);
   const int h = static_cast<int>(m_height);
   const auto& frames = m_frames.frames;
 
-  std::fill(m_pixels.begin(), m_pixels.end(), COLOR_BACKDROP);
+  for (int y = 0; y < h; ++y)
+  {
+    auto row = m_pixels.begin() + static_cast<ptrdiff_t>(y) * w;
+    std::fill(row + x1, row + x2 + 1, COLOR_BACKDROP);
+  }
+  for (unsigned int strip = static_cast<unsigned int>(x1) / STRIP_WIDTH;
+       strip <= static_cast<unsigned int>(x2) / STRIP_WIDTH; ++strip)
+    m_stripChanged[strip] = true;
 
   const auto put = [&](int x, int y, uint32_t color)
   {
-    if (x >= 0 && x < w && y >= 0 && y < h)
+    if (x >= x1 && x <= x2 && y >= 0 && y < h)
       m_pixels[static_cast<size_t>(y) * w + x] = color;
   };
   const auto vline = [&](int x, int y1, int y2, uint32_t color)
@@ -220,10 +319,7 @@ void CDebugFrameGraph::Draw()
   const int videoHeight =
       band ? std::max(1, static_cast<int>(std::lround(h * AUDIO_BAND_SPLIT))) : h;
 
-  double linearMax = 1.0;
-  for (size_t i = first; i < frames.size(); ++i)
-    linearMax = std::max(linearMax, static_cast<double>(frames[i].size));
-  linearMax *= 1.05;
+  const double linearMax = m_logScale ? 0.0 : LinearMax();
 
   const auto toY = [&](double size)
   {
@@ -234,22 +330,20 @@ void CDebugFrameGraph::Draw()
     return videoHeight - 1 - static_cast<int>(std::lround(ratio * (videoHeight - 1)));
   };
   const auto toX = [&](size_t i)
-  {
-    if (m_sweep)
-      return static_cast<int>((m_frames.count - frames.size() + i) % m_width);
-    return static_cast<int>(m_width - count + (i - first));
-  };
+  { return static_cast<int>((m_frames.count - frames.size() + i) % m_width); };
+  // Columns next to each other, also where the texture wraps around
+  const auto adjacent = [&](int prevX, int x) { return prevX >= 0 && (prevX + 1) % w == x; };
 
   if (m_logScale)
   {
     for (const double size : {1e4, 1e5, 1e6})
-      for (int x = 0; x < w; ++x)
+      for (int x = x1; x <= x2; ++x)
         put(x, toY(size), COLOR_GRID);
   }
   else
   {
     for (int step = 1; step <= 4; ++step)
-      for (int x = 0; x < w; ++x)
+      for (int x = x1; x <= x2; ++x)
         put(x, toY(linearMax * step / 4), COLOR_GRID);
   }
 
@@ -267,9 +361,15 @@ void CDebugFrameGraph::Draw()
         continue;
       const int x = toX(i);
       const int y = toY(frames[i].size);
-      for (int dy = -radius; dy <= radius; ++dy)
-        for (int dx = -radius; dx <= radius; ++dx)
-          put(x + dx, y + dy, color);
+      for (int dx = -radius; dx <= radius; ++dx)
+      {
+        // Keep dots within the shown packets, as columns wrap around at the edges
+        const auto position = static_cast<ptrdiff_t>(i - first) + dx;
+        if (position < 0 || position >= static_cast<ptrdiff_t>(count))
+          continue;
+        for (int dy = -radius; dy <= radius; ++dy)
+          put((x + dx + w) % w, y + dy, color);
+      }
     }
   }
 
@@ -287,7 +387,7 @@ void CDebugFrameGraph::Draw()
 
     const int x = toX(i);
     const int y = toY(sum / static_cast<double>(window));
-    const int fromY = prevX >= 0 && x == prevX + 1 ? prevY : y;
+    const int fromY = adjacent(prevX, x) ? prevY : y;
     vline(x, fromY, y, COLOR_AVERAGE);
     vline(x, fromY + 1, y + 1, COLOR_AVERAGE);
     prevX = x;
@@ -299,7 +399,7 @@ void CDebugFrameGraph::Draw()
     const int audioTop = band ? videoHeight + 4 : 0;
     if (band)
     {
-      for (int x = 0; x < w; ++x)
+      for (int x = x1; x <= x2; ++x)
         put(x, videoHeight + 1, COLOR_GRID);
     }
 
@@ -316,7 +416,7 @@ void CDebugFrameGraph::Draw()
       const double ratio = std::clamp(static_cast<double>(rates[i]) / audioMax, 0.0, 1.0);
       const int x = toX(i);
       const int y = h - 1 - static_cast<int>(std::lround(ratio * (h - 1 - audioTop)));
-      const int fromY = prevAudioX >= 0 && x == prevAudioX + 1 ? prevAudioY : y;
+      const int fromY = adjacent(prevAudioX, x) ? prevAudioY : y;
       vline(x, fromY, y, COLOR_AUDIO);
       vline(x, fromY - 1, y - 1, COLOR_AUDIO);
       prevAudioX = x;
