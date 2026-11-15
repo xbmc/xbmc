@@ -5,7 +5,8 @@ DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.includ
                   05-all-udp-sendto-address-length.patch \
                   07-all-nfs4-readlink-length.patch \
                   08-all-zdr-bytes-size-limit.patch \
-                  09-all-zdr-string-size-limit.patch
+                  09-all-zdr-string-size-limit.patch \
+                  10-all-rpc-record-size-limit.patch
 
 ifeq ($(OS),wasm)
 DEPS+= 02-wasm-zdr-callback-signature.patch \
@@ -37,6 +38,7 @@ endif
 	cd $(PLATFORM); patch -p1 -i ../07-all-nfs4-readlink-length.patch
 	cd $(PLATFORM); patch -p1 -i ../08-all-zdr-bytes-size-limit.patch
 	cd $(PLATFORM); patch -p1 -i ../09-all-zdr-string-size-limit.patch
+	cd $(PLATFORM); patch -p1 -i ../10-all-rpc-record-size-limit.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 

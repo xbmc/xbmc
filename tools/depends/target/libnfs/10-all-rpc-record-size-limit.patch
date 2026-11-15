@@ -1,0 +1,42 @@
+libnfs 5.0.2 limits each record fragment it reads to NFS_MAX_XFER_SIZE +
+4096 bytes, but not the record they make up. A broken or malicious server
+could send fragments until libnfs had buffered gigabytes, and a decoder
+position past 1 GB could overflow the int bounds checks. Limit a record
+in fragments to what a record in one fragment may hold, as libnfs 7.0.0
+bounds the whole record (75459cd).
+
+--- a/lib/init.c
++++ b/lib/init.c
+@@ -395,9 +395,21 @@
+ int rpc_add_fragment(struct rpc_context *rpc, char *data, uint32_t size)
+ {
+ 	struct rpc_fragment *fragment;
++	uint32_t total = size;
+ 
+ 	assert(rpc->magic == RPC_CONTEXT_MAGIC);
+ 
++	/* A record in fragments may be no larger than one in a single
++	 * fragment.
++	 */
++	for (fragment = rpc->fragments; fragment; fragment = fragment->next) {
++		total += fragment->size;
++	}
++	if (total > NFS_MAX_XFER_SIZE + 4096) {
++		rpc_free_all_fragments(rpc);
++		return -1;
++	}
++
+ 	fragment = malloc(sizeof(struct rpc_fragment));
+ 	if (fragment == NULL) {
+ 		return -1;
+--- a/lib/pdu.c
++++ b/lib/pdu.c
+@@ -569,7 +569,7 @@
+ 		zdr_destroy(&zdr);
+ 		for (fragment = rpc->fragments; fragment; fragment = fragment->next) {
+ 			total += fragment->size;
+-                        if (total < fragment->size) {
++                        if (total > NFS_MAX_XFER_SIZE + 4096) {
+                                 rpc_set_error(rpc, "Fragments too large");
+                                 rpc_free_all_fragments(rpc);
+                                 return -1;
