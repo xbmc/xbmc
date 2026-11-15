@@ -1257,8 +1257,8 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
 bool CDVDVideoCodecAndroidMediaCodec::Reconfigure(CDVDStreamInfo &hints)
 {
-  if (m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL &
-                               ~(CDVDStreamInfo::COMPARE_ID | CDVDStreamInfo::COMPARE_EXTRADATA)))
+  // The codec and the bitstream converter are set up with the SPS/PPS of the extradata
+  if (m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL & ~CDVDStreamInfo::COMPARE_ID))
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure: true");
     m_hints = hints;
