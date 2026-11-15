@@ -9,7 +9,6 @@
 #pragma once
 
 #include "guilib/GUIWindow.h"
-#include "windowing/Resolution.h"
 
 class CGUIDialog;
 
@@ -56,9 +55,6 @@ private:
 
   // Rendering parameters
   std::shared_ptr<CGUIRenderHandle> m_renderHandle;
-
-  // The mode to return to when the game's rate replaced it
-  RESOLUTION m_resolutionBeforeGame{RES_INVALID};
 };
 } // namespace RETRO
 } // namespace KODI
