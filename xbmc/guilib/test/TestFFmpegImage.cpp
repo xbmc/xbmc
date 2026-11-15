@@ -29,7 +29,7 @@ extern "C"
 
 namespace
 {
-// the test images are flat 32x32 JPEGs, RGB (200, 100, 100) or gray 128, and a HEIC tile grid,
+// the test images are flat 32x32 JPEGs, RGB (200, 100, 100) or gray 128, and HEIC tile grids,
 // made by tools/testdata/mkicc.py
 constexpr unsigned int SIZE = 32;
 constexpr char ICC_NAME[] = "ICC_PROFILE"; // with its NUL, as JPEG's APP2 segments name it
@@ -167,6 +167,18 @@ TEST(TestFFmpegImage, BrokenProfileIsLeftAlone)
   truncated.resize(200);
   EXPECT_EQ(DecodeData(WithIcc(jpeg, truncated)).Rows(), untagged);
   EXPECT_EQ(DecodeData(WithIcc(jpeg, std::vector<unsigned char>(1000, 0x5A))).Rows(), untagged);
+}
+
+TEST(TestFFmpegImage, BT709MatrixIsUsed)
+{
+  if (!avcodec_find_decoder(AV_CODEC_ID_HEVC))
+    GTEST_SKIP() << "no HEVC decoder";
+
+  // BT.601 would show these as (191, 88, 100)
+  const Pixels pixels{Decode("bt709-grid.heic", 128, 64)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(32, 32), 99, 99, 199);
+  ExpectBGRA(pixels.At(96, 32), 99, 99, 199);
 }
 
 #if defined(HAVE_LCMS2)
