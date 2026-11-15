@@ -305,17 +305,33 @@ bool isHeadsetPlugged()
   }
 }
 
-std::vector<int> getHdmiEncodings()
+// Not wrapped by libandroidjni
+constexpr const char* EXTRA_ENCODINGS = "android.media.extra.ENCODINGS";
+constexpr int TYPE_HDMI_EARC = 29; // API 31
+
+std::vector<int> getHdmiEncodings(const CJNIIntent& intent)
 {
   std::vector<int> encodings;
-  CJNIAudioManager audioManager(CXBMCApp::getSystemService(CJNIContext::AUDIO_SERVICE));
-  for (const CJNIAudioDeviceInfo& device :
-       audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS))
+  if (intent.hasExtra(EXTRA_ENCODINGS))
   {
-    if (device.getType() == CJNIAudioDeviceInfo::TYPE_HDMI)
+    // The encodings of the sink this event is about
+    encodings = jcast<std::vector<int>>(
+        call_method<jhintArray>(intent.get_raw(), "getIntArrayExtra", "(Ljava/lang/String;)[I",
+                                jcast<jhstring>(std::string(EXTRA_ENCODINGS))));
+  }
+  else
+  {
+    CJNIAudioManager audioManager(CXBMCApp::getSystemService(CJNIContext::AUDIO_SERVICE));
+    for (const CJNIAudioDeviceInfo& device :
+         audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS))
     {
-      const std::vector<int> deviceEncodings = device.getEncodings();
-      encodings.insert(encodings.end(), deviceEncodings.begin(), deviceEncodings.end());
+      const int type = device.getType();
+      if (type == CJNIAudioDeviceInfo::TYPE_HDMI || type == CJNIAudioDeviceInfo::TYPE_HDMI_ARC ||
+          type == TYPE_HDMI_EARC)
+      {
+        const std::vector<int> deviceEncodings = device.getEncodings();
+        encodings.insert(encodings.end(), deviceEncodings.begin(), deviceEncodings.end());
+      }
     }
   }
   std::sort(encodings.begin(), encodings.end());
@@ -1285,8 +1301,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       // A sink such as an AVR powering on changes the HDMI encodings, while a
       // refresh rate switch keeps them, so only the former needs a rescan.
-      std::vector<int> encodings = getHdmiEncodings();
-      const bool encodingsChanged = encodings != m_hdmiEncodings;
+      // The first event only tells what the sink supported at startup.
+      std::vector<int> encodings = getHdmiEncodings(intent);
+      const bool encodingsChanged = m_hdmiEncodings && encodings != *m_hdmiEncodings;
       m_hdmiEncodings = std::move(encodings);
 
       if (m_aeReset || (encodingsChanged && g_application.IsInitialized()))
