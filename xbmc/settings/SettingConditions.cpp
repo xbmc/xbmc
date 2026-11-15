@@ -30,6 +30,7 @@
 #ifdef TARGET_WASM
 #include "platform/wasm/MseBridge.h"
 #include "platform/wasm/TizenEmss.h"
+#include "platform/wasm/network/TizenSockets.h"
 #endif
 
 namespace
@@ -385,7 +386,10 @@ void CSettingConditions::Initialize()
   m_simpleConditions.emplace("has_time_server");
 #endif
 #ifdef HAS_WEB_SERVER
-  m_simpleConditions.emplace("has_web_server");
+#ifdef TARGET_WASM
+  if (kodi_wasm_has_sockets())
+#endif
+    m_simpleConditions.emplace("has_web_server");
 #endif
 #ifdef HAS_FILESYSTEM_SMB
   m_simpleConditions.emplace("has_filesystem_smb");
