@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 #include "windowing/GraphicContext.h" // needed for the RESOLUTION members
 
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <set>
@@ -180,6 +181,11 @@ public:
 
   const std::string& GetCurrentAspect() const { return m_currentAspect; }
 
+  /*! \brief Check if the screen now matches another skin resolution than the
+   one the skin was loaded for, e.g. after switching from 4:3 to 16:9
+   */
+  bool IsResolutionChanged() const;
+
   void LoadIncludes();
 
   /*! \brief Load the defined skin timers
@@ -291,6 +297,7 @@ protected:
   float m_effectsSlowDown;
   CGUIIncludes m_includes;
   std::string m_currentAspect;
+  std::ptrdiff_t m_currentResolution{-1}; // index in m_resolutions
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
