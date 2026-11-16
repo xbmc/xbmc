@@ -46,28 +46,30 @@
     "properties": {
       "hours": {
         "type": "integer",
-        "required": true,
         "minimum": 0
       },
       "minutes": {
         "type": "integer",
-        "required": true,
         "minimum": 0,
         "maximum": 59
       },
       "seconds": {
         "type": "integer",
-        "required": true,
         "minimum": 0,
         "maximum": 59
       },
       "milliseconds": {
         "type": "integer",
-        "required": true,
         "minimum": 0,
         "maximum": 999
       }
     },
+    "required": [
+      "hours",
+      "minutes",
+      "seconds",
+      "milliseconds"
+    ],
     "additionalProperties": false
   },
   "Global.Weekday": {
@@ -90,17 +92,15 @@
     ]
   },
   "Global.Toggle": {
-    "type": [
+    "anyOf": [
       {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       {
         "type": "string",
         "enum": [
           "toggle"
-        ],
-        "required": true
+        ]
       }
     ]
   },
@@ -112,69 +112,72 @@
     "type": "object",
     "properties": {
       "Player": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Playlist": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "GUI": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "System": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "VideoLibrary": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "AudioLibrary": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Application": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Input": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "PVR": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Other": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Info": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Sources": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "Files": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
     },
+    "required": [
+      "Player",
+      "Playlist",
+      "GUI",
+      "System",
+      "VideoLibrary",
+      "AudioLibrary",
+      "Application",
+      "Input",
+      "PVR",
+      "Other",
+      "Info",
+      "Sources",
+      "Files"
+    ],
     "additionalProperties": false
   },
   "Configuration": {
     "type": "object",
-    "required": true,
     "properties": {
       "notifications": {
-        "$ref": "Configuration.Notifications",
-        "required": true
+        "$ref": "#/$defs/Configuration.Notifications"
       }
-    }
+    },
+    "required": [
+      "notifications"
+    ]
   },
   "Files.Media": {
     "type": "string",
@@ -202,7 +205,7 @@
         "description": "Index of the first item to return"
       },
       "end": {
-        "$ref": "List.Amount",
+        "$ref": "#/$defs/List.Amount",
         "description": "Index of the last item to return"
       }
     },
@@ -217,14 +220,16 @@
         "default": 0
       },
       "end": {
-        "$ref": "List.Amount"
+        "$ref": "#/$defs/List.Amount"
       },
       "total": {
         "type": "integer",
-        "minimum": 0,
-        "required": true
+        "minimum": 0
       }
     },
+    "required": [
+      "total"
+    ],
     "additionalProperties": false
   },
   "List.Sort": {
@@ -335,7 +340,7 @@
     "type": "object",
     "properties": {
       "type": {
-        "$ref": "Playlist.Type"
+        "$ref": "#/$defs/Playlist.Type"
       },
       "size": {
         "type": "integer",
@@ -349,116 +354,136 @@
     "default": -1
   },
   "Playlist.Item": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "file": {
             "type": "string",
-            "description": "Path to a file (not a directory) to be added to the playlist",
-            "required": true
+            "description": "Path to a file (not a directory) to be added to the playlist"
           }
         },
+        "required": [
+          "file"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "directory": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "recursive": {
             "type": "boolean",
             "default": false
           },
           "media": {
-            "$ref": "Files.Media",
+            "$ref": "#/$defs/Files.Media",
             "default": "files"
           }
         },
+        "required": [
+          "directory"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "movieid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "movieid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "episodeid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "episodeid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "musicvideoid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "musicvideoid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "artistid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "artistid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "albumid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "albumid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "songid": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
         },
+        "required": [
+          "songid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "genreid": {
-            "$ref": "Library.Id",
-            "required": true,
+            "$ref": "#/$defs/Library.Id",
             "description": "Identification of a genre from the AudioLibrary"
           }
         },
+        "required": [
+          "genreid"
+        ],
         "additionalProperties": false
       },
       {
         "type": "object",
         "properties": {
           "recordingid": {
-            "$ref": "Library.Id",
-            "required": true,
+            "$ref": "#/$defs/Library.Id",
             "description": "Identification of a PVR recording"
           }
         },
+        "required": [
+          "recordingid"
+        ],
         "additionalProperties": false
       }
     ]
@@ -514,7 +539,6 @@
   },
   "Player.Speed": {
     "type": "object",
-    "required": true,
     "properties": {
       "speed": {
         "type": "integer"
@@ -523,7 +547,6 @@
   },
   "Player.Tempo": {
     "type": "object",
-    "required": true,
     "properties": {
       "tempo": {
         "type": "number"
@@ -546,79 +569,70 @@
   },
   "Player.CustomViewMode": {
     "type": "object",
-    "required": true,
     "properties": {
       "zoom": {
-        "type": [
+        "anyOf": [
           {
             "type": "string",
             "enum": [
               "increase",
               "decrease"
-            ],
-            "required": true
+            ]
           },
           {
-            "$ref": "Optional.Number",
+            "$ref": "#/$defs/Optional.Number",
             "minimum": 0.5,
             "maximum": 2.0,
-            "description": "Zoom where 1.0 means 100%",
-            "required": true
+            "description": "Zoom where 1.0 means 100%"
           }
         ]
       },
       "pixelratio": {
-        "type": [
+        "anyOf": [
           {
             "type": "string",
             "enum": [
               "increase",
               "decrease"
-            ],
-            "required": true
+            ]
           },
           {
-            "$ref": "Optional.Number",
+            "$ref": "#/$defs/Optional.Number",
             "minimum": 0.5,
             "maximum": 2.0,
-            "description": "Pixel aspect ratio where 1.0 means square pixel",
-            "required": true
+            "description": "Pixel aspect ratio where 1.0 means square pixel"
           }
         ]
       },
       "verticalshift": {
-        "type": [
+        "anyOf": [
           {
             "type": "string",
             "enum": [
               "increase",
               "decrease"
-            ],
-            "required": true
+            ]
           },
           {
-            "$ref": "Optional.Number",
+            "$ref": "#/$defs/Optional.Number",
             "minimum": -2.0,
             "maximum": 2.0,
-            "description": "Vertical shift 1.0 means shift to bottom",
-            "required": true
+            "description": "Vertical shift 1.0 means shift to bottom"
           }
         ]
       },
       "nonlinearstretch": {
-        "type": [
+        "anyOf": [
           {
             "type": "string",
             "enum": [
               "increase",
               "decrease"
-            ],
-            "required": true
+            ]
           },
           {
-            "$ref": "Optional.Boolean",
-            "description": "Flag to enable nonlinear stretch",
-            "required": true
+            "$ref": "#/$defs/Optional.Boolean",
+            "description": "Flag to enable nonlinear stretch"
           }
         ]
       }
@@ -637,116 +651,119 @@
     "properties": {
       "index": {
         "type": "integer",
-        "minimum": 0,
-        "required": true
+        "minimum": 0
       },
       "name": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "language": {
         "type": "string",
-        "required": true,
-        "description":
-            "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
       },
       "codec": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "bitrate": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "channels": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "isdefault": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "isoriginal": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "isimpaired": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "samplerate": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "bitspersample": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       }
-    }
+    },
+    "required": [
+      "index",
+      "name",
+      "language",
+      "codec",
+      "bitrate",
+      "channels",
+      "isdefault",
+      "isoriginal",
+      "isimpaired",
+      "samplerate",
+      "bitspersample"
+    ]
   },
   "Player.Video.Stream": {
     "type": "object",
     "properties": {
       "index": {
         "type": "integer",
-        "minimum": 0,
-        "required": true
+        "minimum": 0
       },
       "name": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "language": {
         "type": "string",
-        "required": true,
-        "description":
-            "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
       },
       "codec": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "width": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "height": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       }
-    }
+    },
+    "required": [
+      "index",
+      "name",
+      "language",
+      "codec",
+      "width",
+      "height"
+    ]
   },
   "Player.Subtitle": {
     "type": "object",
     "properties": {
       "index": {
         "type": "integer",
-        "minimum": 0,
-        "required": true
+        "minimum": 0
       },
       "name": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "language": {
         "type": "string",
-        "required": true,
-        "description":
-            "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+        "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
       },
       "isdefault": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "isforced": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "isimpaired": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "index",
+      "name",
+      "language",
+      "isdefault",
+      "isforced",
+      "isimpaired"
+    ]
   },
   "Player.Property.Name": {
     "type": "string",
@@ -783,7 +800,7 @@
     "type": "object",
     "properties": {
       "type": {
-        "$ref": "Player.Type"
+        "$ref": "#/$defs/Player.Type"
       },
       "partymode": {
         "type": "boolean"
@@ -792,22 +809,22 @@
         "type": "integer"
       },
       "time": {
-        "$ref": "Global.Time"
+        "$ref": "#/$defs/Global.Time"
       },
       "percentage": {
-        "$ref": "Player.Position.Percentage"
+        "$ref": "#/$defs/Player.Position.Percentage"
       },
       "totaltime": {
-        "$ref": "Global.Time"
+        "$ref": "#/$defs/Global.Time"
       },
       "playlistid": {
-        "$ref": "Playlist.Id"
+        "$ref": "#/$defs/Playlist.Id"
       },
       "position": {
-        "$ref": "Playlist.Position"
+        "$ref": "#/$defs/Playlist.Position"
       },
       "repeat": {
-        "$ref": "Player.Repeat"
+        "$ref": "#/$defs/Player.Repeat"
       },
       "shuffled": {
         "type": "boolean"
@@ -834,40 +851,40 @@
         "type": "boolean"
       },
       "currentaudiostream": {
-        "$ref": "Player.Audio.Stream"
+        "$ref": "#/$defs/Player.Audio.Stream"
       },
       "audiostreams": {
         "type": "array",
         "items": {
-          "$ref": "Player.Audio.Stream"
+          "$ref": "#/$defs/Player.Audio.Stream"
         }
       },
       "currentvideostream": {
-        "$ref": "Player.Video.Stream"
+        "$ref": "#/$defs/Player.Video.Stream"
       },
       "videostreams": {
         "type": "array",
         "items": {
-          "$ref": "Player.Video.Stream"
+          "$ref": "#/$defs/Player.Video.Stream"
         }
       },
       "subtitleenabled": {
         "type": "boolean"
       },
       "currentsubtitle": {
-        "$ref": "Player.Subtitle"
+        "$ref": "#/$defs/Player.Subtitle"
       },
       "subtitles": {
         "type": "array",
         "items": {
-          "$ref": "Player.Subtitle"
+          "$ref": "#/$defs/Player.Subtitle"
         }
       },
       "live": {
         "type": "boolean"
       },
       "cachepercentage": {
-        "$ref": "Player.Position.Percentage"
+        "$ref": "#/$defs/Player.Position.Percentage"
       }
     }
   },
@@ -884,60 +901,63 @@
     ]
   },
   "Notifications.Item": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "description": "An unknown item does not have any additional information.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           }
-        }
+        },
+        "required": [
+          "type"
+        ]
       },
       {
         "type": "object",
         "description": "An item known to the database has an identification.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "id": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           }
-        }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
       },
       {
         "type": "object",
         "description": "A movie item has a title and may have a release year.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "title": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "year": {
             "type": "integer"
           }
-        }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
       },
       {
         "type": "object",
-        "description":
-            "A tv episode has a title and may have an episode number, season number and the title of the show it belongs to.",
+        "description": "A tv episode has a title and may have an episode number, season number and the title of the show it belongs to.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "title": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "episode": {
             "type": "integer"
@@ -948,19 +968,21 @@
           "showtitle": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
       },
       {
         "type": "object",
         "description": "A music video has a title and may have an album and an artist.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "title": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "album": {
             "type": "string"
@@ -968,19 +990,21 @@
           "artist": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
       },
       {
         "type": "object",
         "description": "A song has a title and may have an album, an artist and a track number.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "title": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "album": {
             "type": "string"
@@ -991,43 +1015,51 @@
           "track": {
             "type": "integer"
           }
-        }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
       },
       {
         "type": "object",
         "description": "A picture has a file path.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "file": {
-            "type": "string",
-            "required": true
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "type",
+          "file"
+        ]
       },
       {
         "type": "object",
         "description": "A PVR channel is either a radio or tv channel and has a title.",
         "properties": {
           "type": {
-            "$ref": "Notifications.Item.Type",
-            "required": true
+            "$ref": "#/$defs/Notifications.Item.Type"
           },
           "id": {
-            "$ref": "Library.Id",
-            "required": true
+            "$ref": "#/$defs/Library.Id"
           },
           "title": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "channeltype": {
-            "$ref": "PVR.Channel.Type",
-            "required": true
+            "$ref": "#/$defs/PVR.Channel.Type"
           }
-        }
+        },
+        "required": [
+          "type",
+          "id",
+          "title",
+          "channeltype"
+        ]
       }
     ]
   },
@@ -1035,22 +1067,28 @@
     "type": "object",
     "properties": {
       "playerid": {
-        "$ref": "Player.Id",
-        "required": true
+        "$ref": "#/$defs/Player.Id"
       },
       "speed": {
         "type": "integer"
       }
-    }
+    },
+    "required": [
+      "playerid"
+    ]
   },
   "Player.Notifications.Player.Seek": {
-    "extends": "Player.Notifications.Player",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Player.Notifications.Player"
+      }
+    ],
     "properties": {
       "time": {
-        "$ref": "Global.Time"
+        "$ref": "#/$defs/Global.Time"
       },
       "seekoffset": {
-        "$ref": "Global.Time"
+        "$ref": "#/$defs/Global.Time"
       }
     }
   },
@@ -1058,14 +1096,16 @@
     "type": "object",
     "properties": {
       "item": {
-        "$ref": "Notifications.Item",
-        "required": true
+        "$ref": "#/$defs/Notifications.Item"
       },
       "player": {
-        "$ref": "Player.Notifications.Player",
-        "required": true
+        "$ref": "#/$defs/Player.Notifications.Player"
       }
-    }
+    },
+    "required": [
+      "item",
+      "player"
+    ]
   },
   "Item.Fields.Base": {
     "type": "array",
@@ -1078,19 +1118,25 @@
     "type": "object",
     "properties": {
       "label": {
-        "type": "string",
-        "required": true
+        "type": "string"
       }
-    }
+    },
+    "required": [
+      "label"
+    ]
   },
   "Item.CustomProperties": {
     "type": "object",
     "additionalProperties": {
-      "$ref": "Global.String.NotEmpty"
+      "$ref": "#/$defs/Global.String.NotEmpty"
     }
   },
   "Media.Details.Base": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "fanart": {
         "type": "string"
@@ -1104,72 +1150,77 @@
     "type": "object",
     "properties": {
       "thumb": {
-        "$ref": "Global.String.NotEmpty"
+        "$ref": "#/$defs/Global.String.NotEmpty"
       },
       "poster": {
-        "$ref": "Global.String.NotEmpty"
+        "$ref": "#/$defs/Global.String.NotEmpty"
       },
       "banner": {
-        "$ref": "Global.String.NotEmpty"
+        "$ref": "#/$defs/Global.String.NotEmpty"
       },
       "fanart": {
-        "$ref": "Global.String.NotEmpty"
+        "$ref": "#/$defs/Global.String.NotEmpty"
       }
     },
     "additionalProperties": {
-      "$ref": "Global.String.NotEmpty"
+      "$ref": "#/$defs/Global.String.NotEmpty"
     }
   },
   "Media.Artwork.Set": {
     "type": "object",
     "properties": {
       "thumb": {
-        "type": [
-          "null",
+        "anyOf": [
           {
-            "$ref": "Global.String.NotEmpty",
-            "required": true
+            "type": "null"
+          },
+          {
+            "$ref": "#/$defs/Global.String.NotEmpty"
           }
         ],
         "default": ""
       },
       "poster": {
-        "type": [
-          "null",
+        "anyOf": [
           {
-            "$ref": "Global.String.NotEmpty",
-            "required": true
+            "type": "null"
+          },
+          {
+            "$ref": "#/$defs/Global.String.NotEmpty"
           }
         ],
         "default": ""
       },
       "banner": {
-        "type": [
-          "null",
+        "anyOf": [
           {
-            "$ref": "Global.String.NotEmpty",
-            "required": true
+            "type": "null"
+          },
+          {
+            "$ref": "#/$defs/Global.String.NotEmpty"
           }
         ],
         "default": ""
       },
       "fanart": {
-        "type": [
-          "null",
+        "anyOf": [
           {
-            "$ref": "Global.String.NotEmpty",
-            "required": true
+            "type": "null"
+          },
+          {
+            "$ref": "#/$defs/Global.String.NotEmpty"
           }
         ],
         "default": ""
       }
     },
     "additionalProperties": {
-      "type": [
-        "null",
+      "anyOf": [
         {
-          "$ref": "Global.String.NotEmpty",
-          "required": true
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/Global.String.NotEmpty"
         }
       ]
     }
@@ -1178,8 +1229,7 @@
     "type": "object",
     "properties": {
       "rating": {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       "votes": {
         "type": "integer"
@@ -1187,22 +1237,26 @@
       "default": {
         "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "rating"
+    ]
   },
   "Video.Ratings": {
     "type": "object",
     "additionalProperties": {
-      "$ref": "Video.Rating"
+      "$ref": "#/$defs/Video.Rating"
     }
   },
   "Video.Ratings.Set": {
     "type": "object",
     "additionalProperties": {
-      "type": [
-        "null",
+      "anyOf": [
         {
-          "$ref": "Video.Rating",
-          "required": true
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/Video.Rating"
         }
       ]
     }
@@ -1210,23 +1264,28 @@
   "Media.UniqueID": {
     "type": "object",
     "additionalProperties": {
-      "$ref": "Global.String.NotEmpty"
+      "$ref": "#/$defs/Global.String.NotEmpty"
     }
   },
   "Media.UniqueID.Set": {
     "type": "object",
     "additionalProperties": {
-      "type": [
-        "null",
+      "anyOf": [
         {
-          "$ref": "Global.String.NotEmpty",
-          "required": true
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/Global.String.NotEmpty"
         }
       ]
     }
   },
   "Library.Fields.Source": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -1236,25 +1295,35 @@
     }
   },
   "Library.Details.Source": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "sourceid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "file": {
         "type": "string",
-        "description": "The url encoded multipath string combining all paths of the source ",
-        "required": true
+        "description": "The url encoded multipath string combining all paths of the source "
       },
       "paths": {
-        "$ref": "Array.String",
+        "$ref": "#/$defs/Array.String",
         "description": "The individual paths of the media source"
       }
-    }
+    },
+    "required": [
+      "sourceid",
+      "file"
+    ]
   },
   "Library.Fields.Genre": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -1265,11 +1334,14 @@
     }
   },
   "Library.Details.Genre": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "genreid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
@@ -1278,13 +1350,20 @@
         "type": "string"
       },
       "sourceid": {
-        "$ref": "Array.Integer",
+        "$ref": "#/$defs/Array.Integer",
         "description": "The ids of sources with songs of the genre"
       }
-    }
+    },
+    "required": [
+      "genreid"
+    ]
   },
   "Library.Fields.Tag": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -1293,19 +1372,29 @@
     }
   },
   "Library.Details.Tag": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "tagid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "tagid"
+    ]
   },
   "Audio.Fields.Role": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -1314,23 +1403,32 @@
     }
   },
   "Audio.Details.Role": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "roleid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "roleid"
+    ]
   },
   "Audio.Fields.Artist": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the (song)genreid/genre, roleid/role or sourceid fields will result in increased response times",
+      "description": "Requesting the (song)genreid/genre, roleid/role or sourceid fields will result in increased response times",
       "enum": [
         "instrument",
         "style",
@@ -1362,11 +1460,14 @@
     }
   },
   "Audio.Fields.Album": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the songgenres, artistid and/or sourceid fields will result in increased response times",
+      "description": "Requesting the songgenres, artistid and/or sourceid fields will result in increased response times",
       "enum": [
         "title",
         "description",
@@ -1409,11 +1510,14 @@
     }
   },
   "Audio.Fields.Song": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the genreid, artistid, albumartistid and/or sourceid fields will result in increased response times",
+      "description": "Requesting the genreid, artistid, albumartistid and/or sourceid fields will result in increased response times",
       "enum": [
         "title",
         "artist",
@@ -1482,22 +1586,24 @@
       "description": "The artist and the role they contribute to a song",
       "properties": {
         "name": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "role": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "roleid": {
-          "$ref": "Library.Id",
-          "required": true
+          "$ref": "#/$defs/Library.Id"
         },
         "artistid": {
-          "$ref": "Library.Id",
-          "required": true
+          "$ref": "#/$defs/Library.Id"
         }
       },
+      "required": [
+        "name",
+        "role",
+        "roleid",
+        "artistid"
+      ],
       "additionalProperties": false
     }
   },
@@ -1508,14 +1614,16 @@
       "description": "The various roles contributed by an artist to one or more songs",
       "properties": {
         "roleid": {
-          "$ref": "Library.Id",
-          "required": true
+          "$ref": "#/$defs/Library.Id"
         },
         "role": {
-          "type": "string",
-          "required": true
+          "type": "string"
         }
       },
+      "required": [
+        "roleid",
+        "role"
+      ],
       "additionalProperties": false
     }
   },
@@ -1525,37 +1633,47 @@
       "type": "object",
       "properties": {
         "genreid": {
-          "$ref": "Library.Id",
-          "required": true
+          "$ref": "#/$defs/Library.Id"
         },
         "title": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "genreid"
+      ]
     }
   },
   "Audio.Details.Base": {
-    "extends": "Media.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Media.Details.Base"
+      }
+    ],
     "properties": {
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "dateadded": {
         "type": "string"
       },
       "art": {
-        "$ref": "Media.Artwork"
+        "$ref": "#/$defs/Media.Artwork"
       }
     }
   },
   "Audio.Details.Media": {
-    "extends": "Audio.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Audio.Details.Base"
+      }
+    ],
     "properties": {
       "title": {
         "type": "string"
       },
       "artist": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "year": {
         "type": "integer"
@@ -1564,10 +1682,10 @@
         "type": "number"
       },
       "musicbrainzalbumartistid": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "artistid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "displayartist": {
         "type": "string"
@@ -1590,24 +1708,26 @@
     }
   },
   "Audio.Details.Artist": {
-    "extends": "Audio.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Audio.Details.Base"
+      }
+    ],
     "properties": {
       "artistid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "artist": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "instrument": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "style": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mood": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "born": {
         "type": "string"
@@ -1625,19 +1745,19 @@
         "type": "string"
       },
       "yearsactive": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "compilationartist": {
         "type": "boolean"
       },
       "musicbrainzartistid": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "roles": {
-        "$ref": "Audio.Artist.Roles"
+        "$ref": "#/$defs/Audio.Artist.Roles"
       },
       "songgenres": {
-        "$ref": "Audio.Details.Genres"
+        "$ref": "#/$defs/Audio.Details.Genres"
       },
       "isalbumartist": {
         "type": "boolean"
@@ -1661,28 +1781,35 @@
         "type": "string"
       },
       "sourceid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       }
-    }
+    },
+    "required": [
+      "artistid",
+      "artist"
+    ]
   },
   "Audio.Details.Album": {
-    "extends": "Audio.Details.Media",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Audio.Details.Media"
+      }
+    ],
     "properties": {
       "albumid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "description": {
         "type": "string"
       },
       "theme": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mood": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "style": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "type": {
         "type": "string"
@@ -1697,7 +1824,7 @@
         "type": "boolean"
       },
       "releasetype": {
-        "$ref": "Audio.Album.ReleaseType"
+        "$ref": "#/$defs/Audio.Album.ReleaseType"
       },
       "musicbrainzreleasegroupid": {
         "type": "string"
@@ -1706,7 +1833,7 @@
         "type": "string"
       },
       "songgenres": {
-        "$ref": "Audio.Details.Genres"
+        "$ref": "#/$defs/Audio.Details.Genres"
       },
       "lastplayed": {
         "type": "string"
@@ -1718,7 +1845,7 @@
         "type": "string"
       },
       "sourceid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "isboxset": {
         "type": "boolean"
@@ -1732,20 +1859,26 @@
       "albumduration": {
         "type": "integer"
       }
-    }
+    },
+    "required": [
+      "albumid"
+    ]
   },
   "Audio.Details.Song": {
-    "extends": "Audio.Details.Media",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Audio.Details.Media"
+      }
+    ],
     "properties": {
       "songid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "file": {
         "type": "string"
       },
       "albumartist": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "album": {
         "type": "string"
@@ -1769,13 +1902,13 @@
         "type": "string"
       },
       "musicbrainzartistid": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "musicbrainzalbumid": {
         "type": "string"
       },
       "albumid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "lastplayed": {
         "type": "string"
@@ -1790,16 +1923,16 @@
         "type": "integer"
       },
       "albumartistid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "albumreleasetype": {
-        "$ref": "Audio.Album.ReleaseType"
+        "$ref": "#/$defs/Audio.Album.ReleaseType"
       },
       "mood": {
         "type": "string"
       },
       "contributors": {
-        "$ref": "Audio.Contributors"
+        "$ref": "#/$defs/Audio.Contributors"
       },
       "displaycomposer": {
         "type": "string"
@@ -1814,10 +1947,10 @@
         "type": "string"
       },
       "genreid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "sourceid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "disctitle": {
         "type": "string"
@@ -1837,7 +1970,10 @@
       "songvideourl": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "songid"
+    ]
   },
   "Audio.Property.Name": {
     "type": "string",
@@ -1859,7 +1995,7 @@
     "type": "object",
     "properties": {
       "missingartistid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "librarylastupdated": {
         "type": "string"
@@ -1894,11 +2030,14 @@
     }
   },
   "Video.Fields.Movie": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the cast, ratings, showlink, streamdetails, uniqueid and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, showlink, streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [
         "title",
         "genre",
@@ -1941,7 +2080,11 @@
     }
   },
   "Video.Fields.MovieSet": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -1956,11 +2099,14 @@
     }
   },
   "Video.Fields.TVShow": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the cast, ratings, uniqueid and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, uniqueid and/or tag field will result in increased response times",
       "enum": [
         "title",
         "genre",
@@ -1997,7 +2143,11 @@
     }
   },
   "Video.Fields.Season": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -2016,11 +2166,14 @@
     }
   },
   "Video.Fields.Episode": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the cast, ratings, streamdetails, uniqueid and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [
         "title",
         "plot",
@@ -2058,11 +2211,14 @@
     }
   },
   "Video.Fields.MusicVideo": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
-      "description":
-          "Requesting the streamdetails, uniqueid and/or tag field will result in increased response times",
+      "description": "Requesting the streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [
         "title",
         "playcount",
@@ -2097,21 +2253,23 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "role": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "order": {
-          "type": "integer",
-          "required": true
+          "type": "integer"
         },
         "thumbnail": {
           "type": "string"
         }
       },
+      "required": [
+        "name",
+        "role",
+        "order"
+      ],
       "additionalProperties": false
     }
   },
@@ -2129,16 +2287,14 @@
             },
             "language": {
               "type": "string",
-              "description":
-                  "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
+              "description": "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
             },
             "channels": {
               "type": "integer"
             },
             "source": {
               "type": "integer",
-              "description":
-                  "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
+              "description": "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
             },
             "version": {
               "type": "integer",
@@ -2146,8 +2302,7 @@
             },
             "flags": {
               "type": "integer",
-              "description":
-                  "Bitmask of the stream's dispositions: 1 default, 2 dub, 4 original, 8 commentary, 16 lyrics, 32 karaoke, 64 forced, 128 hearing impaired, 256 visually impaired"
+              "description": "Bitmask of the stream's dispositions: 1 default, 2 dub, 4 original, 8 commentary, 16 lyrics, 32 karaoke, 64 forced, 128 hearing impaired, 256 visually impaired"
             }
           },
           "additionalProperties": false
@@ -2179,8 +2334,7 @@
             },
             "language": {
               "type": "string",
-              "description":
-                  "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
+              "description": "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
             },
             "hdrtype": {
               "type": "string"
@@ -2190,8 +2344,7 @@
             },
             "source": {
               "type": "integer",
-              "description":
-                  "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
+              "description": "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
             },
             "version": {
               "type": "integer",
@@ -2209,13 +2362,11 @@
           "properties": {
             "language": {
               "type": "string",
-              "description":
-                  "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
+              "description": "BCP 47 language tag (e.g. en), a language only in library values, empty when the stream declares none, passed through unchanged when unrecognized"
             },
             "source": {
               "type": "integer",
-              "description":
-                  "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
+              "description": "Where the stream details came from: 0 undefined, 10 an external source, 20 the media file, 30 an NFO file, 40 a database migrated from before sources were tracked"
             },
             "version": {
               "type": "integer",
@@ -2223,8 +2374,7 @@
             },
             "flags": {
               "type": "integer",
-              "description":
-                  "Bitmask of the stream's dispositions: 1 default, 2 dub, 4 original, 8 commentary, 16 lyrics, 32 karaoke, 64 forced, 128 hearing impaired, 256 visually impaired"
+              "description": "Bitmask of the stream's dispositions: 1 default, 2 dub, 4 original, 8 commentary, 16 lyrics, 32 karaoke, 64 forced, 128 hearing impaired, 256 visually impaired"
             }
           },
           "additionalProperties": false
@@ -2248,18 +2398,26 @@
     "additionalProperties": false
   },
   "Video.Details.Base": {
-    "extends": "Media.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Media.Details.Base"
+      }
+    ],
     "properties": {
       "playcount": {
         "type": "integer"
       },
       "art": {
-        "$ref": "Media.Artwork"
+        "$ref": "#/$defs/Media.Artwork"
       }
     }
   },
   "Video.Details.Media": {
-    "extends": "Video.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Base"
+      }
+    ],
     "properties": {
       "title": {
         "type": "string"
@@ -2267,7 +2425,11 @@
     }
   },
   "Video.Details.Item": {
-    "extends": "Video.Details.Media",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Media"
+      }
+    ],
     "properties": {
       "file": {
         "type": "string"
@@ -2284,32 +2446,39 @@
     }
   },
   "Video.Details.File": {
-    "extends": "Video.Details.Item",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Item"
+      }
+    ],
     "properties": {
       "runtime": {
         "type": "integer",
         "description": "Runtime in seconds"
       },
       "director": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "streamdetails": {
-        "$ref": "Video.Streams"
+        "$ref": "#/$defs/Video.Streams"
       },
       "resume": {
-        "$ref": "Video.Resume"
+        "$ref": "#/$defs/Video.Resume"
       }
     }
   },
   "Video.Details.Movie": {
-    "extends": "Video.Details.File",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.File"
+      }
+    ],
     "properties": {
       "movieid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "year": {
         "type": "integer"
@@ -2333,19 +2502,19 @@
         "type": "string"
       },
       "writer": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "studio": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mpaa": {
         "type": "string"
       },
       "cast": {
-        "$ref": "Video.Cast"
+        "$ref": "#/$defs/Video.Cast"
       },
       "country": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "imdbnumber": {
         "type": "string"
@@ -2354,7 +2523,7 @@
         "type": "string"
       },
       "showlink": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "top250": {
         "type": "integer"
@@ -2363,31 +2532,37 @@
         "type": "string"
       },
       "setid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "tag": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "userrating": {
         "type": "integer"
       },
       "ratings": {
-        "$ref": "Video.Ratings"
+        "$ref": "#/$defs/Video.Ratings"
       },
       "premiered": {
         "type": "string"
       },
       "uniqueid": {
-        "$ref": "Media.UniqueID"
+        "$ref": "#/$defs/Media.UniqueID"
       }
-    }
+    },
+    "required": [
+      "movieid"
+    ]
   },
   "Video.Details.MovieSet": {
-    "extends": "Video.Details.Media",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Media"
+      }
+    ],
     "properties": {
       "setid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "plot": {
         "type": "string"
@@ -2395,32 +2570,44 @@
       "sorttitle": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "setid"
+    ]
   },
   "Video.Details.MovieSet.Extended": {
-    "extends": "Video.Details.MovieSet",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.MovieSet"
+      }
+    ],
     "properties": {
       "limits": {
-        "$ref": "List.LimitsReturned",
-        "required": true
+        "$ref": "#/$defs/List.LimitsReturned"
       },
       "movies": {
         "type": "array",
         "items": {
-          "$ref": "Video.Details.Movie"
+          "$ref": "#/$defs/Video.Details.Movie"
         }
       }
-    }
+    },
+    "required": [
+      "limits"
+    ]
   },
   "Video.Details.TVShow": {
-    "extends": "Video.Details.Item",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Item"
+      }
+    ],
     "properties": {
       "tvshowid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "year": {
         "type": "integer"
@@ -2435,13 +2622,13 @@
         "type": "string"
       },
       "studio": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mpaa": {
         "type": "string"
       },
       "cast": {
-        "$ref": "Video.Cast"
+        "$ref": "#/$defs/Video.Cast"
       },
       "episode": {
         "type": "integer"
@@ -2465,13 +2652,13 @@
         "type": "integer"
       },
       "tag": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "userrating": {
         "type": "integer"
       },
       "ratings": {
-        "$ref": "Video.Ratings"
+        "$ref": "#/$defs/Video.Ratings"
       },
       "runtime": {
         "type": "integer",
@@ -2479,27 +2666,31 @@
       },
       "status": {
         "type": "string",
-        "description":
-            "Returns 'returning series', 'in production', 'planned', 'cancelled' or 'ended'"
+        "description": "Returns 'returning series', 'in production', 'planned', 'cancelled' or 'ended'"
       },
       "uniqueid": {
-        "$ref": "Media.UniqueID"
+        "$ref": "#/$defs/Media.UniqueID"
       },
       "trailer": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "tvshowid"
+    ]
   },
   "Video.Details.Season": {
-    "extends": "Video.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.Base"
+      }
+    ],
     "properties": {
       "seasonid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "season": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "showtitle": {
         "type": "string"
@@ -2511,7 +2702,7 @@
         "type": "integer"
       },
       "tvshowid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "userrating": {
         "type": "integer"
@@ -2519,14 +2710,21 @@
       "title": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "seasonid",
+      "season"
+    ]
   },
   "Video.Details.Episode": {
-    "extends": "Video.Details.File",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.File"
+      }
+    ],
     "properties": {
       "episodeid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "votes": {
         "type": "string"
@@ -2535,7 +2733,7 @@
         "type": "number"
       },
       "writer": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "firstaired": {
         "type": "string"
@@ -2550,7 +2748,7 @@
         "type": "integer"
       },
       "uniqueid": {
-        "$ref": "Media.UniqueID"
+        "$ref": "#/$defs/Media.UniqueID"
       },
       "originaltitle": {
         "type": "string"
@@ -2559,10 +2757,10 @@
         "type": "string"
       },
       "cast": {
-        "$ref": "Video.Cast"
+        "$ref": "#/$defs/Video.Cast"
       },
       "tvshowid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "specialsortseason": {
         "type": "integer"
@@ -2574,28 +2772,34 @@
         "type": "integer"
       },
       "seasonid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "ratings": {
-        "$ref": "Video.Ratings"
+        "$ref": "#/$defs/Video.Ratings"
       },
       "studio": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       }
-    }
+    },
+    "required": [
+      "episodeid"
+    ]
   },
   "Video.Details.MusicVideo": {
-    "extends": "Video.Details.File",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.File"
+      }
+    ],
     "properties": {
       "musicvideoid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "studio": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "year": {
         "type": "integer"
@@ -2604,16 +2808,16 @@
         "type": "string"
       },
       "artist": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "track": {
         "type": "integer"
       },
       "tag": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "rating": {
         "type": "number"
@@ -2625,9 +2829,12 @@
         "type": "string"
       },
       "uniqueid": {
-        "$ref": "Media.UniqueID"
+        "$ref": "#/$defs/Media.UniqueID"
       }
-    }
+    },
+    "required": [
+      "musicvideoid"
+    ]
   },
   "PVR.Property.Name": {
     "type": "string",
@@ -2652,23 +2859,25 @@
     }
   },
   "PVR.ChannelGroup.Id": {
-    "type": [
+    "anyOf": [
       {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       {
         "type": "string",
         "enum": [
           "alltv",
           "allradio"
-        ],
-        "required": true
+        ]
       }
     ]
   },
   "PVR.Fields.Broadcast": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -2711,11 +2920,14 @@
     }
   },
   "PVR.Details.Broadcast": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "broadcastid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
@@ -2742,7 +2954,7 @@
         "type": "number"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "episodename": {
         "type": "string"
@@ -2813,7 +3025,7 @@
         "description": "Deprecated - Use GetBroadcastIsPlayable instead"
       },
       "clientid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "hasreminder": {
         "type": "boolean"
@@ -2825,10 +3037,17 @@
         "type": "integer",
         "description": "Deprecated - Use season"
       }
-    }
+    },
+    "required": [
+      "broadcastid"
+    ]
   },
   "PVR.Fields.Channel": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -2851,17 +3070,20 @@
     }
   },
   "PVR.Details.Channel": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "channelid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "channel": {
         "type": "string"
       },
       "channeltype": {
-        "$ref": "PVR.Channel.Type"
+        "$ref": "#/$defs/PVR.Channel.Type"
       },
       "hidden": {
         "type": "boolean"
@@ -2876,14 +3098,13 @@
         "type": "string"
       },
       "broadcastnow": {
-        "$ref": "PVR.Details.Broadcast"
+        "$ref": "#/$defs/PVR.Details.Broadcast"
       },
       "broadcastnext": {
-        "$ref": "PVR.Details.Broadcast"
+        "$ref": "#/$defs/PVR.Details.Broadcast"
       },
       "uniqueid": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "icon": {
         "type": "string"
@@ -2901,40 +3122,60 @@
         "type": "boolean"
       },
       "clientid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       }
-    }
+    },
+    "required": [
+      "channelid",
+      "uniqueid"
+    ]
   },
   "PVR.Details.ChannelGroup": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "channelgroupid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "channeltype": {
-        "$ref": "PVR.Channel.Type",
-        "required": true
+        "$ref": "#/$defs/PVR.Channel.Type"
       }
-    }
+    },
+    "required": [
+      "channelgroupid",
+      "channeltype"
+    ]
   },
   "PVR.Details.ChannelGroup.Extended": {
-    "extends": "PVR.Details.ChannelGroup",
+    "allOf": [
+      {
+        "$ref": "#/$defs/PVR.Details.ChannelGroup"
+      }
+    ],
     "properties": {
       "limits": {
-        "$ref": "List.LimitsReturned",
-        "required": true
+        "$ref": "#/$defs/List.LimitsReturned"
       },
       "channels": {
         "type": "array",
         "items": {
-          "$ref": "PVR.Details.Channel"
+          "$ref": "#/$defs/PVR.Details.Channel"
         }
       }
-    }
+    },
+    "required": [
+      "limits"
+    ]
   },
   "PVR.Fields.Client": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -2950,11 +3191,14 @@
     }
   },
   "PVR.Details.Client": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "clientid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "addonid": {
         "type": "string"
@@ -2980,7 +3224,10 @@
       "supportschannelscan": {
         "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "clientid"
+    ]
   },
   "PVR.TimerState": {
     "type": "string",
@@ -2999,7 +3246,11 @@
     ]
   },
   "PVR.Fields.Timer": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -3037,11 +3288,14 @@
     }
   },
   "PVR.Details.Timer": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "timerid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
@@ -3050,7 +3304,7 @@
         "type": "string"
       },
       "channelid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "isradio": {
         "type": "boolean"
@@ -3079,7 +3333,7 @@
       "weekdays": {
         "type": "array",
         "items": {
-          "$ref": "Global.Weekday"
+          "$ref": "#/$defs/Global.Weekday"
         },
         "uniqueItems": true
       },
@@ -3093,7 +3347,7 @@
         "type": "integer"
       },
       "state": {
-        "$ref": "PVR.TimerState"
+        "$ref": "#/$defs/PVR.TimerState"
       },
       "file": {
         "type": "string"
@@ -3132,15 +3386,22 @@
         "type": "boolean"
       },
       "clientid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "broadcastid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       }
-    }
+    },
+    "required": [
+      "timerid"
+    ]
   },
   "PVR.Fields.Recording": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -3172,11 +3433,14 @@
     }
   },
   "PVR.Details.Recording": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "recordingid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "title": {
         "type": "string"
@@ -3188,13 +3452,13 @@
         "type": "string"
       },
       "genre": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "playcount": {
         "type": "integer"
       },
       "resume": {
-        "$ref": "Video.Resume"
+        "$ref": "#/$defs/Video.Resume"
       },
       "channel": {
         "type": "string"
@@ -3215,7 +3479,7 @@
         "type": "string"
       },
       "art": {
-        "$ref": "Media.Artwork"
+        "$ref": "#/$defs/Media.Artwork"
       },
       "streamurl": {
         "type": "string"
@@ -3248,9 +3512,12 @@
         "type": "string"
       },
       "clientid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       }
-    }
+    },
+    "required": [
+      "recordingid"
+    ]
   },
   "Textures.Details.Size": {
     "type": "object",
@@ -3278,7 +3545,11 @@
     }
   },
   "Textures.Fields.Texture": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -3295,8 +3566,7 @@
     "type": "object",
     "properties": {
       "textureid": {
-        "$ref": "Library.Id",
-        "required": true
+        "$ref": "#/$defs/Library.Id"
       },
       "url": {
         "type": "string",
@@ -3317,21 +3587,23 @@
       "sizes": {
         "type": "array",
         "items": {
-          "$ref": "Textures.Details.Size"
+          "$ref": "#/$defs/Textures.Details.Size"
         }
       },
       "lastlibrarycheck": {
         "type": "string",
         "description": "Last time texture existence was verified in library"
       }
-    }
+    },
+    "required": [
+      "textureid"
+    ]
   },
   "Profiles.Password": {
     "type": "object",
     "properties": {
       "value": {
         "type": "string",
-        "required": true,
         "description": "Password"
       },
       "encryption": {
@@ -3343,10 +3615,17 @@
           "md5"
         ]
       }
-    }
+    },
+    "required": [
+      "value"
+    ]
   },
   "Profiles.Fields.Profile": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -3356,7 +3635,11 @@
     }
   },
   "Profiles.Details.Profile": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "thumbnail": {
         "type": "string"
@@ -3370,113 +3653,163 @@
     "type": "object",
     "properties": {
       "operator": {
-        "$ref": "List.Filter.Operators",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Operators"
       },
       "value": {
-        "type": [
+        "anyOf": [
           {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           {
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "required": true
+            }
           }
-        ],
-        "required": true
+        ]
       }
-    }
+    },
+    "required": [
+      "operator",
+      "value"
+    ]
   },
   "List.Filter.Rule.Movies": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Movies",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Movies"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.TVShows": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.TVShows",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.TVShows"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.Episodes": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Episodes",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Episodes"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.MusicVideos": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.MusicVideos",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.MusicVideos"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.Artists": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Artists",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Artists"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.Albums": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Albums",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Albums"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.Songs": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Songs",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Songs"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Rule.Textures": {
-    "extends": "List.Filter.Rule",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Filter.Rule"
+      }
+    ],
     "properties": {
       "field": {
-        "$ref": "List.Filter.Fields.Textures",
-        "required": true
+        "$ref": "#/$defs/List.Filter.Fields.Textures"
       }
-    }
+    },
+    "required": [
+      "field"
+    ]
   },
   "List.Filter.Movies": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Movies"
+              "$ref": "#/$defs/List.Filter.Movies"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3484,32 +3817,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Movies"
+              "$ref": "#/$defs/List.Filter.Movies"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Movies"
+        "$ref": "#/$defs/List.Filter.Rule.Movies"
       }
     ]
   },
   "List.Filter.TVShows": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.TVShows"
+              "$ref": "#/$defs/List.Filter.TVShows"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3517,32 +3854,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.TVShows"
+              "$ref": "#/$defs/List.Filter.TVShows"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.TVShows"
+        "$ref": "#/$defs/List.Filter.Rule.TVShows"
       }
     ]
   },
   "List.Filter.Episodes": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Episodes"
+              "$ref": "#/$defs/List.Filter.Episodes"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3550,32 +3891,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Episodes"
+              "$ref": "#/$defs/List.Filter.Episodes"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Episodes"
+        "$ref": "#/$defs/List.Filter.Rule.Episodes"
       }
     ]
   },
   "List.Filter.MusicVideos": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.MusicVideos"
+              "$ref": "#/$defs/List.Filter.MusicVideos"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3583,32 +3928,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.MusicVideos"
+              "$ref": "#/$defs/List.Filter.MusicVideos"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.MusicVideos"
+        "$ref": "#/$defs/List.Filter.Rule.MusicVideos"
       }
     ]
   },
   "List.Filter.Artists": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Artists"
+              "$ref": "#/$defs/List.Filter.Artists"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3616,32 +3965,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Artists"
+              "$ref": "#/$defs/List.Filter.Artists"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Artists"
+        "$ref": "#/$defs/List.Filter.Rule.Artists"
       }
     ]
   },
   "List.Filter.Albums": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Albums"
+              "$ref": "#/$defs/List.Filter.Albums"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3649,32 +4002,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Albums"
+              "$ref": "#/$defs/List.Filter.Albums"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Albums"
+        "$ref": "#/$defs/List.Filter.Rule.Albums"
       }
     ]
   },
   "List.Filter.Songs": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Songs"
+              "$ref": "#/$defs/List.Filter.Songs"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3682,32 +4039,36 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Songs"
+              "$ref": "#/$defs/List.Filter.Songs"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Songs"
+        "$ref": "#/$defs/List.Filter.Rule.Songs"
       }
     ]
   },
   "List.Filter.Textures": {
-    "type": [
+    "anyOf": [
       {
         "type": "object",
         "properties": {
           "and": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Textures"
+              "$ref": "#/$defs/List.Filter.Textures"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "and"
+        ]
       },
       {
         "type": "object",
@@ -3715,26 +4076,32 @@
           "or": {
             "type": "array",
             "items": {
-              "$ref": "List.Filter.Textures"
+              "$ref": "#/$defs/List.Filter.Textures"
             },
-            "minItems": 1,
-            "required": true
+            "minItems": 1
           }
-        }
+        },
+        "required": [
+          "or"
+        ]
       },
       {
-        "$ref": "List.Filter.Rule.Textures"
+        "$ref": "#/$defs/List.Filter.Rule.Textures"
       }
     ]
   },
   "List.Item.Base": {
-    "extends": [
-      "Video.Details.File",
-      "Audio.Details.Media"
+    "allOf": [
+      {
+        "$ref": "#/$defs/Video.Details.File"
+      },
+      {
+        "$ref": "#/$defs/Audio.Details.Media"
+      }
     ],
     "properties": {
       "id": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "type": {
         "type": "string",
@@ -3754,7 +4121,7 @@
         "description": "Name of the radio station an internet stream is served by"
       },
       "albumartist": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "album": {
         "type": "string"
@@ -3775,7 +4142,7 @@
         "type": "string"
       },
       "musicbrainzartistid": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "trailer": {
         "type": "string"
@@ -3790,19 +4157,19 @@
         "type": "string"
       },
       "writer": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "studio": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mpaa": {
         "type": "string"
       },
       "cast": {
-        "$ref": "Video.Cast"
+        "$ref": "#/$defs/Video.Cast"
       },
       "country": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "imdbnumber": {
         "type": "string"
@@ -3817,7 +4184,7 @@
         "type": "string"
       },
       "showlink": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "top250": {
         "type": "integer"
@@ -3838,13 +4205,13 @@
         "type": "string"
       },
       "albumid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "setid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "tvshowid": {
-        "$ref": "Library.Id"
+        "$ref": "#/$defs/Library.Id"
       },
       "watchedepisodes": {
         "type": "integer"
@@ -3853,13 +4220,13 @@
         "type": "integer"
       },
       "tag": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "albumartistid": {
-        "$ref": "Array.Integer"
+        "$ref": "#/$defs/Array.Integer"
       },
       "uniqueid": {
-        "$ref": "Media.UniqueID"
+        "$ref": "#/$defs/Media.UniqueID"
       },
       "episodeguide": {
         "type": "string"
@@ -3871,13 +4238,13 @@
         "type": "string"
       },
       "theme": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "mood": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "style": {
-        "$ref": "Array.String"
+        "$ref": "#/$defs/Array.String"
       },
       "albumlabel": {
         "type": "string"
@@ -3892,13 +4259,13 @@
         "type": "boolean"
       },
       "releasetype": {
-        "$ref": "Audio.Album.ReleaseType"
+        "$ref": "#/$defs/Audio.Album.ReleaseType"
       },
       "albumreleasetype": {
-        "$ref": "Audio.Album.ReleaseType"
+        "$ref": "#/$defs/Audio.Album.ReleaseType"
       },
       "contributors": {
-        "$ref": "Audio.Contributors"
+        "$ref": "#/$defs/Audio.Contributors"
       },
       "displaycomposer": {
         "type": "string"
@@ -3918,8 +4285,7 @@
       },
       "dynpath": {
         "type": "string",
-        "description":
-            "An experimental property for debug purposes, often same as mediapath but when different gives the actual file playing that should also be in file property"
+        "description": "An experimental property for debug purposes, often same as mediapath but when different gives the actual file playing that should also be in file property"
       },
       "isboxset": {
         "type": "boolean"
@@ -3952,7 +4318,7 @@
         "type": "string"
       },
       "customproperties": {
-        "$ref": "Item.CustomProperties"
+        "$ref": "#/$defs/Item.CustomProperties"
       },
       "songvideourl": {
         "type": "string"
@@ -3960,7 +4326,11 @@
     }
   },
   "List.Fields.All": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -4075,13 +4445,17 @@
     }
   },
   "List.Item.All": {
-    "extends": "List.Item.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Item.Base"
+      }
+    ],
     "properties": {
       "channel": {
         "type": "string"
       },
       "channeltype": {
-        "$ref": "PVR.Channel.Type"
+        "$ref": "#/$defs/PVR.Channel.Type"
       },
       "hidden": {
         "type": "boolean"
@@ -4104,7 +4478,11 @@
     }
   },
   "List.Fields.Files": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -4199,19 +4577,21 @@
     }
   },
   "List.Item.File": {
-    "extends": "List.Item.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/List.Item.Base"
+      }
+    ],
     "properties": {
       "file": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "filetype": {
         "type": "string",
         "enum": [
           "file",
           "directory"
-        ],
-        "required": true
+        ]
       },
       "size": {
         "type": "integer",
@@ -4223,18 +4603,28 @@
       "mimetype": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "file",
+      "filetype"
+    ]
   },
   "List.Items.Sources": {
     "type": "array",
     "items": {
-      "extends": "Item.Details.Base",
+      "allOf": [
+        {
+          "$ref": "#/$defs/Item.Details.Base"
+        }
+      ],
       "properties": {
         "file": {
-          "type": "string",
-          "required": true
+          "type": "string"
         }
-      }
+      },
+      "required": [
+        "file"
+      ]
     }
   },
   "Addon.Content": {
@@ -4249,7 +4639,11 @@
     "default": "unknown"
   },
   "Addon.Fields": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -4273,15 +4667,17 @@
     }
   },
   "Addon.Details": {
-    "extends": "Item.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Details.Base"
+      }
+    ],
     "properties": {
       "addonid": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "type": {
-        "$ref": "Addon.Types",
-        "required": true
+        "$ref": "#/$defs/Addon.Types"
       },
       "name": {
         "type": "string"
@@ -4316,18 +4712,20 @@
           "type": "object",
           "properties": {
             "addonid": {
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "version": {
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "optional": {
-              "type": "boolean",
-              "required": true
+              "type": "boolean"
             }
-          }
+          },
+          "required": [
+            "addonid",
+            "version",
+            "optional"
+          ]
         }
       },
       "broken": {
@@ -4342,14 +4740,16 @@
           "type": "object",
           "properties": {
             "key": {
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "value": {
-              "type": "string",
-              "required": true
+              "type": "string"
             }
-          }
+          },
+          "required": [
+            "key",
+            "value"
+          ]
         }
       },
       "rating": {
@@ -4367,14 +4767,17 @@
           "string"
         ]
       }
-    }
+    },
+    "required": [
+      "addonid",
+      "type"
+    ]
   },
   "GUI.Stereoscopy.Mode": {
     "type": "object",
     "properties": {
       "mode": {
         "type": "string",
-        "required": true,
         "enum": [
           "off",
           "split_vertical",
@@ -4388,10 +4791,13 @@
         ]
       },
       "label": {
-        "type": "string",
-        "required": true
+        "type": "string"
       }
-    }
+    },
+    "required": [
+      "mode",
+      "label"
+    ]
   },
   "GUI.Property.Name": {
     "type": "string",
@@ -4410,42 +4816,48 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "required": true
+            "type": "integer"
           },
           "label": {
-            "type": "string",
-            "required": true
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
       },
       "currentcontrol": {
         "type": "object",
         "properties": {
           "label": {
-            "type": "string",
-            "required": true
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "label"
+        ]
       },
       "skin": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "required": true,
             "minLength": 1
           },
           "name": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id"
+        ]
       },
       "fullscreen": {
         "type": "boolean"
       },
       "stereoscopicmode": {
-        "$ref": "GUI.Stereoscopy.Mode"
+        "$ref": "#/$defs/GUI.Stereoscopy.Mode"
       }
     }
   },
@@ -4507,13 +4919,11 @@
         "properties": {
           "major": {
             "type": "integer",
-            "minimum": 0,
-            "required": true
+            "minimum": 0
           },
           "minor": {
             "type": "integer",
-            "minimum": 0,
-            "required": true
+            "minimum": 0
           },
           "revision": {
             "type": [
@@ -4529,16 +4939,20 @@
               "beta",
               "releasecandidate",
               "stable"
-            ],
-            "required": true
+            ]
           },
           "tagversion": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "major",
+          "minor",
+          "tag"
+        ]
       },
       "sorttokens": {
-        "$ref": "Array.String",
+        "$ref": "#/$defs/Array.String",
         "description": "Articles ignored during sorting when ignorearticle is enabled."
       },
       "language": {
@@ -4549,7 +4963,11 @@
     }
   },
   "Favourite.Fields.Favourite": {
-    "extends": "Item.Fields.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Item.Fields.Base"
+      }
+    ],
     "items": {
       "type": "string",
       "enum": [
@@ -4574,12 +4992,10 @@
     "type": "object",
     "properties": {
       "title": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "type": {
-        "$ref": "Favourite.Type",
-        "required": true
+        "$ref": "#/$defs/Favourite.Type"
       },
       "path": {
         "type": "string"
@@ -4594,6 +5010,10 @@
         "type": "string"
       }
     },
+    "required": [
+      "title",
+      "type"
+    ],
     "additionalProperties": false
   },
   "Setting.Type": {
@@ -4621,52 +5041,43 @@
     ]
   },
   "Setting.Value": {
-    "type": [
+    "anyOf": [
       {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       {
-        "type": "string",
-        "required": true
+        "type": "string"
       }
     ]
   },
   "Setting.Value.List": {
     "type": "array",
     "items": {
-      "$ref": "Setting.Value"
+      "$ref": "#/$defs/Setting.Value"
     }
   },
   "Setting.Value.Extended": {
-    "type": [
+    "anyOf": [
       {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       {
-        "$ref": "Setting.Value.List",
-        "required": true
+        "$ref": "#/$defs/Setting.Value.List"
       }
     ]
   },
@@ -4674,44 +5085,55 @@
     "type": "object",
     "properties": {
       "type": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "format": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "delayed": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "type",
+      "format",
+      "delayed"
+    ]
   },
   "Setting.Details.ControlCheckmark": {
-    "extends": "Setting.Details.ControlBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlBase"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "toggle"
         ]
       },
       "format": {
         "type": "string",
-        "required": true,
         "enum": [
           "boolean"
         ]
       }
-    }
+    },
+    "required": [
+      "type",
+      "format"
+    ]
   },
   "Setting.Details.ControlSpinner": {
-    "extends": "Setting.Details.ControlBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlBase"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "spinner"
         ]
@@ -4722,10 +5144,17 @@
       "minimumlabel": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "type"
+    ]
   },
   "Setting.Details.ControlHeading": {
-    "extends": "Setting.Details.ControlBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlBase"
+      }
+    ],
     "properties": {
       "heading": {
         "type": "string"
@@ -4733,145 +5162,173 @@
     }
   },
   "Setting.Details.ControlEdit": {
-    "extends": "Setting.Details.ControlHeading",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlHeading"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "edit"
         ]
       },
       "hidden": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "verifynewvalue": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "type",
+      "hidden",
+      "verifynewvalue"
+    ]
   },
   "Setting.Details.ControlButton": {
-    "extends": "Setting.Details.ControlHeading",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlHeading"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "button"
         ]
       }
-    }
+    },
+    "required": [
+      "type"
+    ]
   },
   "Setting.Details.ControlList": {
-    "extends": "Setting.Details.ControlHeading",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlHeading"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "list"
         ]
       },
       "multiselect": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "type",
+      "multiselect"
+    ]
   },
   "Setting.Details.ControlSlider": {
-    "extends": "Setting.Details.ControlHeading",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlHeading"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "slider"
         ]
       },
       "formatlabel": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "popup": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
-    }
+    },
+    "required": [
+      "type",
+      "formatlabel",
+      "popup"
+    ]
   },
   "Setting.Details.ControlRange": {
-    "extends": "Setting.Details.ControlBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlBase"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "range"
         ]
       },
       "formatlabel": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "formatvalue": {
-        "type": "string",
-        "required": true
+        "type": "string"
       }
-    }
+    },
+    "required": [
+      "type",
+      "formatlabel",
+      "formatvalue"
+    ]
   },
   "Setting.Details.ControlLabel": {
-    "extends": "Setting.Details.ControlBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.ControlBase"
+      }
+    ],
     "properties": {
       "type": {
         "type": "string",
-        "required": true,
         "enum": [
           "label"
         ]
       },
       "format": {
         "type": "string",
-        "required": true,
         "enum": [
           "string"
         ]
       }
-    }
+    },
+    "required": [
+      "type",
+      "format"
+    ]
   },
   "Setting.Details.Control": {
-    "type": [
+    "anyOf": [
       {
-        "$ref": "Setting.Details.ControlCheckmark",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlCheckmark"
       },
       {
-        "$ref": "Setting.Details.ControlSpinner",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlSpinner"
       },
       {
-        "$ref": "Setting.Details.ControlEdit",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlEdit"
       },
       {
-        "$ref": "Setting.Details.ControlButton",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlButton"
       },
       {
-        "$ref": "Setting.Details.ControlList",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlList"
       },
       {
-        "$ref": "Setting.Details.ControlSlider",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlSlider"
       },
       {
-        "$ref": "Setting.Details.ControlRange",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlRange"
       },
       {
-        "$ref": "Setting.Details.ControlLabel",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.ControlLabel"
       }
     ]
   },
@@ -4880,66 +5337,82 @@
     "properties": {
       "id": {
         "type": "string",
-        "required": true,
         "minLength": 1
       },
       "label": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "help": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "id",
+      "label"
+    ]
   },
   "Setting.Details.SettingBase": {
-    "extends": "Setting.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.Base"
+      }
+    ],
     "properties": {
       "type": {
-        "$ref": "Setting.Type",
-        "required": true
+        "$ref": "#/$defs/Setting.Type"
       },
       "enabled": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "level": {
-        "$ref": "Setting.Level",
-        "required": true
+        "$ref": "#/$defs/Setting.Level"
       },
       "parent": {
         "type": "string"
       },
       "control": {
-        "$ref": "Setting.Details.Control"
+        "$ref": "#/$defs/Setting.Details.Control"
       }
     },
+    "required": [
+      "type",
+      "enabled",
+      "level"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingBool": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "value": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "default": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       }
     },
+    "required": [
+      "value",
+      "default"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingInt": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "value": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "default": {
-        "type": "integer",
-        "required": true
+        "type": "integer"
       },
       "minimum": {
         "type": "integer"
@@ -4956,59 +5429,72 @@
           "type": "object",
           "properties": {
             "label": {
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "value": {
-              "type": "integer",
-              "required": true
+              "type": "integer"
             }
-          }
+          },
+          "required": [
+            "label",
+            "value"
+          ]
         }
       }
     },
+    "required": [
+      "value",
+      "default"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingNumber": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "value": {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       "default": {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       "minimum": {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       "step": {
-        "type": "number",
-        "required": true
+        "type": "number"
       },
       "maximum": {
-        "type": "number",
-        "required": true
+        "type": "number"
       }
     },
+    "required": [
+      "value",
+      "default",
+      "minimum",
+      "step",
+      "maximum"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingString": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "value": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "default": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "allowempty": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "options": {
         "type": "array",
@@ -5016,50 +5502,62 @@
           "type": "object",
           "properties": {
             "label": {
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "value": {
-              "type": "string",
-              "required": true
+              "type": "string"
             }
-          }
+          },
+          "required": [
+            "label",
+            "value"
+          ]
         }
       }
-    }
+    },
+    "required": [
+      "value",
+      "default",
+      "allowempty"
+    ]
   },
   "Setting.Details.SettingAction": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "data": {
-        "type": "string",
-        "required": true
+        "type": "string"
       }
     },
+    "required": [
+      "data"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingList": {
-    "extends": "Setting.Details.SettingBase",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingBase"
+      }
+    ],
     "properties": {
       "value": {
-        "$ref": "Setting.Value.List",
-        "required": true
+        "$ref": "#/$defs/Setting.Value.List"
       },
       "default": {
-        "$ref": "Setting.Value.List",
-        "required": true
+        "$ref": "#/$defs/Setting.Value.List"
       },
       "elementtype": {
-        "$ref": "Setting.Type",
-        "required": true
+        "$ref": "#/$defs/Setting.Type"
       },
       "definition": {
-        "$ref": "Setting.Details.Setting",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.Setting"
       },
       "delimiter": {
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "minimumItems": {
         "type": "integer"
@@ -5068,14 +5566,24 @@
         "type": "integer"
       }
     },
+    "required": [
+      "value",
+      "default",
+      "elementtype",
+      "definition",
+      "delimiter"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingPath": {
-    "extends": "Setting.Details.SettingString",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingString"
+      }
+    ],
     "properties": {
       "writable": {
-        "type": "boolean",
-        "required": true
+        "type": "boolean"
       },
       "sources": {
         "type": "array",
@@ -5084,67 +5592,74 @@
         }
       }
     },
+    "required": [
+      "writable"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingAddon": {
-    "extends": "Setting.Details.SettingString",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingString"
+      }
+    ],
     "properties": {
       "addontype": {
-        "$ref": "Addon.Types",
-        "required": true
+        "$ref": "#/$defs/Addon.Types"
       }
     },
+    "required": [
+      "addontype"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingDate": {
-    "extends": "Setting.Details.SettingString",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingString"
+      }
+    ],
     "additionalProperties": false
   },
   "Setting.Details.SettingTime": {
-    "extends": "Setting.Details.SettingString",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.SettingString"
+      }
+    ],
     "additionalProperties": false
   },
   "Setting.Details.Setting": {
-    "type": [
+    "anyOf": [
       {
-        "$ref": "Setting.Details.SettingBool",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingBool"
       },
       {
-        "$ref": "Setting.Details.SettingInt",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingInt"
       },
       {
-        "$ref": "Setting.Details.SettingNumber",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingNumber"
       },
       {
-        "$ref": "Setting.Details.SettingString",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingString"
       },
       {
-        "$ref": "Setting.Details.SettingAction",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingAction"
       },
       {
-        "$ref": "Setting.Details.SettingList",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingList"
       },
       {
-        "$ref": "Setting.Details.SettingPath",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingPath"
       },
       {
-        "$ref": "Setting.Details.SettingAddon",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingAddon"
       },
       {
-        "$ref": "Setting.Details.SettingDate",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingDate"
       },
       {
-        "$ref": "Setting.Details.SettingTime",
-        "required": true
+        "$ref": "#/$defs/Setting.Details.SettingTime"
       }
     ]
   },
@@ -5153,27 +5668,33 @@
     "properties": {
       "id": {
         "type": "string",
-        "required": true,
         "minLength": 1
       },
       "settings": {
         "type": "array",
         "items": {
-          "$ref": "Setting.Details.Setting"
+          "$ref": "#/$defs/Setting.Details.Setting"
         },
         "minItems": 1,
         "uniqueItems": true
       }
     },
+    "required": [
+      "id"
+    ],
     "additionalProperties": false
   },
   "Setting.Details.Category": {
-    "extends": "Setting.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.Base"
+      }
+    ],
     "properties": {
       "groups": {
         "type": "array",
         "items": {
-          "$ref": "Setting.Details.Group"
+          "$ref": "#/$defs/Setting.Details.Group"
         },
         "minItems": 1,
         "uniqueItems": true
@@ -5182,12 +5703,16 @@
     "additionalProperties": false
   },
   "Setting.Details.Section": {
-    "extends": "Setting.Details.Base",
+    "allOf": [
+      {
+        "$ref": "#/$defs/Setting.Details.Base"
+      }
+    ],
     "properties": {
       "categories": {
         "type": "array",
         "items": {
-          "$ref": "Setting.Details.Category"
+          "$ref": "#/$defs/Setting.Details.Category"
         },
         "minItems": 1,
         "uniqueItems": true
@@ -5201,20 +5726,21 @@
     "properties": {
       "index": {
         "type": "integer",
-        "required": true,
         "description": "One-based chapter index"
       },
       "name": {
         "type": "string",
-        "required": false,
         "description": "Chapter name if available"
       },
       "time": {
         "type": "integer",
-        "required": true,
         "description": "Chapter position in seconds from start"
       }
-    }
+    },
+    "required": [
+      "index",
+      "time"
+    ]
   },
   "Database.Type": {
     "type": "string",
@@ -5226,6 +5752,21 @@
       "textures",
       "videos",
       "viewmodes"
+    ]
+  },
+  "Notifications.Library.Audio.Type": {
+    "type": "string",
+    "enum": [
+      "song"
+    ]
+  },
+  "Notifications.Library.Video.Type": {
+    "type": "string",
+    "enum": [
+      "movie",
+      "tvshow",
+      "episode",
+      "musicvideo"
     ]
   }
 }
