@@ -1,5 +1,6 @@
 set(SOURCES TestGUIDialogBusy.cpp
             TestGUIDialogExtendedProgressBar.cpp
+            TestGUIDialogNumeric.cpp
             TestImageChoices.cpp)
 set(HEADERS)
 
