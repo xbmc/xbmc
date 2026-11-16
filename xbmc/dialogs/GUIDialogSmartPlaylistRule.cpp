@@ -13,6 +13,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogSelect.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
@@ -291,11 +292,13 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
     if (PLAYLIST::CSmartPlaylist::IsVideoType(m_type))
-      XFILE::CDirectory::GetDirectory("special://videoplaylists/", items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+      XFILE::CDirectory::GetDirectory(CUtil::PlaylistsPathOf(MediaSection::VIDEO), items, ".xsp",
+                                      XFILE::DIR_FLAG_NO_FILE_DIRS);
     if (PLAYLIST::CSmartPlaylist::IsMusicType(m_type))
     {
       CFileItemList items2;
-      XFILE::CDirectory::GetDirectory("special://musicplaylists/", items2, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+      XFILE::CDirectory::GetDirectory(CUtil::PlaylistsPathOf(MediaSection::MUSIC), items2, ".xsp",
+                                      XFILE::DIR_FLAG_NO_FILE_DIRS);
       items.Append(items2);
     }
 

@@ -219,7 +219,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               OnDeleteItem(iItem);
 
             // or be at the video playlists location
-            else if (m_vecItems->IsPath("special://videoplaylists/"))
+            else if (m_vecItems->IsPath(CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO)))
               OnDeleteItem(iItem);
             else
               return false;
@@ -1370,8 +1370,9 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
       return;
   }
 
-  if ((CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) ||
-       m_vecItems->IsPath("special://videoplaylists/")) &&
+  if ((CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+           CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) ||
+       m_vecItems->IsPath(CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO))) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
   {
     CFileUtils::DeleteItemWithConfirm(item);
@@ -1507,7 +1508,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if ((items.GetPath() == "special://videoplaylists/") &&
+  if ((items.GetPath() == CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO)) &&
       !items.Contains(ITEM::PLACEHOLDER::NEW_PLAYLIST))
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -1784,7 +1785,7 @@ std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
 {
   std::string lower(dir); StringUtils::ToLower(lower);
   if (lower == "$playlists" || lower == "playlists")
-    return "special://videoplaylists/";
+    return CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO);
   else if (lower == "plugins" || lower == "addons")
     return XFILE::CAddonsDirectory::SourcesPathOf(MEDIA::MediaSection::VIDEO);
   return CGUIMediaWindow::GetStartFolder(dir);

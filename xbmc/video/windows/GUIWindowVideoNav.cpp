@@ -414,7 +414,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     // The content is already set for videodb paths, set content for the other paths.
     if (!isVideoDb)
     {
-      if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
+      if (URIUtils::PathEquals(items.GetPath(), CUtil::PlaylistsPathOf(MediaSection::VIDEO)))
         items.SetContent(MEDIA::CONTENT::PLAYLISTS);
       else if (!items.IsVirtualDirectoryRoot())
       { // load info from the database
@@ -612,7 +612,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   std::string strLabel;
 
   // "Playlists"
-  if (m_vecItems->IsPath("special://videoplaylists/"))
+  if (m_vecItems->IsPath(CUtil::PlaylistsPathOf(MediaSection::VIDEO)))
     strLabel = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
   // "{Playlist Name}"
   else if (PLAYLIST::IsPlayList(*m_vecItems))
@@ -730,7 +730,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   if (!VIDEO::IsVideoDb(*m_vecItems) && !VIDEO::IsVideoDb(*pItem))
   {
     if (!pItem->IsPath(std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "video") &&
-        !pItem->IsPath("special://videoplaylists/") &&
+        !pItem->IsPath(CUtil::PlaylistsPathOf(MediaSection::VIDEO)) &&
         !pItem->IsPath(CSourcesDirectory::PathOf(MediaSection::VIDEO)) &&
         !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);

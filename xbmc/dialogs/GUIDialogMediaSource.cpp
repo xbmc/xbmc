@@ -274,7 +274,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
 
     // add the music playlist location
-    share1.strPath = "special://musicplaylists/";
+    share1.strPath = CUtil::PlaylistsPathOf(MediaSection::MUSIC);
     share1.strName = localizeStrings.Get(20011);
     share1.m_ignore = true;
     extraShares.push_back(share1);
@@ -333,7 +333,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
     // add the video playlist location
     share1.m_ignore = true;
-    share1.strPath = "special://videoplaylists/";
+    share1.strPath = CUtil::PlaylistsPathOf(MediaSection::VIDEO);
     share1.strName = localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
