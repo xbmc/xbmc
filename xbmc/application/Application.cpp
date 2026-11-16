@@ -597,7 +597,9 @@ bool CApplication::Initialize()
   // The raster was shaped before the viewer's own ratios were known
   ApplyRasterSettings();
 
-  GetComponent<CApplicationContentGeometry>()->RefreshAtRest();
+  const auto contentGeometry = GetComponent<CApplicationContentGeometry>();
+  contentGeometry->RefreshOsdPlacement();
+  contentGeometry->RefreshAtRest();
 
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
