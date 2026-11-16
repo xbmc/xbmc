@@ -1823,16 +1823,16 @@
         "type": "string"
       },
       "bpm": {
-        "type": "Integer"
+        "type": "integer"
       },
       "samplerate": {
-        "type": "Integer"
+        "type": "integer"
       },
       "bitrate": {
-        "type": "Integer"
+        "type": "integer"
       },
       "channels": {
-        "type": "Integer"
+        "type": "integer"
       },
       "songvideourl": {
         "type": "string"
@@ -2372,7 +2372,7 @@
         "type": "integer"
       },
       "ratings": {
-        "type": "Video.Ratings"
+        "$ref": "Video.Ratings"
       },
       "premiered": {
         "type": "string"
@@ -2471,7 +2471,7 @@
         "type": "integer"
       },
       "ratings": {
-        "type": "Video.Ratings"
+        "$ref": "Video.Ratings"
       },
       "runtime": {
         "type": "integer",
@@ -2577,7 +2577,7 @@
         "$ref": "Library.Id"
       },
       "ratings": {
-        "type": "Video.Ratings"
+        "$ref": "Video.Ratings"
       },
       "studio": {
         "$ref": "Array.String"
@@ -3296,7 +3296,7 @@
     "properties": {
       "textureid": {
         "$ref": "Library.Id",
-        "required": "true"
+        "required": true
       },
       "url": {
         "type": "string",
