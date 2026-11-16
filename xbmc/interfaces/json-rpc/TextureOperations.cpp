@@ -20,7 +20,7 @@
 
 using namespace JSONRPC;
 
-JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CTextureOperations::GetTextures(const CVariant& parameterObject, CVariant& result)
 {
   CFileItemList listItems;
 
@@ -88,7 +88,7 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
   return OK;
 }
 
-JSONRPC_STATUS CTextureOperations::RemoveTexture(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CTextureOperations::RemoveTexture(const CVariant& parameterObject, CVariant& result)
 {
   int id = (int)parameterObject["textureid"].asInteger();
 

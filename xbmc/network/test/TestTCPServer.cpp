@@ -62,11 +62,7 @@ CEvent laterRequestStarted{true};
 std::promise<void> requestExited;
 std::atomic<bool> stopClaimed{false};
 
-JSONRPC_STATUS Block(const std::string& method,
-                     ITransportLayer* transport,
-                     IClient* client,
-                     const CVariant& parameterObject,
-                     CVariant& result)
+JSONRPC_STATUS Block(const CVariant& parameterObject, CVariant& result)
 {
   requestExited.set_value_at_thread_exit();
   requestBlocked.Set();
@@ -76,11 +72,7 @@ JSONRPC_STATUS Block(const std::string& method,
   return OK;
 }
 
-JSONRPC_STATUS Record(const std::string& method,
-                      ITransportLayer* transport,
-                      IClient* client,
-                      const CVariant& parameterObject,
-                      CVariant& result)
+JSONRPC_STATUS Record(const CVariant& parameterObject, CVariant& result)
 {
   laterRequestStarted.Set();
   result = "OK";
@@ -89,11 +81,7 @@ JSONRPC_STATUS Record(const std::string& method,
 
 CEvent stoppedFromRequest{true};
 
-JSONRPC_STATUS Stop(const std::string& method,
-                    ITransportLayer* transport,
-                    IClient* client,
-                    const CVariant& parameterObject,
-                    CVariant& result)
+JSONRPC_STATUS Stop(const CVariant& parameterObject, CVariant& result)
 {
   // Teardown and this callback must not stop the same server concurrently.
   if (!stopClaimed.exchange(true))

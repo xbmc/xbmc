@@ -17,29 +17,25 @@ namespace JSONRPC
   class CInputOperations
   {
   public:
-    static JSONRPC_STATUS SendText(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ExecuteAction(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS SendText(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS ExecuteAction(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS ButtonEvent(const std::string& method,
-                                      ITransportLayer* transport,
-                                      IClient* client,
-                                      const CVariant& parameterObject,
-                                      CVariant& result);
+    static JSONRPC_STATUS ButtonEvent(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Left(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Right(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Down(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Up(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Left(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Right(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Down(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Up(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS Select(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Back(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ContextMenu(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Info(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS Home(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Select(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Back(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS ContextMenu(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Info(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS Home(const CVariant& parameterObject, CVariant& result);
 
-    static JSONRPC_STATUS ShowCodec(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ShowOSD(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ShowPlayerProcessInfo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS ShowCodec(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS ShowOSD(const CVariant& parameterObject, CVariant& result);
+    static JSONRPC_STATUS ShowPlayerProcessInfo(const CVariant& parameterObject, CVariant& result);
 
     static JSONRPC_STATUS SendAction(int actionID, bool wakeScreensaver = true, bool waitResult = false);
 

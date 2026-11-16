@@ -40,8 +40,7 @@ int Configure(CFlagsClient& client, const CVariant& notifications)
   CVariant params(CVariant::VariantTypeObject);
   params["notifications"] = notifications;
   CVariant result;
-  EXPECT_EQ(
-      OK, CJSONRPC::SetConfiguration("JSONRPC.SetConfiguration", nullptr, &client, params, result));
+  EXPECT_EQ(OK, CJSONRPC::SetConfiguration(nullptr, &client, params, result));
   return client.GetAnnouncementFlags();
 }
 
