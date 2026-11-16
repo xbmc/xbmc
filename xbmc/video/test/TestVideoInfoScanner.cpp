@@ -417,6 +417,23 @@ protected:
     return index;
   }
 
+  //! An AVCHD folder rip, with the backup copies that its BDMV folder holds. Its index, movie
+  //! object, playlists and streams all have video extensions.
+  //! \return the rip's INDEX.BDM
+  static std::string AvchdRip(const std::string& folder)
+  {
+    const std::string bdmv{Folder(folder, "BDMV")};
+    const std::string index{File(bdmv, "INDEX.BDM")};
+    File(bdmv, "MOVIEOBJ.BDM");
+    File(Folder(bdmv, "PLAYLIST"), "00000.MPL");
+    File(Folder(bdmv, "STREAM"), "00001.MTS");
+    const std::string backup{Folder(bdmv, "BACKUP")};
+    File(backup, "INDEX.BDM");
+    File(backup, "MOVIEOBJ.BDM");
+    File(Folder(backup, "PLAYLIST"), "00000.MPL");
+    return index;
+  }
+
   //! Moves a folder's modified time on, as adding or removing a file does, a second or more later.
   //! A day on, as an hour on in the hour before the clocks go back is the same local time, which
   //! the hash of the folder holding it uses.
@@ -718,6 +735,23 @@ TEST_F(TestVideoInfoScanner, ABlurayRipOfADatedEpisodeIsOneEpisode)
             scanner.EnumerateSeriesFolder(&item, episodes));
 
   EXPECT_EQ(1U, episodes.size());
+}
+
+// The backup copy of the index is matched too by the date in its path, so it is passed over as a
+// Blu-ray's is
+TEST_F(TestVideoInfoScanner, AnAvchdRipOfADatedEpisodeIsOneEpisode)
+{
+  const std::string show{Folder(m_root, "Show")};
+  AvchdRip(Folder(show, "Show.2023-11-05"));
+
+  TestScanner scanner{m_settings};
+  CFileItem item{show, true};
+  EPISODELIST episodes;
+  EXPECT_EQ(TestScanner::EpisodeResult::FOUND_EPISODES,
+            scanner.EnumerateSeriesFolder(&item, episodes));
+
+  ASSERT_EQ(1U, episodes.size());
+  EXPECT_EQ("2023-11-05", episodes[0].cDate.GetAsDBDate());
 }
 
 TEST_F(TestVideoInfoScanner, AddingASetLeavesTheDatabaseAsItWas)
@@ -1977,6 +2011,25 @@ TEST_F(TestVideoInfoScannerTvShows, ABlurayRipInAShowIsOneEpisode)
   ASSERT_EQ(1U, episodes.size());
   EXPECT_EQ(1, episodes[0].iSeason);
   EXPECT_EQ(1, episodes[0].iEpisode);
+}
+
+// Read file by file, the rip's index and movie object were each the episode, and its playlists and
+// stream were specials
+TEST_F(TestVideoInfoScannerTvShows, AnAvchdRipOfAnEpisodeIsOneEpisode)
+{
+  const std::string show{Show("Show")};
+  const std::string index{AvchdRip(Folder(show, "Show.S01E01"))};
+
+  TestScanner scanner{m_settings};
+  CFileItem item{show, true};
+  EPISODELIST episodes;
+  EXPECT_EQ(TestScanner::EpisodeResult::FOUND_EPISODES,
+            scanner.EnumerateSeriesFolder(&item, episodes));
+
+  ASSERT_EQ(1U, episodes.size());
+  EXPECT_EQ(1, episodes[0].iSeason);
+  EXPECT_EQ(1, episodes[0].iEpisode);
+  EXPECT_EQ(index, episodes[0].strPath);
 }
 
 TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)

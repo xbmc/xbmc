@@ -346,18 +346,25 @@ void CAdvancedSettings::Initialize()
   // foo.ep01, foo.EP_01, foo.E01
   m_tvshowEnumRegExps.emplace_back(
       false, "[\\._ -]?()e(?:p[ ._-]?)?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$");
-  // foo.yyyy.mm.dd.* (byDate=true)
-  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})");
-  // foo.mm.dd.yyyy.* (byDate=true)
-  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})");
+  // foo.yyyy.mm.dd.* (byDate=true), in the file's name. A date in a folder's name is looked for
+  // further down, so that it doesn't win over an episode's number in the file's name.
+  m_tvshowEnumRegExps.emplace_back(true,
+                                   "([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})(?=[^\\\\/]*$)");
+  // foo.mm.dd.yyyy.* (byDate=true), in the file's name
+  m_tvshowEnumRegExps.emplace_back(true,
+                                   "([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})(?=[^\\\\/]*$)");
   // foo.1x09* or just /1x09*
   m_tvshowEnumRegExps.emplace_back(
       false, "[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$");
   // Part I, Pt.VI, Part 1
   m_tvshowEnumRegExps.emplace_back(false,
-                                   "[\\/._ -]p(?:ar)?t[_. -]()([ivx]+|[0-9]+)([._ -][^\\/]*)$");
+                                   "[\\\\/._ -]p(?:ar)?t[_. -]()([ivx]+|[0-9]+)([._ -][^\\\\/]*)$");
   // This regexp is for matching special episodes by their title, e.g. foo.special.mp4
   m_tvshowEnumRegExps.emplace_back(false, "[\\\\/]([^\\\\/]+)\\.special\\.[a-z0-9]+$", 0, true);
+  // foo/yyyy.mm.dd/*, foo/mm.dd.yyyy/* (byDate=true), a date in a folder's name. It still wins
+  // over the greedy pattern below, which would take a year in the file's name for an episode.
+  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})");
+  m_tvshowEnumRegExps.emplace_back(true, "([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})");
 
   // foo.103*, 103 foo
   // This regex is greedy and will match years in show names.  It should always be last.
@@ -365,7 +372,9 @@ void CAdvancedSettings::Initialize()
       false,
       "[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$");
 
-  m_tvshowMultiPartEnumRegExp = "^([-_ex]+)([0-9]+)(.*)";
+  // E02, _E02, -E02, x02 or -02 after an episode. An episode's number has at most three digits, so
+  // a date or a codec after one (_2023-11-05, _x264) gives no more episodes.
+  m_tvshowMultiPartEnumRegExp = "^([-_]?e|x|-)([0-9]{1,3})(?![0-9])(.*)";
 
   // Build regex inserting local specific spelling of disc (xxx)
   // [ _.-]*\((?:xxx|dis[ck])[ _.-]*\d{1,3}\)$
