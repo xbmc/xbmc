@@ -1084,6 +1084,24 @@ TEST_F(TestVideoDatabase, GetSourcePathReadsTheSettingsOfTheSourceOfASubFolder)
   EXPECT_EQ(0, settings.recurse);
 }
 
+TEST_F(TestVideoDatabase, APathBelowAFolderWhoseScraperIsNotInstalledHasNoScraper)
+{
+  const auto setScraper{[this](const std::string& path, const std::string& scraper)
+                        {
+                          return m_db.ExecuteQuery(m_db.PrepareSQL(
+                              "UPDATE path SET strContent='movies', strScraper='%s', "
+                              "scanRecursive=2147483647 WHERE idPath=%i",
+                              scraper.c_str(), m_db.AddPath(path)));
+                        }};
+  ASSERT_TRUE(setScraper("/movies/", "metadata.local"));
+  ASSERT_TRUE(setScraper("/movies/Foreign/", "metadata.not.installed"));
+
+  EXPECT_FALSE(m_db.GetScraperForPath("/movies/Foreign/"));
+  EXPECT_FALSE(m_db.GetScraperForPath("/movies/Foreign/Film/"));
+  // Where no folder between has content, the source's scraper is found
+  EXPECT_TRUE(m_db.GetScraperForPath("/movies/Other/Film/"));
+}
+
 TEST_F(TestVideoDatabase, RemoveContentForPathRemovesDiscRips)
 {
   ASSERT_GT(m_db.AddPath("/movies/"), 0);
