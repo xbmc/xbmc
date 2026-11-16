@@ -69,6 +69,11 @@ namespace JSONRPC
     bool referencedTypeSet = false;
 
     /*!
+     \brief False only while AddType has the type registered ahead of parsing it
+     */
+    bool parsed = true;
+
+    /*!
      \brief Array of reference types
      which are extended by this type.
      */
@@ -78,6 +83,11 @@ namespace JSONRPC
      \brief Description of the parameter
      */
     std::string description;
+
+    /*!
+     \brief Valid on any schema, so a single property of a type can carry it
+     */
+    bool deprecated = false;
 
     /*!
      \brief JSON schema type of the parameter's value
@@ -397,6 +407,7 @@ namespace JSONRPC
     static bool parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinitionPtr>& typeDefinitions, JSONSchemaType &schemaType, std::string &missingReference);
     static void addReferenceTypeDefinition(const JSONSchemaTypeDefinitionPtr& typeDefinition);
     static void removeReferenceTypeDefinition(const std::string &typeID);
+    static void replayIncompleteDefinitions(const std::string& typeID);
 
     static void getReferencedTypes(const JSONSchemaTypeDefinitionPtr& type,
                                    std::vector<std::string>& referencedTypes);

@@ -4,6 +4,7 @@ set(SOURCES TestAddonsExecuteAddon.cpp
             TestFileOperations.cpp
             TestJSONRPCPermission.cpp
             TestJSONRPCStatus.cpp
+            TestJSONServiceDescription.cpp
             TestPVREpgFields.cpp
             TestPlayerOpenDirectory.cpp
             TestSetConfiguration.cpp
