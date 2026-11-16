@@ -157,6 +157,20 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
   return false;
 }
 
+bool CRendererSoftware::ChangePictureSize(const VideoPicture& picture)
+{
+  // Configure() takes the format a decoder's texture is read back in from that texture
+  if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+    return false;
+
+  Flush(false);
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
+
+  return CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true,
+                                  m_IntermediateTarget.GetFormat());
+}
+
 bool CRendererSoftware::Supports(ESCALINGMETHOD method) const
 {
   return method == VS_SCALINGMETHOD_AUTO

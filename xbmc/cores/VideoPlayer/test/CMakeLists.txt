@@ -7,6 +7,7 @@ set(SOURCES TestContentGeometrySampler.cpp
             TestRadioRDSLanguages.cpp
             TestSubtitleMargins.cpp
             TestVideoCodecPictureFormat.cpp
+            TestVideoPicture.cpp
             TestVideoPlayer.cpp
             TestVideoPlayerAudio.cpp)
 

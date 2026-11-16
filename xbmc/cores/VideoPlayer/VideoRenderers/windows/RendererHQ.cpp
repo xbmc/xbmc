@@ -90,6 +90,14 @@ bool CRendererHQ::HasHQScaler() const
   return m_bUseHQScaler && m_scalerShader;
 }
 
+void CRendererHQ::ResetScaler()
+{
+  m_scalingMethod = VS_SCALINGMETHOD_AUTO;
+  m_scalingMethodGui = VS_SCALINGMETHOD_AUTO;
+  m_scalerShader.reset();
+  m_bUseHQScaler = false;
+}
+
 void CRendererHQ::CheckVideoParameters()
 {
   __super::CheckVideoParameters();

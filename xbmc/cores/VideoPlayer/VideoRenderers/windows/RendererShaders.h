@@ -36,6 +36,7 @@ public:
   bool Supports(ERENDERFEATURE feature) const override;
   bool Supports(ESCALINGMETHOD method) const override;
   bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
+  bool ChangePictureSize(const VideoPicture& picture) override;
 
   static CRendererBase* Create(CVideoSettings& videoSettings);
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
