@@ -247,10 +247,64 @@ function(add_addon_depends addon searchpath)
             # the third parameter is considered as a revision of a git repository
             list(GET def 2 revision)
 
+            # CMake's own submodule update ignores GIT_SHALLOW and fetches each
+            # submodule's whole history, so do it here with --depth 1
+            cmake_policy(PUSH)
+            if(POLICY CMP0097)
+              cmake_policy(SET CMP0097 NEW)
+            endif()
             externalproject_add(${id}
                                 GIT_REPOSITORY ${url}
                                 GIT_TAG ${revision}
+                                GIT_SUBMODULES ""
                                 ${EXTERNALPROJECT_SETUP})
+            cmake_policy(POP)
+            set(submodules_independent)
+            if(POLICY CMP0114)
+              set(submodules_independent INDEPENDENT TRUE)
+            endif()
+            # Disconnected updates leave update out of the build, and from
+            # CMake 3.27 swap update and patch for update_disconnected and
+            # patch_disconnected
+            get_property(update_disconnected DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED)
+            if(NOT update_disconnected)
+              set(submodules_after update)
+              set(submodules_before patch)
+            elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
+              set(submodules_after update_disconnected)
+              set(submodules_before patch_disconnected)
+            else()
+              set(submodules_after download)
+              set(submodules_before patch)
+            endif()
+            # Submodules don't inherit the clone's TLS settings, so pass them
+            # on as ExternalProject does for its own submodule update
+            set(tls_verify "${CMAKE_TLS_VERIFY}")
+            if(tls_verify STREQUAL "")
+              set(tls_verify "$ENV{CMAKE_TLS_VERIFY}")
+            endif()
+            set(tls_version "${CMAKE_TLS_VERSION}")
+            if(tls_version STREQUAL "")
+              set(tls_version "$ENV{CMAKE_TLS_VERSION}")
+            endif()
+            set(submodules_git_options)
+            if(NOT tls_version STREQUAL "")
+              list(APPEND submodules_git_options -c http.sslVersion=tlsv${tls_version})
+            endif()
+            if(NOT tls_verify STREQUAL "")
+              if(tls_verify)
+                list(APPEND submodules_git_options -c http.sslVerify=true)
+              else()
+                list(APPEND submodules_git_options -c http.sslVerify=false)
+              endif()
+            endif()
+            externalproject_add_step(${id} submodules
+                                     COMMAND "${GIT_EXECUTABLE}" ${submodules_git_options} submodule update --init --recursive --depth 1
+                                     COMMENT "Performing submodules step for '${id}'"
+                                     DEPENDEES ${submodules_after}
+                                     DEPENDERS ${submodules_before}
+                                     ${submodules_independent}
+                                     WORKING_DIRECTORY <SOURCE_DIR>)
 
             # For patchfiles to work, disable (users globally set) autocrlf=true
             if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_GREATER 3.7)
