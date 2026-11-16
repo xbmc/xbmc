@@ -52,6 +52,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sOFFSCREEN_FRAMEBUFFER=1"
     "SHELL:-sGL_SUPPORT_EXPLICIT_SWAP_CONTROL=1"
     "SHELL:-lidbfs.js"
+    "SHELL:-sLZ4"
     "SHELL:-lembind"
     # kodi_pre.js uses Module.ccall('kodi_wasm_dispatch_paste', ...) for clipboard paste.
     "SHELL:-sEXPORTED_RUNTIME_METHODS=ccall,cwrap"
