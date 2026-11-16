@@ -27,15 +27,16 @@ if(TARGET ${APP_NAME_LC}::Python)
   set(PYTHON_STDLIB_DIR "${DEPENDS_PATH}/lib/python${PYTHON_VERSION}")
   set(PYTHON_STDLIB_VFS_DIR "${CMAKE_BINARY_DIR}/python-stdlib/lib")
   set(PYTHON_STDLIB_ZIP "${PYTHON_STDLIB_VFS_DIR}/python${PYTHON_ZIP_VERSION}.zip")
+  set(PYTHON_STDLIB_PACKER "${CMAKE_SOURCE_DIR}/tools/wasm/pack_python_stdlib.py")
 
+  find_package(PythonInterpreter REQUIRED)
   file(GLOB_RECURSE PYTHON_STDLIB_SOURCES CONFIGURE_DEPENDS "${PYTHON_STDLIB_DIR}/*.py")
 
   add_custom_command(OUTPUT "${PYTHON_STDLIB_ZIP}"
     COMMAND ${CMAKE_COMMAND} -E make_directory "${PYTHON_STDLIB_VFS_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E rm -f "${PYTHON_STDLIB_ZIP}"
-    COMMAND ${CMAKE_COMMAND} -E chdir "${PYTHON_STDLIB_DIR}"
-            ${CMAKE_COMMAND} -E tar cf "${PYTHON_STDLIB_ZIP}" --format=zip .
-    DEPENDS ${PYTHON_STDLIB_SOURCES}
+    COMMAND ${PYTHON_EXECUTABLE} "${PYTHON_STDLIB_PACKER}"
+            "${PYTHON_STDLIB_DIR}" "${PYTHON_STDLIB_ZIP}"
+    DEPENDS ${PYTHON_STDLIB_SOURCES} "${PYTHON_STDLIB_PACKER}"
     COMMENT "Packing the Python standard library for the WASM virtual filesystem"
     VERBATIM)
 
