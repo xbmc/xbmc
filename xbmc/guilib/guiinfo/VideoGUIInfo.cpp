@@ -206,6 +206,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         value = tag->m_strFileNameAndPath;
         if (value.empty())
           value = item->GetPath();
+        if (info.GetInfo() == PLAYER_FILENAME && URIUtils::IsBlurayPath(value))
+          value = URIUtils::GetDiscFile(value);
         value = GUIINFO::GetFileInfoLabelValueFromPath(info.GetInfo(), value);
         return true;
       case PLAYER_TITLE:
@@ -607,7 +609,11 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       case LISTITEM_FILE_EXTENSION:
       case LISTITEM_FILENAME_NO_EXTENSION:
         if (VIDEO::IsVideoDb(*item))
-          value = URIUtils::GetFileName(tag->m_strFileNameAndPath);
+        {
+          const std::string& file{tag->m_strFileNameAndPath};
+          value = URIUtils::GetFileName(URIUtils::IsBlurayPath(file) ? URIUtils::GetDiscFile(file)
+                                                                     : file);
+        }
         else if (
             item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
