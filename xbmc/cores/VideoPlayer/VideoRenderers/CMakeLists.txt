@@ -5,6 +5,7 @@ set(SOURCES BaseRenderer.cpp
             RenderFactory.cpp
             RenderFlags.cpp
             RenderManager.cpp
+            DebugCoreUsage.cpp
             DebugRenderer.cpp
             DebugThreadUsage.cpp)
 
@@ -17,6 +18,7 @@ set(HEADERS BaseRenderer.h
             RenderFlags.h
             RenderInfo.h
             RenderManager.h
+            DebugCoreUsage.h
             DebugRenderer.h
             DebugThreadUsage.h)
 

@@ -251,6 +251,8 @@ void CAdvancedSettings::Initialize()
 
   m_videoDebugThreads = false;
   m_videoDebugThreadsCount = 5;
+  m_videoDebugThreadsCores = false;
+  m_videoDebugThreadsGraph = 0;
 
   m_videoDefaultLatency = 0.0;
   m_videoDefaultHdrExtraLatency = 0.0;
@@ -861,6 +863,17 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     {
       XMLUtils::GetBoolean(pDebugCpu, "threads", m_videoDebugThreads);
       XMLUtils::GetInt(pDebugCpu, "count", m_videoDebugThreadsCount, 1, 10);
+      XMLUtils::GetBoolean(pDebugCpu, "cores", m_videoDebugThreadsCores);
+      std::string graph;
+      if (XMLUtils::GetString(pDebugCpu, "graph", graph))
+      {
+        if (StringUtils::EqualsNoCase(graph, "off"))
+          m_videoDebugThreadsGraph = 0;
+        else if (StringUtils::EqualsNoCase(graph, "bars"))
+          m_videoDebugThreadsGraph = 1;
+        else if (StringUtils::EqualsNoCase(graph, "history"))
+          m_videoDebugThreadsGraph = 2;
+      }
     }
 
     // Store global display latency settings

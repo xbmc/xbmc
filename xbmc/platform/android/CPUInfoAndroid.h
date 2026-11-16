@@ -27,6 +27,7 @@ public:
   CCPUInfoAndroid();
   ~CCPUInfoAndroid() = default;
 
+  bool SupportsCoreUsage() const override { return true; }
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
   std::vector<ThreadCpuTime> GetThreadCpuTimes() override;

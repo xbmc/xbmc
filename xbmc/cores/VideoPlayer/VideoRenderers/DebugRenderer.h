@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DebugCoreUsage.h"
 #include "DebugInfo.h"
 #include "DebugThreadUsage.h"
 #include "OverlayRenderer.h"
@@ -47,6 +48,8 @@ protected:
 
   CRenderer m_overlayRenderer;
   CDebugThreadUsage m_threadUsage;
+  CDebugCoreUsage m_coreUsage;
+  CDebugCoreUsage::Graph m_coreGraph{CDebugCoreUsage::Graph::OFF};
 
 private:
   CSubtitlesAdapter* m_adapter{nullptr};
