@@ -2623,9 +2623,12 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 
   double error;
   double threshold = 100;
+  // The error measured at the start of a stream is adjusted whatever the clock speed is.
+  double startThreshold = threshold;
   if (stream->m_resampleMode)
   {
     threshold *= 2;
+    startThreshold = threshold;
     if (stream->m_pClock)
     {
       double clockspeed = stream->m_pClock->GetClockSpeed();
@@ -2656,7 +2659,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   const bool clockFollowsAudio{!stream->m_resampleMode && !IsTrueHDPassthrough()};
   const auto keepAudible = [&](double syncError)
   {
-    return fabs(syncError) <= threshold ||
+    return fabs(syncError) <= startThreshold ||
            (clockFollowsAudio && syncError < 0 && -syncError <= MAX_LATE_START_MS);
   };
 
