@@ -9,15 +9,10 @@
 #include "utils/XTimeUtils.h"
 
 #include <errno.h>
-#include <mutex>
 #include <optional>
 #include <time.h>
 
 #include <sys/times.h>
-
-#if defined(TARGET_ANDROID) && !defined(__LP64__)
-#include <time64.h>
-#endif
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
@@ -35,6 +30,25 @@ int64_t days_from_civil(int64_t y, unsigned m, unsigned d)
   const unsigned doy{(153u * (m + (m > 2 ? -3u : 9u)) + 2u) / 5u + d - 1u}; // [0, 365]
   const unsigned doe{yoe * 365u + yoe / 4u - yoe / 100u + doy}; // [0, 146096]
   return era * 146097LL + static_cast<int64_t>(doe) - 719468LL;
+}
+
+// Helper: civil_from_days from Howard Hinnant (public domain), the inverse of days_from_civil.
+void civil_from_days(int64_t z, int64_t& y, unsigned& m, unsigned& d)
+{
+  z += 719468;
+  const int64_t era{(z >= 0 ? z : z - 146096) / 146097};
+  const unsigned doe{static_cast<unsigned>(z - era * 146097)}; // [0, 146096]
+  const unsigned yoe{(doe - doe / 1460u + doe / 36524u - doe / 146096u) / 365u}; // [0, 399]
+  const unsigned doy{doe - (365u * yoe + yoe / 4u - yoe / 100u)}; // [0, 365]
+  const unsigned mp{(5u * doy + 2u) / 153u}; // [0, 11]
+  d = doy - (153u * mp + 2u) / 5u + 1u;
+  m = mp < 10u ? mp + 3u : mp - 9u;
+  y = static_cast<int64_t>(yoe) + era * 400 + (m <= 2u ? 1 : 0);
+}
+
+int64_t FloorDiv(int64_t a, int64_t b)
+{
+  return (a >= 0 ? a : a - (b - 1)) / b;
 }
 
 std::optional<time_t> SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
@@ -80,12 +94,6 @@ std::tuple<bool, int64_t> GetTimezoneBias(const SystemTime& time)
   return {true, -tms.tm_gmtoff / 60};
 }
 
-/*
- * A Leap year is any year that is divisible by four, but not by 100 unless also
- * divisible by 400
- */
-#define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
-
 void GetLocalTime(SystemTime* systemTime)
 {
   const time_t t = time(NULL);
@@ -122,37 +130,18 @@ int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
 
 int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 {
-  static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
-#if defined(TARGET_DARWIN)
-  static std::mutex timegm_lock;
-#endif
-
-  struct tm sysTime = {};
-  sysTime.tm_year = systemTime->year - 1900;
-  sysTime.tm_mon = systemTime->month - 1;
-  sysTime.tm_wday = systemTime->dayOfWeek;
-  sysTime.tm_mday = systemTime->day;
-  sysTime.tm_hour = systemTime->hour;
-  sysTime.tm_min = systemTime->minute;
-  sysTime.tm_sec = systemTime->second;
-  sysTime.tm_yday = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
-
-  // If this is a leap year, and we're past the 28th of Feb, increment tm_yday.
-  if (IsLeapYear(systemTime->year) && (sysTime.tm_yday > 58))
-    sysTime.tm_yday++;
-
-#if defined(TARGET_DARWIN)
-  std::lock_guard<std::mutex> lock(timegm_lock);
-#endif
-
-#if defined(TARGET_ANDROID) && !defined(__LP64__)
-  time64_t t = timegm64(&sysTime);
-#else
-  time_t t = timegm(&sysTime);
-#endif
+  // Computed here rather than through timegm(), which a 32-bit time_t limits to 1901 - 2038.
+  // An out-of-range field carries into the next one up, as it does in timegm().
+  const int64_t months{systemTime->month - 1};
+  const int64_t years{FloorDiv(months, 12)};
+  const int64_t days{
+      days_from_civil(systemTime->year + years, static_cast<unsigned>(months - years * 12 + 1), 1) +
+      systemTime->day - 1};
+  const int64_t seconds{days * 86400 + systemTime->hour * 3600 + systemTime->minute * 60 +
+                        systemTime->second};
 
   LARGE_INTEGER result;
-  result.QuadPart = (long long)t * 10000000 + (long long)systemTime->milliseconds * 10000;
+  result.QuadPart = seconds * 10000000 + (long long)systemTime->milliseconds * 10000;
   result.QuadPart += WIN32_TIME_OFFSET;
 
   fileTime->lowDateTime = result.u.LowPart;
@@ -186,22 +175,26 @@ int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
   file.u.HighPart = fileTime->highDateTime;
 
   file.QuadPart -= WIN32_TIME_OFFSET;
-  file.QuadPart /= 10000; /* to milliseconds */
-  systemTime->milliseconds = file.QuadPart % 1000;
-  file.QuadPart /= 1000; /* to seconds */
 
-  time_t ft = file.QuadPart;
+  // Computed here rather than through gmtime_r(), which a 32-bit time_t limits to 1901 - 2038
+  const int64_t milliseconds{FloorDiv(file.QuadPart, 10000)};
+  const int64_t seconds{FloorDiv(milliseconds, 1000)};
+  const int64_t days{FloorDiv(seconds, 86400)};
+  const int64_t secondOfDay{seconds - days * 86400};
 
-  struct tm tm_ft;
-  gmtime_r(&ft, &tm_ft);
+  int64_t year{};
+  unsigned month{};
+  unsigned day{};
+  civil_from_days(days, year, month, day);
 
-  systemTime->year = tm_ft.tm_year + 1900;
-  systemTime->month = tm_ft.tm_mon + 1;
-  systemTime->dayOfWeek = tm_ft.tm_wday;
-  systemTime->day = tm_ft.tm_mday;
-  systemTime->hour = tm_ft.tm_hour;
-  systemTime->minute = tm_ft.tm_min;
-  systemTime->second = tm_ft.tm_sec;
+  systemTime->year = year;
+  systemTime->month = month;
+  systemTime->dayOfWeek = days - FloorDiv(days + 4, 7) * 7 + 4; // 1970-01-01 was a Thursday
+  systemTime->day = day;
+  systemTime->hour = secondOfDay / 3600;
+  systemTime->minute = secondOfDay / 60 % 60;
+  systemTime->second = secondOfDay % 60;
+  systemTime->milliseconds = milliseconds - seconds * 1000;
 
   return 1;
 }
