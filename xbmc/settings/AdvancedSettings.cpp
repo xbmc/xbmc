@@ -859,7 +859,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "maxtempo", m_maxTempo, 1.5, 2.0);
     XMLUtils::GetBoolean(pElement, "preferstereostream", m_videoPreferStereoStream);
 
-    const TiXmlElement* pDebugGraph = pElement->FirstChildElement("debugframegraph");
+    const TiXmlElement* pDebugGraph = pElement->FirstChildElement("playerdebugframegraph");
     if (pDebugGraph)
     {
       XMLUtils::GetBoolean(pDebugGraph, "enabled", m_videoDebugGraph);
