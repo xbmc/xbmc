@@ -39,6 +39,8 @@ public:
   void SetFrames(const DEBUG_INFO_FRAMES& frames);
   std::string GetLegend() const;
   void Render(const CRect& view);
+  //! Free the frames, pixels and textures, e.g. when the overlay is closed
+  void Reset();
 
 private:
   //! Redraw columns x1 to x2, both included and x1 <= x2

@@ -61,6 +61,7 @@ void CDebugRenderer::Dispose()
     return;
 
   m_isInitialized = false;
+  m_frameGraph.Reset();
   m_overlayRenderer.Flush();
   m_overlay.reset();
   OVERLAY::MarkDirty();

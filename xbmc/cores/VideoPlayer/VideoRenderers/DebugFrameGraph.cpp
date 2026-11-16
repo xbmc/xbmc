@@ -240,6 +240,19 @@ void CDebugFrameGraph::Render(const CRect& view)
   }
 }
 
+void CDebugFrameGraph::Reset()
+{
+  m_frames = DEBUG_INFO_FRAMES{};
+  // Assigning {} would keep the capacity
+  m_pixels = std::vector<uint32_t>();
+  m_strips.clear();
+  m_stripChanged.clear();
+  m_width = 0;
+  m_height = 0;
+  m_drawnCount = 0;
+  m_redrawAll = true;
+}
+
 double CDebugFrameGraph::LinearMax() const
 {
   const auto& frames = m_frames.frames;
