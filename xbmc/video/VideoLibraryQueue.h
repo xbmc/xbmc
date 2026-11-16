@@ -11,6 +11,7 @@
 #include "jobs/JobQueue.h"
 #include "threads/CriticalSection.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <set>
@@ -174,8 +175,9 @@ private:
   typedef std::set<CVideoLibraryJob*> VideoLibraryJobs;
   typedef std::map<std::string, VideoLibraryJobs> VideoLibraryJobMap;
   VideoLibraryJobMap m_jobs;
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 
-  bool m_modal = false;
-  bool m_cleaning = false;
+  // Set on the thread cleaning the library, and read by others
+  std::atomic<bool> m_modal{false};
+  std::atomic<bool> m_cleaning{false};
 };
