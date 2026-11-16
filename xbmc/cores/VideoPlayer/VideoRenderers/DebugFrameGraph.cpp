@@ -35,7 +35,6 @@ constexpr double LOG_MAX = 4e6;
 constexpr unsigned int SWEEP_GAP = 16;
 constexpr unsigned int STRIP_WIDTH = 256;
 constexpr auto UPDATE_INTERVAL = std::chrono::milliseconds(250);
-constexpr float GRAPH_MARGIN = 0.03f;
 constexpr double AUDIO_BAND_SPLIT = 0.78; //!< share of the height for the video in band mode
 
 //! Round up to 1, 2 or 5 times a power of ten
@@ -211,7 +210,7 @@ void CDebugFrameGraph::Render(const CRect& view)
   // In scroll mode the newest column is drawn at the right edge
   const unsigned int shift =
       m_sweep ? 0 : static_cast<unsigned int>((m_width - m_frames.count % m_width) % m_width);
-  const float bottom = view.y2 - view.Height() * GRAPH_MARGIN;
+  const float bottom = view.y2;
   const float top = bottom - static_cast<float>(height);
 
   for (size_t i = 0; i < m_strips.size(); ++i)
