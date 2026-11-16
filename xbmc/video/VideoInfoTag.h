@@ -186,21 +186,12 @@ public:
   void SetFileNameAndPath(std::string fileNameAndPath);
   void SetOriginalTitle(std::string originalTitle);
 
-  enum class LanguageTagSource
-  {
-    SOURCE_INTERNAL,
-    SOURCE_EXTERNAL,
-  };
-
   /*!
-   * \brief Set the original audio language, with optional conversion.
-   * \param[in] language The original language.
-   * \param[in] type The language tag type.
-   *            For 'type' TYPE_ANY, the function will attempt to guess the encoding of 'language'
-   *            and recognizes ISO 639-1, ISO 639-2, BCP47 tags, and English names
-   * \return success of the conversion
+   * \brief Set the language the work was made in.
+   * \param[in] language The language in any notation CLanguageTag reads; empty clears it.
+   * \return false, leaving the language as it was, where the text names no language.
    */
-  bool SetOriginalLanguage(std::string language, LanguageTagSource source);
+  bool SetOriginalLanguage(const std::string& language);
   void SetEpisodeGuide(std::string episodeGuide);
   void SetStatus(std::string status);
   void SetProductionCode(std::string productionCode);
@@ -398,7 +389,7 @@ public:
    */
   virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState);
 
-  const std::string& GetOriginalLanguage() const { return m_originalLanguage; }
+  const KODI::LANGUAGE::CLanguageTag& GetOriginalLanguage() const { return m_originalLanguage; }
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
@@ -489,7 +480,7 @@ private:
   std::map<std::string, std::string, std::less<>> m_uniqueIDs;
   std::string Trim(std::string&& value) const;
   std::vector<std::string> Trim(std::vector<std::string>&& items) const;
-  std::string m_originalLanguage;
+  KODI::LANGUAGE::CLanguageTag m_originalLanguage;
 
   int m_playCount;
   CBookmark m_resumePoint;

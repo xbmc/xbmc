@@ -946,7 +946,7 @@ TEST_F(TestVideoInfoScanner, ABlurayRipHasTheSubtitleBesideIt)
   ASSERT_TRUE(m_db.GetStreamDetails(tag));
   EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
   EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
-  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1));
+  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1).AsIso6392B());
 }
 
 // A stack of bluray rips has the streams of its first disc's playlist, and the subtitle the player
@@ -980,7 +980,7 @@ TEST_F(TestVideoInfoScanner, ABlurayStackHasItsFirstDiscsSubtitle)
   ASSERT_TRUE(m_db.GetStreamDetails(tag));
   EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
   EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
-  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1));
+  EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1).AsIso6392B());
 }
 
 TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)

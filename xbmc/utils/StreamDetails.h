@@ -10,6 +10,7 @@
 
 #include "ISerializable.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "language/LanguageTag.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/StreamUtils.h"
@@ -71,10 +72,10 @@ protected:
   friend class CVideoDatabase;
 };
 
-// Language codes held by the classes below are ISO 639-2/B, not BCP 47 as used elsewhere in the
-// player, and every writer narrows them on the way in. Archive reads and writes that form, while
-// Serialize widens to BCP 47 so a JSON-RPC client sees one notation across the API - though only
-// ever a bare language, since a value carrying a region lost it before it arrived.
+// A stream detail holds the language as its source declared it, subtags and all. The
+// streamdetails table takes ISO 639-2/B, which is as much of it as it can hold, while Archive and
+// Serialize take BCP 47. So an item answers with a fuller tag while it is playing than after it
+// has been read back from the library.
 //
 // The classes are the shape of the streamdetails table, which smart playlists filter with SQL
 // built from user-authored rules (see CSmartPlaylistRule::GetWhereClause). Those rules live in
@@ -98,7 +99,7 @@ public:
   int m_iDuration = 0;
   std::string m_strCodec;
   std::string m_strStereoMode;
-  std::string m_strLanguage;
+  KODI::LANGUAGE::CLanguageTag m_language;
   std::string m_strHdrType;
   std::string m_strHdrTypeAlt;
   std::string m_strHdrDetail;
@@ -116,7 +117,7 @@ public:
 
   int m_iChannels = -1;
   std::string m_strCodec;
-  std::string m_strLanguage;
+  KODI::LANGUAGE::CLanguageTag m_language;
   StreamFlags m_flags{StreamFlags::FLAG_NONE};
 };
 
@@ -131,7 +132,7 @@ public:
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
 
-  std::string m_strLanguage;
+  KODI::LANGUAGE::CLanguageTag m_language;
   StreamFlags m_flags{StreamFlags::FLAG_NONE};
 };
 
@@ -285,7 +286,7 @@ public:
   int GetVideoDuration(int idx = 0) const;
   void SetVideoDuration(int idx, const int duration);
   std::string GetStereoMode(int idx = 0) const;
-  std::string GetVideoLanguage(int idx = 0) const;
+  KODI::LANGUAGE::CLanguageTag GetVideoLanguage(int idx = 0) const;
 
   /*!
    * \name Audio stream properties
@@ -298,12 +299,12 @@ public:
    * @{
    */
   std::string GetAudioCodec(int idx = 0) const;
-  std::string GetAudioLanguage(int idx = 0) const;
+  KODI::LANGUAGE::CLanguageTag GetAudioLanguage(int idx = 0) const;
   int GetAudioChannels(int idx = 0) const;
   StreamFlags GetAudioFlags(int idx = 0) const;
   /*! @} */
 
-  std::string GetSubtitleLanguage(int idx = 0) const;
+  KODI::LANGUAGE::CLanguageTag GetSubtitleLanguage(int idx = 0) const;
   StreamFlags GetSubtitleFlags(int idx = 0) const;
 
   /*!
@@ -350,9 +351,9 @@ public:
    *
    * \todo Persist a stream ordinal and order by it, so this holds unconditionally.
    *
-   * \return The language of the first audio stream, or an empty string if there is none
+   * \return The language of the first audio stream, or an empty tag if there is none
    */
-  std::string GetFirstAudioLanguage() const;
+  KODI::LANGUAGE::CLanguageTag GetFirstAudioLanguage() const;
 
   /*!
    * \brief Get the codec of the first audio stream in the order the source lists them.
@@ -379,9 +380,9 @@ public:
    * number 1 of a bluray playlist. Note that this says nothing about whether subtitles are
    * displayed to begin with, which the locale.subtitlelanguage setting decides.
    *
-   * \return The language of the first subtitle stream, or an empty string if there is none
+   * \return The language of the first subtitle stream, or an empty tag if there is none
    */
-  std::string GetFirstSubtitleLanguage() const;
+  KODI::LANGUAGE::CLanguageTag GetFirstSubtitleLanguage() const;
 
   void AddStream(CStreamDetail *item);
   void Reset(void);
