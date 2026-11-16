@@ -12,10 +12,24 @@
 #include "FileItemList.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <string>
+
 using namespace XFILE;
+
+namespace
+{
+//! Whether libbluray looks in the folder for what a disc needn't have: its names and thumbnails
+bool IsOptionalFolder(std::string relPath)
+{
+  std::ranges::replace(relPath, '\\', '/');
+  return StringUtils::StartsWithNoCase(relPath, "BDMV/META/");
+}
+} // namespace
 
 struct SDirState
 {
@@ -54,12 +68,22 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
 
   CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir {}", CURL::GetRedacted(strDirname));
 
+  // libbluray looks in folders a disc needn't have (BDMV/META/DL, BDMV/META/TN), so one missing is
+  // no error to log, as listing it would. Only those are looked for first, as looking can itself
+  // list a folder (a disc image's), and not in the directory cache, which can hold an older listing
+  // of BDMV/META. A folder in an archive is listed as it was, as it may not say that it is there:
+  // a zip's doesn't.
+  if (IsOptionalFolder(strRelPath) && !URIUtils::IsInArchive(strDirname) &&
+      !CDirectory::Exists(strDirname, false))
+  {
+    CLog::Log(LOGDEBUG, "CBlurayCallback - No dir {}", CURL::GetRedacted(strDirname));
+    return nullptr;
+  }
+
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
-    if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! ({})",
-                CURL::GetRedacted(strDirname));
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! ({})", CURL::GetRedacted(strDirname));
     delete st;
     return nullptr;
   }

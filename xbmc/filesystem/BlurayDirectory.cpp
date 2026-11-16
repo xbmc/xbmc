@@ -155,15 +155,16 @@ bool GetPlaylistInfoFromDisc(const CURL& url,
   {
     const std::string path{GetCachePath(url, realPath)};
 
-    // Check cache
-    if (!CServiceBroker::GetBlurayDiscCache()->GetPlaylistStreamInfo(path, playlist, streams))
+    // Read once for each clip, as the playlists of a disc's extras often play parts of one
+    const std::string clipFiles{GetStreamClipFiles(bpi)};
+    if (!CServiceBroker::GetBlurayDiscCache()->GetClipStreamInfo(path, clipFiles, streams))
     {
       // Retrieve from disc
       if (!CM2TSParser::GetStreams(url, bpi, streams))
         return false;
 
       // Cache and return
-      CServiceBroker::GetBlurayDiscCache()->SetPlaylistStreamInfo(path, playlist, streams);
+      CServiceBroker::GetBlurayDiscCache()->SetClipStreamInfo(path, clipFiles, streams);
     }
   }
 
