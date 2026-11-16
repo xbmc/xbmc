@@ -44,11 +44,7 @@ public:
   bool SetAnnouncementFlags(int flags) override { return true; }
 };
 
-JSONRPC_STATUS StubMethod(const std::string& method,
-                          ITransportLayer* transport,
-                          IClient* client,
-                          const CVariant& parameterObject,
-                          CVariant& result)
+JSONRPC_STATUS StubMethod(const CVariant& parameterObject, CVariant& result)
 {
   return OK;
 }
