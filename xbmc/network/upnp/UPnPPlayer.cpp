@@ -366,10 +366,13 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
       return true;
   }
 
-  // Not waited on: this runs on the application thread, and a refusal only means the next file is
-  // opened the ordinary way once this one ends.
-  NPT_CHECK_LABEL_WARNING(
-      m_delegate->SendSetNextAVTransportURI(action, uri.c_str(), metadata.c_str()), failed);
+  // Not waited on: this runs on the application thread. A request that is refused, or that could
+  // not be sent, only means the next file is opened the ordinary way once this one ends.
+  if (NPT_FAILED(m_delegate->SendSetNextAVTransportURI(action, uri.c_str(), metadata.c_str())))
+  {
+    m_logger->warn("QueueNextFile({}) could not send the file to the renderer", file.GetPath());
+    return true;
+  }
   m_delegate->EndAction(*action);
   {
     std::unique_lock lock(m_queueSection);
