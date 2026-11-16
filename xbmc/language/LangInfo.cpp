@@ -11,12 +11,14 @@
 #include "DatabaseManager.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonType.h"
 #include "language/i18n/Iso3166_1.h"
+#include "language/i18n/LanguageTable.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "resources/LocalizeStrings.h"
@@ -239,7 +241,15 @@ namespace
  */
 CLanguageTag DiscLanguage(const CLanguageTag& language, const std::string& fallback)
 {
-  return language.IsEmpty() ? CLanguageTag::Parse(fallback) : language;
+  return language.IsUndetermined() ? CLanguageTag::Parse(fallback) : language;
+}
+
+//! An addon may name a language Kodi's own tables do not
+void DeclareAddonLanguageNames()
+{
+  std::map<std::string, std::string> addonLanguages;
+  CLangInfo::GetAddonsLanguageCodes(addonLanguages);
+  CLanguageTable::GetInstance().DeclareNames(addonLanguages);
 }
 
 /*!
@@ -260,9 +270,8 @@ CLanguageTag LanguageFromSetting(const std::string& language,
     return {};
   }
 
-  // Parse would keep text it does not recognize. An unrecognized setting must become an empty
-  // tag instead: a kept one leaves callers preferring a language no stream can match, and the
-  // fallback to the UI language never engages
+  // Parse would give und for text it does not recognize. An unrecognized setting must become an
+  // empty tag instead, or the fallback to the UI language never engages
   if (const auto tag = CLanguageTag::TryParse(language); tag.has_value())
     return *tag;
 
@@ -915,6 +924,8 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
     }
   }
 
+  DeclareAddonLanguageNames();
+
   CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language);
   if (!Load(language))
   {
@@ -957,9 +968,20 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   return true;
 }
 
+void CLangInfo::OnAddonEvent(const ADDON::AddonEvent& event)
+{
+  // Installing or updating an addon reloads it, which is announced as one of these two
+  if ((typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled)) &&
+      CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::RESOURCE_LANGUAGE))
+  {
+    DeclareAddonLanguageNames();
+  }
+}
+
 const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_audioLanguage.IsEmpty())
+  if (allowFallback && m_audioLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_audioLanguage;
@@ -972,7 +994,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
 
 const CLanguageTag& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 {
-  if (allowFallback && m_subtitleLanguage.IsEmpty())
+  if (allowFallback && m_subtitleLanguage.IsUndetermined())
     return m_uiLanguage;
 
   return m_subtitleLanguage;

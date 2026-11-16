@@ -40,6 +40,7 @@ struct StringSettingOption;
 namespace ADDON
 {
 class CLanguageResource;
+struct AddonEvent;
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
@@ -124,6 +125,13 @@ public:
   \return True if the language has been successfully loaded, false otherwise.
   */
   bool SetLanguage(std::string strLanguage = "", bool reloadServices = true);
+
+  /*!
+   * \brief Take in the language a language addon names when one is installed, updated or
+   *        enabled after the language loaded, as the language settings already offer its name.
+   * \param[in] event The addon manager's event.
+   */
+  void OnAddonEvent(const ADDON::AddonEvent& event);
 
   /*!
    * \brief Get the preferred audio language.

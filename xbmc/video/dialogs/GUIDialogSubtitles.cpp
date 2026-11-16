@@ -387,7 +387,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     // Passed to the subtitle service addon as a url option: it must stay unlocalized, and must
     // name the language alone, as addons match on names such as "English", never on qualified
     // names such as "English (Australia)"
-    preferredLanguage = info.language.GetEnglishLanguageName();
+    preferredLanguage = info.language.ToEnglishLanguageName();
     if (preferredLanguage.empty())
       preferredLanguage = "Unknown";
   }

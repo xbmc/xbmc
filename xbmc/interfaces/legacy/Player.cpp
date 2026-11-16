@@ -515,8 +515,8 @@ namespace XBMCAddon
         SubtitleStreamInfo info;
         getAppPlayerMut()->GetSubtitleStreamInfo(CURRENT_STREAM, info);
 
-        if (!info.language.IsEmpty())
-          return info.language.AsBcp47();
+        if (!info.language.IsUndetermined())
+          return info.language.ToString();
         else
           return info.name;
       }
@@ -535,8 +535,8 @@ namespace XBMCAddon
           SubtitleStreamInfo info;
           getAppPlayer()->GetSubtitleStreamInfo(iStream, info);
 
-          if (!info.language.IsEmpty())
-            ret[iStream] = info.language.AsBcp47();
+          if (!info.language.IsUndetermined())
+            ret[iStream] = info.language.ToString();
           else
             ret[iStream] = info.name;
         }
@@ -570,8 +570,8 @@ namespace XBMCAddon
           AudioStreamInfo info;
           getAppPlayerMut()->GetAudioStreamInfo(iStream, info);
 
-          if (!info.language.IsEmpty())
-            ret[iStream] = info.language.AsBcp47();
+          if (!info.language.IsUndetermined())
+            ret[iStream] = info.language.ToString();
           else
             ret[iStream] = info.name;
         }
@@ -600,8 +600,8 @@ namespace XBMCAddon
         VideoStreamInfo info;
         getAppPlayer()->GetVideoStreamInfo(iStream, info);
 
-        if (!info.language.IsEmpty())
-          ret[iStream] = info.language.AsBcp47();
+        if (!info.language.IsUndetermined())
+          ret[iStream] = info.language.ToString();
         else
           ret[iStream] = info.name;
       }

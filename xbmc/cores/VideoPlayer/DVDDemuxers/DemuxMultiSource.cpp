@@ -229,7 +229,7 @@ void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer)
     {
       stream->flags = static_cast<StreamFlags>(info.flag);
     }
-    if (stream->language.IsEmpty())
+    if (stream->language.IsUndetermined() && info.language.IsValid())
     {
       stream->language = info.language;
     }

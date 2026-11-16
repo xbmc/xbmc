@@ -2466,7 +2466,7 @@ void LogMoviePlaylist(std::string_view prefix, const PlaylistInformation& playli
           std::chrono::duration_cast<std::chrono::seconds>(playlist.duration).count())),
       playlist.chapters.size(), playlist.clips.size(), playlist.languages,
       fmt::join(playlist.pgStreams | std::views::transform([](const auto& stream)
-                                                           { return stream.language.AsBcp47(); }),
+                                                           { return stream.language.ToString(); }),
                 ","));
 }
 
@@ -2863,11 +2863,11 @@ std::string GetDefaultStreamLanguages(const PlaylistInformation& information)
 
   std::vector<std::string> languages;
   if (const auto audio{std::ranges::find_if(information.audioStreams, isDefault)};
-      audio != information.audioStreams.cend() && !audio->language.IsEmpty())
+      audio != information.audioStreams.cend() && !audio->language.IsUndetermined())
     languages.emplace_back(audio->language.AsIso6392B());
 
   if (const auto pg{std::ranges::find_if(information.pgStreams, isDefault)};
-      pg != information.pgStreams.cend() && !pg->language.IsEmpty())
+      pg != information.pgStreams.cend() && !pg->language.IsUndetermined())
     languages.emplace_back(pg->language.AsIso6392B());
 
   return StringUtils::Join(languages, " | ");

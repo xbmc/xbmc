@@ -62,6 +62,13 @@ public:
   const std::string& GetLanguage() const { return m_language; }
 
   /*!
+   * \brief Return the script subtag of the tag.
+   * \return The script subtag, lower case as the tag holds its subtags, where Format renders it
+   *         in the title case BCP 47 recommends. Empty for a tag stating no script.
+   */
+  const std::string& GetScript() const { return m_script; }
+
+  /*!
    * \brief Return the region subtag of the tag.
    * \return The region subtag, lower case as the tag holds its subtags, where Format renders it
    *         the upper case BCP 47 recommends. Empty for a tag naming no region.

@@ -37,7 +37,7 @@ std::optional<std::string> CGUIInfoUtils::FormatAudioChannels(const std::string&
 
 std::string CGUIInfoUtils::FormatLanguage(const KODI::LANGUAGE::CLanguageTag& language)
 {
-  const std::string name{language.GetEnglishName()};
+  const std::string name{language.ToEnglishName()};
   if (!name.empty())
     return name;
 

@@ -78,7 +78,7 @@ std::vector<std::string> AudioLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
   for (const auto& stream : p.audioStreams)
-    languages.emplace_back(stream.language.AsBcp47());
+    languages.emplace_back(stream.language.ToString());
   return languages;
 }
 
@@ -86,10 +86,30 @@ std::vector<std::string> SubtitleLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
   for (const auto& stream : p.pgStreams)
-    languages.emplace_back(stream.language.AsBcp47());
+    languages.emplace_back(stream.language.ToString());
   return languages;
 }
 } // namespace
+
+TEST(TestStreamParser, AStreamDeclaringNoLanguageArrivesAsUndetermined)
+{
+  // A disc states each stream's language in three bytes of its clip information, so a playlist
+  // carries whatever was authored there - and those values reach interfaces that promise BCP 47.
+  // Text naming no language is taken as und rather than passed on as though it were a language.
+  const std::vector<StreamInformation> audio{
+      MakeStream(ENCODING_TYPE::AUDIO_DTSHD_MASTER, 0x1100, "eng"),
+      MakeStream(ENCODING_TYPE::AUDIO_AC3, 0x1101, "xxx"),
+      MakeStream(ENCODING_TYPE::AUDIO_AC3, 0x1102, "und")};
+  const std::vector<StreamInformation> subtitles{MakeStream(ENCODING_TYPE::SUB_PG, 0x1200, "zzz"),
+                                                 MakeStream(ENCODING_TYPE::SUB_PG, 0x1201, "fra")};
+
+  PlaylistInformation p;
+  CStreamParser::ConvertBlurayPlaylistInformation(MakePlaylist(33, 30, audio, subtitles), p, {},
+                                                  StreamDetails::INCLUDE);
+
+  EXPECT_EQ(AudioLanguagesOf(p), (std::vector<std::string>{"en", "und", "und"}));
+  EXPECT_EQ(SubtitleLanguagesOf(p), (std::vector<std::string>{"und", "fr"}));
+}
 
 TEST(TestStreamParser, StreamsComeFromThePlaylistNotTheSharedClip)
 {
