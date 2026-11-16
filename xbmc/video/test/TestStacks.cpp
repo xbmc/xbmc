@@ -10,10 +10,12 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "application/ApplicationStackHelper.h"
 #include "cores/IPlayer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "platform/Filesystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
@@ -21,7 +23,10 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <fstream>
+#include <memory>
 #include <string>
+#include <system_error>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -54,7 +59,35 @@ class TestStacks : public ::testing::Test
 {
 protected:
   TestStacks() = default;
-  ~TestStacks() override = default;
+  ~TestStacks() override
+  {
+    // Put back the stack expressions a test may have changed
+    m_advancedSettings->m_folderStackRegExps = m_folderStackRegExps;
+    m_advancedSettings->m_videoStackRegExps = m_videoStackRegExps;
+
+    if (!m_folder.empty())
+      CDirectory::RemoveRecursive(m_folder);
+  }
+
+  //! Makes the files named, and the folders they are in, in a new folder of the test's own
+  const std::string& MakeFolder(const std::vector<std::string>& files)
+  {
+    std::error_code ec;
+    m_folder = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+    for (const auto& file : files)
+    {
+      const std::string path{URIUtils::AddFileToFolder(m_folder, file)};
+      CUtil::CreateDirectoryEx(URIUtils::GetDirectory(path));
+      std::ofstream stream{path};
+    }
+    return m_folder;
+  }
+
+  std::string m_folder;
+  const std::shared_ptr<CAdvancedSettings> m_advancedSettings{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const std::vector<CRegExp> m_folderStackRegExps{m_advancedSettings->m_folderStackRegExps};
+  const std::vector<CRegExp> m_videoStackRegExps{m_advancedSettings->m_videoStackRegExps};
 };
 
 TEST_F(TestStacks, TestMovieFilesStackFilesAB)
@@ -250,6 +283,56 @@ TEST_F(TestStacks, TestFolderStacksIgnoreAnyFurtherCapturesOfTheirExpression)
   EXPECT_EQ(items.Size(), 1);
 
   advancedSettings->m_folderStackRegExps = folderStackRegExps;
+}
+
+TEST_F(TestStacks, TestOneVolumeWithOtherSeparatorsIsNotAnotherPart)
+{
+  // "cd1" and "-cd1" are the same part twice, so the files are not a stack of three parts
+  EXPECT_EQ(SizeAfterStacking({"Movie cd1.mkv", "Movie-cd1.mkv", "Movie cd2.mkv"}), 3);
+}
+
+TEST_F(TestStacks, TestFilesStackWithoutFolderExpressions)
+{
+  // An empty <folderstacking> stops folder stacking, not file stacking
+  m_advancedSettings->m_folderStackRegExps.clear();
+
+  EXPECT_EQ(SizeAfterStacking({"Movie part1.mkv", "Movie part2.mkv"}), 1);
+}
+
+TEST_F(TestStacks, TestFoldersStackWithoutFileExpressions)
+{
+  // An empty <moviestacking> stops file stacking, not folder stacking
+  m_advancedSettings->m_videoStackRegExps.clear();
+
+  const std::string movieFolder{
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)")};
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, "", DIR_FLAG_DEFAULTS);
+  ASSERT_EQ(items.Size(), 3);
+
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_TRUE(items.Get(0)->IsStack());
+}
+
+TEST_F(TestStacks, TestFolderStackPartIsItsFileNotASubfolder)
+{
+  // A part's folder may hold a folder as well as its video, here one that is listed first where
+  // a listing is sorted
+  const std::string folder{
+      MakeFolder({"Movie CD1/Subs/Video.srt", "Movie CD1/Video.mkv", "Movie CD2/Video.mkv"})};
+  CFileItemList items;
+  CDirectory::GetDirectory(folder, items, "", DIR_FLAG_DEFAULTS);
+  ASSERT_EQ(items.Size(), 2);
+
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(items.Get(0)->GetPath(), paths);
+  EXPECT_EQ(paths,
+            (std::vector<std::string>{URIUtils::AddFileToFolder(folder, "Movie CD1/Video.mkv"),
+                                      URIUtils::AddFileToFolder(folder, "Movie CD2/Video.mkv")}));
 }
 
 TEST_F(TestStacks, TestLoneFolderStackPartStaysAFolder)

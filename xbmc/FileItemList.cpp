@@ -38,6 +38,8 @@
 #include <algorithm>
 #include <map>
 #include <ranges>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 using namespace KODI;
@@ -695,6 +697,16 @@ void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
     }
   }
 }
+
+//! A stack part's volume as it tells the parts apart: without its separators, so " cd1" and "-cd1"
+//! are one volume
+std::string GetStackVolume(std::string_view volume)
+{
+  std::string name;
+  std::ranges::copy_if(volume, std::back_inserter(name), [](char c)
+                       { return std::string_view{" _.-"}.find(c) == std::string_view::npos; });
+  return name;
+}
 } // namespace
 
 void CFileItemList::Stack()
@@ -718,24 +730,11 @@ void CFileItemList::Stack()
     return;
 
   // Get REs
-  // Precompile our REs
+  // Precompile our REs. Either list may be empty, which stops only its own kind of stacking.
   std::vector<CRegExp> folderRegExps{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps};
-
-  if (folderRegExps.empty())
-  {
-    CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping folder stacking");
-    return;
-  }
-
   std::vector<CRegExp> fileRegExps{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps};
-
-  if (fileRegExps.empty())
-  {
-    CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping file stacking");
-    return;
-  }
 
   std::vector<StackCandidate> stackCandidates;
   for (int i = 0; i < Size(); ++i)
@@ -767,7 +766,12 @@ void CFileItemList::Stack()
 
           // Only expect one media file per folder (if >1 should be a file stack)
           if (items.GetFileCount() == 1)
-            playPath = items[0]->GetPath();
+          {
+            // The part is that file, as the folder may hold folders too (e.g. Subs)
+            const auto file{std::ranges::find_if(items.GetList(), [](const auto& listed)
+                                                 { return !listed->IsFolder(); })};
+            playPath = (*file)->GetPath();
+          }
           else
           {
             CLog::LogF(LOGDEBUG,
@@ -842,7 +846,7 @@ void CFileItemList::Stack()
   for (const auto& [candidate, count] :
        countedCandidates | std::views::filter([](const auto& c) { return c.second > 1; }))
   {
-    // Find all the parts of this stack (sorted by volume)
+    // Find all the parts of this stack
     std::vector<StackCandidate> parts;
     std::ranges::copy(stackCandidates | std::views::filter(
                                             [type = candidate.type, title = candidate.title,
@@ -852,8 +856,13 @@ void CFileItemList::Stack()
                                             }),
                       std::back_inserter(parts));
 
+    // Sort them by volume without its separators, so one volume written two ways lies together
+    const auto stackVolume{[](const StackCandidate& part) { return GetStackVolume(part.volume); }};
+    std::ranges::sort(parts, {}, [&stackVolume](const StackCandidate& part)
+                      { return std::pair{stackVolume(part), part.volume}; });
+
     // Every part of a stack should be a different volume
-    if (std::ranges::adjacent_find(parts, {}, &StackCandidate::volume) != parts.end())
+    if (std::ranges::adjacent_find(parts, {}, stackVolume) != parts.end())
     {
       CLog::LogF(LOGDEBUG,
                  "Skipping stack '{}' - {} parts found, but not all of a different volume",
