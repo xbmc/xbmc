@@ -17,12 +17,16 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <string_view>
 
 namespace
 {
 constexpr uint32_t COLOR_BACKDROP = 0x66000000;
 constexpr uint32_t COLOR_GRID = 0x50FFFFFF;
+constexpr uint32_t COLOR_GRID_LABEL = 0xC8FFFFFF;
+constexpr uint32_t COLOR_BACKDROP_LABEL = 0xB0000000;
 constexpr uint32_t COLOR_FRAME = 0xFF3DDC84;
 constexpr uint32_t COLOR_I_FRAME = 0xFFFFB547;
 constexpr uint32_t COLOR_B_FRAME = 0xFF3F8CFF;
@@ -36,6 +40,48 @@ constexpr unsigned int SWEEP_GAP = 16;
 constexpr unsigned int STRIP_WIDTH = 256;
 constexpr auto UPDATE_INTERVAL = std::chrono::milliseconds(250);
 constexpr double AUDIO_BAND_SPLIT = 0.78; //!< share of the height for the video in band mode
+
+//! 5x7 pixel glyphs for the grid labels, one row per entry, bit 4 is the left column
+constexpr std::string_view GLYPH_CHARS = "0123456789.kBM";
+constexpr int GLYPH_WIDTH = 5;
+constexpr int GLYPH_HEIGHT = 7;
+constexpr std::array<std::array<uint8_t, GLYPH_HEIGHT>, 14> GLYPHS = {{
+    {0x0E, 0x11, 0x13, 0x15, 0x19, 0x11, 0x0E},
+    {0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E},
+    {0x0E, 0x11, 0x01, 0x02, 0x04, 0x08, 0x1F},
+    {0x1E, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x1E},
+    {0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02},
+    {0x1F, 0x10, 0x1E, 0x01, 0x01, 0x11, 0x0E},
+    {0x06, 0x08, 0x10, 0x1E, 0x11, 0x11, 0x0E},
+    {0x1F, 0x01, 0x02, 0x04, 0x08, 0x08, 0x08},
+    {0x0E, 0x11, 0x11, 0x0E, 0x11, 0x11, 0x0E},
+    {0x0E, 0x11, 0x11, 0x0F, 0x01, 0x02, 0x0C},
+    {0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x0C},
+    {0x10, 0x10, 0x12, 0x14, 0x18, 0x14, 0x12},
+    {0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E},
+    {0x11, 0x1B, 0x15, 0x15, 0x11, 0x11, 0x11},
+}};
+//! The longest grid label, e.g. "1000 kB"
+constexpr int LABEL_CHARS = 8;
+
+//! Size of one glyph pixel, 2 on a 1080p screen
+int FontSize(unsigned int width)
+{
+  return std::max(1, static_cast<int>(width / 960));
+}
+
+//! Width of the grid labels and their boxes, including the space before them
+int LabelColumns(unsigned int width)
+{
+  return (LABEL_CHARS * (GLYPH_WIDTH + 1) + 6) * FontSize(width);
+}
+
+std::string FormatSize(double bytes)
+{
+  if (bytes >= 1e6)
+    return StringUtils::Format("{:g} MB", std::round(bytes / 1e5) / 10);
+  return StringUtils::Format("{:.0f} kB", bytes / 1e3);
+}
 
 //! Round up to 1, 2 or 5 times a power of ten
 double NiceCeil(double value)
@@ -141,10 +187,6 @@ std::string CDebugFrameGraph::GetLegend() const
   const double fps = m_frames.fps > 0.0f ? static_cast<double>(m_frames.fps) : 24.0;
   const double rate = sum / static_cast<double>(window) * fps * 8 / 1e6;
 
-  const std::string grid = m_logScale
-                               ? "10 kB / 100 kB / 1 MB"
-                               : StringUtils::Format("{:.0f} kB steps", peak * 1.05 / 4 / 1e3);
-
   const bool frameTypes = std::any_of(frames.begin(), frames.end(), [](const auto& frame)
                                       { return frame.type == 'P' || frame.type == 'B'; });
 
@@ -154,14 +196,17 @@ std::string CDebugFrameGraph::GetLegend() const
     const auto& rates = m_frames.audioRates;
     const auto latest =
         std::find_if(rates.rbegin(), rates.rend(), [](float rate) { return !std::isnan(rate); });
-    audio = StringUtils::Format(", pink audio {:.1f} Mb/s (0-{:g} Mb/s)",
+    audio = StringUtils::Format(", {{\\c&HD56AFF&}}audio {:.1f} Mb/s (0-{:g} Mb/s){{\\c}}",
                                 static_cast<double>(*latest), scaleMax);
   }
 
+  // The frame types and the audio are written in the colours of their dots and line
   return StringUtils::Format(
-      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, grid {}, {}{}",
-      m_logScale ? "log" : "lin", m_sweep ? "sweep" : "scroll", peak / 1e6, rate, grid,
-      frameTypes ? "amber I, green P, blue B" : "amber = keyframe", audio);
+      "Frame sizes ({}, {}): peak {:.2f} MB, 1 s avg {:.1f} Mb/s, {}{}", m_logScale ? "log" : "lin",
+      m_sweep ? "sweep" : "scroll", peak / 1e6, rate,
+      frameTypes ? "{\\c&H47B5FF&}I {\\c&H84DC3D&}P {\\c&HFF8C3F&}B{\\c} frames"
+                 : "{\\c&H47B5FF&}keyframes{\\c}",
+      audio);
 }
 
 void CDebugFrameGraph::Render(const CRect& view)
@@ -273,7 +318,7 @@ void CDebugFrameGraph::DrawChanged()
 
   // A scale change moves everything, and so does more than a screen width of new packets
   if (m_redrawAll || linearMax != m_drawnLinearMax || audioMax != m_drawnAudioMax ||
-      count - m_drawnCount + SWEEP_GAP + 5 >= m_width)
+      count - m_drawnCount + SWEEP_GAP + LabelColumns(m_width) + 5 >= m_width)
   {
     Draw(0, w - 1);
   }
@@ -282,8 +327,9 @@ void CDebugFrameGraph::DrawChanged()
     // The new packets, the previous newest one and the dots reaching into them, and in
     // sweep mode the cursor and the gap ahead of it
     const int first = static_cast<int>((m_drawnCount + m_width - 3) % m_width);
-    const int length =
-        static_cast<int>(count - m_drawnCount) + 5 + (m_sweep ? static_cast<int>(SWEEP_GAP) : 0);
+    // In scroll mode also the grid labels, which move with the oldest column
+    const int length = static_cast<int>(count - m_drawnCount) + 5 +
+                       (m_sweep ? static_cast<int>(SWEEP_GAP) : LabelColumns(m_width));
     const int last = first + length - 1;
     Draw(first, std::min(last, w - 1));
     if (last >= w)
@@ -346,17 +392,17 @@ void CDebugFrameGraph::Draw(int x1, int x2)
   // Columns next to each other, also where the texture wraps around
   const auto adjacent = [&](int prevX, int x) { return prevX >= 0 && (prevX + 1) % w == x; };
 
+  std::vector<double> gridSizes;
   if (m_logScale)
-  {
-    for (const double size : {1e4, 1e5, 1e6})
-      for (int x = x1; x <= x2; ++x)
-        put(x, toY(size), COLOR_GRID);
-  }
+    gridSizes = {1e4, 1e5, 1e6};
   else
+    gridSizes = {linearMax / 4, linearMax / 2, linearMax * 3 / 4, linearMax};
+
+  for (const double size : gridSizes)
   {
-    for (int step = 1; step <= 4; ++step)
-      for (int x = x1; x <= x2; ++x)
-        put(x, toY(linearMax * step / 4), COLOR_GRID);
+    const int y = toY(size);
+    for (int x = x1; x <= x2; ++x)
+      put(x, y, COLOR_GRID);
   }
 
   // Draw the frequent small frames first so I-frames stay visible on top
@@ -433,6 +479,35 @@ void CDebugFrameGraph::Draw(int x1, int x2)
       vline(x, fromY - 1, y - 1, COLOR_AUDIO);
       prevAudioX = x;
       prevAudioY = y;
+    }
+  }
+
+  // The labels stay at the left edge of the screen, which in scroll mode is the oldest column
+  const int font = FontSize(m_width);
+  const int labelX = (m_sweep ? 0 : static_cast<int>(m_frames.count % m_width)) + 4 * font;
+  for (const double size : gridSizes)
+  {
+    const int top = toY(size) - (GLYPH_HEIGHT + 2) * font;
+    if (top < 0)
+      continue;
+    // A dark box behind the label keeps it readable over the dots
+    const std::string label = FormatSize(size);
+    const int labelWidth = static_cast<int>(label.size()) * (GLYPH_WIDTH + 1) * font + font;
+    for (int y = top - font; y < top + (GLYPH_HEIGHT + 1) * font; ++y)
+      for (int x = labelX - font; x < labelX + labelWidth; ++x)
+        put((x + w) % w, y, COLOR_BACKDROP_LABEL);
+
+    int x = labelX;
+    for (const char c : label)
+    {
+      const auto glyph = GLYPH_CHARS.find(c);
+      for (int row = 0; glyph != std::string_view::npos && row < GLYPH_HEIGHT; ++row)
+        for (int col = 0; col < GLYPH_WIDTH; ++col)
+          if (GLYPHS[glyph][row] & (0x10 >> col))
+            for (int dy = 0; dy < font; ++dy)
+              for (int dx = 0; dx < font; ++dx)
+                put((x + col * font + dx) % w, top + row * font + dy, COLOR_GRID_LABEL);
+      x += (GLYPH_WIDTH + 1) * font;
     }
   }
 
