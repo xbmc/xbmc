@@ -467,6 +467,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
+        NoteListed(items);
 
         // mark subfolders whose stored fast hash matches the listing mtime digest;
         // the disc structure probes in Stack() and the recursion loop (which also
@@ -574,6 +575,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
+        NoteListed(items);
         items.SetPath(strDirectory);
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -2109,7 +2111,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Listing that ignores files inside and below folders containing .nomedia files.
         CDirectory::EnumerateDirectory(
-            item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
+            item->GetPath(),
+            [this, &items](const std::shared_ptr<CFileItem>& item)
+            {
+              items.Add(item);
+              m_listedFolders.insert(URIUtils::GetDirectory(item->GetPath()));
+            },
             [](const std::shared_ptr<CFileItem>& folder) { return !HasNoMedia(folder->GetPath()); },
             true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
 
@@ -2452,17 +2459,64 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // NFO - Library import (ImportFromXML)
       // MEDIA - Bluray (ResolveBlurayPlaylist())
       // EXTERNAL - Plugin content (CVideoTagLoaderPlugin)
+
+      // The folder the subtitles are looked for in is read from the cache where the scan has just
+      // listed it, but not one holding a disc folder, which it finds by name, nor that of a video it
+      // is given, as a refresh is.
+      std::string subtitleFolder;
+      std::string videoName;
+      CUtil::GetVideoBasePathAndFileName(pItem->GetSubtitleAnchorPath(), subtitleFolder, videoName);
+      const int listingFlags{m_listedFolders.contains(subtitleFolder) ? DIR_FLAG_READ_CACHE
+                                                                      : DIR_FLAG_DEFAULTS};
       if (!movieDetails.HasStreamDetails())
       {
-        if (CDVDFileInfo::GetFileStreamDetails(pItem))
+        // The episodes of a file are added one after the other, and the file is probed for the
+        // first of them only: each still has its own external subtitles.
+        if (m_lastProbed && m_lastProbed->first == path)
+        {
+          CDVDFileInfo::AddExternalSubtitles(*pItem, m_lastProbed->second, listingFlags);
+          CLog::LogF(LOGDEBUG, "Filestream details of video file {} already extracted",
+                     CURL::GetRedacted(path));
+        }
+        else if (CStreamDetails probed;
+                 CDVDFileInfo::GetFileStreamDetails(pItem, listingFlags, &probed))
+        {
+          m_lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
                      CURL::GetRedacted(path));
+        }
         else
           CLog::LogF(LOGDEBUG, "No filestream details extracted from video file {}",
                      CURL::GetRedacted(path));
       }
       else if (movieDetails.HasNFOStreamDetails())
         CLog::LogF(LOGDEBUG, "Filestream details from NFO file for {}", CURL::GetRedacted(path));
+      else if (URIUtils::IsBlurayPath(path) || URIUtils::IsBDFile(path))
+      {
+        // A bluray's streams are read from its playlist, so it isn't probed, but the player loads
+        // its external subtitles too. A dvd's aren't looked for, as the player loads none.
+        CDVDFileInfo::AddExternalSubtitles(*pItem, movieDetails.m_streamDetails, listingFlags);
+        CLog::LogF(LOGDEBUG, "Filestream details from the playlist of bluray {}",
+                   CURL::GetRedacted(path));
+      }
+      else if (const std::string firstPart{URIUtils::IsStack(path)
+                                               ? CStackDirectory::GetFirstStackedFile(path)
+                                               : std::string{}};
+               URIUtils::IsBlurayPath(firstPart) || URIUtils::IsBDFile(firstPart))
+      {
+        // A stack of blurays has the streams of its first disc's playlist, and the subtitles the
+        // player loads as it plays that disc
+        CFileItem firstDisc{*pItem};
+        firstDisc.SetDynPath(firstPart);
+        CUtil::GetVideoBasePathAndFileName(firstDisc.GetSubtitleAnchorPath(), subtitleFolder,
+                                           videoName);
+        CDVDFileInfo::AddExternalSubtitles(
+            firstDisc, movieDetails.m_streamDetails,
+            m_listedFolders.contains(subtitleFolder) ? DIR_FLAG_READ_CACHE : DIR_FLAG_DEFAULTS);
+        movieDetails.m_streamDetails = firstDisc.GetVideoInfoTag()->m_streamDetails;
+        CLog::LogF(LOGDEBUG, "Filestream details from the playlists of bluray stack {}",
+                   CURL::GetRedacted(path));
+      }
       else
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
@@ -2746,6 +2800,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
         setTitle,
         CURL::GetRedacted(path));
     return CDirectory::Exists(path) ? path : "";
+  }
+
+  void CVideoInfoScanner::NoteListed(const CFileItemList& items)
+  {
+    for (const auto& item : items)
+    {
+      if (!item->IsFolder())
+        m_listedFolders.insert(URIUtils::GetDirectory(item->GetPath()));
+    }
   }
 
   CInfoScanner::InfoRet CVideoInfoScanner::OnProcessSeriesFolder(
