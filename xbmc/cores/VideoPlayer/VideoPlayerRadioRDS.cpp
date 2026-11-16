@@ -1449,12 +1449,15 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(const uint8_t* msgElement
       break;
     }
     case VARCODE_LANGUAGE_CODES:      // language codes
-      if (slowLabellingCode > 0 && slowLabellingCode < 0x80)
-        m_currentInfoTag->SetLanguage(std::string{KODI::RDS::LanguageCode(slowLabellingCode)});
-      else
+    {
+      const KODI::LANGUAGE::CLanguageTag language{KODI::RDS::Language(slowLabellingCode)};
+      if (language.IsUndetermined())
         CLog::Log(LOGERROR, "Radio RDS - {} - invalid language code {}", __FUNCTION__,
                   slowLabellingCode);
+      else
+        m_currentInfoTag->SetLanguage(language);
       break;
+    }
 
     case VARCODE_TMC_IDENT:           // TMC identification
     case VARCODE_PAGING_IDENT:        // Paging identification

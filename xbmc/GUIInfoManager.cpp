@@ -9834,16 +9834,26 @@ constexpr std::array<InfoMap, 12> pvr_times = {{
 ///   \table_row3{   <b>`RDS.AudioLanguage`</b>,
 ///                  \anchor RDS_AudioLanguage
 ///                  _string_,
-///     @return The RDS reported audio language of the channel.
+///     @return The RDS reported audio language of the channel\, as a BCP 47 language tag:
+///     e.g. en\, de\, pt-BR
+///     @note A broadcaster sends an index into the language table EBU Tech 3244 Annex J
+///     defines\, never text\, so an index the standard reserves is reported as und.
 ///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link RDS_AudioLanguage `RDS.AudioLanguage`\endlink
+///     now the language tag itself\, where it was whatever the RDS table held
 ///     @skinning_v16 **[New Infolabel]** \link RDS_AudioLanguage `RDS.AudioLanguage`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ChannelCountry`</b>,
 ///                  \anchor RDS_ChannelCountry
 ///                  _string_,
-///     @return The country where the radio channel is broadcasted.
+///     @return The country where the radio channel is broadcast\, as an ISO 3166-1 alpha-2
+///     code: e.g. GB\, US\, DE
+///     @note A broadcaster sends a country as an index into the tables EBU Tech 3244
+///     Annex D defines\, never text\, so an index the standard reserves is empty.
 ///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link RDS_ChannelCountry `RDS.ChannelCountry`\endlink
+///     empty where the table names no place\, where it was the raw table cell
 ///     @skinning_v16 **[New Infolabel]** \link RDS_ChannelCountry `RDS.ChannelCountry`\endlink
 ///     <p>
 ///   }
