@@ -873,9 +873,6 @@ namespace XBMCAddon
       /// @param art_type       string (image type)
       /// @param preview        [opt] string (image preview path url)
       /// @param referrer       [opt] string (referrer url)
-      /// @param cache          [opt] string (filename in cache)
-      /// @param post           [opt] bool (use post to retrieve the image, default false)
-      /// @param isgz           [opt] bool (use gzip to retrieve the image, default false)
       /// @param season         [opt] integer (number of season in case of season thumb)
       ///
       ///
@@ -883,6 +880,7 @@ namespace XBMCAddon
       /// @python_v18 New function added.
       /// @python_v19 New param added (preview).
       /// @python_v20 Deprecated. Use **InfoTagVideo.addAvailableArtwork()** instead.
+      /// @python_v23 Removed options **cache**, **post** and **isgz**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -897,9 +895,6 @@ namespace XBMCAddon
                                const std::string& art_type = "",
                                const std::string& preview = "",
                                const std::string& referrer = "",
-                               const std::string& cache = "",
-                               bool post = false,
-                               bool isgz = false,
                                int season = -1);
 #endif
 

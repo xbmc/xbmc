@@ -8,24 +8,13 @@
 
 #include "ScraperUrl.h"
 
-#include "CharsetConverter.h"
-#include "ServiceBroker.h"
-#include "URIUtils.h"
 #include "URL.h"
 #include "XMLUtils.h"
-#include "filesystem/IHttpClient.h"
-#include "filesystem/ZipFile.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
-#include "utils/CharsetDetection.h"
-#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/log.h"
 
 #include <algorithm>
-#include <cstring>
 #include <sstream>
 
 CScraperUrl::CScraperUrl() : m_relevance(0.0), m_parsed(false)
@@ -175,20 +164,6 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   SUrlEntry url(element->FirstChild()->ValueStr());
   url.m_spoof = XMLUtils::GetAttribute(element, "spoof");
 
-  const char* szPost = element->Attribute("post");
-  if (szPost && StringUtils::CompareNoCase(szPost, "yes") == 0)
-    url.m_post = true;
-  else
-    url.m_post = false;
-
-  const char* szIsGz = element->Attribute("gzip");
-  if (szIsGz && StringUtils::CompareNoCase(szIsGz, "yes") == 0)
-    url.m_isgz = true;
-  else
-    url.m_isgz = false;
-
-  url.m_cache = XMLUtils::GetAttribute(element, "cache");
-
   const char* szType = element->Attribute("type");
   if (szType && StringUtils::CompareNoCase(szType, "season") == 0)
   {
@@ -245,20 +220,12 @@ void CScraperUrl::AddParsedUrl(const std::string& url,
                                const std::string& aspect,
                                const std::string& preview,
                                const std::string& referrer,
-                               const std::string& cache,
-                               bool post,
-                               bool isgz,
                                int season)
 {
   bool wasEmpty = m_data.empty();
 
   TiXmlElement thumb("thumb");
   thumb.SetAttribute("spoof", referrer);
-  thumb.SetAttribute("cache", cache);
-  if (post)
-    thumb.SetAttribute("post", "yes");
-  if (isgz)
-    thumb.SetAttribute("gzip", "yes");
   if (season >= 0)
   {
     thumb.SetAttribute("season", std::to_string(season));
@@ -273,9 +240,6 @@ void CScraperUrl::AddParsedUrl(const std::string& url,
 
   SUrlEntry nUrl(url);
   nUrl.m_spoof = referrer;
-  nUrl.m_post = post;
-  nUrl.m_isgz = isgz;
-  nUrl.m_cache = cache;
   nUrl.m_preview = preview;
   if (season >= 0)
   {
@@ -296,140 +260,4 @@ std::string CScraperUrl::GetThumbUrl(const CScraperUrl::SUrlEntry& entry)
     return entry.m_url;
 
   return entry.m_url + "|Referer=" + CURL::Encode(entry.m_spoof);
-}
-
-bool CScraperUrl::Get(const SUrlEntry& scrURL,
-                      std::string& strHTML,
-                      XFILE::IHttpClient& http,
-                      const std::string& cacheContext)
-{
-  CURL url(scrURL.m_url);
-  http.SetReferer(scrURL.m_spoof);
-  std::string strCachePath;
-
-  if (!scrURL.m_cache.empty())
-  {
-    strCachePath = URIUtils::AddFileToFolder(
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers",
-        cacheContext, scrURL.m_cache);
-    if (XFILE::CFile::Exists(strCachePath))
-    {
-      XFILE::CFile file;
-      std::vector<uint8_t> buffer;
-      if (file.LoadFile(strCachePath, buffer) > 0)
-      {
-        strHTML.assign(reinterpret_cast<char*>(buffer.data()), buffer.size());
-        return true;
-      }
-    }
-  }
-
-  auto strHTML1 = strHTML;
-
-  if (scrURL.m_post)
-  {
-    std::string strOptions = url.GetOptions();
-    strOptions = strOptions.substr(1);
-    url.SetOptions("");
-
-    if (!http.Post(url.Get(), strOptions, strHTML1))
-      return false;
-  }
-  else if (!http.Get(url.Get(), strHTML1))
-    return false;
-
-  strHTML = strHTML1;
-
-  const auto mimeType = http.GetProperty(XFILE::FileProperty::MIME_TYPE);
-  CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
-  if (ftype == CMime::FileTypeUnknown)
-    ftype = CMime::GetFileTypeFromContent(strHTML);
-
-  if (ftype == CMime::FileTypeZip || ftype == CMime::FileTypeGZip)
-  {
-    XFILE::CZipFile file;
-    std::string strBuffer;
-    auto iSize = file.UnpackFromMemory(
-        strBuffer, strHTML, scrURL.m_isgz); // FIXME: use FileTypeGZip instead of scrURL.m_isgz?
-    if (iSize > 0)
-    {
-      strHTML = strBuffer;
-      CLog::Log(LOGDEBUG, "{}: Archive \"{}\" was unpacked in memory", __FUNCTION__, scrURL.m_url);
-    }
-    else
-      CLog::Log(LOGWARNING, "{}: \"{}\" looks like archive but cannot be unpacked", __FUNCTION__,
-                scrURL.m_url);
-  }
-
-  const auto reportedCharset = http.GetProperty(XFILE::FileProperty::CONTENT_CHARSET);
-  if (ftype == CMime::FileTypeHtml)
-  {
-    std::string realHtmlCharset, converted;
-    if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
-      CLog::Log(LOGWARNING,
-                "{}: Can't find precise charset for HTML \"{}\", using \"{}\" as fallback",
-                __FUNCTION__, scrURL.m_url, realHtmlCharset);
-    else
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for HTML \"{}\"", __FUNCTION__, realHtmlCharset,
-                scrURL.m_url);
-
-    strHTML = converted;
-  }
-  else if (ftype == CMime::FileTypeXml)
-  {
-    CXBMCTinyXML xmlDoc;
-    xmlDoc.Parse(strHTML, reportedCharset);
-
-    const auto realXmlCharset = xmlDoc.GetUsedCharset();
-    if (!realXmlCharset.empty())
-    {
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for XML \"{}\"", __FUNCTION__, realXmlCharset,
-                scrURL.m_url);
-      std::string converted;
-      g_charsetConverter.ToUtf8(realXmlCharset, strHTML, converted);
-      strHTML = converted;
-    }
-  }
-  else if (ftype == CMime::FileTypePlainText ||
-           StringUtils::EqualsNoCase(mimeType.substr(0, 5), "text/"))
-  {
-    std::string realTextCharset;
-    std::string converted;
-    CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
-    strHTML = converted;
-    if (reportedCharset != realTextCharset)
-      CLog::Log(LOGWARNING,
-                "{}: Using \"{}\" charset for plain text \"{}\" instead of server reported \"{}\" "
-                "charset",
-                __FUNCTION__, realTextCharset, scrURL.m_url, reportedCharset);
-    else
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for plain text \"{}\"", __FUNCTION__,
-                realTextCharset, scrURL.m_url);
-  }
-  else if (!reportedCharset.empty())
-  {
-    CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for \"{}\"", __FUNCTION__, reportedCharset,
-              scrURL.m_url);
-    if (reportedCharset != "UTF-8")
-    {
-      std::string converted;
-      g_charsetConverter.ToUtf8(reportedCharset, strHTML, converted);
-      strHTML = converted;
-    }
-  }
-  else
-    CLog::Log(LOGDEBUG, "{}: Using content of \"{}\" as binary or text with \"UTF-8\" charset",
-              __FUNCTION__, scrURL.m_url);
-
-  if (!scrURL.m_cache.empty())
-  {
-    const auto strCachePath = URIUtils::AddFileToFolder(
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers",
-        cacheContext, scrURL.m_cache);
-    XFILE::CFile file;
-    if (!file.OpenForWrite(strCachePath, true) ||
-        file.Write(strHTML.data(), strHTML.size()) != static_cast<ssize_t>(strHTML.size()))
-      return false;
-  }
-  return true;
 }

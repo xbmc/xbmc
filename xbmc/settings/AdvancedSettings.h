@@ -242,7 +242,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_autoMountOpticalMedia{true};
 
     bool m_fullScreenOnMovieStart;
-    std::string m_cachePath;
     std::string m_videoCleanDateTimeRegExp;
     std::string m_videoFilenameAttributePairsRegExp;
     std::vector<std::string> m_videoCleanStringRegExps;

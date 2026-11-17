@@ -9,13 +9,10 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 
 class TiXmlElement;
-namespace XFILE
-{
-class IHttpClient;
-}
 
 class CScraperUrl
 {
@@ -32,12 +29,9 @@ public:
 
     std::string m_spoof;
     std::string m_url;
-    std::string m_cache;
     std::string m_aspect;
     std::string m_preview;
     UrlType m_type = UrlType::General;
-    bool m_post = false;
-    bool m_isgz = false;
     int m_season = -1;
   };
 
@@ -54,9 +48,6 @@ public:
 
   const std::string& GetTitle() const { return m_title; }
   void SetTitle(std::string title) { m_title = std::move(title); }
-
-  const std::string& GetId() const { return m_id; }
-  void SetId(std::string id) { m_id = std::move(id); }
 
   double GetRelevance() const { return m_relevance; }
   void SetRelevance(double relevance) { m_relevance = relevance; }
@@ -91,9 +82,6 @@ public:
                     const std::string& aspect = "",
                     const std::string& preview = "",
                     const std::string& referrer = "",
-                    const std::string& cache = "",
-                    bool post = false,
-                    bool isgz = false,
                     int season = -1);
 
   /*! \brief fetch the full URL (including referrer) of a thumb
@@ -102,17 +90,11 @@ public:
    */
   static std::string GetThumbUrl(const CScraperUrl::SUrlEntry& entry);
 
-  static bool Get(const SUrlEntry& scrURL,
-                  std::string& strHTML,
-                  XFILE::IHttpClient& http,
-                  const std::string& cacheContext);
-
   // ATTENTION: this member MUST NOT be used directly except from databases
   std::string m_data;
 
 private:
   std::string m_title;
-  std::string m_id;
   double m_relevance;
   std::vector<SUrlEntry> m_urls;
   bool m_parsed;
