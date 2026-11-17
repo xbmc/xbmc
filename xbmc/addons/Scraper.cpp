@@ -162,7 +162,7 @@ bool CScraper::IsSupported(const CAddonInfo& info)
 
   static constexpr CSet scraperTypes{
       AddonType::SCRAPER_ALBUMS,      AddonType::SCRAPER_ARTISTS, AddonType::SCRAPER_MOVIES,
-      AddonType::SCRAPER_MUSICVIDEOS, AddonType::SCRAPER_TVSHOWS, AddonType::SCRAPER_LIBRARY,
+      AddonType::SCRAPER_MUSICVIDEOS, AddonType::SCRAPER_TVSHOWS,
   };
   return std::ranges::none_of(
       info.Types(),

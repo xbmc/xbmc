@@ -95,7 +95,6 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, AddonType type)
     case AddonType::SCRAPER_MOVIES:
     case AddonType::SCRAPER_MUSICVIDEOS:
     case AddonType::SCRAPER_TVSHOWS:
-    case AddonType::SCRAPER_LIBRARY:
       // Kodi runs python scrapers only: any other is a plain add-on, which isn't compatible
       if (!CScraper::IsSupported(*info))
         return std::make_shared<CAddon>(info, type);

@@ -16465,11 +16465,7 @@ msgctxt "#24082"
 msgid "Add-on libraries"
 msgstr ""
 
-#. The label in the add-ons manager for information libraries
-#: xbmc/addons/Addon.cpp
-msgctxt "#24083"
-msgid "Information libraries"
-msgstr ""
+#empty string with id 24083
 
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24084"

@@ -324,14 +324,12 @@ TEST(TestScraper, AnAddonIsCompatibleOnlyIfItsScrapersArePython)
   const Extension python{"xbmc.metadata.scraper.movies", "scraper.py"};
   const Extension python2{"xbmc.metadata.scraper.tvshows", "scraper.py"};
   const Extension xml{"xbmc.metadata.scraper.albums", "scraper.xml"};
-  const Extension library{"xbmc.metadata.scraper.library", "scraper.xml"};
 
   EXPECT_TRUE(Compatible({python}));
   EXPECT_TRUE(Compatible({python, python2}));
   EXPECT_FALSE(Compatible({xml}));
   EXPECT_FALSE(Compatible({python, xml}));
   EXPECT_FALSE(Compatible({xml, python}));
-  EXPECT_FALSE(Compatible({library}));
   EXPECT_TRUE(Addons().IsCompatible(Addons().GetAddonInfo("metadata.local", AddonType::UNKNOWN)));
 }
 

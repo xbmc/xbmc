@@ -13,7 +13,7 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="xbmc\.metadata\.scraper\.(albums|artists|library|movies|musicvideos|tvshows)"/>
+      <xs:pattern value="xbmc\.metadata\.scraper\.(albums|artists|movies|musicvideos|tvshows)"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
