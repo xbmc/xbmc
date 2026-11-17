@@ -536,6 +536,8 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 {
   std::unique_lock lock(m_sync);
+  if (uiBufSize == 0)
+    return 0;
   if (!m_pCache)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> sanity failed. no cache strategy!", __FUNCTION__,
@@ -596,6 +598,14 @@ retry:
       CLog::Log(LOGWARNING, "CFileCache::{} - <{}> timeout waiting for data", __FUNCTION__,
                 m_sourcePath);
       return -1;
+    }
+    // The writer may have appended its final bytes and marked end of input after
+    // WaitForData returned 0; drain them before reporting EOF.
+    iRc = m_pCache->ReadFromCache((char *)lpBuf, uiBufSize);
+    if (iRc > 0)
+    {
+      m_readPos += iRc;
+      return (int)iRc;
     }
     return 0;
   }
