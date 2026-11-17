@@ -142,7 +142,7 @@ sudo apt install autoconf automake autopoint autotools-dev cmake \
   libpulse-dev libshairplay-dev libsmbclient-dev libspdlog-dev \
   libsqlite3-dev libssl-dev libtag1-dev libtiff5-dev libtinyxml-dev \
   libtinyxml2-dev libtool libudev-dev libunistring-dev libva-dev \
-  libvdpau-dev libvorbis-dev libxmu-dev libxrandr-dev libxslt1-dev \
+  libvdpau-dev libvorbis-dev libxmu-dev libxrandr-dev \
   libxt-dev lsb-release meson nasm ninja-build nlohmann-json3-dev \
   python3-dev python3-pil python3-pip swig unzip uuid-dev zip \
   zlib1g-dev

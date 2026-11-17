@@ -204,10 +204,6 @@ set(HEADERS ActorProtocol.h
             XMLUtils.h
             XTimeUtils.h)
 
-if(TARGET ${APP_NAME_LC}::XSLT)
-  list(APPEND SOURCES XSLTUtils.cpp)
-  list(APPEND HEADERS XSLTUtils.h)
-endif()
 if(TARGET ${APP_NAME_LC}::EGL)
   list(APPEND SOURCES EGLUtils.cpp
                       EGLFence.cpp)
