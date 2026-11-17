@@ -479,6 +479,7 @@ void CRenderer::PrepareOverlays(int idx)
 
   bool doMarkDirty = false;
   bool hasImageSpu = false;
+  bool hasLibassImages = false;
   for (auto& e : m_buffers[idx])
   {
     // Clear last frame's cached output; libass may have invalidated the
@@ -520,6 +521,8 @@ void CRenderer::PrepareOverlays(int idx)
     int currentChange = 0;
     e.renderedImages =
         ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, m_overlayStyle, &currentChange);
+    if (e.renderedImages)
+      hasLibassImages = true;
     if (currentChange > 0)
     {
       // Persist on the overlay so a skipped GUI render does not drop the change.
@@ -531,9 +534,12 @@ void CRenderer::PrepareOverlays(int idx)
   // PGS/DVB/SPU disappearance: arrival is caught by m_textureid==0 in
   // the loop above. Without this, a PGS subtitle ending leaves its
   // cached bitmap on the GUI plane until something else dirties.
-  if (hasImageSpu != m_prevHadImageSpu)
+  // Likewise libass output once its overlay is no longer added.
+  if (hasImageSpu != m_prevHadImageSpu || hasLibassImages != m_prevHadLibassImages)
     doMarkDirty = true;
+
   m_prevHadImageSpu = hasImageSpu;
+  m_prevHadLibassImages = hasLibassImages;
 
   if (doMarkDirty)
     MarkDirty();
