@@ -1,4 +1,5 @@
-set(SOURCES RenderContext.cpp
+set(SOURCES HdrOutput.cpp
+            RenderContext.cpp
             RenderSettings.cpp
             RenderTranslator.cpp
             RenderUtils.cpp
@@ -6,7 +7,8 @@ set(SOURCES RenderContext.cpp
             RPRenderManager.cpp
 )
 
-set(HEADERS IRenderManager.h
+set(HEADERS HdrOutput.h
+            IRenderManager.h
             RenderContext.h
             RenderSettings.h
             RenderTranslator.h

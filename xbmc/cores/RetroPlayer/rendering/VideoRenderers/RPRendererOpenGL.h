@@ -28,6 +28,7 @@ class CShaderTextureGLRef;
 namespace RETRO
 {
 class CRenderBufferOpenGL;
+class CRPHdrShader;
 
 class CRendererFactoryOpenGL : public IRendererFactory
 {
@@ -55,6 +56,7 @@ public:
   SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
   static bool SupportsScalingMethod(SCALINGMETHOD method);
+  bool SupportsHdr() const override { return !m_hdrShaderFailed; }
 
 protected:
   struct PackedVertex
@@ -76,6 +78,19 @@ protected:
     std::shared_ptr<SHADER::CShaderTextureGL> targetTexture;
   };
 
+  /*!
+   * \brief Make the texture a shader preset's last pass renders into, deeper than 8 bits in HDR
+   */
+  std::shared_ptr<SHADER::CShaderTextureGL> CreateTargetTexture() const;
+
+  /*!
+   * \brief Draw the texture bound to unit 0 into the destination, for SDR or HDR
+   *
+   * \param alpha The frame's opacity
+   * \param width, height Size of the texture, which the source rectangle is in
+   */
+  void DrawFrame(uint8_t alpha, float width, float height);
+
   // Implementation of CRPBaseRenderer
   void RenderInternal(uint8_t alpha) override;
   void FlushInternal() override;
@@ -83,12 +98,21 @@ protected:
   virtual void Render(uint8_t alpha);
 
   std::map<CRenderBufferOpenGL*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
+  bool m_lastTargetHdr{false};
 
   GLuint m_mainVAO;
   GLuint m_mainVertexVBO;
   GLuint m_mainIndexVBO;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D;
+
+private:
+  bool LoadHdrShader();
+
+  std::unique_ptr<CRPHdrShader> m_hdrShader;
+  bool m_hdrShaderFailed{false};
+  GLuint m_hdrVAO{0};
+  GLuint m_hdrVBO{0};
 };
 } // namespace RETRO
 } // namespace KODI

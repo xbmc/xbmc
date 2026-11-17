@@ -8,6 +8,11 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND HEADERS RPWinRenderer.h)
 endif()
 
+if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
+  list(APPEND SOURCES RPHdrShader.cpp)
+  list(APPEND HEADERS RPHdrShader.h)
+endif()
+
 if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES RPRendererOpenGL.cpp)
   list(APPEND HEADERS RPRendererOpenGL.h)

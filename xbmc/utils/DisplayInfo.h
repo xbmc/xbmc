@@ -67,6 +67,10 @@ public:
 
   bool SupportsColorimetry(Colorimetry colorimetry) const;
 
+  //! The brightest light, in nits, the display says content should have, or 0
+  //! when its HDR static metadata leaves it unset
+  float GetMaxLuminance() const;
+
 private:
   explicit CDisplayInfo(const std::vector<uint8_t>& edid);
 
