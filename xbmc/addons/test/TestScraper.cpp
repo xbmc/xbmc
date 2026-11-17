@@ -10,6 +10,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/Scraper.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/HttpClientFactory.h"
@@ -19,11 +20,14 @@
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "music/Album.h"
+#include "music/Artist.h"
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
 #include "utils/ContentNames.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 
 #include <chrono>
 #include <memory>
@@ -254,4 +258,33 @@ TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> artists;
   EXPECT_NO_THROW(artists = m_scraper->FindArtist(*http, "Artist"));
   EXPECT_TRUE(artists.empty());
+}
+
+TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
+{
+  AddonPtr addon;
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(
+      "metadata.local", addon, AddonType::SCRAPER_MOVIES, OnlyEnabled::CHOICE_YES));
+  const auto scraper{std::dynamic_pointer_cast<CScraper>(addon)};
+  ASSERT_NE(nullptr, scraper);
+  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
+  CScraperUrl url;
+  url.AppendUrl(CScraperUrl::SUrlEntry(R"({"tmdb": "1"})"));
+  CVideoInfoTag details;
+  details.SetUniqueID("1", "tmdb", true);
+  CAlbum album;
+  CArtist artist;
+
+  EXPECT_TRUE(scraper->LibPath().empty());
+  EXPECT_TRUE(scraper->IsNoop());
+  EXPECT_FALSE(scraper->NfoUrl("https://www.themoviedb.org/movie/1").HasUrls());
+  EXPECT_TRUE(scraper->FindMovie(*http, "Film", 2001, true).empty());
+  EXPECT_FALSE(scraper->GetArtwork(*http, details));
+  EXPECT_FALSE(scraper->GetVideoDetails(*http, {{"tmdb", "1"}}, url, true, details));
+  EXPECT_TRUE(scraper->GetEpisodeList(*http, url).empty());
+  EXPECT_FALSE(scraper->ResolveIDToUrl("1").HasUrls());
+  EXPECT_TRUE(scraper->FindAlbum(*http, "Album", "Artist").empty());
+  EXPECT_TRUE(scraper->FindArtist(*http, "Artist").empty());
+  EXPECT_FALSE(scraper->GetAlbumDetails(*http, url, album));
+  EXPECT_FALSE(scraper->GetArtistDetails(*http, url, "Artist", artist));
 }

@@ -109,6 +109,7 @@ public:
   bool Supports(ContentType content) const;
 
   bool IsInUse() const override;
+
   bool IsNoop();
   bool IsPython() const { return m_isPython; }
 

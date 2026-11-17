@@ -77,6 +77,8 @@ const std::array<ContentMapping, 6> content = {{
 }};
 // clang-format on
 
+constexpr std::string_view LOCAL_SCRAPER_ID{"metadata.local"};
+
 // if the XML root is <error>, throw CScraperError with enclosed <title>/<message> values
 void CheckScraperError(const TiXmlElement* pxeRoot)
 {
@@ -428,10 +430,11 @@ bool CScraper::IsInUse() const
 
 bool CScraper::IsNoop()
 {
-  if (!Load())
-    throw CScraperError();
+  if (ID() == LOCAL_SCRAPER_ID)
+    return true;
 
-  return !m_isPython && m_parser.IsNoop();
+  // An xml scraper that doesn't load isn't one that does nothing: each call to it fails
+  return !m_isPython && Load() && m_parser.IsNoop();
 }
 
 // pass in contents of .nfo file; returns URL (possibly empty if none found)
@@ -526,6 +529,8 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 {
   CScraperUrl scurlRet;
+  if (IsNoop())
+    return scurlRet;
 
   if (m_isPython)
   {
@@ -1337,7 +1342,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
 VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
 {
   VIDEO::EPISODELIST vcep;
-  if (!scurl.HasUrls())
+  if (!scurl.HasUrls() || IsNoop())
     return vcep;
 
   CLog::LogF(LOGDEBUG, "Searching '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
@@ -1438,6 +1443,9 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
 {
+  if (IsNoop())
+    return false;
+
   // The id as well as the url, since an xml scraper is given both and two search results can
   // carry the same url under different ids
   const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
@@ -1518,6 +1526,9 @@ bool CScraper::GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
+  if (IsNoop())
+    return false;
+
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
@@ -1550,7 +1561,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
                                 const std::string& sSearch,
                                 CArtist& artist)
 {
-  if (!scurl.HasUrls())
+  if (!scurl.HasUrls() || IsNoop())
     return false;
 
   CLog::LogF(LOGDEBUG,
@@ -1587,7 +1598,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
 
 bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
 {
-  if (!details.HasUniqueID())
+  if (!details.HasUniqueID() || IsNoop())
     return false;
 
   CLog::LogF(LOGDEBUG,
