@@ -58,7 +58,7 @@ One binary serves both environments and picks the HTTP backend at runtime:
 | | Tizen (sockets) | Other browsers |
 |---|---|---|
 | `http`, `https` | `CCurlFile` (libcurl) | `CXhrFile` (XMLHttpRequest, `xbmc/filesystem/wasm/`) |
-| Scrapers, `CreateHttpClient()` | `CCurlHttpClient` | `CXhrHttpClient` |
+| `CreateHttpClient()` | `CCurlHttpClient` | `CXhrHttpClient` |
 | `CCurlFile::GetMimeType` and friends | libcurl | forwarded to `CXhrFile` |
 
 FileFactory makes the choice, so code that goes through `CFile` needs no

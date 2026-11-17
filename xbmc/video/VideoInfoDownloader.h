@@ -25,10 +25,6 @@ namespace ADDON
 {
 class CScraperError;
 }
-namespace XFILE
-{
-class IHttpClient;
-}
 
 typedef std::vector<CScraperUrl> MOVIELIST;
 
@@ -73,7 +69,6 @@ protected:
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
 
-  std::unique_ptr<XFILE::IHttpClient> m_http;
   std::string         m_movieTitle;
   int                 m_movieYear;
   ADDON::CScraper::UniqueIDs m_uniqueIDs;

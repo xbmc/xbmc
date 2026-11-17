@@ -171,9 +171,6 @@ CVideoInfoScanner::CVideoInfoScanner()
 
 CVideoInfoScanner::~CVideoInfoScanner()
 {
-  // Clear cache for all used scrapers
-  for (auto& [_, scraper] : m_scraperCache)
-    scraper->ClearCache();
 }
 
   void CVideoInfoScanner::Process()
@@ -2045,7 +2042,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); })};
       if (updateSeasonArt)
       {
-        if (!alreadyHasArt && !item->IsPlugin() && scraper->ID() != "metadata.local")
+        if (!alreadyHasArt && !item->IsPlugin())
         {
           CVideoInfoDownloader loader(scraper);
           CVideoInfoTag tag{showInfo};
@@ -2053,7 +2050,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           showInfo.m_strPictureURL = tag.m_strPictureURL; // We only want artwork
         }
         const CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt{
-            scraper->ID() == "metadata.local" && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
+            scraper->IsLocalInformationOnly() && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
                 ? CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::NO
                 : CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES};
         CVideoInfoScannerArt::GetSeasonThumbs(
@@ -2401,7 +2398,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     const ContentType content{
         !scraper || contentOverride != ContentType::NONE ? contentOverride : scraper->Content()};
-    const bool usingLocalScraper{!scraper || scraper->ID() == "metadata.local"};
+    const bool usingLocalScraper{!scraper || scraper->IsLocalInformationOnly()};
     const CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt{
         usingLocalScraper && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
             ? CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::NO
@@ -2964,7 +2961,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!hasEpisodeGuide)
       {
         // fetch episode guide
-        if (!showInfo.m_strEpisodeGuide.empty() && scraper->ID() != "metadata.local")
+        if (!showInfo.m_strEpisodeGuide.empty() && !scraper->IsLocalInformationOnly())
         {
           CScraperUrl url;
           url.ParseAndAppendUrlsFromEpisodeGuide(showInfo.m_strEpisodeGuide);

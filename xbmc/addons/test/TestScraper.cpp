@@ -18,8 +18,6 @@
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "filesystem/HttpClientFactory.h"
-#include "filesystem/IHttpClient.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
@@ -237,10 +235,9 @@ TEST_F(TestPythonScraper, ASearchThatFailsIsAnError)
 {
   // Aborted and without a title, as an xml scraper's failed search is: a scan counts a failure
   SearchesFail(true);
-  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   try
   {
-    static_cast<void>(m_scraper->FindMovie(*http, "A search that fails", 2001, true));
+    static_cast<void>(m_scraper->FindMovie("A search that fails", 2001, true));
     ADD_FAILURE() << "A search that failed found nothing";
   }
   catch (const CScraperError& error)
@@ -252,9 +249,8 @@ TEST_F(TestPythonScraper, ASearchThatFailsIsAnError)
 
 TEST_F(TestPythonScraper, ASearchThatFindsNothingIsNoError)
 {
-  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   std::vector<CScraperUrl> found;
-  EXPECT_NO_THROW(found = m_scraper->FindMovie(*http, "A search that finds nothing", 2001, true));
+  EXPECT_NO_THROW(found = m_scraper->FindMovie("A search that finds nothing", 2001, true));
   EXPECT_TRUE(found.empty());
 }
 
@@ -262,12 +258,11 @@ TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
 {
   // The music scanner doesn't catch a scraper's error
   SearchesFail(true);
-  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> albums;
-  EXPECT_NO_THROW(albums = m_scraper->FindAlbum(*http, "Album", "Artist"));
+  EXPECT_NO_THROW(albums = m_scraper->FindAlbum("Album", "Artist"));
   EXPECT_TRUE(albums.empty());
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> artists;
-  EXPECT_NO_THROW(artists = m_scraper->FindArtist(*http, "Artist"));
+  EXPECT_NO_THROW(artists = m_scraper->FindArtist("Artist"));
   EXPECT_TRUE(artists.empty());
 }
 
@@ -278,7 +273,6 @@ TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
       "metadata.local", addon, AddonType::SCRAPER_MOVIES, OnlyEnabled::CHOICE_YES));
   const auto scraper{std::dynamic_pointer_cast<CScraper>(addon)};
   ASSERT_NE(nullptr, scraper);
-  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   CScraperUrl url;
   url.AppendUrl(CScraperUrl::SUrlEntry(R"({"tmdb": "1"})"));
   CVideoInfoTag details;
@@ -287,17 +281,17 @@ TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
   CArtist artist;
 
   EXPECT_TRUE(scraper->LibPath().empty());
-  EXPECT_TRUE(scraper->IsNoop());
+  EXPECT_TRUE(scraper->IsLocalInformationOnly());
   EXPECT_FALSE(scraper->NfoUrl("https://www.themoviedb.org/movie/1").HasUrls());
-  EXPECT_TRUE(scraper->FindMovie(*http, "Film", 2001, true).empty());
-  EXPECT_FALSE(scraper->GetArtwork(*http, details));
-  EXPECT_FALSE(scraper->GetVideoDetails(*http, {{"tmdb", "1"}}, url, true, details));
-  EXPECT_TRUE(scraper->GetEpisodeList(*http, url).empty());
+  EXPECT_TRUE(scraper->FindMovie("Film", 2001, true).empty());
+  EXPECT_FALSE(scraper->GetArtwork(details));
+  EXPECT_FALSE(scraper->GetVideoDetails({{"tmdb", "1"}}, url, true, details));
+  EXPECT_TRUE(scraper->GetEpisodeList(url).empty());
   EXPECT_FALSE(scraper->ResolveIDToUrl("1").HasUrls());
-  EXPECT_TRUE(scraper->FindAlbum(*http, "Album", "Artist").empty());
-  EXPECT_TRUE(scraper->FindArtist(*http, "Artist").empty());
-  EXPECT_FALSE(scraper->GetAlbumDetails(*http, url, album));
-  EXPECT_FALSE(scraper->GetArtistDetails(*http, url, "Artist", artist));
+  EXPECT_TRUE(scraper->FindAlbum("Album", "Artist").empty());
+  EXPECT_TRUE(scraper->FindArtist("Artist").empty());
+  EXPECT_FALSE(scraper->GetAlbumDetails(url, album));
+  EXPECT_FALSE(scraper->GetArtistDetails(url, "Artist", artist));
 }
 
 namespace

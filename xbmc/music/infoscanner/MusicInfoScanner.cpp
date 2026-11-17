@@ -1505,9 +1505,6 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
-  // clear our scraper cache
-  info->ClearCache();
-
   CMusicInfoScraper scraper(info);
   bool bMusicBrainz = false;
   /*
@@ -1772,9 +1769,6 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20320), info->Name()));
     m_handle->SetText(artist.strArtist);
   }
-
-  // clear our scraper cache
-  info->ClearCache();
 
   CMusicInfoScraper scraper(info);
   bool bMusicBrainz = false;

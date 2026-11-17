@@ -52,7 +52,6 @@ TEST_F(TestCurlHttpClient, GetPropertyOnIdleClientReturnsEmpty)
 
 TEST_F(TestCurlHttpClient, CancelAndResetLeaveIdleClientUsable)
 {
-  // CVideoInfoDownloader recycles its client through this Cancel()/Reset() pair.
   m_client.Cancel();
   m_client.Reset();
 

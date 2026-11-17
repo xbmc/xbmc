@@ -239,13 +239,12 @@ CInfoScanner::InfoType CNfoFile::SearchNfoForScraperUrls(CInfoScanner::InfoType 
                      addonType == AddonType::SCRAPER_MUSICVIDEOS};
   for (const auto& scraper : isVideo ? std::vector<ScraperPtr>{info} : GetScrapers(addonType, info))
   {
-    if (scraper->IsNoop())
+    if (scraper->IsLocalInformationOnly())
     {
       m_scurl = CScraperUrl();
       break;
     }
 
-    scraper->ClearCache();
     try
     {
       m_scurl = scraper->NfoUrl(m_doc);

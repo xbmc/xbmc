@@ -8,8 +8,6 @@
 
 #include "MusicInfoScraper.h"
 
-#include "filesystem/HttpClientFactory.h"
-#include "filesystem/IHttpClient.h"
 #include "utils/log.h"
 
 using namespace MUSIC_GRABBER;
@@ -22,8 +20,7 @@ CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr& scraper)
   m_bSucceeded=false;
   m_bCanceled=false;
   m_iAlbum=-1;
-  m_iArtist=-1;
-  m_http = XFILE::CreateHttpClient();
+  m_iArtist = -1;
 }
 
 CMusicInfoScraper::~CMusicInfoScraper(void)
@@ -70,13 +67,13 @@ void CMusicInfoScraper::FindArtistInfo(const std::string& strArtist)
 
 void CMusicInfoScraper::FindAlbumInfo()
 {
-  m_vecAlbums = m_scraper->FindAlbum(*m_http, m_strAlbum, m_strArtist);
+  m_vecAlbums = m_scraper->FindAlbum(m_strAlbum, m_strArtist);
   m_bSucceeded = !m_vecAlbums.empty();
 }
 
 void CMusicInfoScraper::FindArtistInfo()
 {
-  m_vecArtists = m_scraper->FindArtist(*m_http, m_strArtist);
+  m_vecArtists = m_scraper->FindArtist(m_strArtist);
   m_bSucceeded = !m_vecArtists.empty();
 }
 
@@ -105,7 +102,7 @@ void CMusicInfoScraper::LoadAlbumInfo()
   CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
   // Clear album artist credits
   album.GetAlbum().artistCredits.clear();
-  if (album.Load(*m_http,m_scraper))
+  if (album.Load(m_scraper))
     m_bSucceeded=true;
 }
 
@@ -116,7 +113,7 @@ void CMusicInfoScraper::LoadArtistInfo()
 
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
   artist.GetArtist().strArtist.clear();
-  if (artist.Load(*m_http,m_scraper,m_strSearch))
+  if (artist.Load(m_scraper, m_strSearch))
     m_bSucceeded=true;
 }
 
@@ -132,9 +129,7 @@ bool CMusicInfoScraper::Succeeded()
 
 void CMusicInfoScraper::Cancel()
 {
-  m_http->Cancel();
-  m_bCanceled=true;
-  m_http->Reset();
+  m_bCanceled = true;
 }
 
 bool CMusicInfoScraper::IsCanceled()

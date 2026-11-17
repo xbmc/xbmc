@@ -22,7 +22,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
                                                               bool lookInFolder,
                                                               bool forceRefresh)
 {
-  if (item.IsPlugin() && info && info->ID() == "metadata.local")
+  if (item.IsPlugin() && info && info->IsLocalInformationOnly())
   {
     // Direct loading from plugin source with metadata.local scraper
     CVideoTagLoaderPlugin* plugin = new CVideoTagLoaderPlugin(item, forceRefresh);

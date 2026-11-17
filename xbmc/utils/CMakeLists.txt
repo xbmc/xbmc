@@ -59,7 +59,6 @@ set(SOURCES ActorProtocol.cpp
             RssReader.cpp
             ProgressJob.cpp
             SaveFileStateJob.cpp
-            ScraperParser.cpp
             ScraperUrl.cpp
             Screenshot.cpp
             SortUtils.cpp
@@ -175,7 +174,6 @@ set(HEADERS ActorProtocol.h
             RssReader.h
             SaveFileStateJob.h
             ScopeGuard.h
-            ScraperParser.h
             ScraperUrl.h
             Screenshot.h
             Set.h

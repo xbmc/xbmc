@@ -16,11 +16,6 @@
 #include <memory>
 #include <vector>
 
-namespace XFILE
-{
-class IHttpClient;
-}
-
 namespace MUSIC_GRABBER
 {
 class CMusicInfoScraper : public CThread
@@ -76,7 +71,6 @@ protected:
   int m_iArtist;
   bool m_bSucceeded;
   bool m_bCanceled;
-  std::unique_ptr<XFILE::IHttpClient> m_http;
   ADDON::ScraperPtr m_scraper;
 };
 

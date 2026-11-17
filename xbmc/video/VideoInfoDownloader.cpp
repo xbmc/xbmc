@@ -9,8 +9,6 @@
 #include "VideoInfoDownloader.h"
 
 #include "dialogs/GUIDialogProgress.h"
-#include "filesystem/HttpClientFactory.h"
-#include "filesystem/IHttpClient.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -26,7 +24,6 @@ using namespace std::chrono_literals;
 CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr& scraper)
   : CThread("VideoInfoDownloader"), m_info(scraper)
 {
-  m_http = XFILE::CreateHttpClient();
 }
 
 CVideoInfoDownloader::~CVideoInfoDownloader() = default;
@@ -38,7 +35,7 @@ int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int m
 {
   try
   {
-    movielist = m_info->FindMovie(*m_http, movieTitle, movieYear, cleanChars);
+    movielist = m_info->FindMovie(movieTitle, movieYear, cleanChars);
   }
   catch (const ADDON::CScraperError &sce)
   {
@@ -147,7 +144,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
 
 bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details)
 {
-  return m_info->GetArtwork(*m_http, details);
+  return m_info->GetArtwork(details);
 }
 
 bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueIDs,
@@ -185,7 +182,7 @@ bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueID
     return result;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, true /*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(m_uniqueIDs, url, true /*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
@@ -221,7 +218,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
     return result;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, false /*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(m_uniqueIDs, url, false /*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
@@ -257,15 +254,12 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     return result;
   }
   else  // unthreaded
-    return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
+    return !(movieDetails = m_info->GetEpisodeList(url)).empty();
 }
 
 void CVideoInfoDownloader::CloseThread()
 {
-  m_http->Cancel();
   StopThread();
-  m_http->Reset();
   m_state = DO_NOTHING;
   m_found = 0;
 }
-

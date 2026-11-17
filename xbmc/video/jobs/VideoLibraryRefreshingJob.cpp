@@ -303,7 +303,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           tag->SetResumePoint(CBookmark());
 
         if (nfoResult == CInfoScanner::InfoType::FULL && m_item->IsPlugin() &&
-            scraper->ID() == "metadata.local")
+            scraper->IsLocalInformationOnly())
         {
           // get video info and art from plugin source with metadata.local scraper
           if (scraper->Content() == ADDON::ContentType::TVSHOWS && !m_item->IsFolder() &&
@@ -348,7 +348,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // the scraper failed on is ignored anyway. Without an nfo the answer still covers episode
       // nfos and season art, an nfo the lookup above can miss (folder items, or parent_name
       // differing from parent_name_root) and local art.
-      if (needsRefresh && IsModal() && !scraper->IsNoop() && scraper->ID() != "metadata.local" &&
+      if (needsRefresh && IsModal() && !scraper->IsLocalInformationOnly() &&
           nfoResult != CInfoScanner::InfoType::ERROR_NFO &&
           (nfoResult != CInfoScanner::InfoType::NONE ||
            scraper->Content() == ADDON::ContentType::TVSHOWS || VIDEO::IsBrowsableFolder(*m_item) ||
@@ -387,8 +387,6 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         if (!value.empty())
           uniqueIDs.try_emplace(type, value);
       }
-      if (!uniqueIDs.empty())
-        scraper->ClearCache();
     }
 
     // if we don't have an url or need to refresh anyway do the web search
@@ -397,9 +395,6 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       SetTitle(StringUtils::Format(localizeStrings.Get(197), scraper->Name()));
       SetText(itemTitle);
       SetProgress(0);
-
-      // clear any cached data from the scraper
-      scraper->ClearCache();
 
       // create the info downloader for the scraper
       CVideoInfoDownloader infoDownloader(scraper);
@@ -491,7 +486,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // a local scraper has nothing to search, so another title cannot help and asking for one
       // would only bring us back here
-      if (IsModal() && scraper->ID() != "metadata.local")
+      if (IsModal() && !scraper->IsLocalInformationOnly())
       {
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(
