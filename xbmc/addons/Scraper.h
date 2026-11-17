@@ -50,22 +50,9 @@ std::string TranslateContent(ContentType content, bool pretty = false);
 ContentType TranslateContent(std::string_view string);
 AddonType ScraperTypeFromContent(ContentType content);
 
-// thrown as exception to signal abort or show error dialog
+//! Thrown when a scraper's search fails, rather than finding nothing
 class CScraperError
 {
-public:
-  CScraperError() = default;
-  CScraperError(const std::string &sTitle, const std::string &sMessage) :
-    m_fAborted(false), m_sTitle(sTitle), m_sMessage(sMessage) {}
-
-  bool FAborted() const { return m_fAborted; }
-  const std::string &Title() const { return m_sTitle; }
-  const std::string &Message() const { return m_sMessage; }
-
-private:
-  bool m_fAborted = true;
-  std::string m_sTitle;
-  std::string m_sMessage;
 };
 
 class CScraper : public CAddon
@@ -121,7 +108,13 @@ public:
    */
   CScraperUrl ResolveIDToUrl(const std::string &externalID);
 
-  std::vector<CScraperUrl> FindMovie(const std::string& movieTitle, int movieYear, bool fFirst);
+  /*! \brief Search for a movie, show or music video by its title and year. A search that finds
+   nothing is made again with the title cleaned less.
+   \param movieTitle the title, cleaned here when no year is given
+   \param movieYear the year, or -1 if it isn't known
+   \throws CScraperError if a search fails
+   */
+  std::vector<CScraperUrl> FindMovie(const std::string& movieTitle, int movieYear);
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(const std::string& sAlbum,
                                                         const std::string& sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(const std::string& sArtist);
@@ -160,7 +153,8 @@ private:
    */
   std::string GetPathSettingsAsJSON();
 
-  //! \brief FindMovie without the result cache in front of it
+  //! \brief One of FindMovie's searches, without the result cache in front of it. Without fFirst,
+  //! the title is cleaned less.
   std::vector<CScraperUrl> FindMovieUncached(const std::string& movieTitle,
                                              int movieYear,
                                              bool fFirst);

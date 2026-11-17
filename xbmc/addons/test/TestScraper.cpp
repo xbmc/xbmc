@@ -233,25 +233,17 @@ protected:
 
 TEST_F(TestPythonScraper, ASearchThatFailsIsAnError)
 {
-  // Aborted and without a title, as an xml scraper's failed search is: a scan counts a failure
   SearchesFail(true);
-  try
-  {
-    static_cast<void>(m_scraper->FindMovie("A search that fails", 2001, true));
-    ADD_FAILURE() << "A search that failed found nothing";
-  }
-  catch (const CScraperError& error)
-  {
-    EXPECT_TRUE(error.FAborted());
-    EXPECT_EQ("", error.Title());
-  }
+  EXPECT_THROW(static_cast<void>(m_scraper->FindMovie("A search that fails", 2001)), CScraperError);
+  EXPECT_EQ(1U, Threads().size()); // not made again
 }
 
 TEST_F(TestPythonScraper, ASearchThatFindsNothingIsNoError)
 {
   std::vector<CScraperUrl> found;
-  EXPECT_NO_THROW(found = m_scraper->FindMovie("A search that finds nothing", 2001, true));
+  EXPECT_NO_THROW(found = m_scraper->FindMovie("A search that finds nothing", 2001));
   EXPECT_TRUE(found.empty());
+  EXPECT_EQ(2U, Threads().size()); // made again, with the title cleaned less
 }
 
 TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
@@ -283,7 +275,7 @@ TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
   EXPECT_TRUE(scraper->LibPath().empty());
   EXPECT_TRUE(scraper->IsLocalInformationOnly());
   EXPECT_FALSE(scraper->NfoUrl("https://www.themoviedb.org/movie/1").HasUrls());
-  EXPECT_TRUE(scraper->FindMovie("Film", 2001, true).empty());
+  EXPECT_TRUE(scraper->FindMovie("Film", 2001).empty());
   EXPECT_FALSE(scraper->GetArtwork(details));
   EXPECT_FALSE(scraper->GetVideoDetails({{"tmdb", "1"}}, url, true, details));
   EXPECT_TRUE(scraper->GetEpisodeList(url).empty());

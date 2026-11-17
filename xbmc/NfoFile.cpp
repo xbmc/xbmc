@@ -18,7 +18,6 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
-#include "video/VideoInfoDownloader.h"
 
 #include <cstdint>
 #include <memory>
@@ -245,16 +244,7 @@ CInfoScanner::InfoType CNfoFile::SearchNfoForScraperUrls(CInfoScanner::InfoType 
       break;
     }
 
-    try
-    {
-      m_scurl = scraper->NfoUrl(m_doc);
-    }
-    catch (const CScraperError& sce)
-    {
-      CVideoInfoDownloader::ShowErrorDialog(sce);
-      if (!sce.FAborted())
-        return ERROR_NFO;
-    }
+    m_scurl = scraper->NfoUrl(m_doc);
 
     if (m_scurl.HasUrls())
       return (parseResult == FULL || parseResult == OVERRIDE) ? COMBINED : URL;

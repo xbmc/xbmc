@@ -1985,15 +1985,7 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
   // Get a scraper that can resolve it to a MusicBrainz URL & force our
   // search directly to the specific album.
   bool bMusicBrainz = false;
-  try
-  {
-    musicBrainzURL = preferredScraper->ResolveIDToUrl(strMusicBrainzID);
-  }
-  catch (const ADDON::CScraperError &sce)
-  {
-    if (sce.FAborted())
-      return false;
-  }
+  musicBrainzURL = preferredScraper->ResolveIDToUrl(strMusicBrainzID);
 
   if (musicBrainzURL.HasUrls())
   {

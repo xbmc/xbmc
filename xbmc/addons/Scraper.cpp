@@ -635,19 +635,17 @@ std::string SerialiseUniqueIDs(const ADDON::CScraper::UniqueIDs& uniqueIDs)
 }
 } // unnamed namespace
 
-// fetch list of matching movies (may be empty);
-// throws CScraperError if the search fails; first called with fFirst set, then unset if first try
-// finds nothing
-std::vector<CScraperUrl> CScraper::FindMovie(const std::string& movieTitle,
-                                             int movieYear,
-                                             bool fFirst)
+std::vector<CScraperUrl> CScraper::FindMovie(const std::string& movieTitle, int movieYear)
 {
   // The title is cleaned below, so the arguments as given identify the search
-  const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
+  const std::string key{StringUtils::Format("{}\n{}", movieTitle, movieYear)};
   if (const auto it = m_findCache.find(key); it != m_findCache.end())
     return it->second;
 
-  auto result = FindMovieUncached(movieTitle, movieYear, fFirst);
+  auto result = FindMovieUncached(movieTitle, movieYear, true);
+  // nothing found: try again without cleaning characters like '.' and '_'
+  if (result.empty())
+    result = FindMovieUncached(movieTitle, movieYear, false);
 
   if (!result.empty())
   {
