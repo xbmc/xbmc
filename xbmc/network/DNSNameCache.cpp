@@ -135,7 +135,11 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 
     if (!strIpAddress.empty())
     {
-      Add(strHostName, strIpAddress);
+      // Insert only if still absent: an entry added while getaddrinfo was
+      // running (e.g. a permanent override) must not be replaced.
+      std::lock_guard lock(m_critical);
+      m_hostToIp.emplace(strHostName,
+                         CacheEntry(strIpAddress, std::chrono::steady_clock::now() + TTL));
       return true;
     }
   }
