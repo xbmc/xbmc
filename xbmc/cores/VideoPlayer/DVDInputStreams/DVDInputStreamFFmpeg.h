@@ -24,9 +24,6 @@ public:
   int64_t GetLength() override;
   std::string GetFileName() override;
 
-  void  Abort() override { m_aborted = true;  }
-  bool Aborted() { return m_aborted;  }
-
   const CFileItem& GetItem() const { return m_item; }
 
   std::string GetProxyType() const;
@@ -34,7 +31,4 @@ public:
   uint16_t GetProxyPort() const;
   std::string GetProxyUser() const;
   std::string GetProxyPassword() const;
-
-protected:
-  bool m_aborted = false;
 };

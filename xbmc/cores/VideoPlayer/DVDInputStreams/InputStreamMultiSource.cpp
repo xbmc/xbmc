@@ -29,6 +29,7 @@ CInputStreamMultiSource::~CInputStreamMultiSource()
 
 void CInputStreamMultiSource::Abort()
 {
+  CDVDInputStream::Abort();
   for (const auto& iter : m_InputStreams)
     iter->Abort();
 }
