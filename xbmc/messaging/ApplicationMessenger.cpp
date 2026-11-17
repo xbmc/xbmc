@@ -11,13 +11,16 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
+#include "threads/Event.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <atomic>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <utility>
 
 namespace KODI
@@ -117,18 +120,10 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
 
   ThreadMessage* msg = new ThreadMessage(std::move(message));
 
-  std::unique_lock lock(m_critSection);
+  // once queued the app thread may process and delete msg, so touching it after
+  // this is a race (yarc - "yet another race condition")
+  Enqueue(msg);
 
-  if (msg->dwMessage == TMSG_GUI_MESSAGE)
-    m_vecWindowMessages.push(msg);
-  else
-    m_vecMessages.push(msg);
-  lock.unlock(); // this releases the lock on the vec of messages and
-      //   allows the ProcessMessage to execute and therefore
-      //   delete the message itself. Therefore any access
-      //   of the message itself after this point constitutes
-      //   a race condition (yarc - "yet another race condition")
-      //
   if (waitEvent) // ... it just so happens we have a spare reference to the
                  //  waitEvent ... just for such contingencies :)
   {
@@ -148,6 +143,15 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   return -1;
 }
 
+void CApplicationMessenger::Enqueue(ThreadMessage* msg)
+{
+  std::unique_lock lock(m_critSection);
+  if (msg->dwMessage == TMSG_GUI_MESSAGE)
+    m_vecWindowMessages.push(msg);
+  else
+    m_vecMessages.push(msg);
+}
+
 int CApplicationMessenger::SendMsg(uint32_t messageId)
 {
    return SendMsg(ThreadMessage{ messageId }, true);
@@ -156,6 +160,41 @@ int CApplicationMessenger::SendMsg(uint32_t messageId)
 int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload)
 {
   return SendMsg(ThreadMessage{ messageId, param1, param2, payload }, true);
+}
+
+bool CApplicationMessenger::SendMsgAbortable(
+    uint32_t messageId, int param1, int param2, void* payload, CEvent& abortEvent)
+{
+  if (m_guiThreadId == CThread::GetCurrentThreadId())
+  {
+    SendMsg(messageId, param1, param2, payload);
+    return true;
+  }
+
+  if (m_bStop || abortEvent.Signaled())
+    return false;
+
+  auto waitEvent = std::make_shared<CEvent>(true);
+  auto claimed = std::make_shared<std::atomic<bool>>(false);
+  ThreadMessage* msg = new ThreadMessage{messageId, param1, param2, payload};
+  msg->waitEvent = waitEvent;
+  msg->claimed = claimed;
+  Enqueue(msg); // msg may be deleted from here on
+
+  // ensure the thread doesn't hold the graphics lock
+  std::optional<CSingleExit> exit;
+  if (CWinSystemBase* winSystem = CServiceBroker::GetWinSystem(); winSystem)
+    exit.emplace(winSystem->GetGfxContext());
+
+  {
+    XbmcThreads::CEventGroup group{waitEvent.get(), &abortEvent};
+    // drop it, unless the app thread has already taken it
+    if (group.wait() == &abortEvent && !claimed->exchange(true))
+      return false;
+  }
+  waitEvent->Wait();
+  // not claimed if Cleanup() released it at shutdown
+  return claimed->load();
 }
 
 int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
@@ -228,6 +267,10 @@ void CApplicationMessenger::ProcessMessages()
 
 void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 {
+  // the sender gave up waiting and dropped it
+  if (pMsg->claimed && pMsg->claimed->exchange(true))
+    return;
+
   //special case for this that we handle ourselves
   if (pMsg->dwMessage == TMSG_CALLBACK)
   {
