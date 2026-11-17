@@ -180,8 +180,8 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
     // unique strings grow the cache without bound.
     while (!m_list.ageMap.empty())
     {
-      const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-          now - m_list.ageMap.begin()->first);
+      const auto duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(now - m_list.ageMap.begin()->first);
       if (duration <= FONT_CACHE_TIME_LIMIT)
         break;
 
