@@ -181,6 +181,8 @@ void CGameWindowFullScreen::OnInitWindow()
   // Switch resolution
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true); //! @todo
 
+  CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(true);
+
   CGUIWindow::OnInitWindow();
 
   GAME::CDialogGameIndicators::SetOverGame(true);
@@ -212,6 +214,8 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
   GAME::CDialogGameIndicators::SetOverGame(false);
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
+
+  CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(false);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
 }
