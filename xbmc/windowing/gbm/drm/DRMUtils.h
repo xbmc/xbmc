@@ -29,6 +29,7 @@ namespace GBM
 {
 
 constexpr const char* SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
+constexpr const char* SETTING_VIDEOSCREEN_COLORRANGE = "videoscreen.colorrange";
 
 // https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
 // gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
@@ -60,6 +61,7 @@ public:
   virtual void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) {}
   virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) { return false; }
   virtual bool SetActive(bool active) { return false; }
+  virtual void RequestModeset() {}
   virtual bool InitDrm();
   virtual void DestroyDrm();
   virtual bool SupportsFencing() { return false; }
