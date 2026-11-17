@@ -87,8 +87,9 @@ void ILanguageInvoker::onExecutionFinalized()
 
 void ILanguageInvoker::setState(InvokerState state)
 {
-  if (state <= m_state)
-    return;
-
-  m_state = state;
+  // Only ever forward, though the thread stopping a script can set its state as the script ends
+  InvokerState previous{m_state.load()};
+  while (state > previous && !m_state.compare_exchange_weak(previous, state))
+  {
+  }
 }

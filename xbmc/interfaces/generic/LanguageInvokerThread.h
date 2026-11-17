@@ -68,5 +68,6 @@ private:
   std::mutex m_mutex;
   std::condition_variable m_condition;
   std::atomic<bool> m_restart{false};
-  bool m_reusable = false;
+  //! Read by the manager as its last run ends
+  std::atomic<bool> m_reusable{false};
 };
