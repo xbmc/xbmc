@@ -162,6 +162,8 @@ print_crash_report()
 
 propagate_sigterm() {
   kill -TERM "$CHILD" 2>/dev/null
+  wait "$CHILD" 2>/dev/null
+  exit 143
 }
 
 trap propagate_sigterm TERM
