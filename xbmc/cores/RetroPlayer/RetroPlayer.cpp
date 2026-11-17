@@ -758,7 +758,8 @@ void CRetroPlayer::ResetPlayback()
 
 void CRetroPlayer::OpenOSD()
 {
-  CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_GAME_OSD);
+  // Posted, as the OSD is modal and a pause can come in a message its sender waits on
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_DIALOG_GAME_OSD, 0);
 }
 
 void CRetroPlayer::CloseOSD()
