@@ -25,8 +25,8 @@
 #define CacheLocalFile CWin32File
 #endif // TARGET_WINDOWS
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 #include <mutex>
 
 using namespace XFILE;
