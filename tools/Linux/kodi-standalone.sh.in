@@ -40,7 +40,7 @@ do
   else # crash
     DIFF=$((NOW-LASTSUCCESSFULSTART))
     if [ $DIFF -gt 60 ]; then # Not on startup, ignore
-      LASTSUCESSFULSTART=$NOW
+      LASTSUCCESSFULSTART=$NOW
       CRASHCOUNT=0
     else # at startup, look sharp
       CRASHCOUNT=$((CRASHCOUNT+1))
