@@ -1648,8 +1648,13 @@ bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
              details.GetUniqueID(), Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
-    return PythonDetails(ID(), "id", details.GetUniqueID(),
-      "getartwork", GetPathSettingsAsJSON(), details);
+  {
+    // The unique ids too, with their types: the default can be another site's id, such as the
+    // TVDB id an nfo file made the default, which the scraper would take for one of its own
+    const auto& ids = details.GetUniqueIDs();
+    return PythonDetails(ID(), "id", details.GetUniqueID(), "getartwork", GetPathSettingsAsJSON(),
+                         UniqueIDs(ids.begin(), ids.end()), details);
+  }
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;

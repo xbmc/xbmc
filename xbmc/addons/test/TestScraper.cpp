@@ -24,8 +24,11 @@
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
 #include "utils/ContentNames.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <chrono>
@@ -92,7 +95,8 @@ enum class SearchEnd
 };
 
 //! What the runs of the scraper share: how many have started, how many run at once, whether they
-//! may finish, and the threads they ran on; and how the searches end
+//! may finish, and the threads they ran on; how the searches end; and the options each run was
+//! given
 struct SSearches
 {
   std::mutex lock;
@@ -103,12 +107,13 @@ struct SSearches
   bool finish{false};
   std::vector<int> threads;
   SearchEnd searchEnd{SearchEnd::FINDS_THE_TITLE};
+  std::vector<std::string> options;
 };
 
 /*!
  \brief Stands in for the python interpreter running a scraper: a search for a title finds one
  movie, by that title, once the search may finish, unless searches are to find nothing or to fail,
- ending their listing as unsuccessful.
+ ending their listing as unsuccessful. An artwork request reads a movie called 'Details'.
  */
 class CSearchingInvoker : public ILanguageInvoker
 {
@@ -127,6 +132,7 @@ protected:
     const int handle{std::stoi(arguments[1])};
     const CURL options{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + arguments[2]};
     const std::string title{options.GetOption("title")};
+    const std::string action{options.GetOption("action")};
     SearchEnd searchEnd{SearchEnd::FINDS_THE_TITLE};
     {
       std::unique_lock lock(m_searches.lock);
@@ -134,18 +140,28 @@ protected:
       m_searches.most = std::max(m_searches.most, ++m_searches.running);
       if (std::ranges::find(m_searches.threads, GetId()) == m_searches.threads.end())
         m_searches.threads.push_back(GetId());
+      m_searches.options.push_back(arguments[2]);
       searchEnd = m_searches.searchEnd;
       m_searches.changed.notify_all();
       m_searches.changed.wait_for(lock, TIMEOUT, [this] { return m_searches.finish; });
     }
 
-    if (searchEnd == SearchEnd::FINDS_THE_TITLE)
+    if (action == "getartwork")
     {
-      CFileItem movie{"http://movies.invalid/" + title, false};
-      movie.SetLabel(title);
-      XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
+      CFileItem movie{"Details"};
+      movie.GetVideoInfoTag()->SetTitle("Details");
+      XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &movie);
     }
-    XFILE::CPluginDirectory::EndOfDirectory(handle, searchEnd != SearchEnd::FAILS, false, false);
+    else
+    {
+      if (searchEnd == SearchEnd::FINDS_THE_TITLE)
+      {
+        CFileItem movie{"http://movies.invalid/" + title, false};
+        movie.SetLabel(title);
+        XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
+      }
+      XFILE::CPluginDirectory::EndOfDirectory(handle, searchEnd != SearchEnd::FAILS, false, false);
+    }
 
     std::unique_lock lock(m_searches.lock);
     setState(InvokerStateScriptDone);
@@ -284,6 +300,16 @@ protected:
     return m_handler.m_searches.threads;
   }
 
+  //! The options each run of the scraper was given, as a plugin's url gives them
+  std::vector<CURL> Options()
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    std::vector<CURL> options;
+    for (const std::string& option : m_handler.m_searches.options)
+      options.emplace_back("plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + option);
+    return options;
+  }
+
   CSearchingHandler m_handler;
   bool m_registered{false};
   std::string m_folder;
@@ -389,4 +415,24 @@ TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> artists;
   EXPECT_NO_THROW(artists = m_scraper->FindArtist(*http, "Artist"));
   EXPECT_TRUE(artists.empty());
+}
+
+TEST_F(TestPythonScraper, AnArtworkRequestIsGivenTheUniqueIDs)
+{
+  // An nfo file can make another site's id the default, which the scraper can't tell from its own
+  CVideoInfoTag show;
+  show.SetUniqueID("381020", "tvdb", true);
+  show.SetUniqueID("112162", "tmdb");
+  Finish();
+  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
+  EXPECT_TRUE(m_scraper->GetArtwork(*http, show));
+
+  const std::vector<CURL> requests{Options()};
+  ASSERT_EQ(1u, requests.size());
+  EXPECT_EQ("getartwork", requests[0].GetOption("action"));
+  EXPECT_EQ("381020", requests[0].GetOption("id"));
+  CVariant ids;
+  ASSERT_TRUE(CJSONVariantParser::Parse(requests[0].GetOption("uniqueIDs"), ids));
+  EXPECT_EQ("112162", ids["tmdb"].asString());
+  EXPECT_EQ("381020", ids["tvdb"].asString());
 }
