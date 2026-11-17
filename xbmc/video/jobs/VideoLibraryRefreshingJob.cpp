@@ -185,6 +185,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           if (!onlineFound && overview.empty() && !movie->GetVideoInfoTag()->GetTitle().empty())
           {
             scraper = db.GetScraperForPath(movie->GetDynPath(), scanSettings);
+            if (!scraper)
+              continue;
             CVideoInfoDownloader infoDownloader{scraper};
             MOVIELIST itemResultList;
             infoDownloader.FindMovie(movie->GetVideoInfoTag()->GetTitle(),

@@ -1671,6 +1671,24 @@ TEST_F(TestVideoInfoScanner, AMovieIsLookedUpWithItsPathsScraperWhenItsNfoNamesA
   EXPECT_EQ("Film from the path's scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
 }
 
+// The nfo gives the set no overview, so its movie's path is asked for a scraper to look it up with
+TEST_F(TestVideoInfoScanner, ARefreshOfASetPassesOverAMovieWithAScraperKodiNoLongerHas)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  File(folder, "movie.nfo", "<movie><title>Film</title><set><name>Films</name></set></movie>");
+  File(folder, "Film (2010).mkv");
+  Scan();
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET strScraper='metadata.gone.videoinfoscanner' WHERE idPath=%i",
+                      m_db.GetPathId(m_root))));
+  const auto set{std::make_shared<CFileItem>()};
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetSetInfo(m_db.GetSingleValueInt("SELECT idSet FROM sets"), tag, set.get()));
+
+  TestRefreshingJob refresh{set, true, false};
+  EXPECT_TRUE(refresh.Work(m_db));
+}
+
 // Movie extras
 
 TEST_F(TestVideoInfoScanner, AMovieFolderGetsItsExtras)

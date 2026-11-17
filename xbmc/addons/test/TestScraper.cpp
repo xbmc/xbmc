@@ -9,6 +9,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/AddonVersion.h"
 #include "addons/Repository.h"
 #include "addons/Scraper.h"
@@ -28,9 +29,13 @@
 #include "music/Artist.h"
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/ContentNames.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/XBMCTinyXML2.h"
 #include "video/VideoInfoTag.h"
 
@@ -363,4 +368,28 @@ TEST(TestScraper, AScraperARepositoryListsIsKnownByItsLibrary)
     // An xml scraper is made a plain add-on, so a path that names it doesn't keep it in use
     EXPECT_EQ(python, std::dynamic_pointer_cast<CScraper>(addon) != nullptr);
   }
+}
+
+TEST(TestScraper, ADefaultScraperKodiNoLongerHasGivesWayToTheSettingsDefault)
+{
+  const auto id{CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER};
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const auto setting{std::dynamic_pointer_cast<const CSettingString>(settings->GetSetting(id))};
+  ASSERT_NE(nullptr, setting);
+  ASSERT_FALSE(setting->GetDefault().empty());
+  const std::string was{settings->GetString(id)};
+  // An installed scraper is the one used
+  const std::vector<std::pair<std::string, std::string>> savedAndUsed{
+      {"metadata.local", "metadata.local"}, {"metadata.album.universal", setting->GetDefault()}};
+  for (const auto& [saved, used] : savedAndUsed)
+  {
+    CXBMCTinyXML xml;
+    EXPECT_TRUE(xml.Parse(R"(<settings version="2"><setting id="musiclibrary.albumsscraper">)" +
+                          saved + "</setting></settings>"));
+    EXPECT_TRUE(settings->LoadSetting(xml.RootElement(), id));
+    AddonPtr addon;
+    EXPECT_TRUE(CAddonSystemSettings::GetInstance().GetActive(AddonType::SCRAPER_ALBUMS, addon));
+    EXPECT_EQ(used, addon ? addon->ID() : "");
+  }
+  settings->SetString(id, was);
 }
