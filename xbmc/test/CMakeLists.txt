@@ -1,4 +1,5 @@
 set(SOURCES TestAutoSwitch.cpp
+            TestBackgroundInfoLoader.cpp
             TestBasicEnvironment.cpp
             TestCueDocument.cpp
             TestDateTime.cpp
