@@ -232,10 +232,12 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   {
     CLog::Log(LOGERROR,
               "RendererDRMPRIMEGLES::Configure: fourcc {:#x} cannot be converted to limited "
-              "range; switching videoscreen.limitedrange off so the GUI matches the video",
+              "range; switching the limited colour range off so the GUI matches the video",
               sourceFourcc);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-        CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE, false);
+    const auto rangeSettings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    rangeSettings->SetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE, false);
+    if (rangeSettings->GetSetting("videoscreen.colorrange"))
+      rangeSettings->SetInt("videoscreen.colorrange", 0);
   }
 
   winSystem->SetColorimetry(&picture);

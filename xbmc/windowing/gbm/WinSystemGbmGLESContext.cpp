@@ -9,6 +9,7 @@
 #include "WinSystemGbmGLESContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAOpenGLES.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
@@ -20,6 +21,8 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 
 extern "C"
@@ -191,11 +194,24 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
 
 bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
 {
-  return m_guiComposite.Enable(colorTransfer, UseLimitedColor());
+  m_guiColorTransfer = colorTransfer;
+  m_compositeShaderLimited = UseLimitedColor();
+  return m_guiComposite.Enable(colorTransfer, m_compositeShaderLimited);
 }
 
 bool CWinSystemGbmGLESContext::BeginGuiComposite(bool guiWillRender)
 {
+  // the range is a compile time define, rebuild the shader when it changes
+  if (m_guiComposite.IsActive() && m_compositeShaderLimited != UseLimitedColor())
+  {
+    m_guiComposite.Disable();
+    if (!SetGuiCompositing(m_guiColorTransfer))
+      return false;
+    // a skipped GUI walk would leave the GUI plane with the old range
+    if (!guiWillRender)
+      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+  }
+
   return m_guiComposite.Begin(guiWillRender, m_nWidth, m_nHeight, true);
 }
 
