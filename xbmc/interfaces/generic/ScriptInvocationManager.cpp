@@ -59,9 +59,15 @@ void CScriptInvocationManager::Process()
                 [&paths = m_scriptPaths](const auto& it)
                 {
                   const auto& [key, script] = it;
-                  if (script.done)
-                    paths.erase(script.script);
-                  return script.done;
+                  if (!script.done)
+                    return false;
+                  // Only this run's: other runs of the script can still be running
+                  const auto [first, last] = paths.equal_range(script.script);
+                  if (const auto path = std::find_if(first, last, [id = key](const auto& entry)
+                                                     { return entry.second == id; });
+                      path != last)
+                    paths.erase(path);
+                  return true;
                 });
 
   // we can leave the lock now
@@ -580,12 +586,19 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
 void CScriptInvocationManager::StopRunningScripts(bool wait /* = false */)
 {
-  std::ranges::for_each(m_scripts,
-                        [wait, this](auto& script)
-                        {
-                          if (!script.second.done)
-                            Stop(script.second.script, wait);
-                        });
+  // Each run, as a script can have several at once
+  std::vector<int> running;
+  {
+    std::unique_lock lock(m_critSection);
+    for (const auto& [id, script] : m_scripts)
+    {
+      if (!script.done)
+        running.push_back(id);
+    }
+  }
+
+  for (const int id : running)
+    Stop(id, wait);
 }
 
 void CScriptInvocationManager::NotifyAllScriptsAborting()
@@ -600,12 +613,22 @@ bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* 
   if (scriptPath.empty())
     return false;
 
-  std::unique_lock lock(m_critSection);
-  const auto script = m_scriptPaths.find(scriptPath);
-  if (script == m_scriptPaths.end())
-    return false;
+  // Each run of the script, as it can have several at once
+  std::vector<int> running;
+  {
+    std::unique_lock lock(m_critSection);
+    const auto [first, last] = m_scriptPaths.equal_range(scriptPath);
+    for (auto script = first; script != last; ++script)
+    {
+      if (IsRunning(script->second))
+        running.push_back(script->second);
+    }
+  }
 
-  return Stop(script->second, wait);
+  bool stopped{false};
+  for (const int id : running)
+    stopped |= Stop(id, wait);
+  return stopped;
 }
 
 bool CScriptInvocationManager::IsRunning(int scriptId) const
@@ -621,11 +644,8 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
 bool CScriptInvocationManager::IsRunning(const std::string& scriptPath) const
 {
   std::unique_lock lock(m_critSection);
-  const auto it = m_scriptPaths.find(scriptPath);
-  if (it == m_scriptPaths.end())
-    return false;
-
-  return IsRunning(it->second);
+  const auto [first, last] = m_scriptPaths.equal_range(scriptPath);
+  return std::any_of(first, last, [this](const auto& script) { return IsRunning(script.second); });
 }
 
 void CScriptInvocationManager::OnExecutionDone(int scriptId)

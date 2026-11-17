@@ -241,7 +241,8 @@ private:
   static constexpr size_t MAX_REUSABLE_THREADS{4};
   std::vector<ReusableThread> m_reusableThreads;
 
-  std::map<std::string, int> m_scriptPaths;
+  //! The runs of each script, which can have several at once
+  std::multimap<std::string, int> m_scriptPaths;
   int m_nextId = 0;
   mutable CCriticalSection m_critSection;
   //! Told when a kept thread is released, or an affinity goes

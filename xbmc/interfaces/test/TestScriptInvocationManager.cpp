@@ -58,6 +58,8 @@ struct SRuns
   std::function<void(int)> ended;
   //! How many times a run was told to stop
   int stops{0};
+  //! The ids of the runs told to stop
+  std::vector<int> stopped;
 };
 
 //! Runs a script by waiting until it may finish
@@ -93,6 +95,7 @@ protected:
     std::unique_lock lock(m_runs.lock);
     m_stopped = true;
     ++m_runs.stops;
+    m_runs.stopped.push_back(GetId());
     m_runs.changed.notify_all();
     return true;
   }
@@ -388,6 +391,42 @@ TEST_F(TestScriptInvocationManager, OnlyAFewThreadsAreKept)
   EXPECT_EQ(-1, Manager().GetReusablePluginHandle(m_script));
   for (const int handle : reused)
     Manager().ReleasePluginHandle(handle);
+}
+
+// The threads kept for a script are still known by its path once a run of it alongside has ended
+TEST_F(TestScriptInvocationManager, AScriptsKeptThreadsAreKnownByItsPathOnceARunAlongsideEnds)
+{
+  std::vector<int> ids;
+  for (int handle = 1001; handle <= 1005; ++handle)
+  {
+    int given{handle};
+    ids.push_back(Start(given));
+  }
+  ASSERT_TRUE(RunningAtOnce(5));
+  ASSERT_TRUE(Finish(5));
+  // The fifth, which isn't kept, ended with its run, and is forgotten
+  ASSERT_TRUE(Eventually([id = ids.back()] { return !Manager().IsRunning(id); }));
+  Manager().Process();
+  ids.pop_back();
+
+  EXPECT_TRUE(Manager().IsRunning(m_script));
+  EXPECT_TRUE(Manager().Stop(m_script));
+  std::unique_lock lock(m_handler.m_runs.lock);
+  EXPECT_EQ(std::set<int>(ids.begin(), ids.end()),
+            std::set<int>(m_handler.m_runs.stopped.begin(), m_handler.m_runs.stopped.end()));
+}
+
+// Each run of a script running at once is stopped, not only one
+TEST_F(TestScriptInvocationManager, StoppingTheRunningScriptsStopsEachRunOfAScript)
+{
+  int first{1001};
+  int second{1002};
+  const std::set<int> ids{Start(first), Start(second)};
+  ASSERT_TRUE(RunningAtOnce(2));
+
+  Manager().StopRunningScripts();
+  std::unique_lock lock(m_handler.m_runs.lock);
+  EXPECT_EQ(ids, std::set<int>(m_handler.m_runs.stopped.begin(), m_handler.m_runs.stopped.end()));
 }
 
 TEST_F(TestScriptInvocationManager, AThreadKeptForAScriptIsLetGoWhenAnotherIsRun)
