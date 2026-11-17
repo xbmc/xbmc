@@ -314,6 +314,8 @@ std::vector<ScraperPtr> GetScrapers(AddonType type, const ScraperPtr& selectedSc
   for (auto& addon : addons)
   {
     ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
+    if (!scraper)
+      continue;
 
     // skip if scraper requires settings and there's nothing set yet
     if (scraper->RequiresSettings() && !scraper->HasUserSettings())

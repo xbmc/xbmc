@@ -7,9 +7,13 @@
  */
 
 #include "ServiceBroker.h"
+#include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
+#include "addons/Repository.h"
 #include "addons/Scraper.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -27,6 +31,7 @@
 #include "utils/ContentNames.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
@@ -34,6 +39,7 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -287,4 +293,74 @@ TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
   EXPECT_TRUE(scraper->FindArtist(*http, "Artist").empty());
   EXPECT_FALSE(scraper->GetAlbumDetails(*http, url, album));
   EXPECT_FALSE(scraper->GetArtistDetails(*http, url, "Artist", artist));
+}
+
+namespace
+{
+//! A scraper extension's point and library
+using Extension = std::pair<std::string, std::string>;
+
+CAddonMgr& Addons()
+{
+  return CServiceBroker::GetAddonMgr();
+}
+
+//! Whether an add-on with these scrapers is compatible. Its info and the add-on built from it
+//! must agree, and only a compatible one's scraper is built as one.
+bool Compatible(const std::vector<Extension>& extensions)
+{
+  std::string xml{
+      R"(<addon id="metadata.test.compatible" name="Test" version="1.0.0" provider-name="Team Kodi">
+  <requires><import addon="xbmc.metadata" version="2.1.0"/></requires>
+)"};
+  for (const auto& [point, library] : extensions)
+    xml += R"(  <extension point=")" + point + R"(" library=")" + library + "\"/>\n";
+  xml += R"(  <extension point="xbmc.addon.metadata"><platform>all</platform></extension>
+</addon>)";
+  CXBMCTinyXML2 doc;
+  EXPECT_TRUE(doc.Parse(xml));
+  const AddonInfoPtr info{CAddonInfoBuilder::Generate(doc.RootElement(), RepositoryDirInfo{})};
+  const AddonPtr addon{CAddonBuilder::Generate(info, AddonType::UNKNOWN)};
+  const bool compatible{Addons().IsCompatible(info)};
+  EXPECT_EQ(compatible, Addons().IsCompatible(addon));
+  EXPECT_EQ(compatible, std::dynamic_pointer_cast<CScraper>(addon) != nullptr);
+  return compatible;
+}
+} // namespace
+
+TEST(TestScraper, AnAddonIsCompatibleOnlyIfItsScrapersArePython)
+{
+  const Extension python{"xbmc.metadata.scraper.movies", "scraper.py"};
+  const Extension python2{"xbmc.metadata.scraper.tvshows", "scraper.py"};
+  const Extension xml{"xbmc.metadata.scraper.albums", "scraper.xml"};
+  const Extension library{"xbmc.metadata.scraper.library", "scraper.xml"};
+
+  EXPECT_TRUE(Compatible({python}));
+  EXPECT_TRUE(Compatible({python, python2}));
+  EXPECT_FALSE(Compatible({xml}));
+  EXPECT_FALSE(Compatible({python, xml}));
+  EXPECT_FALSE(Compatible({xml, python}));
+  EXPECT_FALSE(Compatible({library}));
+  EXPECT_TRUE(Addons().IsCompatible(Addons().GetAddonInfo("metadata.local", AddonType::UNKNOWN)));
+}
+
+TEST(TestScraper, AScraperARepositoryListsIsKnownByItsLibrary)
+{
+  for (const bool python : {false, true})
+  {
+    // As the add-on database builds it, with no library path
+    CAddonInfoBuilderFromDB builder;
+    builder.SetId("metadata.test.compatible");
+    builder.SetVersion(CAddonVersion{"1.0.0"});
+    CAddonType extension{AddonType::SCRAPER_TVSHOWS};
+    extension.Insert("@library", python ? "scraper.py" : "scraper.xml");
+    builder.SetExtensions(extension);
+    const AddonInfoPtr info{builder.get()};
+    const AddonPtr addon{CAddonBuilder::Generate(info, AddonType::SCRAPER_TVSHOWS)};
+
+    EXPECT_EQ(python, Addons().IsCompatible(info));
+    EXPECT_EQ(python, Addons().IsCompatible(addon));
+    // An xml scraper is made a plain add-on, so a path that names it doesn't keep it in use
+    EXPECT_EQ(python, std::dynamic_pointer_cast<CScraper>(addon) != nullptr);
+  }
 }

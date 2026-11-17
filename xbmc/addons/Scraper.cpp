@@ -38,6 +38,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
+#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -179,6 +180,25 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
 bool CScraper::Supports(ContentType content) const
 {
   return Type() == ScraperTypeFromContent(content);
+}
+
+bool CScraper::IsSupported(const CAddonInfo& info)
+{
+  if (info.ID() == LOCAL_SCRAPER_ID)
+    return true;
+
+  static constexpr CSet scraperTypes{
+      AddonType::SCRAPER_ALBUMS,      AddonType::SCRAPER_ARTISTS, AddonType::SCRAPER_MOVIES,
+      AddonType::SCRAPER_MUSICVIDEOS, AddonType::SCRAPER_TVSHOWS, AddonType::SCRAPER_LIBRARY,
+  };
+  return std::ranges::none_of(
+      info.Types(),
+      [](const CAddonType& type)
+      {
+        const std::string library{type.LibName().empty() ? type.GetValue("@library").asString()
+                                                         : type.LibName()};
+        return scraperTypes.contains(type.Type()) && !library.ends_with(".py");
+      });
 }
 
 bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
