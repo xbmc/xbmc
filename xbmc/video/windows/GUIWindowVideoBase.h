@@ -114,12 +114,14 @@ protected:
    \param originalFile file of the movie the change was requested for
    \param item the changed movie
    \param infoRefreshed true if the movie was refreshed, false if only its art changed
+   \param listedDetails details of the list item before the information dialog, if infoRefreshed
    \return true if the list item was updated, false if the list has to be refreshed instead
    */
   bool UpdateMovieListItem(const std::string& listItemPath,
                            const std::string& originalFile,
                            const CFileItem& item,
-                           bool infoRefreshed);
+                           bool infoRefreshed,
+                           const CVideoInfoTag* listedDetails);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
