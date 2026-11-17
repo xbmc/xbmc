@@ -1133,6 +1133,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
+    const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, item.get()};
+
     item->SetProperty("force_playlist_selection", true);
     return OnPlayMedia(itemNumber);
   }
