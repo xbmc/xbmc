@@ -47,6 +47,8 @@ protected:
 
     // remove the script handle if necessary
     RemoveScriptHandle(handle);
+    // then let another run take its thread, which will reuse the handle
+    CScriptInvocationManager::GetInstance().ReleasePluginHandle(handle);
 
     return result;
   }
