@@ -17,6 +17,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/Scraper.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/AddonsPaths.h"
 #include "filesystem/LibraryPaths.h"

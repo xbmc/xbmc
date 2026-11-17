@@ -92,7 +92,6 @@ public:
   bool IsInUse() const override;
 
   bool IsLocalInformationOnly() const;
-  bool IsPython() const { return m_isPython; }
 
   // scraper media functions
   CScraperUrl NfoUrl(const std::string &sNfoContent);
@@ -136,7 +135,7 @@ public:
                        bool fMovie /*else episode*/,
                        CVideoInfoTag& video);
   bool GetAlbumDetails(const CScraperUrl& scurl, CAlbum& album);
-  bool GetArtistDetails(const CScraperUrl& scurl, const std::string& sSearch, CArtist& artist);
+  bool GetArtistDetails(const CScraperUrl& scurl, CArtist& artist);
   bool GetArtwork(CVideoInfoTag& details);
 
 private:
@@ -178,7 +177,6 @@ private:
   std::unordered_map<std::string, std::shared_ptr<const CVideoInfoTag>, StringHash, std::equal_to<>>
       m_detailsCache;
 
-  bool m_isPython = false;
   bool m_requiressettings = false;
   ContentType m_pathContent = ContentType::NONE;
 };

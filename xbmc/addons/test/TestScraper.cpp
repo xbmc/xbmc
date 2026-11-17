@@ -283,7 +283,7 @@ TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
   EXPECT_TRUE(scraper->FindAlbum("Album", "Artist").empty());
   EXPECT_TRUE(scraper->FindArtist("Artist").empty());
   EXPECT_FALSE(scraper->GetAlbumDetails(url, album));
-  EXPECT_FALSE(scraper->GetArtistDetails(url, "Artist", artist));
+  EXPECT_FALSE(scraper->GetArtistDetails(url, artist));
 }
 
 namespace

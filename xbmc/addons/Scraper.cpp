@@ -148,8 +148,6 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
     default:
       break;
   }
-
-  m_isPython = addonInfo->Type(addonType)->LibPath().ends_with(".py");
 }
 
 bool CScraper::Supports(ContentType content) const
@@ -813,18 +811,13 @@ bool CScraper::GetAlbumDetails(const CScraperUrl& scurl, CAlbum& album)
                        GetPathSettingsAsJSON(), album);
 }
 
-// takes a URL (one returned from FindArtist), the original search string, and
-// returns true and populates artist on success, false on failure
-bool CScraper::GetArtistDetails(const CScraperUrl& scurl,
-                                const std::string& sSearch,
-                                CArtist& artist)
+bool CScraper::GetArtistDetails(const CScraperUrl& scurl, CArtist& artist)
 {
   if (!scurl.HasUrls())
     return false;
 
-  CLog::LogF(LOGDEBUG,
-             "Reading '{}' ('{}') using {} scraper (file: '{}', content: '{}', version: '{}')",
-             scurl.GetFirstThumbUrl(), sSearch, Name(), Path(), Content(), Version().asString());
+  CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
+             scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
   return PythonDetails(*this, "url", scurl.GetFirstThumbUrl(), "getdetails",
                        GetPathSettingsAsJSON(), artist);
