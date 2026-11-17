@@ -436,6 +436,9 @@ int CScriptInvocationManager::ExecuteAsync(
   }
 
   std::unique_lock lock(m_critSection);
+  // Also for a run given an invoker of its own, such as a context menu item's, which didn't look for
+  // a kept thread
+  ReleaseReusableThreads(script);
 
   if (const auto reusable =
           std::ranges::find_if(m_reusableThreads, [&languageInvoker](const ReusableThread& reusable)

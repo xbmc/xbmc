@@ -203,6 +203,8 @@ protected:
       Manager().ReleasePluginHandle(handle);
     Manager().UnregisterLanguageInvocationHandler(&m_handler);
     XBMC_DELETETEMPFILE(m_file);
+    if (m_otherFile != nullptr)
+      XBMC_DELETETEMPFILE(m_otherFile);
     SetSlowRun(CScriptInvocationManager::SLOW_RUN);
   }
 
@@ -214,6 +216,15 @@ protected:
   }
 
   static CScriptInvocationManager& Manager() { return CScriptInvocationManager::GetInstance(); }
+
+  //! The path of a script other than the test's, deleted as the test ends, or empty if it can't be
+  //! made
+  std::string OtherScript()
+  {
+    if (m_otherFile == nullptr)
+      m_otherFile = XBMC_CREATETEMPFILE(".waiting");
+    return m_otherFile != nullptr ? XBMC_TEMPFILEPATH(m_otherFile) : "";
+  }
 
   //! A scraper whose library is the script, and whose threads are kept to run it again, as a python
   //! scraper's are
@@ -280,6 +291,7 @@ protected:
   CWaitingHandler m_handler;
   XFILE::CFile* m_file{nullptr};
   std::string m_script;
+  XFILE::CFile* m_otherFile{nullptr};
   std::vector<int> m_started;
   //! The plugin handles of the runs Start() started
   std::vector<int> m_handles;
@@ -444,9 +456,8 @@ TEST_F(TestScriptInvocationManager, AThreadKeptForAScriptIsLetGoWhenAnotherIsRun
 // A run without a handle that takes the thread kept for its script lets go of one kept for another
 TEST_F(TestScriptInvocationManager, ARunWithoutAHandleLetsGoOfAThreadKeptForAnotherScript)
 {
-  XFILE::CFile* const otherFile{XBMC_CREATETEMPFILE(".waiting")};
-  ASSERT_NE(nullptr, otherFile);
-  const std::string other{XBMC_TEMPFILEPATH(otherFile)};
+  const std::string other{OtherScript()};
+  ASSERT_FALSE(other.empty());
   // A thread kept for each script
   const int otherId{Manager().ExecuteAsync(other, nullptr, {}, true, 1002)};
   m_started.push_back(otherId);
@@ -457,12 +468,25 @@ TEST_F(TestScriptInvocationManager, ARunWithoutAHandleLetsGoOfAThreadKeptForAnot
   Manager().ReleasePluginHandle(1001);
   Manager().ReleasePluginHandle(1002);
 
-  const bool taken{Manager().GetLanguageInvoker(m_script) != nullptr};
-  const bool otherGone{Eventually([otherId] { return !Manager().IsRunning(otherId); })};
-  XBMC_DELETETEMPFILE(otherFile);
+  EXPECT_NE(nullptr, Manager().GetLanguageInvoker(m_script));
+  EXPECT_TRUE(Eventually([otherId] { return !Manager().IsRunning(otherId); }));
+}
 
-  EXPECT_TRUE(taken);
-  EXPECT_TRUE(otherGone);
+// A run given an invoker of its own, as a context menu item's is, lets go of a thread kept for
+// another script, as other runs do
+TEST_F(TestScriptInvocationManager, ARunGivenItsOwnInvokerLetsGoOfAThreadKeptForAnotherScript)
+{
+  int handle{1001};
+  const int id{Start(handle)};
+  ASSERT_TRUE(Finish(1));
+  Manager().ReleasePluginHandle(handle);
+
+  const std::string other{OtherScript()};
+  ASSERT_FALSE(other.empty());
+  const int otherId{Manager().ExecuteAsync(other, m_handler.CreateInvoker(), nullptr, {}, false)};
+  m_started.push_back(otherId);
+  EXPECT_NE(-1, otherId);
+  EXPECT_TRUE(Eventually([id] { return !Manager().IsRunning(id); }));
 }
 
 using Affinity = CScriptInvocationManager::CAffinity;
