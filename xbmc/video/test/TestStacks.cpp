@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationStackHelper.h"
 #include "cores/IPlayer.h"
 #include "filesystem/Directory.h"
@@ -21,8 +22,11 @@
 #include "test/TestUtils.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
+#include "video/Bookmark.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoUtils.h"
 
+#include <chrono>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -32,6 +36,7 @@
 #include <gtest/gtest.h>
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 using ::testing::Test;
 using ::testing::ValuesIn;
@@ -193,6 +198,92 @@ TEST_F(TestStacks, TestChosenDiscStackPartWithoutTimes)
   EXPECT_EQ(stackHelper.GetCurrentPartNumber(), 1);
   EXPECT_EQ(part.GetPath(), paths[1]);
   EXPECT_EQ(options.starttime, 0.0);
+}
+
+TEST_F(TestStacks, TestDiscStackPartLeftBySeekKeepsItsPosition)
+{
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, VIDEO_EXTENSIONS, DIR_FLAG_DEFAULTS);
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+
+  const auto stackHelper{std::make_shared<CApplicationStackHelper>()};
+  ASSERT_TRUE(stackHelper->InitializeStack(*items.Get(0)));
+
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(items.Get(0)->GetDynPath(), paths);
+  ASSERT_EQ(paths.size(), 2);
+  const CFileItem part1{paths[0], false};
+  const CFileItem part2{paths[1], false};
+
+  // Both parts played in order, 600s each
+  stackHelper->IncreaseKnownStackParts();
+  stackHelper->IncreaseKnownStackParts();
+  stackHelper->SetStackPartStartTime(part2, 600s);
+  stackHelper->SetStackTotalTime(1200s);
+
+  // The part sought to is already current when the part left is closed
+  stackHelper->SetSeekingParts(true);
+  CBookmark bookmark;
+
+  // Seek back from the last part
+  stackHelper->SetStackPartAsCurrent(0);
+  bookmark.timeInSeconds = 300.0;
+  bookmark.totalTimeInSeconds = 600.0;
+  EXPECT_TRUE(KODI::APPLICATION::UpdateDiscStackBookmark(bookmark, part2, stackHelper));
+  EXPECT_FALSE(KODI::VIDEO::UTILS::GetNextPartFromBookmark(bookmark));
+  EXPECT_EQ(bookmark.timeInSeconds, 900.0);
+  EXPECT_EQ(bookmark.totalTimeInSeconds, 1200.0);
+
+  // Seek into the last part from near the end of the first
+  stackHelper->SetStackPartAsCurrent(1);
+  bookmark.Reset();
+  bookmark.timeInSeconds = 590.0;
+  bookmark.totalTimeInSeconds = 600.0;
+  EXPECT_TRUE(KODI::APPLICATION::UpdateDiscStackBookmark(bookmark, part1, stackHelper));
+  EXPECT_EQ(bookmark.timeInSeconds, 590.0);
+  EXPECT_EQ(bookmark.totalTimeInSeconds, 1200.0);
+
+  // Without a seek, the end of the last part finishes the stack
+  stackHelper->SetSeekingParts(false);
+  bookmark.Reset();
+  bookmark.timeInSeconds = 599.0;
+  bookmark.totalTimeInSeconds = 600.0;
+  EXPECT_TRUE(KODI::APPLICATION::UpdateDiscStackBookmark(bookmark, part2, stackHelper));
+  EXPECT_EQ(bookmark.timeInSeconds, -1.0);
+}
+
+TEST_F(TestStacks, TestPartlyTimedDiscStack)
+{
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, VIDEO_EXTENSIONS, DIR_FLAG_DEFAULTS);
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+
+  const auto stackHelper{std::make_shared<CApplicationStackHelper>()};
+  ASSERT_TRUE(stackHelper->InitializeStack(*items.Get(0)));
+
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(items.Get(0)->GetDynPath(), paths);
+  ASSERT_EQ(paths.size(), 2);
+  const CFileItem part1{paths[0], false};
+
+  // Only the first part played, so the stack total time ends with it
+  stackHelper->IncreaseKnownStackParts();
+  stackHelper->SetStackTotalTime(600s);
+  EXPECT_TRUE(KODI::APPLICATION::IsPartlyTimedDiscStack(part1, stackHelper));
+
+  stackHelper->IncreaseKnownStackParts();
+  stackHelper->SetStackTotalTime(1200s);
+  EXPECT_FALSE(KODI::APPLICATION::IsPartlyTimedDiscStack(part1, stackHelper));
+
+  // Not part of the stack
+  EXPECT_FALSE(KODI::APPLICATION::IsPartlyTimedDiscStack(
+      CFileItem{movieFolder + "/other.iso", false}, stackHelper));
 }
 
 TEST_F(TestStacks, TestMovieFilesStackBlurayIso)

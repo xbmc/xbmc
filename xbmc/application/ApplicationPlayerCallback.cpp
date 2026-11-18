@@ -196,7 +196,10 @@ void ConvertRelativeStackTimesToAbsolute(
   bookmark.totalTimeInSeconds =
       static_cast<double>(stackHelper->GetStackTotalTime().count()) / 1000.0;
 }
+} // namespace
 
+namespace KODI::APPLICATION
+{
 bool UpdateDiscStackBookmark(CBookmark& bookmark,
                              const CFileItem& file,
                              const std::shared_ptr<CApplicationStackHelper>& stackHelper)
@@ -292,7 +295,10 @@ bool IsPartlyTimedDiscStack(const CFileItem& file,
   return stackHelper->GetStack(file) != nullptr && stackHelper->WasPlayingDiscStack() &&
          stackHelper->GetKnownStackParts() < stackHelper->GetTotalPartNumbers();
 }
+} // namespace KODI::APPLICATION
 
+namespace
+{
 bool IsFinished(double timeInSeconds, double totalTimeInSeconds)
 {
   // If the total time is unknown then we can't determine if finished
@@ -338,7 +344,7 @@ void UpdateStackAndItem(const CFileItem& file,
                    .count()));
 
     // Update bookmark
-    if (!UpdateDiscStackBookmark(bookmark, file, stackHelper))
+    if (!APPLICATION::UpdateDiscStackBookmark(bookmark, file, stackHelper))
       fileItem.GetVideoInfoTag()
           ->m_streamDetails.Reset(); // Don't save streamdetails as nothing played
   }
@@ -409,7 +415,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     // Update the stack
     if (stackHelper->GetStack(file) != nullptr)
     {
-      partlyTimedStack = IsPartlyTimedDiscStack(file, stackHelper);
+      partlyTimedStack = APPLICATION::IsPartlyTimedDiscStack(file, stackHelper);
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
     }
 
