@@ -338,6 +338,7 @@ void CFileCache::Process()
       if (!sourceSeekFailed)
       {
         m_pCache->ClearEndOfInput();
+        m_bReadError = false;
         const bool bCompleteReset = m_pCache->Reset(m_seekPos);
         m_readPos = m_seekPos;
         m_writePos = m_pCache->CachedDataEndPos();
@@ -443,11 +444,13 @@ void CFileCache::Process()
           CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> source read hit eof", __FUNCTION__,
                     m_sourcePath);
 
+        m_bReadError = (iRead < 0);
         m_pCache->EndOfInput();
 
         if (!m_bStop && m_seekEvent.Wait() && !m_bStop)
         {
           m_pCache->ClearEndOfInput();
+          m_bReadError = false;
           m_seekEvent.Set(); // hack so that later we realize seek is needed
         }
         else
@@ -609,6 +612,11 @@ retry:
     }
     if (iRc < 0)
       return -1;
+    if (m_bReadError)
+    {
+      SetLastError(EIO);
+      return -1;
+    }
     return 0;
   }
 
