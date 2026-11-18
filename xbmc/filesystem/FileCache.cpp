@@ -607,6 +607,8 @@ retry:
       m_readPos += iRc;
       return (int)iRc;
     }
+    if (iRc < 0)
+      return -1;
     return 0;
   }
 
