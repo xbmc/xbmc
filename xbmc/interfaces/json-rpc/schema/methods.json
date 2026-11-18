@@ -274,7 +274,7 @@
         }
       }
     ],
-    "returns": "any"
+    "returns": {}
   },
   "Player.Open": {
     "type": "method",
