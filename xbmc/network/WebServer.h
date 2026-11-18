@@ -101,7 +101,7 @@ private:
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
   // MHD callback implementations
-  static void* UriRequestLogger(void *cls, const char *uri);
+  static void* UriRequestLogger(void* cls, const char* uri, struct MHD_Connection* connection);
 
   static ssize_t ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max);
   static void ContentReaderFreeCallback(void *cls);
