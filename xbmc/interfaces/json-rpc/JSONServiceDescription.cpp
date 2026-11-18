@@ -56,6 +56,26 @@ std::string RefToTypeId(const std::string& reference)
 
   return reference;
 }
+
+//! \brief Collects the global types a schema kept as written refers to
+void CollectReferences(const CVariant& schema, std::vector<std::string>& references)
+{
+  if (schema.isObject())
+  {
+    for (auto member = schema.begin_map(); member != schema.end_map(); ++member)
+    {
+      if (member->first == "$ref" && member->second.isString())
+        references.push_back(RefToTypeId(member->second.asString()));
+      else
+        CollectReferences(member->second, references);
+    }
+  }
+  else if (schema.isArray())
+  {
+    for (auto item = schema.begin_array(); item != schema.end_array(); ++item)
+      CollectReferences(*item, references);
+  }
+}
 } // unnamed namespace
 
 // clang-format off
@@ -2087,6 +2107,19 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
           getReferencedTypes(methodIterator->second.parameters.at(index), referencedTypes);
 
         getReferencedTypes(methodIterator->second.returns, referencedTypes);
+      }
+
+      // Notifications are kept as written, so their references are read from the text
+      for (const auto& [name, notification] : notifications)
+      {
+        std::vector<std::string> references;
+        CollectReferences(notification, references);
+        for (const auto& reference : references)
+        {
+          const auto type = m_types.find(reference);
+          if (type != m_types.end())
+            getReferencedTypes(type->second, referencedTypes);
+        }
       }
 
       for (unsigned int index = 0; index < referencedTypes.size(); index++)
