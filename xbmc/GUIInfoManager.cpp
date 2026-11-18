@@ -9837,7 +9837,7 @@ constexpr std::array<InfoMap, 12> pvr_times = {{
 ///     @return The RDS reported audio language of the channel\, as a BCP 47 language tag:
 ///     e.g. en\, de\, pt-BR
 ///     @note A broadcaster sends an index into the language table EBU Tech 3244 Annex J
-///     defines\, never text\, so an index the standard reserves is reported as und.
+///     defines\, never text. An index the standard reserves leaves the label as it was.
 ///     <p><hr>
 ///     @skinning_v23 **[Infolabel Updated]** \link RDS_AudioLanguage `RDS.AudioLanguage`\endlink
 ///     now the language tag itself\, where it was whatever the RDS table held
