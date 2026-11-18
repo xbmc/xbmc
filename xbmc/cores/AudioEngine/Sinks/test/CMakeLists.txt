@@ -1,4 +1,5 @@
 set(SOURCES TestActiveAEDeviceChange.cpp
+            TestAESinkNULL.cpp
             TestActiveAEErrorRetry.cpp
             TestWasmAudioRing.cpp)
 
