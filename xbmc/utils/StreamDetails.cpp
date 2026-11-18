@@ -670,14 +670,11 @@ int CStreamDetails::GetPreferredAudioStreamIndex(
 
     index++;
 
-    // The details store a language code, so it is parsed here rather than inside the comparison,
-    // which would otherwise pay for it once per stream compared rather than once per stream
     const auto* audio{static_cast<const CStreamDetailAudio*>(iter.get())};
-    const StreamUtils::AudioCandidate candidate{
-        .language = audio->m_language,
-        .codec = audio->m_strCodec,
-        .channels = audio->m_iChannels,
-        .flags = audio->m_flags};
+    const StreamUtils::AudioCandidate candidate{.language = audio->m_language,
+                                                .codec = audio->m_strCodec,
+                                                .channels = audio->m_iChannels,
+                                                .flags = audio->m_flags};
 
     // Strictly better only, so that streams the preferences cannot separate keep the order the
     // source presented them in (same stability std::stable_sort gives the player)
