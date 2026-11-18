@@ -485,16 +485,13 @@ bool CPythonInvoker::stop(bool abort)
       setState(InvokerStateStopping);
       lock.unlock();
 
-      //tell xbmc.Monitor to call onAbortRequested(). That needs no Python, but taking the GIL
-      //here finds a script stuck holding it before the 5 s wait below.
+      // wake xbmc.Monitor's waitForAbort() and abortRequested(). That needs no Python, but taking
+      // the GIL here finds a script stuck holding it before the 5 s wait below.
       const auto abortNotify = [this]
       {
-        if (m_addon)
-        {
-          CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
-                    m_sourceFile);
-          AbortNotification();
-        }
+        CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
+                  m_sourceFile);
+        AbortNotification();
         return false;
       };
       if (!python.RunWithGil(abortNotify))
@@ -694,10 +691,16 @@ void CPythonInvoker::onInitialization()
 
 void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (moduleDict == NULL)
     return;
 
   PyObject* moduleDictionary = (PyObject*)moduleDict;
+
+  // xbmc.Monitor uses it to receive this script's abort request, add-on or not
+  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", PyLong_FromLong(GetId()));
+
+  if (m_addon.get() == NULL)
+    return;
 
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__",
                        PyObjectPtr(PyUnicode_FromString(m_addon->ID().c_str())).get());
@@ -705,8 +708,6 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   ADDON::CAddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__",
                        PyObjectPtr(PyUnicode_FromString(version.asString().c_str())).get());
-
-  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", PyLong_FromLong(GetId()));
 
   CLog::Log(LOGDEBUG,
             "CPythonInvoker({}, {}): instantiating addon using automatically obtained id of \"{}\" "
