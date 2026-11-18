@@ -17,6 +17,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -708,16 +709,22 @@ void DX::DeviceResources::ResizeBuffers()
       swapChainDesc.Stereo = false;
       bHWStereoEnabled = false;
 
-      hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain); CHECK_ERR();
+      hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
 
       // fallback to split_horizontal mode.
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(
-          RenderStereoMode::SPLIT_HORIZONTAL);
+      if (SUCCEEDED(hr))
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(
+            RenderStereoMode::SPLIT_HORIZONTAL);
     }
 
     if (FAILED(hr))
     {
       CLog::LogF(LOGERROR, "unable to create swapchain.");
+
+      // The device can be lost while the swap chain is being re-created, e.g. during an HDR
+      // toggle. A new device is needed before a swap chain can be created again.
+      if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+        HandleDeviceLost(hr == DXGI_ERROR_DEVICE_REMOVED);
       return;
     }
 
@@ -949,6 +956,19 @@ void DX::DeviceResources::OnDeviceRestored()
 // Recreate all device resources and set them back to the current state.
 void DX::DeviceResources::HandleDeviceLost(bool removed)
 {
+  // ResizeBuffers() calls back here when the swap chain cannot be created on a lost device.
+  // Don't recurse if the new device is lost too; the next Begin() retries.
+  if (m_handlingDeviceLost)
+  {
+    CLog::LogF(LOGERROR, "device lost again while recovering from a lost device.");
+    return;
+  }
+  m_handlingDeviceLost = true;
+
+  if (m_d3dDevice)
+    CLog::LogF(LOGWARNING, "re-creating device (removed: {}), device removed reason: {}", removed,
+               CWIN32Util::FormatHRESULT(m_d3dDevice->GetDeviceRemovedReason()));
+
   bool backbuferExists = m_backBufferTex.Get() != nullptr;
 
   OnDeviceLost(removed);
@@ -971,13 +991,40 @@ void DX::DeviceResources::HandleDeviceLost(bool removed)
     m_deviceNotify->OnDXDeviceRestored();
   OnDeviceRestored();
 
-  if (removed)
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
-                                               "ReloadSkin");
+  // A removed device loses the contents of every texture. Begin() reloads the skin once there is
+  // a swap chain to render to again.
+  m_reloadSkinPending |= removed;
+
+  m_handlingDeviceLost = false;
 }
 
 bool DX::DeviceResources::Begin()
 {
+  if (!m_swapChain)
+  {
+    // The swap chain could not be (re)created. Try again, at most once a second as a recovery
+    // re-creates the device and notifies every resource, and skip the frame until then.
+    const auto now = std::chrono::steady_clock::now();
+    if (m_d3dDevice && now - m_lastRecoveryAttempt >= std::chrono::seconds(1))
+    {
+      m_lastRecoveryAttempt = now;
+      // Present() reports every cause of a lost device but a reset as DXGI_ERROR_DEVICE_REMOVED.
+      const HRESULT reason = m_d3dDevice->GetDeviceRemovedReason();
+      if (FAILED(reason))
+        HandleDeviceLost(reason != DXGI_ERROR_DEVICE_RESET);
+      else
+        CreateWindowSizeDependentResources();
+    }
+
+    if (!m_swapChain)
+    {
+      // Nothing waits for vsync without a swap chain, so wait a frame's time rather than spin until
+      // the next attempt, as CApplication does when it doesn't render the GUI.
+      KODI::TIME::Sleep(std::chrono::milliseconds(15));
+      return false;
+    }
+  }
+
   HRESULT hr = m_swapChain->Present(0, DXGI_PRESENT_TEST);
 
   // If the device was removed either by a disconnection or a driver upgrade, we
@@ -995,6 +1042,22 @@ bool DX::DeviceResources::Begin()
     }
   }
 
+  // A recovery above leaves no swap chain if the new device is lost too, and a swap chain
+  // without a back buffer if the back buffer was released before the recovery that created it.
+  if (!m_swapChain)
+    return false;
+  if (!m_backBufferTex.Get())
+    CreateBackBuffer();
+
+  // Reload the skin a removed device needs once there is a swap chain to render to again,
+  // whichever path created it.
+  if (m_reloadSkinPending)
+  {
+    m_reloadSkinPending = false;
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ReloadSkin");
+  }
+
   m_deferrContext->OMSetRenderTargets(1, m_backBufferTex.GetAddressOfRTV(), m_d3dDepthStencilView.Get());
 
   return true;
@@ -1004,6 +1067,9 @@ bool DX::DeviceResources::Begin()
 void DX::DeviceResources::Present()
 {
   FinishCommandList();
+
+  if (!m_swapChain)
+    return;
 
   // The first argument instructs DXGI to block until VSync, putting the application
   // to sleep until the next VSync. This ensures we don't waste any cycles rendering

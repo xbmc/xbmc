@@ -12,6 +12,7 @@
 #include "HDRStatus.h"
 #include "guilib/D3DResource.h"
 
+#include <chrono>
 #include <functional>
 #include <memory>
 
@@ -208,5 +209,8 @@ namespace DX
     bool m_DXVA2SharedDecoderSurfaces{false};
     bool m_DXVASuperResolutionSupport{false};
     bool m_DXVA2UseFence{false};
+    bool m_handlingDeviceLost{false};
+    bool m_reloadSkinPending{false};
+    std::chrono::steady_clock::time_point m_lastRecoveryAttempt{};
   };
 }
