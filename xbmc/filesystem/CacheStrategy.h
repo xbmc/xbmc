@@ -12,6 +12,7 @@
 #include "threads/Event.h"
 
 #include <stdint.h>
+#include <atomic>
 #include <string>
 
 namespace XFILE {
@@ -58,7 +59,7 @@ public:
 
   CEvent m_space;
 protected:
-  bool  m_bEndOfInput = false;
+  std::atomic<bool> m_bEndOfInput{false};
 };
 
 /**
