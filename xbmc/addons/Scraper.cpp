@@ -682,24 +682,28 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
   return info;
 }
 
+/*!
+ \brief Run a python scraper's search, adding what it finds to \p result
+ \return false if the search failed: the scraper said so, or ended without a listing
+ */
 template<class T>
-std::vector<T> PythonFind(const std::string& ID,
-                          const std::map<std::string, std::string, std::less<>>& additionals)
+bool PythonFind(const std::string& ID,
+                const std::map<std::string, std::string, std::less<>>& additionals,
+                std::vector<T>& result)
 {
-  std::vector<T> result;
   CFileItemList items;
   std::stringstream str;
   str << "plugin://" << ID << "?action=find";
   for (const auto& [first, second] : additionals)
     str << "&" << first << "=" << CURL::Encode(second);
 
-  if (XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
-  {
-    for (const auto& it : items)
-      result.emplace_back(std::move(FromFileItem<T>(*it)));
-  }
+  if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
+    return false;
 
-  return result;
+  for (const auto& it : items)
+    result.emplace_back(std::move(FromFileItem<T>(*it)));
+
+  return true;
 }
 
 std::string FromString(const CFileItem& item, const std::string& key)
@@ -1009,7 +1013,13 @@ std::vector<CScraperUrl> CScraper::FindMovieUncached(XFILE::IHttpClient& fcurl,
     if (!sYear.empty())
       additionals.try_emplace("year", sYear);
     additionals.try_emplace("pathSettings", GetPathSettingsAsJSON());
-    return PythonFind<CScraperUrl>(ID(), additionals);
+    // A failed search is an error, as an xml scraper's is, so it isn't taken for one finding nothing
+    if (!PythonFind(ID(), additionals, vcscurl))
+    {
+      CLog::LogF(LOGDEBUG, "Search for '{}' using {} scraper failed", sTitle, Name());
+      throw CScraperError();
+    }
+    return vcscurl;
   }
 
   std::vector<std::string> vcsIn(1);
@@ -1142,8 +1152,13 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
     return vcali;
 
   if (m_isPython)
-    return PythonFind<CMusicAlbumInfo>(ID(),
-      {{"title", sAlbum}, {"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
+  {
+    // A failed search finds nothing here, as the music scanner doesn't catch an error
+    PythonFind(ID(),
+               {{"title", sAlbum}, {"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}},
+               vcali);
+    return vcali;
+  }
 
   // scraper function is given the album and artist as parameters and
   // returns an XML <url> element parseable by CScraperUrl
@@ -1242,8 +1257,11 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
     return vcari;
 
   if (m_isPython)
-    return PythonFind<CMusicArtistInfo>(ID(),
-      {{"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
+  {
+    // A failed search finds nothing here, as the music scanner doesn't catch an error
+    PythonFind(ID(), {{"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}}, vcari);
+    return vcari;
+  }
 
   // scraper function is given the artist as parameter and
   // returns an XML <url> element parseable by CScraperUrl
