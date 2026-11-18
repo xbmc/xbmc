@@ -79,14 +79,11 @@ void Append(std::vector<uint8_t>& stream, const std::vector<uint8_t>& bytes)
   stream.insert(stream.end(), bytes.begin(), bytes.end());
 }
 
-//! The type the parser reported for every frame it handed out, fed at most \p chunk bytes a call.
-std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream,
-                                           size_t chunk = SIZE_MAX,
-                                           bool knownMa = false)
+void Feed(CAEStreamParser& parser,
+          std::vector<uint8_t>& stream,
+          std::vector<CAEStreamInfo::DataType>& types,
+          size_t chunk = SIZE_MAX)
 {
-  CAEStreamParser parser;
-  parser.SetDTSHDMA(knownMa);
-  std::vector<CAEStreamInfo::DataType> types;
   size_t pos = 0;
   while (pos < stream.size())
   {
@@ -95,13 +92,89 @@ std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream,
     const size_t available = std::min(chunk, stream.size() - pos);
     const int used =
         parser.AddData(stream.data() + pos, static_cast<unsigned int>(available), &out, &outSize);
+    delete[] out;
     if (outSize > 0)
       types.push_back(parser.GetDataType());
     if (used <= 0 && outSize == 0)
       break;
     pos += used;
   }
+}
+
+//! The type the parser reported for every frame it handed out, fed at most \p chunk bytes a call.
+std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream,
+                                           size_t chunk = SIZE_MAX,
+                                           bool knownMa = false)
+{
+  CAEStreamParser parser;
+  parser.SetDTSHDMA(knownMa);
+  std::vector<CAEStreamInfo::DataType> types;
+  Feed(parser, stream, types, chunk);
   return types;
+}
+
+std::vector<uint8_t> TrueHdMajorSyncFrame()
+{
+  // 64-byte TrueHD major audio unit: 48 kHz, 7.1 (8 channels), 3 substreams, no extensions.
+  std::vector<uint8_t> frame(64, 0);
+  frame[0] = 0x00;
+  frame[1] = 0x20;
+  frame[4] = 0xF8;
+  frame[5] = 0x72;
+  frame[6] = 0x6F;
+  frame[7] = 0xBA;
+  frame[11] = 0x1F;
+  frame[20] = 0x30;
+
+  AVCRC crcTable[1024];
+  av_crc_init(crcTable, 0, 16, 0x2D, sizeof(crcTable));
+  uint16_t crc = av_crc(crcTable, 0, frame.data() + 4, 24);
+  crc ^= (frame[29] << 8) | frame[28];
+  frame[30] = crc & 0xFF;
+  frame[31] = crc >> 8;
+  return frame;
+}
+
+//! A non-major-sync TrueHD payload containing random bytes that read as an E-AC-3 sync
+//! (0x0B77, bsid=16, fscod=2 -> 32 kHz, acmod=3 -> 3 channels).
+std::vector<uint8_t> TrueHdPayloadWithEac3Lookalike()
+{
+  return {0x0B, 0x77, 0x00, 0x05, 0x86, 0x80, 0x00, 0x00,
+          0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+}
+
+void AssertTrueHdLocksAcrossRecovery(const std::vector<uint8_t>& lookalike,
+                                     CAEStreamInfo::DataType expectedUnlocked,
+                                     bool callReset)
+{
+  const std::vector<uint8_t> majorSync = TrueHdMajorSyncFrame();
+  std::vector<uint8_t> chunk;
+  Append(chunk, lookalike);
+  Append(chunk, majorSync);
+
+  std::vector<CAEStreamInfo::DataType> unlockedTypes = Parse(chunk);
+  ASSERT_FALSE(unlockedTypes.empty());
+  EXPECT_EQ(expectedUnlocked, unlockedTypes.front());
+
+  CAEStreamParser parser;
+  parser.SetTrueHDOnly(true);
+
+  std::vector<CAEStreamInfo::DataType> types;
+  Feed(parser, chunk, types);
+  if (callReset)
+    parser.Reset();
+
+  // Force SyncTrueHD() to drop sync (via Reset() or parity failure) and fall back to DetectType().
+  std::vector<uint8_t> zeros(16, 0);
+  Feed(parser, zeros, types);
+  ASSERT_FALSE(parser.IsValid());
+  ASSERT_EQ(1u, types.size());
+
+  Feed(parser, chunk, types);
+
+  ASSERT_EQ(2u, types.size());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_TRUEHD, type);
 }
 } // namespace
 
@@ -221,4 +294,26 @@ TEST(TestAEStreamParser, ADtsHdHraStreamIsStillHra)
   ASSERT_EQ(4u, types.size());
   for (const CAEStreamInfo::DataType type : types)
     EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD, type);
+}
+
+//! After a seek or flush a TrueHD stream can start on a non-major-sync packet whose payload
+//! happens to contain an AC-3/E-AC-3 or DTS sync word. When the codec already knows the stream
+//! is TrueHD, DetectType() must not sync onto payload bytes as E-AC-3 or DTS, and both Reset()
+//! and mid-stream TrueHD sync loss must preserve that constraint.
+TEST(TestAEStreamParser, AKnownTrueHdStreamDoesNotFalseSyncOnEac3PayloadAcrossReset)
+{
+  AssertTrueHdLocksAcrossRecovery(TrueHdPayloadWithEac3Lookalike(), CAEStreamInfo::STREAM_TYPE_EAC3,
+                                  true);
+}
+
+TEST(TestAEStreamParser, AKnownTrueHdStreamDoesNotFalseSyncOnDtsPayloadAcrossReset)
+{
+  AssertTrueHdLocksAcrossRecovery(MaFrame(), CAEStreamInfo::STREAM_TYPE_DTSHD_MA, true);
+}
+
+TEST(TestAEStreamParser, AKnownTrueHdStreamDoesNotFalseSyncAfterParitySyncLoss)
+{
+  AssertTrueHdLocksAcrossRecovery(TrueHdPayloadWithEac3Lookalike(), CAEStreamInfo::STREAM_TYPE_EAC3,
+                                  false);
+  AssertTrueHdLocksAcrossRecovery(MaFrame(), CAEStreamInfo::STREAM_TYPE_DTSHD_MA, false);
 }
