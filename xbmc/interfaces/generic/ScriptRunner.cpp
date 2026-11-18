@@ -25,6 +25,34 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+//! The innermost CAbandonWhen living on the thread, if any
+thread_local const CScriptRunner::CAbandonWhen* innermostAbandonWhen{nullptr};
+} // namespace
+
+CScriptRunner::CAbandonWhen::CAbandonWhen(const std::atomic<bool>& stop)
+  : m_stop(stop),
+    m_outer(innermostAbandonWhen)
+{
+  innermostAbandonWhen = this;
+}
+
+CScriptRunner::CAbandonWhen::~CAbandonWhen()
+{
+  innermostAbandonWhen = m_outer;
+}
+
+bool CScriptRunner::CAbandonWhen::IsSet()
+{
+  for (const CAbandonWhen* scope = innermostAbandonWhen; scope != nullptr; scope = scope->m_outer)
+  {
+    if (scope->m_stop)
+      return true;
+  }
+  return false;
+}
+
 ADDON::AddonPtr CScriptRunner::GetAddon() const
 {
   return m_addon;
@@ -138,16 +166,26 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
   }
   else
   {
-    // wait for the script to finish or be cancelled
-    while (!IsCancelled() && CScriptInvocationManager::GetInstance().IsRunning(scriptId) &&
-           !m_scriptDone.Wait(20ms))
+    // wait for the script to finish or be cancelled, or for the caller to stop
+    while (!IsCancelled() && !CAbandonWhen::IsSet() &&
+           CScriptInvocationManager::GetInstance().IsRunning(scriptId) && !m_scriptDone.Wait(20ms))
       ;
 
-    // give the script 30 seconds to exit before we attempt to stop it
+    // give the script 30 seconds to exit before we attempt to stop it, unless the caller stops
     XbmcThreads::EndTime<> timer(30s);
-    while (!timer.IsTimePast() && CScriptInvocationManager::GetInstance().IsRunning(scriptId) &&
-           !m_scriptDone.Wait(20ms))
+    while (!timer.IsTimePast() && !CAbandonWhen::IsSet() &&
+           CScriptInvocationManager::GetInstance().IsRunning(scriptId) && !m_scriptDone.Wait(20ms))
       ;
+
+    // A caller that has stopped neither waits for the script nor stops it, as stopping it can't
+    // break a call it blocks in. It runs on, and what it returns is dropped: CRunningScriptsHandler
+    // drops the run's handle, and a kept thread isn't given another run until this one ends.
+    if (CAbandonWhen::IsSet())
+    {
+      CLog::Log(LOGDEBUG, "CScriptRunner: no longer waiting for add-on script {:s} (id = {:d})",
+                name, scriptId);
+      return false;
+    }
   }
 
   if (cancelled || IsCancelled())
