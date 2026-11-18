@@ -708,9 +708,10 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     if (!m_database.Open())
       return false;
 
-    // the filter path holds the library path a smart playlist was listed from
-    const std::string dbPath{VIDEO::IsVideoDb(*m_vecItems) ? m_vecItems->GetPath()
-                                                           : m_strFilterPath};
+    // path.db holds the library path of a smart playlist listing
+    const std::string dbPath{VIDEO::IsVideoDb(*m_vecItems)
+                                 ? m_vecItems->GetPath()
+                                 : m_vecItems->GetProperty("path.db").asString()};
     if (URIUtils::IsVideoDb(dbPath))
     {
       // a query by id finds the movie even when a limit leaves it out of the listing
