@@ -4074,6 +4074,7 @@
               <condition>HAVE_ANDROID</condition>
               <condition>HAVE_TVOS</condition>
               <condition>HAVE_WASM</condition>
+              <condition>HAVE_WEBOS</condition>
             </or>
           </requirement>
           <level>1</level>
