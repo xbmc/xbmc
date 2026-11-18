@@ -195,13 +195,7 @@ TEST_F(TestDateTime, SetFromDBDate)
   EXPECT_EQ(dateTime.GetDay(), 2);
 }
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-TEST_F(TestDateTime, DISABLED_SetFromDBTime)
-#else
 TEST_F(TestDateTime, SetFromDBTime)
-#endif
 {
   CDateTime dateTime1;
   EXPECT_TRUE(dateTime1.SetFromDBTime("12:34"));
@@ -350,9 +344,6 @@ TEST_F(TestDateTime, SetDateTime)
   EXPECT_EQ(dateTime2.GetMinute(), 0);
   EXPECT_EQ(dateTime2.GetSecond(), 0);
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if !defined(TARGET_DARWIN_OSX) && !defined(TARGET_FREEBSD)
   CDateTime dateTime3;
   EXPECT_TRUE(dateTime3.SetTime(12, 34, 56));
   EXPECT_EQ(dateTime3.GetYear(), 1601);
@@ -361,7 +352,19 @@ TEST_F(TestDateTime, SetDateTime)
   EXPECT_EQ(dateTime3.GetHour(), 12);
   EXPECT_EQ(dateTime3.GetMinute(), 34);
   EXPECT_EQ(dateTime3.GetSecond(), 56);
-#endif
+}
+
+TEST_F(TestDateTime, SetDateTimeOutsideA32BitTimeT)
+{
+  CDateTime dateTime;
+
+  EXPECT_TRUE(dateTime.SetDateTime(1895, 12, 28, 12, 34, 56));
+  EXPECT_EQ("1895-12-28 12:34:56", dateTime.GetAsDBDateTime());
+  EXPECT_EQ(6, dateTime.GetDayOfWeek());
+
+  EXPECT_TRUE(dateTime.SetDateTime(2040, 6, 1, 0, 0, 0));
+  EXPECT_EQ("2040-06-01 00:00:00", dateTime.GetAsDBDateTime());
+  EXPECT_EQ(5, dateTime.GetDayOfWeek());
 }
 
 TEST_F(TestDateTime, GetAsStrings)
@@ -672,10 +675,6 @@ TEST_F(TestDateTime, GetAsTime)
   EXPECT_TRUE(dateTime == time);
 }
 
-//! \brief Whether a rendered date can name the times below. CDateTime renders through gmtime_r on
-//! POSIX, so a 32-bit time_t cannot reach either of them, and only the round trip is assertable.
-constexpr bool RENDERS_BEYOND_32_BITS{sizeof(time_t) >= 8};
-
 TEST_F(TestDateTime, SecondsSinceEpoch)
 {
   // 2200-01-01 00:00:00 UTC, past the unsigned 32-bit ceiling of 2106-02-07
@@ -685,11 +684,7 @@ TEST_F(TestDateTime, SecondsSinceEpoch)
 
   EXPECT_TRUE(dateTime.IsValid());
   EXPECT_EQ(seconds, dateTime.GetAsSecondsSinceEpoch());
-
-  if constexpr (RENDERS_BEYOND_32_BITS)
-  {
-    EXPECT_EQ("2200-01-01 00:00:00", dateTime.GetAsDBDateTime());
-  }
+  EXPECT_EQ("2200-01-01 00:00:00", dateTime.GetAsDBDateTime());
 }
 
 TEST_F(TestDateTime, SecondsSinceEpochOutOfRange)
@@ -712,11 +707,7 @@ TEST_F(TestDateTime, SecondsSinceEpochBeforeTheEpoch)
 
   EXPECT_TRUE(dateTime.IsValid());
   EXPECT_EQ(seconds, dateTime.GetAsSecondsSinceEpoch());
-
-  if constexpr (RENDERS_BEYOND_32_BITS)
-  {
-    EXPECT_EQ("1900-01-01 00:00:00", dateTime.GetAsDBDateTime());
-  }
+  EXPECT_EQ("1900-01-01 00:00:00", dateTime.GetAsDBDateTime());
 }
 
 TEST_F(TestDateTime, GetAsTm)
