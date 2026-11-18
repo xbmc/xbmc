@@ -1,6 +1,6 @@
 --- a/meson.build
 +++ b/meson.build
-@@ -68,7 +68,9 @@
+@@ -69,8 +69,10 @@ if host_machine.system() == 'windows'\
     # Windows is supported as long as winioctl.h is found
  elif host_machine.system() == 'darwin'
      add_project_arguments(cc.get_supported_arguments('-no-cpp-precomp'), language: 'c')
@@ -12,6 +12,7 @@
 +    endif
  elif host_machine.system() == 'sunos' \
       and cc.has_header('sys/scsi/scsi_types.h', args: test_args) \
+      and cc.has_header('sys/scsi/impl/uscsi.h', args: test_args)
 --- a/src/device.c
 +++ b/src/device.c
 @@ -123,6 +123,8 @@ int dvdcss_use_ioctls( dvdcss_t dvdcss )
@@ -25,7 +26,7 @@
      struct stat fileinfo;
 --- a/src/ioctl.c
 +++ b/src/ioctl.c
-@@ -223,10 +223,11 @@
+@@ -229,10 +229,11 @@ int ioctl_ReadCopyright( int i_fd, int i_layer, int *pi_copyright )
                          p_buffer, sizeof(p_buffer), &ulDataLen);
  
      *pi_copyright = p_buffer[ 4 ];
@@ -39,7 +40,7 @@
  #endif
      return i_ret;
  }
-@@ -356,7 +357,8 @@
+@@ -359,7 +360,8 @@ int ioctl_ReadDiscKey( int i_fd, const int *pi_agid, uint8_t *p_key )
      }
  
      memcpy( p_key, p_buffer + 4, DVD_DISCKEY_SIZE );
@@ -49,7 +50,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -487,6 +489,8 @@
+@@ -492,6 +494,8 @@ int ioctl_ReadTitleKey( int i_fd, const int *pi_agid, int i_pos, uint8_t *p_key
  
      memcpy( p_key, p_buffer + 5, DVD_KEY_SIZE );
  
@@ -58,7 +59,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -584,6 +588,8 @@
+@@ -591,6 +595,8 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
  
      *pi_agid = p_buffer[ 7 ] >> 6;
  
@@ -67,7 +68,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -692,6 +698,8 @@
+@@ -701,6 +707,8 @@ int ioctl_ReportChallenge( int i_fd, const int *pi_agid, uint8_t *p_challenge )
  
      memcpy( p_challenge, p_buffer + 4, DVD_CHALLENGE_SIZE );
  
@@ -76,7 +77,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -802,6 +810,8 @@
+@@ -813,6 +821,8 @@ int ioctl_ReportASF( int i_fd, int *pi_asf )
  
      *pi_asf = p_buffer[ 7 ] & 1;
  
@@ -85,7 +86,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -905,6 +915,8 @@
+@@ -918,6 +928,8 @@ int ioctl_ReportKey1( int i_fd, const int *pi_agid, uint8_t *p_key )
  
      memcpy( p_key, p_buffer + 4, DVD_KEY_SIZE );
  
@@ -94,7 +95,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -988,6 +1000,9 @@
+@@ -1003,6 +1015,9 @@ int ioctl_InvalidateAgid( int i_fd, int *pi_agid )
      i_ret = DosDevIOCtl(i_fd, IOCTL_CDROMDISK, CDROMDISK_EXECMD,
                          &sdc, sizeof(sdc), &ulParamLen,
                          NULL, 0, &ulDataLen);
@@ -104,27 +105,27 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -1075,7 +1090,8 @@
-     i_ret = ioctl( h_dvd, DKIOCDVDREADSTRUCTURE, &dvd );
+@@ -1121,7 +1136,8 @@ int ioctl_ReadCPRMMediaId(int i_fd,int *p_agid, uint8_t *p_data_buffer)
+                         p_buffer, sizeof(p_buffer), &ulDataLen);
      if (i_ret == 0)
-         memcpy(p_buffer, dvd.buffer, sizeof(dvd.bufferLength));
+         memcpy(p_data_buffer, p_buffer, CPRM_MEDIA_ID_SIZE);
 -
 +#elif defined(__APPLE__) && (defined(__arm__) || defined(__aarch64__))
 +    i_ret = 0;
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -1177,7 +1193,8 @@
-         memcpy( p_mkb_pack, p_buffer + 4, CPRM_MKB_PACK_SIZE );
+@@ -1270,7 +1286,8 @@ int ioctl_ReadCPRMMKBPack(int i_fd, int *p_agid, int mkb_pack, uint8_t *p_mkb_pa
+         *p_total_packs = p_buffer[3];
+         memcpy(p_mkb_pack, p_buffer + 4, CPRM_MKB_PACK_SIZE);
      }
-     return i_ret;
 -
 +#elif defined(__APPLE__) && (defined(__arm__) || defined(__aarch64__))
 +    i_ret = 0;
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -1288,6 +1305,8 @@
+@@ -1383,6 +1400,8 @@ int ioctl_SendChallenge( int i_fd, const int *pi_agid, const uint8_t *p_challeng
                           &sdc, sizeof(sdc), &ulParamLen,
                           p_buffer, sizeof(p_buffer), &ulDataLen );
  
@@ -133,7 +134,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -1397,6 +1416,8 @@
+@@ -1494,6 +1513,8 @@ int ioctl_SendKey2( int i_fd, const int *pi_agid, const uint8_t *p_key )
                           &sdc, sizeof(sdc), &ulParamLen,
                           p_buffer, sizeof(p_buffer), &ulDataLen );
  
@@ -142,7 +143,7 @@
  #else
  #   error "DVD ioctls are unavailable on this system"
  
-@@ -1524,6 +1545,8 @@
+@@ -1623,6 +1644,8 @@ int ioctl_ReportRPC( int i_fd, int *p_type, int *p_mask, int *p_scheme )
      *p_mask = p_buffer[ 5 ];
      *p_scheme = p_buffer[ 6 ];
  

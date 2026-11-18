@@ -9,6 +9,7 @@ CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
               -DFT_REQUIRE_BZIP2=ON \
               -DFT_REQUIRE_HARFBUZZ=ON \
               -DFT_DISABLE_BROTLI=ON \
+              -DFT_DISABLE_HVF=ON \
               -DFT_DISABLE_PNG=ON \
               -DFT_DISABLE_ZLIB=ON
 

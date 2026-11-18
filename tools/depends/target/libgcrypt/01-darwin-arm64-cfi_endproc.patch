@@ -1,0 +1,16 @@
+--- a/cipher/asm-common-aarch64.h
++++ b/cipher/asm-common-aarch64.h
+@@ -67,7 +67,12 @@
+ #ifdef HAVE_GCC_ASM_CFI_DIRECTIVES
+ /* CFI directives to emit DWARF stack unwinding information. */
+ # define CFI_STARTPROC()            .cfi_startproc; AARCH64_HINT_BTI_C
+-# define CFI_ENDPROC()              SPEC_STOP; .cfi_endproc
++# ifdef __APPLE__
++/* ';' starts a comment in Apple's arm64 assembler */
++#  define CFI_ENDPROC()             .cfi_endproc
++# else
++#  define CFI_ENDPROC()             SPEC_STOP; .cfi_endproc
++# endif
+ # define CFI_REMEMBER_STATE()       .cfi_remember_state
+ # define CFI_RESTORE_STATE()        .cfi_restore_state
+ # define CFI_ADJUST_CFA_OFFSET(off) .cfi_adjust_cfa_offset off

@@ -1,21 +1,20 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -446,10 +446,9 @@
+@@ -529,9 +529,8 @@ ENDIF()
  INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
  ADD_SUBDIRECTORY(include)
  ADD_SUBDIRECTORY(libmariadb)
 -IF((NOT WIN32) OR CYGWIN)
 -  ADD_SUBDIRECTORY(mariadb_config)
 -ENDIF()
- 
-+ADD_SUBDIRECTORY(mariadb_config)
 +
- IF(IS_DIRECTORY ${CC_SOURCE_DIR}/unittest)
-   IF(WITH_UNIT_TESTS)
-     ADD_SUBDIRECTORY(unittest/mytap)
++ADD_SUBDIRECTORY(mariadb_config)
+ 
+ IF(WITH_TOOLS)
+   ADD_SUBDIRECTORY(tools)
 --- a/mariadb_config/CMakeLists.txt
 +++ b/mariadb_config/CMakeLists.txt
-@@ -43,25 +43,26 @@
+@@ -43,25 +43,26 @@ IF(UNIX AND NOT APPLE)
      SET(extra_dynamic_LDFLAGS "${extra_dynamic_LDFLAGS} ${LIB_OUT}")
    ENDIF()
  ENDIF()

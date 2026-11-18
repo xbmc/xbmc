@@ -1,5 +1,6 @@
 include ../../Makefile.include LIBGCRYPT-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile LIBGCRYPT-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile LIBGCRYPT-VERSION ../../download-files.include \
+                                  01-darwin-arm64-cfi_endproc.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   # required to fix asm link failure due C_SYMBOL_NAME macro not prepending _ to exported symbol
@@ -40,6 +41,9 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+	cd $(PLATFORM); patch -p1 -i ../01-darwin-arm64-cfi_endproc.patch
+endif
 	# do not build the tests or docs
 	sed -ie "s|\$$(doc) tests||" "$(PLATFORM)/Makefile.am"
 	cd $(PLATFORM); $(AUTORECONF) -vif

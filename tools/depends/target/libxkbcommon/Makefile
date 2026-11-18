@@ -14,6 +14,7 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
                 --prefix=$(PREFIX) \
                 -Ddefault_library=static \
                 -Denable-docs=false \
+                -Denable-tools=false \
                 -Denable-x11=false \
                 -Denable-wayland=false \
                 -Denable-xkbregistry=false \
