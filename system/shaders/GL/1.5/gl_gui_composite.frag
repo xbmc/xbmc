@@ -64,5 +64,6 @@ void main()
   pq = pq * ((235.0 - 16.0) / 255.0) + (16.0 / 255.0);
 #endif
 
-  fragColor = vec4(pq, gui.a);
+  // The FBO holds coverage; squaring it compensates for PQ blending and keeps opaque GUI opaque.
+  fragColor = vec4(pq, gui.a * gui.a);
 }
