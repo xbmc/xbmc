@@ -677,7 +677,7 @@ int Frobnicate(int param);
 
 Use the provided logging function `CLog::Log`. Do not log to standard output or standard error using e.g. `printf` or `std::cout`.
 
-The `Log` function uses the [fmt library](http://fmtlib.net/) for formatting log messages. Basically, you can use `{}` as placeholder for anything and list the parameters to insert after the message similarly to `printf`. See [here](http://fmtlib.net/latest/syntax.html) for the detailed syntax and below for an example.
+The `Log` function uses the [fmt library](https://fmt.dev/) for formatting log messages. Basically, you can use `{}` as placeholder for anything and list the parameters to insert after the message similarly to `printf`. See [here](https://fmt.dev/latest/syntax/) for the detailed syntax and below for an example.
 
 ✅ Good:
 ```cpp
