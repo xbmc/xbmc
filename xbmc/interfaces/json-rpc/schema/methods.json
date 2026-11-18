@@ -270,7 +270,6 @@
       {
         "name": "data",
         "schema": {
-          "type": "any",
           "default": null
         }
       }
@@ -1636,7 +1635,6 @@
           ]
         },
         "details": {
-          "type": "any",
           "description": "Transport specific details on how/from where to download the given file"
         },
         "mode": {
@@ -1672,9 +1670,7 @@
         }
       }
     ],
-    "returns": {
-      "type": "any"
-    }
+    "returns": {}
   },
   "Files.GetDirectory": {
     "type": "method",
