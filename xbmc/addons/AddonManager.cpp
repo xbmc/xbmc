@@ -1219,10 +1219,12 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
   for (const auto& dep : root_addon->GetDependencies())
     toProcess.push_back(dep);
 
-  while (!toProcess.empty())
+  // Expand each addon at most once so cyclic dependency metadata cannot loop forever
+  std::set<std::string> expanded{root_addon->ID()};
+
+  for (size_t i = 0; i < toProcess.size(); ++i)
   {
-    auto current_dep = *toProcess.begin();
-    toProcess.erase(toProcess.begin());
+    auto current_dep = toProcess[i];
     if (StringUtils::StartsWith(current_dep.id, "xbmc.") ||
         StringUtils::StartsWith(current_dep.id, "kodi."))
       continue;
@@ -1232,9 +1234,18 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
     if (added_it != added.end())
     {
       if (current_dep.version < added_it->version)
+      {
+        if (added_it->versionMin < current_dep.versionMin)
+          added_it->versionMin = current_dep.versionMin;
+        added_it->optional = added_it->optional && current_dep.optional;
         continue;
+      }
+
+      if (current_dep.versionMin < added_it->versionMin)
+        current_dep.versionMin = added_it->versionMin;
 
       bool aopt = added_it->optional;
+      current_dep.optional = current_dep.optional && aopt;
       added.erase(added_it);
       added.push_back(current_dep);
       if (!current_dep.optional && aopt)
@@ -1244,7 +1255,8 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
       added.push_back(current_dep);
 
     AddonPtr current_addon;
-    if (FindInstallableById(current_dep.id, current_addon))
+    if (FindInstallableById(current_dep.id, current_addon) &&
+        expanded.insert(current_addon->ID()).second)
     {
       for (const auto& item : current_addon->GetDependencies())
         toProcess.push_back(item);
