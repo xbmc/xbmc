@@ -1,0 +1,32 @@
+package @APP_PACKAGE@.interfaces;
+
+import android.media.MediaCodec;
+import android.media.MediaFormat;
+
+public class XBMCMediaCodecCallback extends MediaCodec.Callback
+{
+  native void _onInputBufferAvailable(MediaCodec codec, int index);
+  native void _onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info);
+  native void _onOutputFormatChanged(MediaCodec codec, MediaFormat format);
+  native void _onError(MediaCodec codec);
+
+  @Override
+  public void onInputBufferAvailable(MediaCodec codec, int index) {
+    _onInputBufferAvailable(codec, index);
+  }
+
+  @Override
+  public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
+    _onOutputBufferAvailable(codec, index, info);
+  }
+
+  @Override
+  public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
+    _onOutputFormatChanged(codec, format);
+  }
+
+  @Override
+  public void onError(MediaCodec codec, MediaCodec.CodecException e) {
+    _onError(codec);
+  }
+}
