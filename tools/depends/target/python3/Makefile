@@ -183,6 +183,8 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) install -j1
 	find $(PREFIX)/lib/python$(PYTHON_VERSION) -type f -name "*.pyc" -delete
 	find $(PREFIX)/lib/python$(PYTHON_VERSION) -type d -name "config-$(PYTHON_VERSION)-*" -exec rm -r {} +
+# pip's installer, venv and the Tk tools cannot be used with the embedded interpreter
+	cd $(PREFIX)/lib/python$(PYTHON_VERSION); rm -rf ensurepip idlelib tkinter turtle.py turtledemo venv
 	touch $(LIBDYLIB)
 	touch $@
 
