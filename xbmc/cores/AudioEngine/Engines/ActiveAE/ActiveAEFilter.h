@@ -68,8 +68,7 @@ protected:
   bool m_ptsInitialized;
   int m_sampleOffset;
   int64_t m_SamplesIn;
-  int64_t m_SamplesOut;
-  // Input samples covered by the output before the current frame, each frame at its own tempo
+  // Input samples covered by the output returned so far, each frame at its own tempo
   double m_samplesConsumed{0.0};
   // Tempo the current output frame was produced at
   float m_frameTempo{1.0f};

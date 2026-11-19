@@ -44,7 +44,6 @@ void CActiveAEFilter::Init(AVSampleFormat fmt, int sampleRate, uint64_t channelL
   m_channelLayout = channelLayout;
   m_tempo = 1.0;
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
   m_samplesConsumed = 0.0;
   m_frameTempo = 1.0f;
 }
@@ -68,7 +67,6 @@ bool CActiveAEFilter::SetTempo(float tempo)
   }
 
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
   m_samplesConsumed = 0.0;
   m_frameTempo = m_tempo;
   return true;
@@ -201,7 +199,6 @@ void CActiveAEFilter::CloseFilter()
     swr_free(&m_pConvertCtx);
 
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
   m_samplesConsumed = 0.0;
 
   m_ptsInitialized = false;
@@ -307,10 +304,6 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       return -1;
     }
 
-    // The previous frame ends where this one starts
-    m_samplesConsumed +=
-        static_cast<double>(outFrame->pts - m_SamplesOut) * static_cast<double>(m_frameTempo);
-    m_SamplesOut = outFrame->pts;
     m_frameTempo = m_tempo;
 
     if (m_needConvert)
@@ -349,6 +342,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       memcpy(dst_buffer[i], m_pOutFrame->extended_data[i] + bytesOffset, bytes);
     }
     m_sampleOffset += samples;
+    m_samplesConsumed += samples * static_cast<double>(m_frameTempo);
 
     if (m_sampleOffset >= m_pOutFrame->nb_samples)
     {
@@ -379,10 +373,5 @@ bool CActiveAEFilter::IsActive() const
 
 int CActiveAEFilter::GetBufferedSamples() const
 {
-  int ret = static_cast<int>(static_cast<double>(m_SamplesIn) - m_samplesConsumed);
-  if (m_hasData)
-  {
-    ret += (m_pOutFrame->nb_samples - m_sampleOffset);
-  }
-  return ret;
+  return static_cast<int>(static_cast<double>(m_SamplesIn) - m_samplesConsumed);
 }

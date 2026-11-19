@@ -85,6 +85,8 @@ public:
     m_samplesConsumed = consumed;
     m_hasData = false;
   }
+
+  bool HasFrame() const { return m_hasData; }
 };
 } // namespace
 
@@ -141,12 +143,50 @@ TEST(TestActiveAEFilter, BufferedSamplesCountOutputAtTheTempoItCameOutAt)
   fed += Feed(filter, SAMPLE_RATE, 2.0f, frames);
   ASSERT_GE(frames.size(), 2u);
 
-  // An output frame counts as consumed input once the next one has come out
+  // Output counts as consumed input once it is returned, the timestamps of the atempo stage would
+  // be early by the frame returned last otherwise
   double consumed = 0.0;
-  for (size_t i = 0; i + 1 < frames.size(); ++i)
-    consumed += frames[i].samples * static_cast<double>(frames[i].tempo);
+  for (const OutputFrame& frame : frames)
+    consumed += frame.samples * static_cast<double>(frame.tempo);
 
   EXPECT_NEAR(filter.GetBufferedSamples(), fed - consumed, 1.0);
+}
+
+TEST(TestActiveAEFilter, FrameReturnedAcrossAChangeKeepsItsTempo)
+{
+  // The pool takes a frame in parts when its buffer has less room left
+  constexpr int PART = 64;
+  CTestFilter filter;
+  InitStereoFloat(filter);
+  ASSERT_TRUE(filter.SetTempo(1.5f));
+
+  std::vector<float> src(2 * CHUNK);
+  std::vector<float> dst(2 * PART);
+  uint8_t* srcPlanes[] = {reinterpret_cast<uint8_t*>(src.data())};
+  uint8_t* dstPlanes[] = {reinterpret_cast<uint8_t*>(dst.data())};
+  const int srcBytes = CHUNK * 2 * static_cast<int>(sizeof(float));
+  // Feeds input until a frame comes out, and returns the part of it taken
+  const auto TakeANewFrame = [&]
+  {
+    for (int i = 0; i < 100; ++i)
+    {
+      const int out = filter.ProcessFilter(dstPlanes, PART, srcPlanes, CHUNK, srcBytes);
+      if (out > 0)
+        return out;
+    }
+    return 0;
+  };
+
+  ASSERT_EQ(TakeANewFrame(), PART);
+  ASSERT_TRUE(filter.HasFrame());
+
+  const int buffered = filter.GetBufferedSamples();
+  ASSERT_TRUE(filter.ChangeTempo(2.0f));
+  int rest = 0;
+  while (filter.HasFrame())
+    rest += filter.ProcessFilter(dstPlanes, PART, nullptr, 0, 0);
+  ASSERT_GT(rest, 0);
+  EXPECT_NEAR(filter.GetBufferedSamples(), buffered - rest * 1.5, 1.0);
 }
 
 TEST(TestActiveAEFilter, BufferedSamplesBeyondIntMax)
