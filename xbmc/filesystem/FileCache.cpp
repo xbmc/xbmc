@@ -604,7 +604,7 @@ retry:
     }
     // The writer may have appended its final bytes and marked end of input after
     // WaitForData returned 0; drain them before reporting EOF.
-    iRc = m_pCache->ReadFromCache((char *)lpBuf, uiBufSize);
+    iRc = m_pCache->ReadFromCache((char*)lpBuf, uiBufSize);
     if (iRc > 0)
     {
       m_readPos += iRc;

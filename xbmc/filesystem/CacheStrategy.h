@@ -11,8 +11,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
-#include <stdint.h>
 #include <atomic>
+#include <stdint.h>
 #include <string>
 
 namespace XFILE {
