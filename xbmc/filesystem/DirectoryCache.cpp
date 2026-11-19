@@ -8,7 +8,6 @@
 
 #include "DirectoryCache.h"
 
-#include "Directory.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "URL.h"
@@ -194,21 +193,6 @@ void CDirectoryCache::Clear()
   // this routine clears everything
   std::unique_lock lock(m_cs);
   m_cache.clear();
-}
-
-void CDirectoryCache::InitCache(const std::set<std::string>& dirs)
-{
-  for (const std::string& dirPath : dirs)
-  {
-    CFileItemList items;
-    CDirectory::GetDirectory(dirPath, items, "", DIR_FLAG_NO_FILE_DIRS);
-    items.Clear();
-  }
-}
-
-void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
-{
-  std::erase_if(m_cache, [&dirs](const auto& i) { return dirs.contains(i.first); });
 }
 
 void CDirectoryCache::CheckIfFull()
