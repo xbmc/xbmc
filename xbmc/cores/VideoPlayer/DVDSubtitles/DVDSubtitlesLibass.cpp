@@ -25,6 +25,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 #include <mutex>
 
@@ -758,13 +759,13 @@ void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
   ASS_Event* assEvent = (assEvents + eventId);
   if (assEvent)
   {
-    size_t buffSize = strlen(assEvent->Text) + strlen(text) + 1;
-    char* appendedText = new char[buffSize];
-    strcpy(appendedText, assEvent->Text);
-    strcat(appendedText, text);
-    free(assEvent->Text);
-    assEvent->Text = strdup(appendedText);
-    delete[] appendedText;
+    const size_t textLen = strlen(assEvent->Text);
+    const size_t appendLen = strlen(text);
+    if (char* appendedText = static_cast<char*>(realloc(assEvent->Text, textLen + appendLen + 1)))
+    {
+      memcpy(appendedText + textLen, text, appendLen + 1);
+      assEvent->Text = appendedText;
+    }
   }
 }
 
