@@ -7,8 +7,16 @@
  */
 
 #include "FileItem.h"
+#include "InfoScanner.h"
+#include "NfoFile.h"
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "platform/Filesystem.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -17,6 +25,7 @@
 #include "video/tags/VideoTagLoaderNFO.h"
 
 #include <fstream>
+#include <memory>
 #include <random>
 #include <string>
 #include <vector>
@@ -214,3 +223,113 @@ TEST_P(DiscNfoTestFixture, FindNFO)
 INSTANTIATE_TEST_SUITE_P(TestVideoTagLoaderNFO,
                          DiscNfoTestFixture,
                          testing::ValuesIn(disc_nfo_tests));
+
+// Each movie of an nfo holding several, as an export writes a disc's versions and extras, is read
+// in turn, whole and alone
+TEST(TestVideoTagLoaderNFO, EachMovieOfAnNfoHoldingSeveralIsReadWhole)
+{
+  std::error_code ec;
+  const std::string tmpdir{KODI::PLATFORM::FILESYSTEM::temp_directory_path(ec)};
+  ASSERT_FALSE(ec);
+  std::string dir{URIUtils::AddFileToFolder(
+      tmpdir, fmt::format("NfoMoviesTest{:08x}", std::random_device{}()))};
+  URIUtils::AddSlashAtEnd(dir);
+  ASSERT_TRUE(XFILE::CDirectory::Create(dir));
+  const std::string video{URIUtils::AddFileToFolder(dir, "Film.mkv")};
+  std::ofstream(video, std::ios::out);
+
+  constexpr int MOVIES{5};
+  std::string nfo{"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n<movies>\n"};
+  for (int movie = 1; movie <= MOVIES; ++movie)
+    nfo += fmt::format("    <movie version=\"0\">\n"
+                       "        <title>Film {0}</title>\n"
+                       "        <playlist>{0}</playlist>\n"
+                       "        <dateadded>2024-02-0{0} 05:38:04</dateadded>\n"
+                       "    </movie>\n",
+                       movie);
+  nfo += "</movies>\n";
+  std::ofstream(URIUtils::AddFileToFolder(dir, "Film.nfo"), std::ios::out | std::ios::binary)
+      << nfo;
+
+  ADDON::AddonPtr addon;
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(
+      "metadata.local", addon, ADDON::AddonType::SCRAPER_MOVIES, ADDON::OnlyEnabled::CHOICE_NO));
+  CVideoTagLoaderNFO loader(CFileItem(video, false),
+                            std::dynamic_pointer_cast<ADDON::CScraper>(addon), false);
+
+  for (int movie = 1; movie <= MOVIES; ++movie)
+  {
+    CVideoInfoTag tag;
+    ASSERT_EQ(movie == 1 ? loader.Load(tag, false) : loader.LoadVersion(movie, tag),
+              CInfoScanner::InfoType::FULL);
+    EXPECT_EQ(tag.m_strTitle, fmt::format("Film {}", movie));
+    EXPECT_EQ(loader.GetBlurayPlaylist(), movie);
+    // The last of its elements
+    EXPECT_EQ(tag.m_dateAdded.GetAsDBDateTime(), fmt::format("2024-02-0{} 05:38:04", movie));
+  }
+  CVideoInfoTag tag;
+  EXPECT_EQ(loader.LoadVersion(MOVIES + 1, tag), CInfoScanner::InfoType::NONE);
+
+  XFILE::CDirectory::RemoveRecursive(dir);
+}
+
+// A movie's end tag inside its text or a comment ends nothing: each movie is still read whole
+TEST(TestVideoTagLoaderNFO, AMoviesEndTagInItsTextOrACommentEndsNothing)
+{
+  std::error_code ec;
+  const std::string tmpdir{KODI::PLATFORM::FILESYSTEM::temp_directory_path(ec)};
+  ASSERT_FALSE(ec);
+  std::string dir{URIUtils::AddFileToFolder(
+      tmpdir, fmt::format("NfoEndTagTest{:08x}", std::random_device{}()))};
+  URIUtils::AddSlashAtEnd(dir);
+  ASSERT_TRUE(XFILE::CDirectory::Create(dir));
+  const std::string video{URIUtils::AddFileToFolder(dir, "Film.mkv")};
+  std::ofstream(video, std::ios::out);
+  std::ofstream(URIUtils::AddFileToFolder(dir, "Film.nfo"), std::ios::out | std::ios::binary)
+      << "<movies>\n"
+         "  <movie>\n"
+         "    <title>Film</title>\n"
+         "    <plot><![CDATA[Literal </movie> marker]]></plot>\n"
+         "    <dateadded>2024-02-01 05:38:04</dateadded>\n"
+         "  </movie>\n"
+         "  <movie>\n"
+         "    <title>Version</title>\n"
+         "    <!-- </movie> -->\n"
+         "    <dateadded>2024-02-02 05:38:04</dateadded>\n"
+         "  </movie>\n"
+         "  <movie><title>Extra</title></movie>\n"
+         "</movies>\n";
+
+  ADDON::AddonPtr addon;
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(
+      "metadata.local", addon, ADDON::AddonType::SCRAPER_MOVIES, ADDON::OnlyEnabled::CHOICE_NO));
+  CVideoTagLoaderNFO loader(CFileItem(video, false),
+                            std::dynamic_pointer_cast<ADDON::CScraper>(addon), false);
+
+  CVideoInfoTag film;
+  ASSERT_EQ(loader.Load(film, false), CInfoScanner::InfoType::FULL);
+  EXPECT_EQ("Literal </movie> marker", film.m_strPlot);
+  EXPECT_EQ("2024-02-01 05:38:04", film.m_dateAdded.GetAsDBDateTime());
+  CVideoInfoTag version;
+  ASSERT_EQ(loader.LoadVersion(2, version), CInfoScanner::InfoType::FULL);
+  EXPECT_EQ("Version", version.m_strTitle);
+  EXPECT_EQ("2024-02-02 05:38:04", version.m_dateAdded.GetAsDBDateTime());
+
+  XFILE::CDirectory::RemoveRecursive(dir);
+}
+
+// An nfo isn't read without a scraper, as when the art held in a video file is looked for, whose
+// tags can name a scraper's url
+TEST(TestVideoTagLoaderNFO, AnNfoIsNotReadWithoutAScraper)
+{
+  const std::string folder{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderNFO/")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(folder));
+  const std::string nfo{URIUtils::AddFileToFolder(folder, "Film.nfo")};
+  std::ofstream(nfo, std::ios::out | std::ios::binary) << "<movie><title>Film</title></movie>";
+
+  CNfoFile reader;
+  EXPECT_EQ(CInfoScanner::InfoType::NONE, reader.Create(nfo, nullptr));
+
+  XFILE::CDirectory::RemoveRecursive(folder);
+}

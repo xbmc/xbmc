@@ -3,6 +3,7 @@ set(SOURCES TestBookmark.cpp
             TestGUIWindowVideoBase.cpp
             TestPlayerControllerActions.cpp
             TestSetInfoTag.cpp
+            TestSetTagLoaderNFO.cpp
             TestStacks.cpp
             TestVideoDatabase.cpp
             TestVideoDatabaseContentGeometry.cpp

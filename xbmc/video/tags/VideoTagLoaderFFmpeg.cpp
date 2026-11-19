@@ -133,19 +133,23 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
            av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
            av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
   }
-  else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
+  else if (m_item.IsType(".mp4|.m4v") || m_item.IsType(".avi"))
     return av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
   else
     return false;
 }
 
 CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
-                                                   bool,
+                                                   bool prioritise,
                                                    std::vector<EmbeddedArt>* art)
 {
+  // A file that didn't open, as HasInfo() reports, where the loader is made without asking it
+  if (!m_file)
+    return CInfoScanner::InfoType::NONE;
+
   if (m_item.IsType(".mkv"))
-    return LoadMKV(tag, art);
-  else if (m_item.IsType(".mp4"))
+    return LoadMKV(tag, prioritise, art);
+  else if (m_item.IsType(".mp4|.m4v"))
     return LoadMP4(tag, art);
   else if (m_item.IsType(".avi"))
     return LoadAVI(tag, art);
@@ -154,6 +158,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
 }
 
 CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
+                                                      bool prioritise,
                                                       std::vector<EmbeddedArt>* art)
 {
   // embedded art
@@ -185,26 +190,31 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
 
   if (m_metadata_stream != -1)
   {
-    CNfoFile nfo;
     auto* data = m_fctx->streams[m_metadata_stream]->codecpar->extradata;
     const char* content = reinterpret_cast<const char*>(data);
     if (!m_override_data)
     {
+      CNfoFile nfo;
       nfo.GetDetails(tag, content);
       return CInfoScanner::InfoType::FULL;
     }
-    else
+
+    // Read once, as the scanner loads it again over the scraper's details
+    if (!m_overrideRead)
     {
-      /*! @todo Investigate if this is correct.
-       * The first parameter to `CNfoFile::Create` is the **path** to the NFO file.
-       * `content` here appears to be the __contents__ of an NFO file.
-       * If this assumption is correct the parsing will always fail and
-       * `nfo.ScraperUrl()` will always return an empty URL.
-       */
-      nfo.Create(content, m_info);
-      m_url = nfo.ScraperUrl();
-      return CInfoScanner::InfoType::URL;
+      m_overrideResult = m_overrideNfo.CreateFromText(content ? content : "", m_info);
+      // Its stream holds it to override a scraper's details, whether or not it says so itself
+      if (m_overrideResult == CInfoScanner::InfoType::FULL)
+        m_overrideResult = CInfoScanner::InfoType::OVERRIDE;
+      m_overrideRead = true;
     }
+
+    using enum CInfoScanner::InfoType;
+    if (m_overrideResult == OVERRIDE || m_overrideResult == COMBINED)
+      m_overrideNfo.GetDetails(tag, nullptr, prioritise);
+    if (m_overrideResult == URL || m_overrideResult == COMBINED)
+      m_url = m_overrideNfo.ScraperUrl();
+    return m_overrideResult;
   }
 
   AVDictionaryEntry* avtag = nullptr;
@@ -215,7 +225,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
         StringUtils::CompareNoCase(avtag->key, "tmdburl") == 0)
     {
       CNfoFile nfo;
-      nfo.Create(avtag->value, m_info);
+      nfo.CreateFromText(avtag->value, m_info);
       // Try other tags if the scraper wont use the url:
       if (nfo.ScraperUrl().HasUrls())
       {

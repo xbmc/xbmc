@@ -34,7 +34,16 @@ public:
 
   CInfoScanner::InfoType Create(const std::string& nfoPath, const ADDON::ScraperPtr& info);
 
-  /*! \brief Re-parse the already loaded document, starting at its nth <movie> element.
+  /*! \brief Read an nfo's text, as Create() reads the file's, where no file holds it.
+   As a video file's tags hold an nfo, or a url alone. The text is classified and searched for the
+   scraper's url, as a file's is, and nothing is loaded.
+   \param text the nfo's text
+   \param info the scraper to read it for
+   \return what the text holds, NONE without a scraper or a text
+   */
+  CInfoScanner::InfoType CreateFromText(const std::string& text, const ADDON::ScraperPtr& info);
+
+  /*! \brief Parse the already loaded document's nth <movie> element.
    Only valid after a successful Create(), and only for movie documents - nothing else can hold
    more than one entry.
    \param index 1-based index of the <movie> element to parse
@@ -80,11 +89,12 @@ public:
 private:
   CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
   CInfoScanner::InfoType TryParsing(const CURL& nfoPath, ADDON::ContentType contentType);
+  CInfoScanner::InfoType TryParsingDocument(ADDON::ContentType contentType);
   CInfoScanner::InfoType SearchNfoForScraperUrls(CInfoScanner::InfoType parseResult,
                                                  const ADDON::ScraperPtr& info);
   bool SeekToMovieIndex(int index);
 
-  // Returns the root element of m_doc (from m_headPos)
+  // Returns the element of m_doc at m_headPos, parsed once: of several movies, that one alone
   const TiXmlElement* GetRootElement() const;
 
   std::string m_doc;
