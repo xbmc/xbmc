@@ -31,6 +31,8 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 
+#include <set>
+
 #include <fmt/format.h>
 
 using namespace XFILE;
@@ -484,6 +486,9 @@ void AddLocalItemArtwork(Artwork& itemArt,
   const bool caseSensitive{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caseSensitiveLocalArtMatch};
 
+  // The types set from art named for the file, which the folder's plain art doesn't replace
+  std::set<std::string, std::less<>> ownArtTypes;
+
   for (const auto& artFile : availableArtFiles)
   {
     std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
@@ -518,6 +523,11 @@ void AddLocalItemArtwork(Artwork& itemArt,
     if ((addAll && CVideoThumbLoader::IsValidArtType(candidate)) ||
         CVideoThumbLoader::IsArtTypeInWhitelist(candidate, wantedArtTypes, exactName))
     {
+      // Whichever of the two is listed first, as a folder can be listed in any order
+      if (matchesFilename)
+        ownArtTypes.insert(candidate);
+      else if (ownArtTypes.contains(candidate))
+        continue;
       itemArt[candidate] = artFile->GetPath();
     }
   }

@@ -908,6 +908,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool setUpdated{false};
     ART::Artwork movieSetArt;
+    ART::Artwork setNfoArt;
+
+    // Wherever the set's art comes from, it follows the artwork level, as a movie's does
+    const int artLevel{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
+    const bool addAll{artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL};
+    const bool exactName{artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_BASIC};
+    const std::vector<std::string> movieSetArtTypes{
+        CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::VIDEO_COLLECTION)};
+    const auto isWanted = [addAll, exactName, &movieSetArtTypes](const std::string& artType) {
+      return addAll ||
+             CVideoThumbLoader::IsArtTypeInWhitelist(artType, movieSetArtTypes, exactName);
+    };
+
     const std::string movieSetInfoPath{GetMovieSetInfoFolder(tag.m_set.GetTitle())};
     if (!movieSetInfoPath.empty())
     {
@@ -927,22 +941,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
             tag.m_set.SetSortTitle(setTag.GetSortTitle());
           if (!setTag.GetOverview().empty())
             tag.m_set.SetOverview(setTag.GetOverview());
-          if (setTag.HasArt())
-            tag.m_set.SetArt(setTag.GetArt());
+          setNfoArt = setTag.GetArt();
           setUpdated = true;
         }
       }
 
       // Now look for art
       // Look for local art files first
-      const std::vector<std::string> movieSetArtTypes =
-          CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::VIDEO_COLLECTION);
-      ART::AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false, true);
+      if (artLevel != CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
+        ART::AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, addAll, exactName,
+                                 true);
 
       // If art specified in set.nfo use that next
-      if (movieSetArt.empty() && tag.m_set.HasArt())
-        for (auto& art : tag.m_set.GetArt())
-          if (CVideoThumbLoader::IsArtTypeInWhitelist(art.first, movieSetArtTypes, false))
+      if (movieSetArt.empty())
+        for (const auto& art : setNfoArt)
+          if (isWanted(art.first))
             movieSetArt.insert(art);
     }
     else
@@ -950,7 +963,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // No MSIF, so use the set art from the scraper (already in tag)
       tag.m_strPictureURL.Parse();
       for (const auto& url : tag.m_strPictureURL.GetUrls())
-        if (StringUtils::StartsWith(url.m_aspect, "set."))
+        if (StringUtils::StartsWith(url.m_aspect, "set.") && isWanted(url.m_aspect.substr(4)))
           movieSetArt.try_emplace(url.m_aspect.substr(4), url.m_url);
     }
     if (!movieSetArt.empty())

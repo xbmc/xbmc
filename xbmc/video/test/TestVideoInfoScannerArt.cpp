@@ -19,12 +19,16 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/ItemProperties.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
 #include <memory>
@@ -113,6 +117,9 @@ protected:
     std::erase_if(CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO),
                   [this](const CMediaSource& source) { return source.strPath == m_root; });
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, m_movieSetsFolder);
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL, m_artworkLevel);
+    Settings()->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST, m_movieArtWhitelist);
 
     // First, as its jobs are cancelled with the job manager
     CServiceBroker::UnregisterTextureCache();
@@ -134,6 +141,15 @@ protected:
   static std::shared_ptr<CSettings> Settings()
   {
     return CServiceBroker::GetSettingsComponent()->GetSettings();
+  }
+
+  //! Art of the types the CUSTOM artwork level adds for movies, versions and sets
+  static void SetMovieArtWhitelist(const std::vector<std::string>& artTypes)
+  {
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_CUSTOM);
+    Settings()->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST,
+                        {artTypes.begin(), artTypes.end()});
   }
 
   static std::string Folder(const std::string& parent, const std::string& name)
@@ -298,6 +314,30 @@ protected:
         type.c_str()));
   }
 
+  //! A movie of a set, Saga, whose information folder holds a poster, a clearlogo and a discart
+  //! \return the set's information folder
+  std::string MovieOfASetWithArt()
+  {
+    const std::string sets{Folder(m_root, "Sets")};
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+    const std::string saga{Folder(sets, "Saga")};
+    for (const std::string image : {"poster.jpg", "clearlogo.png", "discart.png"})
+      File(saga, image);
+    const std::string folder{Folder(m_root, "First")};
+    File(folder, "First.mkv");
+    File(folder, "First.nfo", "<movie><title>First</title><set><name>Saga</name></set></movie>");
+    return saga;
+  }
+
+  //! The art of the set, Saga
+  KODI::ART::Artwork SetArt()
+  {
+    KODI::ART::Artwork art;
+    m_db.GetArtForItem(m_db.GetSingleValueInt("SELECT idSet FROM sets WHERE strSet='Saga'"),
+                       KODI::MEDIA::TYPE::VIDEO_COLLECTION, art);
+    return art;
+  }
+
   std::string m_root;
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
@@ -306,6 +346,11 @@ protected:
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   const bool m_retrieveAllArt{
       Settings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)};
+  const std::string m_movieSetsFolder{
+      Settings()->GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER)};
+  const int m_artworkLevel{Settings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
+  const std::vector<CVariant> m_movieArtWhitelist{
+      Settings()->GetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST)};
 };
 } // namespace
 
@@ -407,6 +452,24 @@ TEST_F(TestVideoInfoScannerArt, EachOfSeveralIsosInAFolderHasOnlyTheArtNamedAfte
   EXPECT_EQ("", posterOf("D"));
 }
 
+// The art named for the movie wins over the folder's plain art, whichever the folder lists first:
+// here, in a listing in name order, the plain art comes last
+TEST_F(TestVideoInfoScannerArt, AMovieInAFolderOfItsOwnPrefersItsOwnPoster)
+{
+  const std::string folder{Folder(m_root, "M3GAN")};
+  File(folder, "M3GAN.mkv");
+  File(folder, "M3GAN.nfo", "<movie><title>M3GAN</title></movie>");
+  const std::string poster{File(folder, "M3GAN-poster.jpg")};
+  File(folder, "poster.jpg");
+  const std::string fanart{File(folder, "fanart.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(poster, MovieArt("poster"));
+  EXPECT_EQ(fanart, MovieArt("fanart"));
+}
+
 // A disc without versions has the plain art beside BDMV, and none named for a version
 TEST_F(TestVideoInfoScannerArt, ABlurayRipWithoutVersionsHasThePlainArtBesideBDMV)
 {
@@ -485,6 +548,23 @@ TEST_F(TestVideoInfoScannerArt, AVersionWithoutArtOfItsOwnHasThePlainArtBesideBD
   EXPECT_EQ(fanart, MovieArt("fanart"));
   EXPECT_EQ(poster, VersionArt("poster"));
   EXPECT_EQ(fanart, VersionArt("fanart"));
+}
+
+// At the CUSTOM artwork level, a version has the types the movie whitelist adds, as its movie has
+TEST_F(TestVideoInfoScannerArt, AVersionHasTheArtTheMovieWhitelistAdds)
+{
+  SetMovieArtWhitelist({"clearlogo"});
+  const std::string folder{BlurayRipWithTwoVersions()};
+  const std::string clearlogo800{File(folder, "00800-clearlogo.png")};
+  const std::string clearlogo801{File(folder, "00801-clearlogo.png")};
+  File(folder, "00801-discart.png");
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(clearlogo800, MovieArt("clearlogo"));
+  EXPECT_EQ(clearlogo801, VersionArt("clearlogo"));
+  EXPECT_EQ("", VersionArt("discart"));
 }
 
 // An extra of the movie on its disc, such as a featurette, has its own art beside BDMV, but not
@@ -637,6 +717,78 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
 }
 
+// The art in a set's information folder follows the artwork level, as a movie's does: none at the
+// NONE level...
+TEST_F(TestVideoInfoScannerArt, ASetHasNoArtAtTheArtworkLevelNone)
+{
+  MovieOfASetWithArt();
+  Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                     CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE);
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM sets"));
+  EXPECT_EQ(KODI::ART::Artwork{}, SetArt());
+}
+
+// ...and at the CUSTOM level only a set's own types and those the whitelist adds
+TEST_F(TestVideoInfoScannerArt, ASetHasItsOwnArtAndTheWhitelistsAtTheArtworkLevelCustom)
+{
+  const std::string saga{MovieOfASetWithArt()};
+  SetMovieArtWhitelist({"clearlogo"});
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM sets"));
+  EXPECT_EQ((KODI::ART::Artwork{{"clearlogo", URIUtils::AddFileToFolder(saga, "clearlogo.png")},
+                                {"poster", URIUtils::AddFileToFolder(saga, "poster.jpg")}}),
+            SetArt());
+}
+
+// So does the art a set's set.nfo names, taken where its folder holds none, and the scraper's art
+// for a set, taken without a folder for it. At the ALL level, all of it is taken.
+TEST_F(TestVideoInfoScannerArt, ASetsArtFromItsNfoOrItsScraperFollowsTheArtworkLevel)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  File(Folder(sets, "Saga"), "set.nfo",
+       "<set><title>Saga</title><art><poster>poster.jpg</poster><clearlogo>clearlogo.png"
+       "</clearlogo><discart>discart.png</discart></art></set>");
+  // The set's art, from the folder given, or from the scraper without one
+  const auto setArt = [](const std::string& setsFolder)
+  {
+    Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, setsFolder);
+    CVideoInfoTag tag;
+    tag.m_set.SetTitle("Saga");
+    // As a scraper gives it with a movie's details, other than set.nfo's, so each is told apart
+    tag.m_strPictureURL.SetData(
+        "<thumb aspect=\"set.poster\">http://images.invalid/poster.jpg</thumb>"
+        "<thumb aspect=\"set.clearlogo\">http://images.invalid/clearlogo.png</thumb>"
+        "<thumb aspect=\"set.discart\">http://images.invalid/discart.png</thumb>");
+    CVideoInfoScanner::UpdateSetInTag(tag);
+    return tag.m_set.GetArt();
+  };
+
+  for (const std::string& setsFolder : {sets, std::string{}})
+  {
+    SCOPED_TRACE(setsFolder.empty() ? "the scraper's" : "set.nfo's");
+    // Only the source the set's art is to come from
+    const std::string at{setsFolder.empty() ? "http://images.invalid/" : ""};
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL);
+    EXPECT_EQ((KODI::ART::Artwork{{"clearlogo", at + "clearlogo.png"},
+                                  {"discart", at + "discart.png"},
+                                  {"poster", at + "poster.jpg"}}),
+              setArt(setsFolder));
+    Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
+                       CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE);
+    EXPECT_EQ(KODI::ART::Artwork{}, setArt(setsFolder));
+    SetMovieArtWhitelist({"clearlogo"});
+    EXPECT_EQ(
+        (KODI::ART::Artwork{{"clearlogo", at + "clearlogo.png"}, {"poster", at + "poster.jpg"}}),
+        setArt(setsFolder));
+  }
+}
+
 namespace
 {
 class TestVideoInfoScannerArtTvShows : public TestVideoInfoScannerArt
@@ -651,6 +803,40 @@ protected:
         "UPDATE path SET strContent='tvshows', useFolderNames=0, scanRecursive=0 WHERE idPath=%i",
         m_db.GetPathId(m_root))));
   }
+
+  void TearDown() override
+  {
+    AdvancedSettings()->m_caseSensitiveLocalArtMatch = m_caseSensitiveLocalArtMatch;
+    TestVideoInfoScannerArt::TearDown();
+  }
+
+  static std::shared_ptr<CAdvancedSettings> AdvancedSettings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  }
+
+  //! A show holding episode 1 of season 1, read from its nfo
+  //! \return the show's folder
+  std::string ShowOfOneEpisode()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    File(show, "Show.S01E01.mkv");
+    File(show, "Show.S01E01.nfo",
+         "<episodedetails><title>First</title><season>1</season><episode>1</episode>"
+         "</episodedetails>");
+    return show;
+  }
+
+  std::string SeasonArt(int season, const std::string& type)
+  {
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT art.url FROM art JOIN seasons ON art.media_id = seasons.idSeason "
+                        "WHERE art.media_type='season' AND art.type='%s' AND seasons.season=%i",
+                        type.c_str(), season));
+  }
+
+  const bool m_caseSensitiveLocalArtMatch{AdvancedSettings()->m_caseSensitiveLocalArtMatch};
 
   //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, read from the disc's nfo
   //! \return the folder holding BDMV
@@ -819,4 +1005,59 @@ TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAVideoFileHasItsOwnArtBeside
   ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
   EXPECT_EQ(thumb7, EpisodeArt(7, "thumb"));
   EXPECT_EQ("", EpisodeArt(8, "thumb"));
+}
+
+// With local art matched in any case, a season's art named with a capital is found, and counts
+// as a season of the show's, as one without does
+TEST_F(TestVideoInfoScannerArtTvShows, ASeasonsArtNamedWithACapitalIsFound)
+{
+  AdvancedSettings()->m_caseSensitiveLocalArtMatch = false;
+  const std::string show{ShowOfOneEpisode()};
+  const std::string poster1{File(show, "Season01-poster.jpg")};
+  const std::string poster2{File(show, "Season02-poster.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(poster1, SeasonArt(1, "poster"));
+  EXPECT_EQ(poster2, SeasonArt(2, "poster"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnImageNamedLikeASeasonInsideAnotherNameAddsNoSeason)
+{
+  const std::string show{ShowOfOneEpisode()};
+  File(show, "preseason03-poster.jpg");
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(0, m_db.GetSingleValueInt("SELECT COUNT(*) FROM seasons WHERE season > 1"));
+}
+
+// By default "season" is matched in its case and the rest of the name in any, as a season's art is
+// looked up. Whichever the setting asks for, it is matched so with one regexp cache for both.
+TEST_F(TestVideoInfoScannerArtTvShows, ASeasonsArtIsCountedInTheCaseItIsMatchedIn)
+{
+  const std::string show{Folder(m_root, "Show")};
+  const std::string poster1{File(show, "season01-poster.JPG")};
+  const std::string poster2{File(show, "Season02-poster.jpg")};
+  CVideoInfoTag tag;
+  tag.m_strPath = show;
+  KODI::REGEXP::RegExpCache cache;
+  const auto seasonsArt = [&tag, &cache]
+  {
+    KODI::ART::SeasonsArtwork art;
+    CVideoInfoScannerArt::GetSeasonThumbs(tag, art, {"poster"}, true,
+                                          CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES,
+                                          &cache);
+    return art;
+  };
+
+  KODI::ART::SeasonsArtwork matchedInCase{seasonsArt()};
+  EXPECT_FALSE(matchedInCase.contains(2));
+  EXPECT_EQ(poster1, matchedInCase[1]["poster"]);
+
+  AdvancedSettings()->m_caseSensitiveLocalArtMatch = false;
+  KODI::ART::SeasonsArtwork matchedInAnyCase{seasonsArt()};
+  EXPECT_EQ(poster2, matchedInAnyCase[2]["poster"]);
 }

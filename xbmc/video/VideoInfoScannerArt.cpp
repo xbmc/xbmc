@@ -21,6 +21,7 @@
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "jobs/JobQueue.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
@@ -115,6 +116,8 @@ std::string ContentToMediaType(ContentType content, bool folder)
     using enum ContentType;
     case MOVIES:
       return NameOf(KODI::MEDIA::TYPE::MOVIE);
+    case MOVIE_VERSIONS:
+      return NameOf(KODI::MEDIA::TYPE::VIDEO_VERSION);
     case MUSICVIDEOS:
       return NameOf(KODI::MEDIA::TYPE::MUSIC_VIDEO);
     case TVSHOWS:
@@ -506,7 +509,11 @@ void CVideoInfoScannerArt::GetSeasonThumbs(const CVideoInfoTag& show,
     }
     extensions.erase(std::remove(extensions.begin(), extensions.end(), '.'), extensions.end());
     std::shared_ptr<CRegExp> reg;
-    const std::string pattern = "season([0-9]+)(-[a-z0-9]+)?\\.(" + extensions + ")";
+    // The whole name, as the art for each season is matched: "season" in the case local art is
+    // matched in, the rest in any. The case is in the pattern, as the cache is keyed by it.
+    const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+    std::string pattern{advancedSettings->m_caseSensitiveLocalArtMatch ? "" : "(?i)"};
+    pattern += "^season([0-9]+)(?i:(-[a-z0-9]+)?\\.(" + extensions + "))$";
     if (!items.IsEmpty() && (reg = KODI::REGEXP::GetRegExp(pattern, cache)) != nullptr)
     {
       for (const auto& item : items)

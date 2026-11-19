@@ -7,13 +7,17 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
+#include "filesystem/SpecialProtocol.h"
 #include "platform/Filesystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/ScopeGuard.h"
 #include "utils/StringUtils.h"
@@ -22,8 +26,11 @@
 
 #include <array>
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <random>
+#include <string>
+#include <vector>
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>
@@ -1218,4 +1225,52 @@ TEST(TestArtUtils, GetTbnStack)
                   URIUtils::AddFileToFolder(path, "foo-cd2.avi"));
   CFileItem item(stackPath, false);
   EXPECT_EQ(ART::GetTBNFile(item), file_path);
+}
+
+// ART::AddLocalItemArtwork() tests
+
+namespace
+{
+//! The art beside a movie alone in its folder, as the directory cache lists it. The folder itself
+//! doesn't exist, so a listing not taken from the cache finds no art.
+class AddLocalItemArtworkTest : public AdvancedSettingsResetBase
+{
+protected:
+  void TearDown() override { g_directoryCache.ClearDirectory(CURL{m_folder}); }
+
+  //! Has the directory cache list the folder's art in the order given
+  void List(const std::vector<std::string>& names) const
+  {
+    CFileItemList items;
+    for (const auto& name : names)
+      items.Add(std::make_shared<CFileItem>(Path(name), false));
+    g_directoryCache.SetDirectory(CURL{m_folder}, items, XFILE::CacheType::ALWAYS);
+  }
+
+  std::string Path(const std::string& name) const
+  {
+    return URIUtils::AddFileToFolder(m_folder, name);
+  }
+
+  const std::string m_folder{URIUtils::AddFileToFolder(
+      CSpecialProtocol::TranslatePath("special://temp/"), "TestArtUtils", "Movie/")};
+};
+} // namespace
+
+TEST_F(AddLocalItemArtworkTest, AFilesOwnArtWinsOverTheFoldersWhicheverIsListedFirst)
+{
+  for (const auto& names :
+       {std::vector<std::string>{"Movie-poster.jpg", "poster.jpg", "fanart.jpg"},
+        std::vector<std::string>{"fanart.jpg", "poster.jpg", "Movie-poster.jpg"}})
+  {
+    SCOPED_TRACE(StringUtils::Join(names, ", "));
+    List(names);
+
+    ART::Artwork art;
+    ART::AddLocalItemArtwork(art, {ART::TYPE::POSTER, ART::TYPE::FANART}, Path("Movie.mkv"), false,
+                             false, true);
+
+    EXPECT_EQ(Path("Movie-poster.jpg"), art[ART::TYPE::POSTER]);
+    EXPECT_EQ(Path("fanart.jpg"), art[ART::TYPE::FANART]);
+  }
 }
