@@ -12,6 +12,8 @@
 #include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
+#include "games/GameUtils.h"
+#include "games/addons/GameClient.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"
 #include "guilib/WindowIDs.h"
@@ -85,6 +87,11 @@ void CDialogGameOSD::Process(unsigned int currentTime, CDirtyRegionList& dirtyre
 
 void CDialogGameOSD::OnInitWindow()
 {
+  // RetroPlayer.SupportsSavestates reads the size the client last gave rather
+  // than asking it on every frame, so ask once as the menu opens
+  if (const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient())
+    gameClient->GetSerializeSize();
+
   // Init parent class
   CGUIDialog::OnInitWindow();
 
