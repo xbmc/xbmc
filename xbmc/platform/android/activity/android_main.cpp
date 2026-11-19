@@ -17,6 +17,7 @@
 #include "platform/android/activity/JNIXBMCFile.h"
 #include "platform/android/activity/JNIXBMCJsonHandler.h"
 #include "platform/android/activity/JNIXBMCMainView.h"
+#include "platform/android/activity/JNIXBMCMediaCodecCallback.h"
 #include "platform/android/activity/JNIXBMCMediaSession.h"
 #include "platform/android/activity/JNIXBMCNativeKeyboard.h"
 #include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
@@ -125,6 +126,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   CJNIXBMCJsonHandler::RegisterNatives(env);
   CJNIXBMCMainView::RegisterNatives(env);
   CJNIXBMCMediaSession::RegisterNatives(env);
+  CJNIXBMCMediaCodecCallback::RegisterNatives(env);
   CJNIXBMCNativeKeyboard::RegisterNatives(env);
   CJNIXBMCNsdManagerDiscoveryListener::RegisterNatives(env);
   CJNIXBMCNsdManagerRegistrationListener::RegisterNatives(env);
