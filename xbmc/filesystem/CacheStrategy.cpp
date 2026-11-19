@@ -123,7 +123,6 @@ size_t CSimpleFileCache::GetMaxWriteSize(const size_t& iRequestSize)
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
 {
-  std::unique_lock lock(m_sync);
   size_t written = 0;
   while (iSize > 0)
   {
@@ -135,7 +134,10 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
                 m_filename);
       return CACHE_RC_ERROR;
     }
-    m_nWritePosition += lastWritten;
+    {
+      std::unique_lock lock(m_sync);
+      m_nWritePosition += lastWritten;
+    }
     iSize -= lastWritten;
     written += lastWritten;
   }
