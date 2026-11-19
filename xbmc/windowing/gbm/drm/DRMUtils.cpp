@@ -22,8 +22,6 @@ using namespace KODI::WINDOWING::GBM;
 
 namespace
 {
-const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
-
 void DrmFbDestroyCallback(gbm_bo* bo, void* data)
 {
   drm_fb* fb = static_cast<drm_fb*>(data);
