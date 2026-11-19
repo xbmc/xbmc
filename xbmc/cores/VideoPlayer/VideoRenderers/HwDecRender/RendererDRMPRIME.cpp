@@ -276,6 +276,20 @@ bool CRendererDRMPRIME::ConfigChanged(const VideoPicture& picture)
   return false;
 }
 
+bool CRendererDRMPRIME::SupportsLiveHDRMetadata() const
+{
+  return CServiceBroker::GetWinSystem()->SupportsLiveHDRMetadata();
+}
+
+bool CRendererDRMPRIME::UpdateLightMetadata(const VideoPicture& picture)
+{
+  // The metadata lives on the connector and there are no per buffer copies to update
+  if (!SupportsLiveHDRMetadata())
+    return true;
+
+  return CServiceBroker::GetWinSystem()->RefreshHDRLightMetadata(&picture);
+}
+
 bool CRendererDRMPRIME::Supports(ERENDERFEATURE feature) const
 {
   switch (feature)
