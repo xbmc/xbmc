@@ -141,6 +141,7 @@ dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 dependent_option(ENABLE_INTERNAL_ZSTD "Enable internal Zstandard?")
 dependent_option(ENABLE_INTERNAL_FRIBIDI "Enable internal fribidi?")
+dependent_option(ENABLE_INTERNAL_LIBXML2 "Enable internal libxml2?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
 # dependency on fmt
