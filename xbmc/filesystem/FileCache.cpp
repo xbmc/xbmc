@@ -300,7 +300,7 @@ void CFileCache::Process()
     if (seekRequested)
     {
       const int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
-      const bool cacheReachEOF = (cacheMaxPos == m_fileSize);
+      const bool cacheReachEOF = m_fileSize > 0 && cacheMaxPos == m_fileSize;
 
       bool sourceSeekFailed = false;
       if (!cacheReachEOF || !m_sourcePositionValid)
