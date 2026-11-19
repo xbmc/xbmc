@@ -470,6 +470,7 @@ void CFileCache::Process()
       {
         CLog::Log(LOGERROR, "CFileCache::{} - <{}> error writing to cache", __FUNCTION__,
                   m_sourcePath);
+        m_bReadError = true;
         m_bStop = true;
         break;
       }
