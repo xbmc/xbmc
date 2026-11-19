@@ -90,6 +90,7 @@ public:
   bool Reset() override ;
   void Flush() override;
   void Abort() override;
+  static void AbortFileInfoProbes();
   void SetSpeed(int iSpeed) override;
   std::string GetFileName() override;
 
@@ -199,6 +200,7 @@ protected:
   bool m_streaminfo;
   bool m_reopen = false;
   bool m_checkTransportStream;
+  bool m_fileinfo{false};
   int m_displayTime = 0;
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
