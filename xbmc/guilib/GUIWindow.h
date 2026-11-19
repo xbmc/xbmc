@@ -122,6 +122,8 @@ public:
   void DynamicResourceAlloc(bool bOnOff) override;
   virtual bool IsDialog() const { return false; }
   virtual bool IsDialogRunning() const { return false; }
+  //! Whether a dialog draws in RenderEx(), which windows are always given
+  virtual bool WantsRenderEx() const { return false; }
   virtual bool IsModalDialog() const { return false; }
   virtual bool IsMediaWindow() const { return false; }
   virtual bool HasListItems() const { return false; }

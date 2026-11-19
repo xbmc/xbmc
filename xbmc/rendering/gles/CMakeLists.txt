@@ -1,6 +1,7 @@
 if(TARGET ${APP_NAME_LC}::OpenGLES)
   set(SOURCES RenderSystemGLES.cpp
               ScreenshotSurfaceGLES.cpp
+              GainMapShaderGLES.cpp
               GLESShader.cpp
               GuiCompositeGLES.cpp
               GuiCompositeShaderGLES.cpp)
@@ -8,6 +9,7 @@ if(TARGET ${APP_NAME_LC}::OpenGLES)
   set(HEADERS RenderSystemGLES.h
               GUIStencilGLES.h
               ScreenshotSurfaceGLES.h
+              GainMapShaderGLES.h
               GLESShader.h
               GuiCompositeGLES.h
               GuiCompositeShaderGLES.h)
