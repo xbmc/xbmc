@@ -12,6 +12,7 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/IAddon.h"
@@ -3237,6 +3238,9 @@ struct SPythonRuns
   bool end{false};
   //! The options each run was given, as "?action=find&title=..."
   std::vector<std::string> calls;
+  //! How a run answers once it may end, with its handle and its call's options; else it finds
+  //! nothing
+  std::function<void(int, const CURL&)> answer;
 };
 
 /*!
@@ -3259,16 +3263,22 @@ protected:
     setState(InvokerStateRunning);
     // As a plugin is run: its url, handle and options
     const int handle{std::stoi(arguments[1])};
+    const std::string options{arguments.size() > 2 ? arguments[2] : std::string{}};
+    std::function<void(int, const CURL&)> answer;
     {
       std::unique_lock lock(m_runs.lock);
       ++m_runs.started;
-      m_runs.calls.push_back(arguments.size() > 2 ? arguments[2] : std::string{});
+      m_runs.calls.push_back(options);
       if (std::ranges::find(m_runs.threads, GetId()) == m_runs.threads.end())
         m_runs.threads.push_back(GetId());
       m_runs.changed.notify_all();
       m_runs.changed.wait_for(lock, std::chrono::seconds{30}, [this] { return m_runs.end; });
+      answer = m_runs.answer;
     }
-    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    if (answer)
+      answer(handle, CURL{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + options});
+    else
+      XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
     setState(InvokerStateScriptDone);
     return true;
   }
@@ -3364,6 +3374,132 @@ protected:
   bool m_registered{false};
   std::string m_pythonScraper;
 };
+
+constexpr const char* PYTHON_SHOW_SCRAPER_ID = "metadata.test.videoinfoscanner.python.tvshows";
+
+//! A tv show scraper run by python
+constexpr const char* PYTHON_SHOW_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python.tvshows" name="Test python show scraper"
+       version="1.0.0" provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+/*!
+ \brief Answers as a tv show scraper: a search finds the show, whose guide lists episodes 1 and 2
+ of season 1. Asked for the episodes' details with the list, it gives the first's there, marked
+ complete; the second's are given only when asked for on their own.
+ */
+void AnswerAsAShowScraper(int handle, const CURL& call)
+{
+  const std::string action{call.GetOption("action")};
+  if (action == "find")
+  {
+    CFileItem show{"show", false};
+    show.SetLabel("Show");
+    XFILE::CPluginDirectory::AddItem(handle, &show, 1);
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getdetails")
+  {
+    CFileItem show{"show", false};
+    show.GetVideoInfoTag()->SetTitle("Show");
+    show.GetVideoInfoTag()->SetEpisodeGuide("guide");
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &show);
+  }
+  else if (action == "getepisodelist")
+  {
+    for (const int number : {1, 2})
+    {
+      CFileItem episode{number == 1 ? "first" : "second", false};
+      CVideoInfoTag& tag{*episode.GetVideoInfoTag()};
+      tag.m_iSeason = 1;
+      tag.m_iEpisode = number;
+      tag.SetTitle(episode.GetPath());
+      if (number == 1 && call.GetOption("complete") == "1")
+      {
+        tag.SetPlot("Listed with the episodes");
+        episode.SetProperty("video.complete", true);
+      }
+      XFILE::CPluginDirectory::AddItem(handle, &episode, 2);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getepisodedetails")
+  {
+    CFileItem episode{call.GetOption("url"), false};
+    episode.GetVideoInfoTag()->SetTitle(call.GetOption("url"));
+    episode.GetVideoInfoTag()->SetPlot("Asked for on its own");
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &episode);
+  }
+  else
+    XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+}
+
+//! A tv show source looked up with a python scraper, whose scripts a stand-in runs
+class TestVideoInfoScannerPythonShows : public TestVideoInfoScannerPython
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScannerPython::SetUp();
+    if (IsSkipped())
+      return;
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    m_showScraper = Folder(addons, PYTHON_SHOW_SCRAPER_ID);
+    File(m_showScraper, "addon.xml", PYTHON_SHOW_SCRAPER_ADDON);
+    File(m_showScraper, "scraper.py");
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(
+        PYTHON_SHOW_SCRAPER_ID, ADDON::ORIGIN_SYSTEM, ADDON::CAddonVersion{"1.0.0"}));
+    // Each of the source's folders holds a show
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='tvshows', strScraper='%s', strSettings='', useFolderNames=0, "
+        "scanRecursive=0 WHERE idPath=%i",
+        PYTHON_SHOW_SCRAPER_ID, m_db.GetPathId(m_root))));
+    // An episode is given a thumbnail generated from the video, and a test has no texture cache to
+    // cache it in
+    Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, false);
+  }
+
+  void TearDown() override
+  {
+    if (!m_showScraper.empty())
+    {
+      Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+      CServiceBroker::GetAddonMgr().UnloadAddon(PYTHON_SHOW_SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_showScraper);
+    }
+    TestVideoInfoScannerPython::TearDown();
+  }
+
+  static std::shared_ptr<CSettings> Settings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetSettings();
+  }
+
+  //! How many of the scraper's calls hold each of \p parts
+  size_t Calls(const std::vector<std::string>& parts)
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    return std::ranges::count_if(m_handler.m_runs.calls,
+                                 [&parts](const std::string& call)
+                                 {
+                                   return std::ranges::all_of(
+                                       parts, [&call](const std::string& part)
+                                       { return call.find(part) != std::string::npos; });
+                                 });
+  }
+
+  const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
+  std::string m_showScraper;
+};
 } // namespace
 
 // A python scraper's call can't be cancelled, and the stop of a scan can't interrupt a socket read
@@ -3413,4 +3549,30 @@ TEST_F(TestVideoInfoScannerPython, AMovieIsLookedUpByTheIdentifierInItsFolderNam
                                     return call.find("action=getdetails") != std::string::npos &&
                                            call.find("603") != std::string::npos;
                                   }));
+}
+
+// A scraper that lists an episode with its details, marked complete, isn't asked for them again,
+// and the episode is added with them. One listed without them is asked for them on its own.
+TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeListedCompleteIsAddedWithoutACallForItsDetails)
+{
+  const std::string season{Folder(Folder(m_root, "Show"), "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{File(season, "Show S01E02.mkv")};
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  CVideoInfoTag episode;
+  ASSERT_TRUE(m_db.GetEpisodeInfo(first, episode, m_db.GetEpisodeId(first, 1, 1)));
+  EXPECT_EQ("Listed with the episodes", episode.m_strPlot);
+  ASSERT_TRUE(m_db.GetEpisodeInfo(second, episode, m_db.GetEpisodeId(second, 2, 1)));
+  EXPECT_EQ("Asked for on its own", episode.m_strPlot);
+  EXPECT_EQ(1u, Calls({"action=getepisodelist", "complete=1"}));
+  EXPECT_EQ(0u, Calls({"action=getepisodedetails", "url=first"}));
+  EXPECT_EQ(1u, Calls({"action=getepisodedetails", "url=second"}));
 }

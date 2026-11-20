@@ -4632,6 +4632,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
             CFileItem scraperItem;
             scraperItem.SetPath(file->strPath);
             bool fetched{false};
+            // An episode the scraper listed complete has its details, as getepisodedetails gives them
+            if (guideEntry->item && guideEntry->item->HasVideoInfoTag())
+            {
+              *scraperItem.GetVideoInfoTag() = *guideEntry->item->GetVideoInfoTag();
+              scraperItem.GetVideoInfoTag()->m_streamDetails.Reset();
+              fetched = true;
+            }
+            else
             {
               // A place among the scraper's calls is held for the call, not while the episode is added
               CVideoInfoDownloader imdb(scraper);

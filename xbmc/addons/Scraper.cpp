@@ -1389,10 +1389,12 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CSc
 
   if (m_isPython)
   {
+    // complete=1 asks for each episode's details with the list, which a scraper that doesn't know
+    // the parameter ignores
     std::stringstream str;
     str << "plugin://" << ID()
         << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
-        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON()) << "&complete=1";
 
     CFileItemList items;
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
@@ -1411,6 +1413,10 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CSc
       surl.m_type = CScraperUrl::UrlType::General;
       surl.m_url = items[i]->GetURL().Get();
       ep.cScraperUrl.AppendUrl(surl);
+      // An item the scraper marks complete holds the episode's details, taken in place of a
+      // getepisodedetails call
+      if (items[i]->GetProperty("video.complete").asBoolean())
+        ep.item = items[i];
       vcep.push_back(ep);
     }
 
