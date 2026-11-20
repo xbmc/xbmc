@@ -6,4 +6,4 @@ XBMC_PLATFORM_DIR=wasm
 #make sure that binary_addons don't clean the native tools
 #here
 BINARY_ADDONS_CLEAN_NATIVETOOLS="0"
-#. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-binary-addons
+. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-binary-addons
