@@ -43,6 +43,7 @@ add_custom_target(package_tizen
           "${CMAKE_BINARY_DIR}/${APP_NAME_LC}.js"
           "${CMAKE_BINARY_DIR}/${APP_NAME_LC}.wasm"
           "${CMAKE_BINARY_DIR}/${APP_NAME_LC}.data"
+          "${CMAKE_BINARY_DIR}/audio_worklet_processor.js"
           "${WASM_TIZEN_STAGE_DIR}"
   DEPENDS ${APP_NAME_LC}
   COMMENT "Staging Tizen web app in ${WASM_TIZEN_STAGE_DIR}"

@@ -1,5 +1,6 @@
 set(SOURCES TestActiveAEDeviceChange.cpp
-            TestActiveAEErrorRetry.cpp)
+            TestActiveAEErrorRetry.cpp
+            TestWasmAudioRing.cpp)
 
 if(MACOSX)
   list(APPEND SOURCES TestAESinkDARWINOSX.cpp)

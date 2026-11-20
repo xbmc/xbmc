@@ -8,11 +8,10 @@
 
 #pragma once
 
+#include "WasmAudioRing.h"
+
 #include <atomic>
-#include <condition_variable>
 #include <cstdint>
-#include <mutex>
-#include <vector>
 
 namespace KODI::PLATFORM::WASM
 {
@@ -23,8 +22,9 @@ public:
 
   static CWasmAudioWorkletManager& GetInstance();
 
+  // Initialize() starts a node on the context OpenContext() created.
+  bool OpenContext(unsigned int requestedSampleRate);
   bool Initialize(unsigned int channels);
-  void Suspend();
   void Shutdown();
 
   unsigned int WritePlanar(const float* const* planes,
@@ -42,7 +42,7 @@ public:
   unsigned int GetSampleRate() const;
   unsigned int GetQuantumSize() const;
   unsigned int GetChannels() const;
-  unsigned int GetMaxOutputChannels();
+  unsigned int GetMaxOutputChannels() const;
   bool IsReady() const;
 
   // Returns and resets the number of underrun frames.
@@ -54,66 +54,33 @@ private:
   CWasmAudioWorkletManager(const CWasmAudioWorkletManager&) = delete;
   CWasmAudioWorkletManager& operator=(const CWasmAudioWorkletManager&) = delete;
 
-  bool EnsureContext();
-  bool EnsureWorkletProcessor();
-  bool ConfigureNode(unsigned int channels);
-  void InstallResumeHooks() const;
-  void ClearResumeHooks() const;
+  bool StartNode();
   void EnsureBufferAllocated();
   void ResetBuffer();
   void WaitForWorkletIdle();
   int QuantumSleepMs() const;
 
-  bool WaitForState(std::atomic<bool>& readyFlag, const char* stageName);
-  static void OnWorkletThreadStarted(int audioContext, bool success, void* userData);
-  static void OnProcessorCreated(int audioContext, bool success, void* userData);
-  static void OnProcessorReady(int audioContext, bool success, void* userData);
-  static bool ProcessAudio(int numInputs,
-                           const void* inputs,
-                           int numOutputs,
-                           void* outputs,
-                           int numParams,
-                           const void* params,
-                           void* userData);
-  bool ProcessAudioImpl(int numOutputs, void* outputs);
-
-  mutable std::mutex m_stateMutex;
-  std::condition_variable m_stateCv;
-
-  int m_audioContext{0};
-  int m_workletNode{0};
-  std::atomic<uintptr_t> m_nodeGeneration{0};
+  bool m_contextOpen{false};
 
   std::atomic<bool> m_ready{false};
-  std::atomic<bool> m_workletThreadCreated{false};
-  std::atomic<bool> m_processorCreated{false};
-  std::atomic<bool> m_processorRegistered{false};
-  std::atomic<bool> m_asyncResult{false};
-  std::atomic<bool> m_asyncDone{false};
-  bool m_workletThreadStarted{false};
-  bool m_processorCreationStarted{false};
-  bool m_shutdown{false};
+  // One of the WASM_AUDIO_NODE_* values, written by audio_worklet.js.
+  std::atomic<uint32_t> m_nodeState{0};
 
   std::atomic<unsigned int> m_channels{2};
   std::atomic<unsigned int> m_sampleRate{48000};
   std::atomic<unsigned int> m_quantumSize{128};
 
-  // SPSC ring: the sink thread writes m_writeFrame and (re)allocates, only after
-  // WaitForWorkletIdle(); the worklet thread writes m_readFrame.
-  std::vector<float> m_ringBuffer;
-  unsigned int m_bufferCapacityFrames{0};
-  unsigned int m_bufferChannels{0};
-  unsigned int m_bufferSampleRate{0};
-  unsigned int m_bufferQuantumSize{0};
-  std::atomic<uint64_t> m_readFrame{0};
-  std::atomic<uint64_t> m_writeFrame{0};
+  // Allocated, freed and reset by the sink thread, only after WaitForWorkletIdle().
+  CWasmAudioRing m_ring;
+  // Identifies the node allowed to read the ring.
+  std::atomic<uint32_t> m_nodeGeneration{0};
 
   // Written by the main thread through Atomics.store().
   std::atomic<bool> m_contextRunning{false};
 
   std::atomic<uint32_t> m_pipelineLatencyUs{0};
 
-  std::atomic<uint64_t> m_underrunFrames{0};
+  std::atomic<uint32_t> m_underrunFrames{0};
   std::atomic<unsigned int> m_activeCallbacks{0};
 
   // Prebuffer watermark

@@ -70,7 +70,7 @@ void CAESinkWasmAudioWorklet::EnumerateDevicesEx(AEDeviceInfoList& list, bool)
   info.m_channels =
       ResolveSinkLayout(CWasmAudioWorkletManager::kMaxChannels,
                         CWasmAudioWorkletManager::GetInstance().GetMaxOutputChannels());
-  info.m_sampleRates = {CWasmAudioWorkletManager::GetInstance().GetSampleRate()};
+  info.m_sampleRates = {44100, 48000};
   info.m_dataFormats = {AE_FMT_FLOATP};
   info.m_wantsIECPassthrough = false;
   info.m_onlyPCM = true;
@@ -84,6 +84,13 @@ bool CAESinkWasmAudioWorklet::Initialize(AEAudioFormat& format, std::string& dev
     CLog::Log(LOGERROR, "CAESinkWasmAudioWorklet::Initialize - passthrough is not supported");
     return false;
   }
+
+  // ActiveAE resamples every other rate.
+  const unsigned int sampleRate = format.m_sampleRate == 44100 ? 44100 : 48000;
+
+  // Opened first, so that the channel count comes from the context that will play.
+  if (!CWasmAudioWorkletManager::GetInstance().OpenContext(sampleRate))
+    return false;
 
   const unsigned int maxOutputChannels =
       CWasmAudioWorkletManager::GetInstance().GetMaxOutputChannels();
@@ -125,7 +132,7 @@ void CAESinkWasmAudioWorklet::Deinitialize()
   if (!m_initialized)
     return;
 
-  CWasmAudioWorkletManager::GetInstance().Suspend();
+  CWasmAudioWorkletManager::GetInstance().Shutdown();
   m_initialized = false;
 }
 
