@@ -552,20 +552,10 @@ int CScriptInvocationManager::ExecuteSync(
   if (scriptId < 0)
     return -1;
 
-  bool timeout = timeoutMs > 0;
-  while ((!timeout || timeoutMs > 0) && IsRunning(scriptId))
-  {
-    unsigned int sleepMs = 100U;
-    if (timeout && timeoutMs < sleepMs)
-      sleepMs = timeoutMs;
-
-    KODI::TIME::Sleep(std::chrono::milliseconds(sleepMs));
-
-    if (timeout)
-      timeoutMs -= sleepMs;
-  }
-
-  if (IsRunning(scriptId))
+  const bool timedWait = timeoutMs > 0;
+  const bool completed = WaitForScript(scriptId, timedWait ? std::chrono::milliseconds(timeoutMs)
+                                                           : std::chrono::milliseconds::max());
+  if (!completed && IsRunning(scriptId))
   {
     Stop(scriptId, waitShutdown);
     return ETIMEDOUT;
@@ -579,11 +569,16 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
   if (scriptId < 0)
     return false;
 
-  std::unique_lock lock(m_critSection);
-  auto invokerThread = getInvokerThread(scriptId).thread;
+  std::shared_ptr<CLanguageInvokerThread> invokerThread;
+  {
+    std::unique_lock lock(m_critSection);
+    invokerThread = getInvokerThread(scriptId).thread;
+  }
   if (invokerThread == nullptr)
     return false;
 
+  // Stop() can wait for the script thread, which needs m_critSection in
+  // OnExecutionDone, so it must not run with the lock held.
   return invokerThread->Stop(wait);
 }
 
@@ -651,15 +646,41 @@ bool CScriptInvocationManager::IsRunning(const std::string& scriptPath) const
   return std::any_of(first, last, [this](const auto& script) { return IsRunning(script.second); });
 }
 
+bool CScriptInvocationManager::WaitForScript(int scriptId, std::chrono::milliseconds timeout) const
+{
+  const auto start = std::chrono::steady_clock::now();
+  // Hold m_waitMutex across the state check and the wait so OnExecutionDone cannot
+  // notify between them. IsRunning takes m_critSection while m_waitMutex is held;
+  // OnExecutionDone takes m_waitMutex before m_critSection, matching this order.
+  std::unique_lock waitLock(m_waitMutex);
+  while (IsRunning(scriptId))
+  {
+    auto waitTime = std::chrono::milliseconds(1000);
+    if (timeout != std::chrono::milliseconds::max())
+    {
+      const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::steady_clock::now() - start);
+      if (elapsed >= timeout)
+        return false;
+      waitTime = std::min(waitTime, timeout - elapsed);
+    }
+    m_scriptDoneCv.wait_for(waitLock, waitTime);
+  }
+  return true;
+}
+
 void CScriptInvocationManager::OnExecutionDone(int scriptId)
 {
   if (scriptId < 0)
     return;
 
+  // Take m_waitMutex before m_critSection, matching WaitForScript's lock order.
+  std::lock_guard waitLock(m_waitMutex);
   std::unique_lock lock(m_critSection);
   const auto script = m_scripts.find(scriptId);
   if (script != m_scripts.end())
     script->second.done = true;
+  m_scriptDoneCv.notify_all();
 }
 
 CScriptInvocationManager::LanguageInvokerThread CScriptInvocationManager::getInvokerThread(int scriptId) const

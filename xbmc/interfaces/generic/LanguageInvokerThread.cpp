@@ -69,6 +69,10 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
 
 bool CLanguageInvokerThread::stop(bool wait)
 {
+  // The manager releases its lock before calling stop(), so concurrent
+  // callers must be serialized here to keep the invoker stop single-shot.
+  std::lock_guard<std::mutex> stopLock(m_stopMutex);
+
   if (m_invoker == NULL)
     return false;
 
