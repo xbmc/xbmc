@@ -28,7 +28,7 @@ function build_framework_name
 
 function build_framework_name_python
 {
-  # <site-packages>/Cryptodome/PublicKey/_curve25519.abi3.so -> Cryptodome.PublicKey._curve25519.abi3
+  # <site-packages>/Crypto/PublicKey/_curve25519.abi3.so -> Crypto.PublicKey._curve25519.abi3
   relativeToSitePackages="${1#"$pythonSitePackagesDir/"}"
   withoutExtension="${relativeToSitePackages%.*}"
   echo "${withoutExtension//\//.}"
