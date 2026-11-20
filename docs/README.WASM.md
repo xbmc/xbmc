@@ -260,7 +260,7 @@ The build produces three files in the build directory:
 |---|---|
 | `kodi.js` | Emscripten loader and JS glue |
 | `kodi.wasm` | Compiled Kodi |
-| `kodi.data` | Virtual filesystem image: `addons`, `media`, `system` and `userdata` mounted at `/kodi`, plus the Python standard library |
+| `kodi.data` | Virtual filesystem image: `addons`, `media`, `system` and `userdata` mounted at `/kodi`, plus the Python standard library. It is LZ4-compressed: it stays compressed in memory, is decompressed as files are read, and is read-only |
 
 **[back to top](#table-of-contents)**
 
