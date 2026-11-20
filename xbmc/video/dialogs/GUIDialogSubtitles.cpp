@@ -388,7 +388,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
       break;
 
     case KODI::LANGUAGE::CLanguagePreference::Kind::FollowUI:
-      preferredLanguage = KODI::LANGUAGE::CLanguage::GetInstance().PackName();
+      preferredLanguage = KODI::LANGUAGE::CLanguage::GetInstance().UI().ToEnglishLanguageName();
       break;
 
     case KODI::LANGUAGE::CLanguagePreference::Kind::Original:
