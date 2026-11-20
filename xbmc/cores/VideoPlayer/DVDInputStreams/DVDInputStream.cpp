@@ -32,6 +32,8 @@ CDVDInputStream::CDVDInputStream(DVDStreamType streamType, const CFileItem& file
   m_streamType = streamType;
   m_contentLookup = true;
   m_realtime = fileitem.GetProperty(STREAM_PROPERTY_ISREALTIMESTREAM).asBoolean(false);
+  m_realtimeAudioPassthrough =
+      fileitem.GetProperty(STREAM_PROPERTY_REALTIMEAUDIOPASSTHROUGH).asBoolean(false);
   m_item = fileitem;
 }
 

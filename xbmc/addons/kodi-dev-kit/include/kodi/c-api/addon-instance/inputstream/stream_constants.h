@@ -48,6 +48,12 @@
 #define STREAM_PROPERTY_ISREALTIMESTREAM "isrealtimestream"
 
 /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
+/// @brief "true" to let the audio of a realtime stream be passed through to
+/// the audio device. Kodi otherwise decodes the audio of a realtime stream, to
+/// be able to resample it. Any other value keeps that.
+#define STREAM_PROPERTY_REALTIMEAUDIOPASSTHROUGH "realtimeaudiopassthrough"
+
+/// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
 /// @brief Special value for @ref STREAM_PROPERTY_INPUTSTREAM to use
 /// ffmpeg to directly play a stream URL.
 #define STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG "inputstream.ffmpeg"
