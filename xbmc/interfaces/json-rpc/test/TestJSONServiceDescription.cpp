@@ -395,3 +395,36 @@ TEST_F(TestJSONServiceDescription, IntrospectReportsADeprecatedProperty)
     EXPECT_FALSE(types["Dep.Target"].isMember("deprecated"));
   }
 }
+
+/*!
+ A notification is printed as written, so the types it refers to are found in its text, along
+ with the types those refer to in turn.
+ */
+TEST_F(TestJSONServiceDescription, FilteredNotificationIncludesItsReferencedTypes)
+{
+  ASSERT_TRUE(CJSONServiceDescription::AddType(R"({"Note.Inner": { "type": "integer" }})"));
+  ASSERT_TRUE(CJSONServiceDescription::AddType(R"({"Note.Outer": {
+    "type": "object",
+    "properties": { "inner": { "$ref": "#/$defs/Note.Inner" } }
+  }})"));
+  ASSERT_TRUE(CJSONServiceDescription::AddType(R"({"Note.Unused": { "type": "string" }})"));
+  ASSERT_TRUE(CJSONServiceDescription::AddNotification(R"({"Note.OnThing": {
+    "type": "notification",
+    "description": "test",
+    "params": [
+      { "name": "sender", "required": true, "schema": { "type": "string" } },
+      { "name": "data", "required": true, "schema": { "$ref": "#/$defs/Note.Outer" } }
+    ],
+    "returns": null
+  }})"));
+  CJSONServiceDescription::ResolveReferences();
+
+  CVariant result;
+  ASSERT_EQ(OK, CJSONServiceDescription::Print(result, &m_transport, &m_client, true, true, false,
+                                               "Note.OnThing", "notification"));
+
+  EXPECT_TRUE(result["notifications"].isMember("Note.OnThing"));
+  EXPECT_TRUE(result["types"].isMember("Note.Outer"));
+  EXPECT_TRUE(result["types"].isMember("Note.Inner"));
+  EXPECT_FALSE(result["types"].isMember("Note.Unused"));
+}
