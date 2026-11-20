@@ -28,7 +28,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "jobs/JobManager.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -701,7 +701,8 @@ protected:
   {
     Strings() : strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()}
     {
-      loaded = strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb");
+      loaded = strings.Load(KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(),
+                            "resource.language.en_gb");
     }
     ~Strings() { strings.Clear(); }
 

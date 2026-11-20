@@ -9,12 +9,11 @@
 #include "StreamUtils.h"
 
 #include "ServiceBroker.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
 
 #include <algorithm>
 #include <array>
@@ -44,19 +43,20 @@ int CompareTier(bool lh, bool rh)
 
 StreamUtils::AudioPreferences StreamUtils::AudioPreferences::Current()
 {
+  using KODI::LANGUAGE::CLanguage;
+  using KODI::LANGUAGE::CLanguagePreference;
+
   const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
-  const std::string setting{settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE)};
+  const CLanguagePreference& audio{CLanguage::GetInstance().AudioPreference()};
 
   AudioPreferences preferences;
-  preferences.mediaDefault =
-      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageMediaDefault);
-  preferences.preferOriginal =
-      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageOriginal);
+  preferences.mediaDefault = audio.Is(CLanguagePreference::Kind::MediaDefault);
+  preferences.preferOriginal = audio.Is(CLanguagePreference::Kind::Original);
 
   // Only a preference naming a language has one to match on, and the two above do not, which is
-  // why they are read separately. GetAudioLanguage() resolves "default" to the UI language.
+  // why they are read separately. Audio() resolves following the interface to its language.
   if (!preferences.mediaDefault && !preferences.preferOriginal)
-    preferences.language = g_langInfo.GetAudioLanguage(true);
+    preferences.language = CLanguage::GetInstance().Audio();
 
   preferences.preferHearingImpaired =
       settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);

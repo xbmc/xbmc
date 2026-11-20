@@ -30,7 +30,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "platform/Platform.h"
 #include "resources/LocalizeStrings.h"
@@ -297,19 +297,18 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-static bool IsForeign(const std::string& languages)
+static bool IsForeign(const std::vector<KODI::LANGUAGE::CLanguageTag>& languages)
 {
   if (languages.empty())
     return false;
 
-  for (const auto& lang : StringUtils::Split(languages, " "))
-  {
-    if (lang == "en" || lang == g_langInfo.GetLocale().GetLanguageCode() ||
-        lang == g_langInfo.GetLocale().ToShortString())
-      return false;
+  const KODI::LANGUAGE::CLanguageTag& interfaceLanguage{
+      KODI::LANGUAGE::CLanguage::GetInstance().UI()};
 
-    // for backwards compatibility
-    if (lang == "no" && g_langInfo.GetLocale().ToShortString() == "nb_NO")
+  for (const KODI::LANGUAGE::CLanguageTag& language : languages)
+  {
+    if (language.IsEnglish() || language.Matches(interfaceLanguage) ||
+        interfaceLanguage.IsWithin(language))
       return false;
   }
   return true;
@@ -325,15 +324,12 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         CServiceBroker::GetSettingsComponent()->GetSettings();
     if (settings->GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
     {
-      int i = 0;
-      while (i < items.Size())
-      {
-        auto prop = items[i]->GetProperty("Addon.Language");
-        if (!prop.isNull() && IsForeign(prop.asString()))
-          items.Remove(i);
-        else
-          ++i;
-      }
+      erase_if(items,
+               [](const std::shared_ptr<CFileItem>& item)
+               {
+                 const auto info = item->GetAddonInfo();
+                 return info && IsForeign(info->Languages());
+               });
     }
     if (settings->GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
     {

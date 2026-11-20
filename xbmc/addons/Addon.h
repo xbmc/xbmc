@@ -128,6 +128,7 @@ public:
   std::string OriginName() const override;
   uint64_t PackageSize() const override;
   const InfoMap& ExtraInfo() const override;
+  const std::vector<KODI::LANGUAGE::CLanguageTag>& Languages() const override;
   const std::vector<DependencyInfo>& GetDependencies() const override;
   std::string FanArt() const override;
 

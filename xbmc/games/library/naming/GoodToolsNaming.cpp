@@ -8,7 +8,7 @@
 
 #include "GoodToolsNaming.h"
 
-#include "utils/LangCodeExpander.h"
+#include "language/i18n/Iso639.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -128,8 +128,10 @@ std::string CGoodToolsNaming::TranslationLanguage(std::string_view code)
       return std::string(iso);
   }
 
-  std::string iso;
-  if (lower.size() == 3 && CLangCodeExpander::ConvertISO6392ToISO6391(lower, iso))
-    return iso;
+  if (lower.size() == 3)
+  {
+    if (auto iso = LANGUAGE::I18N::CIso639::Alpha3ToAlpha2(lower))
+      return *iso;
+  }
   return "";
 }

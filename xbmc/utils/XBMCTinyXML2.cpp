@@ -10,7 +10,7 @@
 
 #include "RegExp.h"
 #include "filesystem/File.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"
@@ -150,7 +150,7 @@ bool CXBMCTinyXML2::Parse(const std::string& inputdata, const std::string& dataC
     return true;
   }
 
-  if (TryParse(inputdata, g_langInfo.GetGuiCharSet()))
+  if (TryParse(inputdata, KODI::LANGUAGE::CLanguage::GetInstance().GuiCharset()))
   {
     logCharsetFallback();
     return true;

@@ -15,7 +15,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "language/LangInfo.h"
+#include "language/LanguageTag.h"
 #include "utils/ArtTypes.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
@@ -45,6 +45,30 @@ std::string GetSharedLibraryNameRegexPattern()
 
   // linux is different and has the version number after the suffix
   return "^.*" + suffix + R"(\.?\d*\.?\d*\.?\d*$)";
+}
+
+/*!
+ * \brief The languages an add-on states, as its addon.xml <language> element lists them.
+ * \param[in] text The element's text: language tags separated by spaces.
+ * \param[in] addonId The add-on, for the warning.
+ * \return The languages, leaving out any text that names none.
+ */
+std::vector<KODI::LANGUAGE::CLanguageTag> ParseLanguages(const std::string& text,
+                                                         const std::string& addonId)
+{
+  std::vector<KODI::LANGUAGE::CLanguageTag> languages;
+  for (const auto& token : StringUtils::Split(text, " "))
+  {
+    if (token.empty())
+      continue;
+
+    if (const auto language = KODI::LANGUAGE::CLanguageTag::TryParse(token); language.has_value())
+      languages.emplace_back(*language);
+    else
+      CLog::LogF(LOGWARNING, "{}: unknown language '{}', ignored", addonId, token);
+  }
+
+  return languages;
 }
 }
 
@@ -139,6 +163,12 @@ void CAddonInfoBuilderFromDB::SetDependencies(std::vector<DependencyInfo> depend
 void CAddonInfoBuilderFromDB::SetExtrainfo(InfoMap extrainfo)
 {
   m_addonInfo->m_extrainfo = std::move(extrainfo);
+
+  // The languages are persisted as the <language> text, so they are read from it as they were
+  // from the addon.xml
+  if (const auto it = m_addonInfo->m_extrainfo.find("language");
+      it != m_addonInfo->m_extrainfo.end())
+    m_addonInfo->m_languages = ParseLanguages(it->second, m_addonInfo->m_id);
 }
 
 void CAddonInfoBuilderFromDB::SetInstallDate(const CDateTime& installDate)
@@ -402,17 +432,17 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       /*
        * Parse addon.xml "<summary lang="..">...</summary>"
        */
-      GetTextList(child, "summary", addon->m_summary);
+      GetTextList(child, "summary", addon->m_summary, addon->m_id);
 
       /*
        * Parse addon.xml "<description lang="..">...</description>"
        */
-      GetTextList(child, "description", addon->m_description);
+      GetTextList(child, "description", addon->m_description, addon->m_id);
 
       /*
        * Parse addon.xml "<disclaimer lang="..">...</disclaimer>"
        */
-      GetTextList(child, "disclaimer", addon->m_disclaimer);
+      GetTextList(child, "disclaimer", addon->m_disclaimer, addon->m_id);
 
       /*
        * Parse addon.xml "<assets>...</assets>"
@@ -517,14 +547,17 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
           else
             addon->m_lifecycleState = AddonLifecycleState::NORMAL;
 
-          GetTextList(child, "lifecyclestate", addon->m_lifecycleStateDescription);
+          GetTextList(child, "lifecyclestate", addon->m_lifecycleStateDescription, addon->m_id);
         }
       }
 
       /* Parse addon.xml "<language">...</language>" */
       element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
+      {
         addon->AddExtraInfo("language", element->GetText());
+        addon->m_languages = ParseLanguages(element->GetText(), addon->m_id);
+      }
 
       /* Parse addon.xml "<reuselanguageinvoker">...</reuselanguageinvoker>" */
       element = child->FirstChildElement("reuselanguageinvoker");
@@ -541,7 +574,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
        * In the event that the changelog (news) in addon.xml is empty, check
        * whether it is an installed addon and read a changelog.txt as a
        * replacement, if available. */
-      GetTextList(child, "news", addon->m_changelog);
+      GetTextList(child, "news", addon->m_changelog, addon->m_id);
       if (addon->m_changelog.empty() && !isRepoXMLContent && !addonPath.empty())
       {
         using XFILE::CFile;
@@ -605,6 +638,17 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
                    "addon.xml from '{}' for binary type '{}' doesn't contain library and addon "
                    "becomes ignored",
                    addon->ID(), CAddonInfo::TranslateType(addon->m_mainType));
+      return false;
+    }
+  }
+
+  // A language pack is a language, so one naming none is not a language pack
+  if (addon->m_mainType == AddonType::RESOURCE_LANGUAGE)
+  {
+    const std::string locale{addon->m_types[0].GetValue("@locale").asString()};
+    if (!KODI::LANGUAGE::CLanguageTag::TryParse(locale).has_value())
+    {
+      CLog::LogF(LOGERROR, "{}: unknown locale '{}', ignored", addon->ID(), locale);
       return false;
     }
   }
@@ -743,7 +787,8 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt,
 
 bool CAddonInfoBuilder::GetTextList(const tinyxml2::XMLElement* element,
                                     const std::string& tag,
-                                    CLocale::LocalizedStringsMap& translatedValues)
+                                    LocalizedStringsMap& translatedValues,
+                                    const std::string& addonId)
 {
   if (!element)
     return false;
@@ -757,7 +802,9 @@ bool CAddonInfoBuilder::GetTextList(const tinyxml2::XMLElement* element,
     const char* text = child->GetText();
     if (lang != nullptr)
     {
-      if (strcmp(lang, "no") == 0)
+      if (!KODI::LANGUAGE::CLanguageTag::TryParse(lang).has_value())
+        CLog::LogF(LOGWARNING, "{}: unknown {} language '{}', ignored", addonId, tag, lang);
+      else if (strcmp(lang, "no") == 0)
         translatedValues.try_emplace("nb_NO", text != nullptr ? text : "");
       else
         translatedValues.try_emplace(lang, text != nullptr ? text : "");

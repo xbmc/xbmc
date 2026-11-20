@@ -9,7 +9,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "video/VideoInfoScannerExtras.h"
@@ -27,7 +27,8 @@ using KODI::VIDEO::FindExtraOnAnotherDisc;
 TEST(TestVideoInfoScannerExtras, AnExtraOnAnotherDiscIsFound)
 {
   auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
-  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  ASSERT_TRUE(
+      strings.Load(KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
 
   const auto extra{[](const std::string& title, int seconds)
                    {

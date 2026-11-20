@@ -48,7 +48,7 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobQueue.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -137,23 +137,22 @@ public:
       m_subStream(subStream)
   {
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    const std::string subLangSetting =
-        settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageNone);
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
+    // None, original and forced only name no language, so they are asked of the preference
+    const CLanguagePreference& preference{CLanguage::GetInstance().SubtitlePreference()};
+
+    m_isSubNone = preference.Is(CLanguagePreference::Kind::Off);
+    m_isPrefOriginal = preference.Is(CLanguagePreference::Kind::Original);
+    m_isPrefForced = preference.Is(CLanguagePreference::Kind::ForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
     // The setting keeps its value while disabled for none and forced_only
     m_hideSameAudioLang = !m_isSubNone && !m_isPrefForced &&
                           settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
 
-    // Prefer the subtitle language setting; none, original and forced_only name no language, so
-    // fall back to the audio setting, and default, original and mediadefault name none either,
-    // so fall back to the language actually playing
-    m_subLang = g_langInfo.GetSubtitleLanguage(false);
-    if (m_subLang.IsUndetermined())
-      m_subLang = g_langInfo.GetAudioLanguage(false);
+    // The subtitle setting, falling back to the audio setting where it names no language. Where
+    // neither does, the language actually playing answers it better than the interface language,
+    // and it is not a setting, so it is supplied here rather than by CLanguage
+    m_subLang = CLanguage::GetInstance().Subtitle(false);
     if (m_subLang.IsUndetermined())
       m_subLang = m_playedAudioLang;
 

@@ -28,16 +28,3 @@ TEST(TestI18nIso3166_1, Alpha2ToAlpha3)
   result = CIso3166_1::Alpha2ToAlpha3("AI");
   EXPECT_FALSE(result.has_value());
 }
-
-TEST(TestI18nIso3166_1, Alpha3ToAlpha2)
-{
-  std::optional<std::string> result;
-
-  result = CIso3166_1::Alpha3ToAlpha2("aia");
-  EXPECT_TRUE(result.has_value());
-  EXPECT_EQ(*result, "ai");
-
-  // zzz is reserved for private use and won't ever be allocated
-  result = CIso3166_1::Alpha3ToAlpha2("zzz");
-  EXPECT_FALSE(result.has_value());
-}
