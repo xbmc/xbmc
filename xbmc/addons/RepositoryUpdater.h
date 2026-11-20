@@ -15,8 +15,9 @@
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
 
+#include <map>
 #include <memory>
-#include <vector>
+#include <string>
 
 class CDateTime;
 
@@ -98,7 +99,9 @@ private:
   CCriticalSection m_criticalSection;
   CTimer m_timer;
   CEvent m_doneEvent{true};
-  std::vector<CRepositoryUpdateJob*> m_jobs;
+  // Keyed by repository ID so lookups never dereference a job the job manager
+  // has already freed (rejected or aborted jobs get no OnJobComplete()).
+  std::map<std::string, CRepositoryUpdateJob*, std::less<>> m_jobs;
   CAddonMgr& m_addonMgr;
 
   CEventSource<RepositoryUpdated> m_events;

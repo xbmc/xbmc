@@ -157,7 +157,8 @@ CRepositoryUpdater::~CRepositoryUpdater()
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   std::unique_lock lock(m_criticalSection);
-  m_jobs.erase(std::ranges::find(m_jobs, job));
+  const auto* updateJob = static_cast<const CRepositoryUpdateJob*>(job);
+  m_jobs.erase(updateJob->GetAddon()->ID());
   if (m_jobs.empty())
   {
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");
@@ -230,34 +231,42 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
     return;
   }
 
-  const auto job = std::ranges::find_if(m_jobs, [&repo](const CRepositoryUpdateJob* updateJob)
-                                        { return updateJob->GetAddon()->ID() == repo->ID(); });
+  // Jobs tracked while the job manager was stopped can never complete; drop
+  // them so their freed pointers are not used below.
+  if (!CServiceBroker::GetJobManager()->IsRunning())
+    m_jobs.clear();
+
+  const auto job = m_jobs.find(repo->ID());
 
   if (job == m_jobs.end())
   {
     auto* updatJob = new CRepositoryUpdateJob(repo);
-    m_jobs.emplace_back(updatJob);
+    m_jobs.emplace(repo->ID(), updatJob);
     m_doneEvent.Reset();
     if (showProgress)
       SetProgressIndicator(updatJob);
     // AddJob deletes the job and returns 0 when the job manager is shutting down
     if (CServiceBroker::GetJobManager()->AddJob(updatJob, this, CJob::PRIORITY_LOW) == 0)
     {
-      m_jobs.erase(std::ranges::find(m_jobs, updatJob));
+      m_jobs.erase(repo->ID());
       if (m_jobs.empty())
         m_doneEvent.Set();
     }
   }
   else
   {
-    if (showProgress && !(*job)->HasProgressIndicator())
-      SetProgressIndicator(*job);
+    if (showProgress && !job->second->HasProgressIndicator())
+      SetProgressIndicator(job->second);
   }
 }
 
 void CRepositoryUpdater::Await()
 {
-  m_doneEvent.Wait();
+  // Jobs aborted at shutdown never reach OnJobComplete(), so once the job
+  // manager has stopped there is nothing left to wait for.
+  while (CServiceBroker::GetJobManager()->IsRunning() && !m_doneEvent.Wait(100ms))
+  {
+  }
 }
 
 void CRepositoryUpdater::OnTimeout()
