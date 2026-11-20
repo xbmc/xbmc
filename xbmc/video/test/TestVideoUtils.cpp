@@ -116,8 +116,17 @@ TEST_P(TrailerTest, FindTrailer)
   }
 
   CFileItem item(input_path, false);
-  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true),
-            trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer));
+  const std::string found{trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer)};
+  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true), found);
+
+  // A library item's path is videodb:// and its file the dynamic path; the cases
+  // without a trailer are excluded protocols, never a library item's file
+  if (!trailer.empty())
+  {
+    CFileItem libraryItem("videodb://movies/titles/1", false);
+    libraryItem.SetDynPath(input_path);
+    EXPECT_EQ(VIDEO::UTILS::FindTrailer(libraryItem, true), found);
+  }
 
   if (!temp_root.empty())
     XFILE::CDirectory::RemoveRecursive(temp_root);
