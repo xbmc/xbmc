@@ -42,7 +42,7 @@ public:
   int GetId() const { return m_id; }
   const ADDON::AddonPtr& GetAddon() const { return m_addon; }
   void SetAddon(const ADDON::AddonPtr &addon) { m_addon = addon; }
-  InvokerState GetState() const { return m_state; }
+  virtual InvokerState GetState() const { return m_state; }
   bool IsActive() const;
   bool IsRunning() const;
   void Reset() { m_state = InvokerStateUninitialized; }
