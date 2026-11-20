@@ -15,6 +15,7 @@
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -28,8 +29,6 @@ class CAddonMgr;
 
 class CRepository;
 using RepositoryPtr = std::shared_ptr<CRepository>;
-
-class CRepositoryUpdateJob;
 
 class CRepositoryUpdater : private ITimerCallback,
                            private IJobCallback,
@@ -99,9 +98,10 @@ private:
   CCriticalSection m_criticalSection;
   CTimer m_timer;
   CEvent m_doneEvent{true};
-  // Keyed by repository ID so lookups never dereference a job the job manager
-  // has already freed (rejected or aborted jobs get no OnJobComplete()).
-  std::map<std::string, CRepositoryUpdateJob*, std::less<>> m_jobs;
+  // Keyed by repository ID. The value flags whether the job should attach the
+  // extended progress bar; job pointers are never stored because aborted jobs
+  // get no OnJobComplete() and may already be freed.
+  std::map<std::string, std::shared_ptr<std::atomic<bool>>, std::less<>> m_jobs;
   CAddonMgr& m_addonMgr;
 
   CEventSource<RepositoryUpdated> m_events;
