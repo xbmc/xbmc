@@ -39,7 +39,8 @@ if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_
 endif()
 
 # GLES2 builds only the factory, which declines hardware rendering.
-if(TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx")
+if((TARGET ${APP_NAME_LC}::EGL AND NOT CORE_SYSTEM_NAME STREQUAL "wasm") OR
+   CORE_SYSTEM_NAME STREQUAL "osx")
   list(APPEND SOURCES RPRendererFBO.cpp)
   list(APPEND HEADERS RPRendererFBO.h)
 endif()
