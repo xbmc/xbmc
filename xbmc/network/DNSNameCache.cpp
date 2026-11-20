@@ -187,8 +187,7 @@ void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIp
 void CDNSNameCache::AddPermanent(const std::string& strHostName, const std::string& strIpAddress)
 {
   std::lock_guard lock(m_critical);
-  m_hostToIp.emplace(std::piecewise_construct, std::forward_as_tuple(strHostName),
-                     std::forward_as_tuple(strIpAddress, std::nullopt));
+  m_hostToIp.insert_or_assign(strHostName, CacheEntry(strIpAddress, std::nullopt));
 }
 
 CDNSNameCache::CacheEntry::CacheEntry(

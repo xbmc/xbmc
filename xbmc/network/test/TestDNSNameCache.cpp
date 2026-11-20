@@ -30,6 +30,17 @@ TEST(TestDNSNameCache, LocalhostIsResolvedAndCached)
   EXPECT_EQ(address, cached);
 }
 
+TEST(TestDNSNameCache, PermanentEntriesReplaceEarlierOnes)
+{
+  CDNSNameCache cache;
+  cache.AddPermanent("example.com", "192.0.2.1");
+  cache.AddPermanent("example.com", "192.0.2.2");
+
+  std::string address;
+  ASSERT_TRUE(cache.GetCached("example.com", address));
+  EXPECT_EQ(address, "192.0.2.2");
+}
+
 namespace
 {
 struct AddressSelectionTest
