@@ -3421,7 +3421,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       KODI::ART::SeasonsArtwork seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
-      if (std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); }))
+      // Only a season of the show's episodes asks for art again: the row for all seasons, and a
+      // season without episodes, often have none to be had
+      EpisodeFileMap episodes;
+      m_database.GetEpisodeMap(static_cast<int>(showID), episodes);
+      std::set<int> seasonsOfEpisodes;
+      for (const auto& [_, episode] : episodes)
+        seasonsOfEpisodes.insert(episode.season);
+      if (std::ranges::any_of(seasonArt, [&seasonsOfEpisodes](const auto& i)
+                              { return i.second.empty() && seasonsOfEpisodes.contains(i.first); }))
       {
         if (!item->IsPlugin() && scraper->ID() != "metadata.local")
         {
