@@ -1,7 +1,6 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
                                  apple.patch \
-                                 process-vm-ready.patch \
                                  static-compile.patch \
                                  10-android-modules.patch \
                                  11-android-ctypes.patch \
@@ -10,7 +9,6 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  15-wasm-static-hacl.patch \
                                  16-ios-static-nonframework.patch \
                                  19-tvos-disable-fork-exec.patch \
-                                 20-wasm-runtime-deps.patch \
                                  21-wasm-em-js-deps.patch \
                                  22-wasm-trampoline-static.patch \
                                  23-wasm-static-linking.patch \
@@ -143,7 +141,6 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
 	cd $(PLATFORM); patch -p1 -i ../static-compile.patch
-	cd $(PLATFORM); patch -p1 -i ../process-vm-ready.patch
 
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../10-android-modules.patch
@@ -153,9 +150,7 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../13-wasm-em-config-clang.patch
 	cd $(PLATFORM); patch -p1 -i ../14-wasm-build-wasm-default.patch
 	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
-# Merged upstream: python/cpython#156335 (3.15; adapted here, as 3.14 does not
-# use stringToNewUTF8 yet), #156798 and #157238 (3.16).
-	cd $(PLATFORM); patch -p1 -i ../20-wasm-runtime-deps.patch
+# Merged upstream: python/cpython#156798 and #157238 (3.16).
 	cd $(PLATFORM); patch -p1 -i ../21-wasm-em-js-deps.patch
 	cd $(PLATFORM); patch -p1 -i ../22-wasm-trampoline-static.patch
 # Pending upstream review (python/cpython#156781).
