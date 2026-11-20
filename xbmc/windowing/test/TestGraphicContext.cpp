@@ -135,6 +135,16 @@ TEST(TestGraphicContext, ViewWindowIsBoundedByAStatedRaster)
   EXPECT_EQ(ComputeViewWindow(info, 2.40f), ComputeRasterRect(info, 2.40f));
 }
 
+#if defined(TARGET_DARWIN_OSX)
+TEST(TestGraphicContext, ViewWindowKeepsOutOfTheGuiInsets)
+{
+  RESOLUTION_INFO info = MakeInfo(3420, 2214);
+  info.guiInsets = EdgeInsets(0, 0, 0, 68);
+
+  EXPECT_EQ(ComputeViewWindow(info, 0.0f), CRect(0, 0, 3420, 2146));
+}
+#endif
+
 TEST(TestGraphicContext, GuiRectDefaultIsIdentity)
 {
   const RESOLUTION_INFO skin(1920, 1080);
