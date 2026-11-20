@@ -689,6 +689,10 @@ public:
   /////////////////////////////////////////////////
   // Scraper
   /////////////////////////////////////////////////
+  /*! \brief Set the information provider for a single artist or album.
+   \param content ARTISTS or ALBUMS.
+   \param scraper nullptr clears the item's own, leaving the default to apply.
+   */
   bool SetScraper(int id, ADDON::ContentType content, const ADDON::ScraperPtr& scraper);
   bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper);
   bool GetScraper(int id, ADDON::ContentType content, ADDON::ScraperPtr& scraper);
