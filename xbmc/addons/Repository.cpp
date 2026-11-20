@@ -280,43 +280,87 @@ CRepository::FetchStatus CRepository::FetchIfChanged(std::string_view oldChecksu
                                                      int& recheckAfter) const
 {
   checksum = "";
-  std::vector<std::tuple<RepositoryDirInfo const&, std::string>> dirChecksums;
+
+  // Digests are stored per directory, separated by newlines (digests cannot
+  // contain whitespace). A directory whose checksum cannot be fetched keeps its
+  // previous digest for the change comparison only; the stored checksum records
+  // an empty digest so its content is fetched again once it responds.
+  const std::vector<std::string> oldDigests = StringUtils::Split(oldChecksum, '\n');
+
+  struct DirState
+  {
+    RepositoryDirInfo const* dir;
+    std::string digest;
+    std::string compareDigest;
+    bool fetched = false;
+  };
+  std::vector<DirState> states;
   std::vector<int> recheckAfterTimes;
 
+  size_t dirIndex = 0;
   for (const auto& dir : m_dirs)
   {
-    if (!dir.checksum.empty())
+    if (dir.checksum.empty())
+      continue;
+
+    DirState state{&dir, {}, {}, false};
+    std::string part;
+    int recheckAfterThisDir;
+    if (FetchChecksum(dir.checksum, part, recheckAfterThisDir) && !part.empty())
     {
-      std::string part;
-      int recheckAfterThisDir;
-      if (!FetchChecksum(dir.checksum, part, recheckAfterThisDir))
-      {
-        recheckAfter = 1 * 60 * 60; // retry after 1 hour
-        CLog::Log(LOGERROR, "CRepository: failed read '{}'", dir.checksum);
-        return FetchStatus::FETCH_ERROR;
-      }
-      dirChecksums.emplace_back(dir, part);
+      state.digest = part;
+      state.compareDigest = part;
+      state.fetched = true;
       recheckAfterTimes.push_back(recheckAfterThisDir);
-      checksum += part;
     }
+    else
+    {
+      // Each directory lists its own add-ons with no fallback between them, so an
+      // unreachable directory's add-ons drop out until it responds again
+      CLog::Log(LOGWARNING, "CRepository: failed read '{}'", dir.checksum);
+      if (dirIndex < oldDigests.size())
+        state.compareDigest = oldDigests[dirIndex];
+    }
+    states.push_back(std::move(state));
+    dirIndex++;
   }
 
-  // Default interval: 24 h
-  recheckAfter = 24 * 60 * 60;
-  if (dirChecksums.size() == m_dirs.size() && !dirChecksums.empty())
+  if (recheckAfterTimes.empty())
   {
-    // Use smallest update interval out of all received (individual intervals per directory are
-    // not possible)
-    recheckAfter = *std::ranges::min_element(recheckAfterTimes);
-    // If all directories have checksums and they match the last one, nothing has changed
-    if (dirChecksums.size() == m_dirs.size() && oldChecksum == checksum)
-      return FetchStatus::NOT_MODIFIED;
+    recheckAfter = 1 * 60 * 60; // retry after 1 hour
+    return FetchStatus::FETCH_ERROR;
   }
 
-  for (const auto& [repoInfo, digest] : dirChecksums)
+  std::string compareChecksum;
+  for (size_t i = 0; i < states.size(); i++)
   {
+    if (i)
+    {
+      checksum += '\n';
+      compareChecksum += '\n';
+    }
+    checksum += states[i].digest;
+    compareChecksum += states[i].compareDigest;
+  }
+
+  // Default interval: 24 h, use the smallest interval out of all received
+  // (individual intervals per directory are not possible)
+  recheckAfter = *std::ranges::min_element(recheckAfterTimes);
+  if (recheckAfterTimes.size() < states.size())
+  {
+    // A directory is unreachable, retry sooner so its content is not stale for long
+    recheckAfter = std::min(recheckAfter, 1 * 60 * 60);
+  }
+  // If the checksums match the last ones, nothing has changed
+  if (oldChecksum == compareChecksum)
+    return FetchStatus::NOT_MODIFIED;
+
+  for (const auto& state : states)
+  {
+    if (!state.fetched)
+      continue;
     std::vector<AddonInfoPtr> tmp;
-    if (!FetchIndex(repoInfo, digest, tmp))
+    if (!FetchIndex(*state.dir, state.digest, tmp))
       return FetchStatus::FETCH_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
