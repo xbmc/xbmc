@@ -8,19 +8,16 @@
 
 #pragma once
 
-#include "ServiceBroker.h"
-#include "UPnP.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/SystemClock.h"
-#include "utils/log.h"
 #include "utils/logtypes.h"
 
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include <memory>
-#include <mutex>
+#include <string>
 #include <vector>
 
 #include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
@@ -29,113 +26,28 @@
 namespace UPNP
 {
 
-//! NPT_ERROR_TIMEOUT when the deadline passes, NPT_FAILURE when the user cancels.
-inline NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
-{
-  if (event.Wait(std::chrono::milliseconds(0)))
-    return NPT_SUCCESS;
-
-  switch (CGUIDialogBusy::WaitOnEventFor(event, timeout.GetTimeLeft()))
-  {
-    case CGUIDialogBusy::WaitResult::COMPLETED:
-      return NPT_SUCCESS;
-    case CGUIDialogBusy::WaitResult::TIMED_OUT:
-      return NPT_ERROR_TIMEOUT;
-    default:
-      return NPT_FAILURE;
-  }
-}
-
 class CUPnPPlayerController : public PLT_MediaControllerDelegate
 {
 public:
-  CUPnPPlayerController(PLT_MediaController* control, PLT_DeviceDataReference& device)
-    : m_control(control),
-      m_device(device),
-      m_posinfo({}),
-      m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPPlayerController"))
-  {
-  }
+  //! Sends one request to the renderer, its reply addressed to the userdata.
+  using Request = std::function<NPT_Result(void* userdata)>;
 
-  NPT_String GetTransportState() const
-  {
-    std::unique_lock lock(m_section);
-    return m_trainfo.cur_transport_state;
-  }
+  CUPnPPlayerController(PLT_MediaController* control, PLT_DeviceDataReference& device);
+  ~CUPnPPlayerController() override;
 
-  NPT_String GetTransportStatus() const
-  {
-    std::unique_lock lock(m_section);
-    return m_trainfo.cur_transport_status;
-  }
+  NPT_String GetTransportState() const;
 
   void OnGetTransportInfoResult(NPT_Result res,
                                 PLT_DeviceDataReference& device,
                                 PLT_TransportInfo* info,
-                                void* userdata) override
-  {
-    std::unique_lock lock(m_section);
+                                void* userdata) override;
 
-    if (NPT_FAILED(res))
-    {
-      m_logger->error("OnGetTransportInfoResult failed");
-      m_trainfo.cur_speed = "0";
-      m_trainfo.cur_transport_state = "STOPPED";
-      m_trainfo.cur_transport_status = "ERROR_OCCURED";
-    }
-    else
-      m_trainfo = *info;
-  }
-
-  void UpdatePositionInfo()
-  {
-    {
-      std::unique_lock lock(m_section);
-      if (m_pollOutstanding || !m_nextPoll.IsTimePast())
-        return;
-      // Set before sending, because the reply that clears it can arrive before these return.
-      m_pollOutstanding = true;
-    }
-
-    m_control->GetTransportInfo(m_device, m_instance, this);
-    if (NPT_FAILED(m_control->GetPositionInfo(m_device, m_instance, this)))
-    {
-      std::unique_lock lock(m_section);
-      m_pollOutstanding = false;
-      m_nextPoll.Set(std::chrono::milliseconds(500));
-    }
-  }
+  void UpdatePositionInfo();
 
   void OnGetPositionInfoResult(NPT_Result res,
                                PLT_DeviceDataReference& device,
                                PLT_PositionInfo* info,
-                               void* userdata) override
-  {
-    std::unique_lock lock(m_section);
-
-    if (NPT_FAILED(res) || info == NULL)
-    {
-      m_logger->error("OnGetPositionInfoResult failed");
-      m_posinfo = PLT_PositionInfo();
-    }
-    else
-      m_posinfo = *info;
-    m_pollOutstanding = false;
-    m_nextPoll.Set(std::chrono::milliseconds(500));
-  }
-
-  PLT_PositionInfo GetPosition() const
-  {
-    std::unique_lock lock(m_section);
-    return m_posinfo;
-  }
-
-  ~CUPnPPlayerController() override
-  {
-    std::unique_lock lock(m_actionSection);
-    for (const auto& action : m_actions)
-      CUPnP::UnregisterUserdata(action.get());
-  }
+                               void* userdata) override;
 
   // Platinum identifies a reply only by its userdata pointer, so each action is its own delegate.
   // A wait pumps the render loop through the busy dialog, which can re-enter the player and start
@@ -150,73 +62,24 @@ public:
     void Retire() { m_retired = true; }
     bool IsSpent() const { return m_retired && m_replied; }
 
-    NPT_String GetTransportState() const
-    {
-      std::unique_lock lock(m_section);
-      return m_trainfo.cur_transport_state;
-    }
-
-    NPT_String GetTransportStatus() const
-    {
-      std::unique_lock lock(m_section);
-      return m_trainfo.cur_transport_status;
-    }
+    PLT_TransportInfo GetTransportInfo() const;
+    NPT_String GetTransportState() const;
 
     void OnSetAVTransportURIResult(NPT_Result res,
                                    PLT_DeviceDataReference& device,
-                                   void* userdata) override
-    {
-      Complete(res, "OnSetAVTransportURIResult");
-    }
-
+                                   void* userdata) override;
+    void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override;
+    void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override;
     void OnSetNextAVTransportURIResult(NPT_Result res,
                                        PLT_DeviceDataReference& device,
-                                       void* userdata) override
-    {
-      Complete(res, "OnSetNextAVTransportURIResult");
-    }
-
-    void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-    {
-      Complete(res, "OnPlayResult");
-    }
-
-    void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-    {
-      Complete(res, "OnStopResult");
-    }
-
+                                       void* userdata) override;
     void OnGetTransportInfoResult(NPT_Result res,
                                   PLT_DeviceDataReference& device,
                                   PLT_TransportInfo* info,
-                                  void* userdata) override
-    {
-      {
-        std::unique_lock lock(m_section);
-        if (NPT_FAILED(res) || info == NULL)
-        {
-          m_trainfo.cur_speed = "0";
-          m_trainfo.cur_transport_state = "STOPPED";
-          m_trainfo.cur_transport_status = "ERROR_OCCURED";
-        }
-        else
-          m_trainfo = *info;
-      }
-      // CUPnPPlayer::Process watches the controller's copy for the end of playback. Left to the
-      // poll, which can be 500ms behind, it still reads STOPPED as playback starts.
-      m_owner.OnGetTransportInfoResult(res, device, info, userdata);
-      Complete(res, "OnGetTransportInfoResult");
-    }
+                                  void* userdata) override;
 
   private:
-    void Complete(NPT_Result res, const char* action)
-    {
-      if (NPT_FAILED(res))
-        m_owner.m_logger->error("{} failed", action);
-      m_status = res;
-      m_replied = true;
-      m_event.Set();
-    }
+    void Complete(NPT_Result res, const char* action);
 
     CUPnPPlayerController& m_owner;
     mutable CCriticalSection m_section;
@@ -227,130 +90,68 @@ public:
     std::atomic<bool> m_retired{false};
   };
 
-  CAction* BeginAction()
-  {
-    std::unique_lock lock(m_actionSection);
-    ReapSpent();
-    m_actions.push_back(std::make_unique<CAction>(*this));
-    CAction* action = m_actions.back().get();
-    CUPnP::RegisterUserdata(action);
-    return action;
-  }
+  CAction* BeginAction();
 
   // Not freed here: the caller reads the reply off the action after the wait. A later BeginAction
   // frees it once its reply has arrived.
   void EndAction(CAction& action) { action.Retire(); }
 
-  // Platinum never replies to a request it did not accept, so waiting for one would hold the action
-  // for the life of the player.
-  void DiscardUnsent(CAction& action)
-  {
-    action.Retire();
-    Release(action);
-  }
+  /*!
+   * \brief Send a request as a new action.
+   * \param action Set to the action, or nullptr when the request was not sent.
+   */
+  NPT_Result Send(CAction*& action, const Request& request);
 
-  template<typename F>
-  NPT_Result Send(CAction*& action, F&& send)
-  {
-    action = BeginAction();
-    const NPT_Result res = send(action);
-    if (NPT_FAILED(res))
-    {
-      DiscardUnsent(*action);
-      action = nullptr;
-    }
-    return res;
-  }
+  /*!
+   * \brief Send a request and wait for its reply, through the busy dialog.
+   * \return The reply's status; a failure if the request was not sent or no reply came.
+   */
+  NPT_Result Call(const Request& request, XbmcThreads::EndTime<>& timeout);
 
-  NPT_Result SendGetTransportInfo(CAction*& action)
-  {
-    return Send(action, [this](void* userdata)
-                { return m_control->GetTransportInfo(m_device, m_instance, userdata); });
-  }
+  //! As Call(), waiting without the busy dialog.
+  NPT_Result Call(const Request& request, std::chrono::milliseconds timeout);
 
-  NPT_Result SendStop(CAction*& action)
-  {
-    return Send(action,
-                [this](void* userdata) { return m_control->Stop(m_device, m_instance, userdata); });
-  }
+  /*!
+   * \brief Ask for the transport info and wait for it, through the busy dialog. A failed reply
+   * reads as STOPPED with an error status.
+   * \return A failure if the request was not sent or no reply came.
+   */
+  NPT_Result QueryTransport(XbmcThreads::EndTime<>& timeout, PLT_TransportInfo& info);
 
-  NPT_Result SendPlay(CAction*& action)
-  {
-    return Send(action, [this](void* userdata)
-                { return m_control->Play(m_device, m_instance, "1", userdata); });
-  }
+  Request GetTransportInfo();
+  Request Stop();
+  Request Play();
+  Request SetAVTransportURI(std::string uri, std::string metadata);
+  Request SetNextAVTransportURI(std::string uri, std::string metadata);
 
-  NPT_Result SendSetAVTransportURI(CAction*& action, const char* uri, const char* metadata)
-  {
-    return Send(
-        action, [&](void* userdata)
-        { return m_control->SetAVTransportURI(m_device, m_instance, uri, metadata, userdata); });
-  }
+  size_t HeldActionCount() const;
 
-  NPT_Result SendSetNextAVTransportURI(CAction*& action, const char* uri, const char* metadata)
-  {
-    return Send(action,
-                [&](void* userdata)
-                {
-                  return m_control->SetNextAVTransportURI(m_device, m_instance, uri, metadata,
-                                                          userdata);
-                });
-  }
-
-  size_t HeldActionCount() const
-  {
-    std::unique_lock lock(m_actionSection);
-    return m_actions.size();
-  }
-
-  NPT_Result WaitForReply(CAction& action, XbmcThreads::EndTime<>& timeout)
-  {
-    const NPT_Result result = WaitOnEvent(action.Event(), timeout);
-    EndAction(action);
-    return result;
-  }
-
-  bool WaitForReplyFor(CAction& action, std::chrono::milliseconds timeout)
-  {
-    const bool replied = action.Event().Wait(timeout);
-    EndAction(action);
-    return replied;
-  }
+  NPT_Result WaitForReply(CAction& action, XbmcThreads::EndTime<>& timeout);
+  bool WaitForReplyFor(CAction& action, std::chrono::milliseconds timeout);
 
   PLT_MediaController* m_control;
   PLT_DeviceDataReference m_device;
   NPT_UInt32 m_instance = 0;
 
-  PLT_PositionInfo m_posinfo;
+  PLT_PositionInfo GetPosition() const;
 
 private:
-  void Release(CAction& action)
-  {
-    std::unique_lock lock(m_actionSection);
-    CUPnP::UnregisterUserdata(&action);
-    std::erase_if(m_actions, [&action](const auto& held) { return held.get() == &action; });
-  }
+  // Platinum never replies to a request it did not accept, so waiting for one would hold the action
+  // for the life of the player.
+  void DiscardUnsent(CAction& action);
+  void Release(CAction& action);
 
   // Platinum fails an accepted request on its own HTTP timeout, so an action normally replies and
   // is freed here. One accepted while the control point is stopping never replies, and is held
   // until the player goes away. Called with m_actionSection held.
-  void ReapSpent()
-  {
-    const auto spent = [](const std::unique_ptr<CAction>& action)
-    {
-      if (!action->IsSpent())
-        return false;
-      CUPnP::UnregisterUserdata(action.get());
-      return true;
-    };
-    std::erase_if(m_actions, spent);
-  }
+  void ReapSpent();
 
   mutable CCriticalSection m_actionSection;
   std::vector<std::unique_ptr<CAction>> m_actions;
 
   mutable CCriticalSection m_section;
   PLT_TransportInfo m_trainfo;
+  PLT_PositionInfo m_posinfo;
   // Polling starts with the first position reply, which OpenFile asks for.
   bool m_pollOutstanding = true;
   XbmcThreads::EndTime<> m_nextPoll;
