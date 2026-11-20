@@ -731,6 +731,11 @@ void CGUIDialogNumeric::VerifyDate(bool checkYear)
     m_datetime.month = 1;
   // without a year yet, February allows the 29th
   static constexpr std::array<int, 12> daysInMonth{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  // a month out of range, as an add-on can pass in, is left as it was given
+  if (m_datetime.month > daysInMonth.size())
+  {
+    return;
+  }
   int lastDay = daysInMonth[m_datetime.month - 1];
   const int year = m_datetime.year;
   if (m_datetime.month == 2 && checkYear &&

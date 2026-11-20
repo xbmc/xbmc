@@ -80,4 +80,5 @@ TEST(TestGUIDialogNumeric, ADateIsKeptWithinItsMonth)
   EXPECT_EQ(29, DayAfterConfirming(29, 2, 2024, 2));
   EXPECT_EQ(28, DayAfterConfirming(29, 2, 1900, 2));
   EXPECT_EQ(29, DayAfterConfirming(29, 2, 2000, 2));
+  EXPECT_EQ(31, DayAfterConfirming(31, 13, 2024, 1)) << "a month out of range is left alone";
 }
