@@ -507,12 +507,14 @@ bool CTextureCache::CleanAllUnusedImages()
   CJobQueue queue;
   queue.Submit([this, progress, success]() { success->store(CleanAllUnusedImagesJob(progress)); });
 
-  // Wait for the job itself rather than the dialog, which can close or be absent
-  // while the clean is still running; pump it so the GUI keeps rendering.
+  // Wait for the job itself rather than the dialog, which can close or be
+  // absent while the clean is still running. ProcessRenderLoop keeps
+  // servicing the GUI thread even while the dialog is inactive, which the
+  // job's blocking Close() relies on.
   while (!queue.WaitForCompletion(10ms))
   {
     if (progress)
-      progress->Progress();
+      progress->ProcessRenderLoop();
   }
 
   m_cleaningInProgress.clear();
