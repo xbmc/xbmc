@@ -15,7 +15,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUITexture.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/SystemInfo.h"
@@ -804,7 +804,7 @@ TEST_P(TestGetInfoLabel, GetInfoLabel)
 {
   CGUITestComponent comp;
   ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-      g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+      KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   CXBMCTinyXML doc;
   doc.Parse(GetParam().def);
   KODI::GUILIB::GUIINFO::CGUIInfoLabel infoLabel;
@@ -822,7 +822,7 @@ TEST_P(TestGetInfoLabels, GetInfoLabels)
 {
   CGUITestComponent comp;
   ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-      g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+      KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   CXBMCTinyXML doc;
   doc.Parse(GetParam().def);
   std::vector<KODI::GUILIB::GUIINFO::CGUIInfoLabel> infoLabel;
@@ -904,7 +904,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory, TestGetScroller, testing::Values
 TEST_P(TestGetString, GetString)
 {
   ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-      g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+      KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   CXBMCTinyXML doc;
   doc.Parse(GetParam().def);
   std::string value;

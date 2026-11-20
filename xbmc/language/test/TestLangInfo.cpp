@@ -9,6 +9,8 @@
 #include "ServiceBroker.h"
 #include "addons/AddonEvents.h"
 #include "language/LangInfo.h"
+#include "language/Language.h"
+#include "language/LanguageLoader.h"
 #include "language/i18n/LanguageTable.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -20,16 +22,53 @@
 namespace
 {
 
-class CLangInfoTest : public CLangInfo
+class CLangInfoTest : public KODI::LANGUAGE::CLangInfo
 {
 public:
-  bool LoadLang(const std::string& language) { return Load(language); }
+  //! Read the region profiles a pack ships, as the loader does
+  bool LoadLang(const std::string& language)
+  {
+    return Load(KODI::LANGUAGE::CLanguageLoader::GetLanguageInfoPath(language));
+  }
+
+  using CLangInfo::PlatformLocaleName;
 };
 
 using KODI::LANGUAGE::CLanguageTag;
-using KODI::LANGUAGE::I18N::CLanguageTable;
 
 } // namespace
+
+// What the add-on and Python interfaces are handed when they ask what Kodi is running in
+TEST(TestLangInfo, DescribeLanguage)
+{
+  using KODI::LANGUAGE::DescribeLanguage;
+
+  CLangInfoTest langInfo;
+  ASSERT_TRUE(langInfo.LoadLang("en_gb"));
+  langInfo.SetCurrentRegion("USA (12h)");
+
+  KODI::LANGUAGE::CLanguage language;
+  language.SetUI(CLanguageTag::Parse("en-GB"));
+
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, false), "en");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, false), "eng");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_NAME, language, langInfo, false), "English");
+
+  // The place is the region profile's, not the language's, so a British pack under the USA
+  // profile is named for where the viewer is
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, true), "en-US");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, true), "eng-USA");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_NAME, language, langInfo, true), "English-USA");
+
+  // A language with no code in the notation asked for is answered with nothing, rather than with
+  // a bare place
+  language.SetUI(CLanguageTag::Parse("ast"));
+  EXPECT_TRUE(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, true).empty());
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, true), "ast-USA");
+
+  // Without a pack there is no name for a pack to have stated
+  EXPECT_TRUE(DescribeLanguage(CLanguageTag::ENGLISH_NAME, language, langInfo, true).empty());
+}
 
 TEST(TestLangInfo, Load)
 {
@@ -50,88 +89,80 @@ TEST(TestLangInfo, Load)
 
   langInfo.SetCurrentRegion("USA (12h)");
 
-  // Compares easily accessible only
-#ifdef TARGET_WINDOWS
-  EXPECT_EQ(langInfo.GetRegionLocale(), "USA");
-#else
-  EXPECT_EQ(langInfo.GetRegionLocale(), "US");
-#endif
+  // The region states one place, held in one form on every platform, and the notation is the
+  // caller's to ask for
+  const KODI::LANGUAGE::CTerritory& territory{langInfo.GetRegionTerritory()};
 
-  // The stored form varies by platform, the region code does not
-  EXPECT_EQ(langInfo.GetRegionCodeAlpha2(), "US");
-  EXPECT_EQ(langInfo.GetRegionCodeAlpha3(), "USA");
+  EXPECT_EQ(territory.ToString(), "US");
+  EXPECT_EQ(territory.AsIso3166_1Alpha2(), "US");
+  EXPECT_EQ(territory.AsIso3166_1Alpha3(), "USA");
+  EXPECT_TRUE(territory.IsCountry());
 
   EXPECT_EQ(langInfo.GetSpeedUnit(), CSpeed::UnitMilesPerHour);
   EXPECT_EQ(langInfo.GetTemperatureUnit(), CTemperature::UnitFahrenheit);
 }
 
-TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
+TEST(TestLangInfo, PlatformLocaleNamePairsLanguageAndPlace)
 {
-  CLangInfoTest langInfo;
-  ASSERT_TRUE(langInfo.LoadLang("en_gb"));
+  using KODI::LANGUAGE::CTerritory;
 
-  langInfo.SetAudioLanguage("french");
-  EXPECT_TRUE(langInfo.GetAudioLanguage(false).Matches(CLanguageTag::Parse("fr")));
+#ifdef TARGET_WINDOWS
+  EXPECT_EQ(
+      CLangInfoTest::PlatformLocaleName(CLanguageTag::Parse("en-GB"), CTerritory::FromCode("AU")),
+      "en-AU");
+  EXPECT_EQ(
+      CLangInfoTest::PlatformLocaleName(CLanguageTag::Parse("fil"), CTerritory::FromCode("PH")),
+      "fil-PH");
+#else
+  EXPECT_EQ(
+      CLangInfoTest::PlatformLocaleName(CLanguageTag::Parse("en-GB"), CTerritory::FromCode("AU")),
+      "en_AU.UTF-8");
+  EXPECT_EQ(
+      CLangInfoTest::PlatformLocaleName(CLanguageTag::Parse("fil"), CTerritory::FromCode("PH")),
+      "fil_PH.UTF-8");
+#endif
 
-  // The setting can arrive hand-edited or over JSON-RPC; a value naming no language must be
-  // rejected rather than stored, or callers prefer a language no stream can ever match
-  langInfo.SetAudioLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetAudioLanguage(false).IsUndetermined());
-  EXPECT_FALSE(langInfo.GetAudioLanguage(true).IsUndetermined());
-
-  langInfo.SetSubtitleLanguage("not a language");
-  EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsUndetermined());
-  EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsUndetermined());
+  // Without a place, the platform's own locale
+  EXPECT_TRUE(CLangInfoTest::PlatformLocaleName(CLanguageTag::Parse("de"), CTerritory{}).empty());
 }
 
-TEST(TestLangInfo, SetLanguageNamesTheLanguagesOfTheInstalledAddons)
+TEST(TestLangInfo, LoadingALanguageNamesTheLanguagesOfTheInstalledAddons)
 {
-  CLangInfoTest langInfo;
-  ASSERT_TRUE(langInfo.SetLanguage("resource.language.en_gb", false));
+  ASSERT_TRUE(
+      KODI::LANGUAGE::CLanguageLoader::GetInstance().Load("resource.language.en_gb", false));
 
   // The name the installed addon gives, rather than one composed from the subtags
   EXPECT_EQ(CLanguageTag::Parse("en-GB").ToEnglishName(), "English");
 
-  // Both are process-wide
+  // All three are process-wide
   CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
-  CLanguageTable::GetInstance().Reset();
-}
-
-TEST(TestLangInfo, AStoredAddonLanguageNameIsALanguage)
-{
-  // The audio and subtitle language settings offer the names language addons give, which are
-  // declared under the codes GetAddonsLanguageCodes gives them
-  CLanguageTable::GetInstance().DeclareNames({{"en-au", "English (Australia)"}});
-
-  CLangInfoTest langInfo;
-  langInfo.SetAudioLanguage("English (Australia)");
-  EXPECT_EQ(langInfo.GetAudioLanguage(false).ToString(), "en-AU");
-
-  CLanguageTable::GetInstance().Reset();
+  KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Reset();
+  KODI::LANGUAGE::CLanguage::GetInstance().SetPack(nullptr);
 }
 
 TEST(TestLangInfo, ALanguageAddonInstalledOrEnabledLaterNamesItsLanguage)
 {
   // The language settings offer every installed language addon by name, so one installed,
   // updated or enabled after the language loaded must name its language too
-  CLangInfoTest langInfo;
+  auto& loader{KODI::LANGUAGE::CLanguageLoader::GetInstance()};
+  auto& table{KODI::LANGUAGE::I18N::CLanguageTable::GetInstance()};
   const std::string addon{"resource.language.en_gb"};
 
   for (const bool enabled : {true, false})
   {
-    ASSERT_FALSE(CLanguageTable::GetInstance().NameOf("en-GB").has_value());
+    ASSERT_FALSE(table.NameOf("en-GB").has_value());
     if (enabled)
-      langInfo.OnAddonEvent(ADDON::AddonEvents::Enabled(addon));
+      loader.OnAddonEvent(ADDON::AddonEvents::Enabled(addon));
     else
-      langInfo.OnAddonEvent(ADDON::AddonEvents::ReInstalled(addon));
+      loader.OnAddonEvent(ADDON::AddonEvents::ReInstalled(addon));
 
     EXPECT_EQ(CLanguageTag::Parse("en-GB").ToEnglishName(), "English");
-    CLanguageTable::GetInstance().Reset();
+    table.Reset();
   }
 
   // Nothing is declared for another kind of event
-  langInfo.OnAddonEvent(ADDON::AddonEvents::Disabled(addon));
-  EXPECT_FALSE(CLanguageTable::GetInstance().NameOf("en-GB").has_value());
+  loader.OnAddonEvent(ADDON::AddonEvents::Disabled(addon));
+  EXPECT_FALSE(table.NameOf("en-GB").has_value());
 }
 
 TEST(TestLangInfo, RegionalDateFormatsAreTheRegions)

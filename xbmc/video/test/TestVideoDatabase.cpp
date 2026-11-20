@@ -20,7 +20,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "playlists/SmartPlayList.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -2409,7 +2409,8 @@ TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
 {
   // The types were named when the database was made, before any strings were loaded
   auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
-  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  ASSERT_TRUE(
+      strings.Load(KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   m_db.UpdateVideoVersionTypeTable();
 
   const auto names{[this](VideoAssetType assetType)
@@ -2484,7 +2485,8 @@ TEST_F(TestVideoDatabase, VideoVersionTypeIsLookedUpByItemType)
 TEST_F(TestVideoDatabase, AnExtrasTypeGoesWithItsLastExtra)
 {
   auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
-  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  ASSERT_TRUE(
+      strings.Load(KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   m_db.UpdateVideoVersionTypeTable();
 
   const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
