@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "language/LanguageTag.h"
 #include "language/Territory.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
@@ -34,8 +35,8 @@ public:
 
   /**! Basic RDS related information */
   void SetSpeechActive(bool active);
-  void SetLanguage(const std::string& strLanguage);
-  const std::string& GetLanguage() const;
+  void SetLanguage(const KODI::LANGUAGE::CLanguageTag& language);
+  KODI::LANGUAGE::CLanguageTag GetLanguage() const;
   void SetCountry(const KODI::LANGUAGE::CTerritory& territory);
   KODI::LANGUAGE::CTerritory GetCountry() const;
   void SetRadioText(const std::string& strRadioText);
@@ -132,7 +133,7 @@ private:
 
   bool m_RDS_SpeechActive;
 
-  std::string m_strLanguage;
+  KODI::LANGUAGE::CLanguageTag m_language;
   KODI::LANGUAGE::CTerritory m_territory;
   std::string m_strTitle;
   std::string m_strBand;

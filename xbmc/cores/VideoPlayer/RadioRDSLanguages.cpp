@@ -41,4 +41,13 @@ std::string_view LanguageCode(unsigned int index)
   return index < LANGUAGE_INDEX_COUNT ? LANGUAGE_CODES[index] : RESERVED;
 }
 
+LANGUAGE::CLanguageTag Language(unsigned int index)
+{
+  const std::string_view code{LanguageCode(index)};
+  if (code.empty())
+    return LANGUAGE::CLanguageTag::Undetermined();
+
+  return LANGUAGE::CLanguageTag::Parse(std::string{code});
+}
+
 } // namespace KODI::RDS
