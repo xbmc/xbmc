@@ -226,6 +226,7 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_renderOrientation = orientation;
 
   std::tie(m_useDithering, m_ditherDepth) = DX::Windowing()->GetDitherSettings();
+  m_ditherAuto = m_ditherDepth == 0;
 
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_INVALID;
@@ -247,7 +248,7 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   }
 
   // Auto follows the swap chain, which the HDR switch above can recreate in another format
-  if (m_ditherDepth == 0)
+  if (m_ditherAuto)
   {
     m_ditherDepth = DX::Windowing()->GetOutputBitDepth();
   }
@@ -556,8 +557,11 @@ void CRendererBase::CheckVideoParameters()
   // gamma is only offered for SDR, the output shader applies it
   const bool gamma = !m_hdrStream && !m_dolbyVisionEffect && m_videoSettings.m_Gamma != 50.0f;
 
+  const int ditherDepth{m_ditherAuto ? DX::Windowing()->GetOutputBitDepth() : m_ditherDepth};
+
   if (toneMap != m_toneMapping || m_cmsOn != cms || hlg != m_useHLGtoPQ ||
-      method != m_toneMapMethod || hueSatTransfer != m_hueSatTransfer || gamma != m_useGamma)
+      method != m_toneMapMethod || hueSatTransfer != m_hueSatTransfer || gamma != m_useGamma ||
+      ditherDepth != m_ditherDepth)
   {
     m_toneMapping = toneMap;
     m_cmsOn = cms;
@@ -565,6 +569,7 @@ void CRendererBase::CheckVideoParameters()
     m_toneMapMethod = method;
     m_hueSatTransfer = hueSatTransfer;
     m_useGamma = gamma;
+    m_ditherDepth = ditherDepth;
 
     m_outputShader.reset();
     OnOutputReset();
