@@ -34,6 +34,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <iterator>
 #include <mutex>
 #include <vector>
@@ -48,7 +49,10 @@ namespace ADDON
 class CRepositoryUpdateJob : public CProgressJob
 {
 public:
-  explicit CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
+  CRepositoryUpdateJob(const RepositoryPtr& repo, std::shared_ptr<std::atomic<bool>> showProgress)
+      : m_repo(repo), m_showProgress(std::move(showProgress))
+  {
+  }
   ~CRepositoryUpdateJob() override = default;
   bool DoWork() override;
   const RepositoryPtr& GetAddon() const { return m_repo; }
@@ -56,10 +60,22 @@ public:
 
 private:
   const RepositoryPtr m_repo;
+  const std::shared_ptr<std::atomic<bool>> m_showProgress;
 };
+
+static void SetProgressIndicator(CRepositoryUpdateJob* job)
+{
+  auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+  if (dialog)
+    job->SetProgressBar(
+        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24092)));
+}
 
 bool CRepositoryUpdateJob::DoWork()
 {
+  if (m_showProgress->load())
+    SetProgressIndicator(this);
+
   CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checking for updates.", m_repo->ID());
   CAddonDatabase database;
   database.Open();
@@ -214,14 +230,6 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
   return false;
 }
 
-static void SetProgressIndicator(CRepositoryUpdateJob* job)
-{
-  auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
-  if (dialog)
-    job->SetProgressBar(
-        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24092)));
-}
-
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)
 {
   std::unique_lock lock(m_criticalSection);
@@ -232,7 +240,7 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
   }
 
   // Jobs tracked while the job manager was stopped can never complete; drop
-  // them so their freed pointers are not used below.
+  // them so their flags are not reused below.
   if (!CServiceBroker::GetJobManager()->IsRunning())
     m_jobs.clear();
 
@@ -240,11 +248,10 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
 
   if (job == m_jobs.end())
   {
-    auto* updatJob = new CRepositoryUpdateJob(repo);
-    m_jobs.emplace(repo->ID(), updatJob);
+    auto showProgressFlag = std::make_shared<std::atomic<bool>>(showProgress);
+    auto* updatJob = new CRepositoryUpdateJob(repo, showProgressFlag);
+    m_jobs.emplace(repo->ID(), std::move(showProgressFlag));
     m_doneEvent.Reset();
-    if (showProgress)
-      SetProgressIndicator(updatJob);
     // AddJob deletes the job and returns 0 when the job manager is shutting down
     if (CServiceBroker::GetJobManager()->AddJob(updatJob, this, CJob::PRIORITY_LOW) == 0)
     {
@@ -253,10 +260,11 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
         m_doneEvent.Set();
     }
   }
-  else
+  else if (showProgress)
   {
-    if (showProgress && !job->second->HasProgressIndicator())
-      SetProgressIndicator(job->second);
+    // The job reads the flag once when it starts; one already running will
+    // not pick this up.
+    job->second->store(true);
   }
 }
 
