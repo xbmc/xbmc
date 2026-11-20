@@ -240,7 +240,13 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
     m_doneEvent.Reset();
     if (showProgress)
       SetProgressIndicator(updatJob);
-    CServiceBroker::GetJobManager()->AddJob(updatJob, this, CJob::PRIORITY_LOW);
+    // AddJob deletes the job and returns 0 when the job manager is shutting down
+    if (CServiceBroker::GetJobManager()->AddJob(updatJob, this, CJob::PRIORITY_LOW) == 0)
+    {
+      m_jobs.erase(std::ranges::find(m_jobs, updatJob));
+      if (m_jobs.empty())
+        m_doneEvent.Set();
+    }
   }
   else
   {
