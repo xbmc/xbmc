@@ -131,6 +131,10 @@ bool CDemuxMultiSource::Open(const std::shared_ptr<CDVDInputStream>& pInput)
     DemuxPtr demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer((*iter)));
     if (!demuxer)
     {
+      // a stop fails the probe, and Abort() may be going through this list on another thread
+      if (m_pInput->Aborted())
+        return false;
+
       iter = m_pInput->m_InputStreams.erase(iter);
     }
     else
