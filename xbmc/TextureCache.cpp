@@ -31,8 +31,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cstring>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <vector>
@@ -500,17 +502,21 @@ bool CTextureCache::CleanAllUnusedImages()
     progress->ShowProgressBar(true);
   }
 
-  bool failure = false;
-  CServiceBroker::GetJobManager()->Submit([this, progress, &failure]()
-                                          { failure = CleanAllUnusedImagesJob(progress); });
+  // Shared with the job so the result outlives this function's stack frame
+  auto success = std::make_shared<std::atomic<bool>>(false);
+  CJobQueue queue;
+  queue.Submit([this, progress, success]() { success->store(CleanAllUnusedImagesJob(progress)); });
 
-  // Wait for clean to complete or be canceled, but render every 10ms so that the
-  // pointer movements work on dialog even when clean is reporting progress infrequently
-  if (progress)
-    progress->Wait();
+  // Wait for the job itself rather than the dialog, which can close or be absent
+  // while the clean is still running; pump it so the GUI keeps rendering.
+  while (!queue.WaitForCompletion(10ms))
+  {
+    if (progress)
+      progress->Progress();
+  }
 
   m_cleaningInProgress.clear();
-  return !failure;
+  return success->load();
 }
 
 bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
