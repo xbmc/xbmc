@@ -10,6 +10,7 @@
 
 #include "threads/Event.h"
 
+#include <atomic>
 #include <stdint.h>
 #include <string>
 
@@ -57,7 +58,7 @@ public:
 
   CEvent m_space;
 protected:
-  bool  m_bEndOfInput = false;
+  std::atomic<bool> m_bEndOfInput{false};
 };
 
 /**
@@ -93,9 +94,9 @@ protected:
   IFile*   m_cacheFileRead;
   IFile*   m_cacheFileWrite;
   CEvent*  m_hDataAvailEvent;
-  int64_t m_nStartPosition = 0;
-  int64_t m_nWritePosition = 0;
-  int64_t m_nReadPosition = 0;
+  std::atomic<int64_t> m_nStartPosition{0};
+  std::atomic<int64_t> m_nWritePosition{0};
+  std::atomic<int64_t> m_nReadPosition{0};
 };
 
 class CDoubleCache : public CCacheStrategy{
