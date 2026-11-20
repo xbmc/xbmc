@@ -20,6 +20,8 @@ namespace XFILE
 
     virtual bool Execute(const CURL& url);
 
+    int Stat(const CURL& url, struct __stat64* buffer) override;
+
     bool Delete(const CURL& url) override;
     bool Rename(const CURL& url, const CURL& urlnew) override;
 

@@ -24,79 +24,6 @@ using namespace XFILE;
 CDAVDirectory::CDAVDirectory(void) = default;
 CDAVDirectory::~CDAVDirectory(void) = default;
 
-/*
- * Parses a <response>
- *
- * <!ELEMENT response (href, ((href*, status)|(propstat+)), responsedescription?) >
- * <!ELEMENT propstat (prop, status, responsedescription?) >
- *
- */
-void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem& item)
-{
-  /* Iterate response children elements */
-  for (auto* responseChild = element->FirstChildElement(); responseChild;
-       responseChild = responseChild->NextSiblingElement())
-  {
-    if (CDAVCommon::ValueWithoutNamespace(responseChild, "href") && !responseChild->NoChildren())
-    {
-      std::string path(responseChild->FirstChild()->Value());
-      URIUtils::RemoveSlashAtEnd(path);
-      item.SetPath(path);
-    }
-    else if (CDAVCommon::ValueWithoutNamespace(responseChild, "propstat"))
-    {
-      if (CDAVCommon::GetStatusTag(responseChild->ToElement()).find("200 OK") != std::string::npos)
-      {
-        /* Iterate propstat children elements */
-        for (auto* propstatChild = responseChild->FirstChild(); propstatChild;
-             propstatChild = propstatChild->NextSibling())
-        {
-          if (CDAVCommon::ValueWithoutNamespace(propstatChild, "prop"))
-          {
-            /* Iterate all properties available */
-            for (auto* propChild = propstatChild->FirstChildElement(); propChild;
-                 propChild = propChild->NextSiblingElement())
-            {
-              if (CDAVCommon::ValueWithoutNamespace(propChild, "getcontentlength") &&
-                  !propChild->NoChildren())
-              {
-                item.SetSize(std::strtoll(propChild->FirstChild()->Value(), nullptr, 10));
-              }
-              else if (CDAVCommon::ValueWithoutNamespace(propChild, "getlastmodified") &&
-                       !propChild->NoChildren())
-              {
-                struct tm timeDate = {};
-                strptime(propChild->FirstChild()->Value(), "%a, %d %b %Y %T", &timeDate);
-                item.SetDateTime(std::mktime(&timeDate));
-              }
-              else if (CDAVCommon::ValueWithoutNamespace(propChild, "displayname") &&
-                       !propChild->NoChildren())
-              {
-                item.SetLabel(URIUtils::DecodePathEscapes(propChild->FirstChild()->Value()));
-              }
-              else if (!item.GetDateTime().IsValid() &&
-                       CDAVCommon::ValueWithoutNamespace(propChild, "creationdate") &&
-                       !propChild->NoChildren())
-              {
-                struct tm timeDate = {};
-                strptime(propChild->FirstChild()->Value(), "%Y-%m-%dT%T", &timeDate);
-                item.SetDateTime(std::mktime(&timeDate));
-              }
-              else if (CDAVCommon::ValueWithoutNamespace(propChild, "resourcetype"))
-              {
-                if (CDAVCommon::ValueWithoutNamespace(propChild->FirstChild(), "collection"))
-                {
-                  item.SetFolder(true);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CCurlFile dav;
@@ -143,7 +70,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (CDAVCommon::ValueWithoutNamespace(child, "response"))
     {
       CFileItem item;
-      ParseResponse(child->ToElement(), item);
+      CDAVCommon::ParseDavDirectoryResponse(child->ToElement(), item);
       const CURL& url2(url);
       CURL url3(item.GetPath());
 
