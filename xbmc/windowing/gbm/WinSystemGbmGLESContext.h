@@ -55,6 +55,8 @@ protected:
 
 private:
   CGuiCompositeGLES m_guiComposite;
+  int m_guiColorTransfer{0};
+  bool m_compositeShaderLimited{false};
 };
 
 } // namespace GBM
