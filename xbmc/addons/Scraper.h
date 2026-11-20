@@ -139,7 +139,14 @@ public:
                                                         const std::string& sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(XFILE::IHttpClient& fcurl,
                                                           const std::string& sArtist);
-  KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl);
+  /*!
+   \brief The episodes of the show whose episode guide \p scurl is
+   \param seasons the seasons the episodes are wanted of, which a python scraper is told, and may
+   list alone; all if empty
+   */
+  KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::IHttpClient& fcurl,
+                                          const CScraperUrl& scurl,
+                                          const std::set<int>& seasons = {});
 
   struct StringHash
   {

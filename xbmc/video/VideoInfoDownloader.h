@@ -15,6 +15,7 @@
 
 #include <atomic>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -60,9 +61,11 @@ public:
                   CVideoInfoTag& movieDetails,
                   CGUIDialogProgress* pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  //! \param seasons the seasons the episodes are wanted of, all if empty (CScraper::GetEpisodeList)
   bool GetEpisodeList(const CScraperUrl& url,
                       KODI::VIDEO::EPISODELIST& details,
-                      CGUIDialogProgress* pProgress = NULL);
+                      CGUIDialogProgress* pProgress = NULL,
+                      const std::set<int>& seasons = {});
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
@@ -107,6 +110,7 @@ protected:
   CVideoInfoTag       m_movieDetails;
   CScraperUrl         m_url;
   KODI::VIDEO::EPISODELIST m_episode;
+  std::set<int> m_seasons;
   std::atomic<LOOKUP_STATE> m_state{DO_NOTHING};
   std::atomic<int> m_found{0};
   std::atomic<bool> m_result{false};

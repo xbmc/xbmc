@@ -4383,6 +4383,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
       ReadEpisodeDiscsAhead(EpisodeDiscs(toAdd));
     }
 
+    // The seasons of the episodes to look up, which the scraper may list alone, unless one is
+    // named by its date or title, by which it is found among them all
+    std::set<int> seasons;
+    if (std::ranges::all_of(lookups,
+                            [](const auto& lookup) {
+                              return std::ranges::all_of(lookup, [](const auto& file)
+                                                         { return file->iSeason >= 0; });
+                            }))
+    {
+      for (const auto& lookup : lookups)
+        for (const auto& file : lookup)
+          seasons.insert(file->iSeason);
+    }
+
     // The show's episode guide, fetched by the first episode that needs it, unless it was with the
     // show
     struct
@@ -4487,7 +4501,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
                 CVideoInfoDownloader imdb(scraper);
                 const CDownloads::CRegistration downloading{m_downloads, imdb};
-                if (!imdb.GetEpisodeList(url, guide.episodes))
+                if (!imdb.GetEpisodeList(url, guide.episodes, nullptr, seasons))
                 {
                   CLog::Log(LOGWARNING,
                             "VideoInfoScanner: Unable to fetch the episode guide of '{}'",

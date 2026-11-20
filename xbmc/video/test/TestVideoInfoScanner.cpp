@@ -3640,3 +3640,26 @@ TEST_F(TestVideoInfoScannerPythonShows, AKnownShowIsAskedForArtOnlyForASeasonOfI
   ASSERT_GT(m_db.GetEpisodeId(third, 1, 2), 0);
   EXPECT_EQ(1u, Calls({"action=getartwork"}));
 }
+
+// A known show's episode list is asked for the seasons of the episodes the scan looks up
+TEST_F(TestVideoInfoScannerPythonShows, AKnownShowsListIsAskedForTheSeasonsOfItsNewEpisodes)
+{
+  const std::string show{Folder(m_root, "Show")};
+  File(Folder(show, "Season 1"), "Show S01E01.mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  ASSERT_EQ(1u, Calls({"action=getepisodelist"}));
+
+  const std::string third{File(Folder(show, "Season 2"), "Show S02E01.mkv")};
+  Touch(show);
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+
+  ASSERT_GT(m_db.GetEpisodeId(third, 1, 2), 0);
+  EXPECT_EQ(1u, Calls({"action=getepisodelist", "seasons=2"}));
+}

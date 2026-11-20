@@ -1377,7 +1377,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
 }
 
 // fetch list of episodes from URL (from video database)
-VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl,
+                                            const CScraperUrl& scurl,
+                                            const std::set<int>& seasons /* = {} */)
 {
   const auto call = LockCall();
   VIDEO::EPISODELIST vcep;
@@ -1395,6 +1397,13 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CSc
     str << "plugin://" << ID()
         << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
         << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON()) << "&complete=1";
+    if (!seasons.empty())
+    {
+      std::vector<std::string> numbers;
+      std::ranges::transform(seasons, std::back_inserter(numbers),
+                             [](int season) { return std::to_string(season); });
+      str << "&seasons=" << CURL::Encode(StringUtils::Join(numbers, ","));
+    }
 
     CFileItemList items;
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
