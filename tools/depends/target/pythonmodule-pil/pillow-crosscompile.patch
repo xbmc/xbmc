@@ -1,22 +1,38 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -480,6 +480,8 @@
-         pkg_config = None
+@@ -504,6 +504,8 @@
          if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
              pkg_config = _pkg_config
-+
-+        self.compiler.include_dirs = [os.environ["PYTHONXINCLUDE"]]
  
++        self.compiler.include_dirs = [os.environ["PYTHONXINCLUDE"]]
++
          #
          # add configured kits
-@@ -552,8 +554,8 @@
+         for root_name, lib_name in {
+@@ -572,16 +574,16 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
  
--        _add_directory(library_dirs, os.path.join(sys.prefix, "lib"))
--        _add_directory(include_dirs, os.path.join(sys.prefix, "include"))
-+        #_add_directory(library_dirs, os.path.join(sys.prefix, "lib"))
-+        #_add_directory(include_dirs, os.path.join(sys.prefix, "include"))
+-        _add_directory(
+-            library_dirs,
+-            (sys.prefix == sys.base_prefix and sysconfig.get_config_var("LIBDIR"))
+-            or os.path.join(sys.prefix, "lib"),
+-        )
+-        _add_directory(
+-            include_dirs,
+-            (sys.prefix == sys.base_prefix and sysconfig.get_config_var("INCLUDEDIR"))
+-            or os.path.join(sys.prefix, "include"),
+-        )
++        #_add_directory(
++        #    library_dirs,
++        #    (sys.prefix == sys.base_prefix and sysconfig.get_config_var("LIBDIR"))
++        #    or os.path.join(sys.prefix, "lib"),
++        #)
++        #_add_directory(
++        #    include_dirs,
++        #    (sys.prefix == sys.base_prefix and sysconfig.get_config_var("INCLUDEDIR"))
++        #    or os.path.join(sys.prefix, "include"),
++        #)
  
          #
          # add platform directories
