@@ -379,6 +379,9 @@ void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback
   XBMC_TRACE;
   std::unique_lock lock(m_vecMonitorCallbackList);
   m_vecMonitorCallbackList.push_back(pCallback);
+  // the script may have been told to stop before it made this Monitor
+  if (m_abortedAllInvokers || m_abortedInvokers.contains(pCallback->GetInvokerId()))
+    pCallback->AbortNotify();
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
@@ -709,8 +712,16 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
   XBMC_TRACE;
 
   long invokerId(-1);
-  if (invoker != NULL)
-    invokerId = invoker->GetId();
+  {
+    std::unique_lock lock(m_vecMonitorCallbackList);
+    if (invoker != NULL)
+    {
+      invokerId = invoker->GetId();
+      m_abortedInvokers.insert(invokerId);
+    }
+    else
+      m_abortedAllInvokers = true;
+  }
 
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>, tmp, m_vecMonitorCallbackList);
   for (auto& it : tmp)
@@ -725,6 +736,11 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
 
 void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
+  {
+    std::unique_lock lock(m_vecMonitorCallbackList);
+    m_abortedInvokers.erase(invoker->GetId());
+  }
+
   std::unique_lock lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
