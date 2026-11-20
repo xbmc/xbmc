@@ -502,8 +502,7 @@ protected:
   {
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-    m_audioLanguageOriginal =
-        KODI::LANGUAGE::CLanguage::GetInstance().AudioPreference().GetLanguage().ToString();
+    m_languageOriginal = KODI::LANGUAGE::CLanguage::GetInstance();
     m_languageDetailsOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS);
   }
@@ -512,7 +511,7 @@ protected:
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
-    KODI::LANGUAGE::CLanguage::GetInstance().SetAudio(m_audioLanguageOriginal);
+    KODI::LANGUAGE::CLanguage::GetInstance() = m_languageOriginal;
     DescribeStream(m_languageDetailsOriginal);
   }
 
@@ -570,7 +569,7 @@ protected:
   }
 
   std::string m_settingOriginal;
-  std::string m_audioLanguageOriginal;
+  KODI::LANGUAGE::CLanguage m_languageOriginal;
   int m_languageDetailsOriginal{CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER};
 };
 
