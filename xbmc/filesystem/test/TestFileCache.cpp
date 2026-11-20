@@ -75,6 +75,9 @@ public:
       return static_cast<ssize_t>(count);
     }
 
+    if (m_failReads)
+      return -1;
+
     if (m_positionUncertain)
     {
       static_cast<unsigned char*>(buffer)[0] = 0xa5;
@@ -130,6 +133,7 @@ public:
   }
   void SetLength(int64_t length) { m_length = length; }
   void SetFirstReadSize(size_t size) { m_firstReadSize = size; }
+  void SetFailReads() { m_failReads = true; }
   std::future<Operation> GetNextOperation() { return m_nextOperation.get_future(); }
   bool WaitForFirstRead(std::chrono::milliseconds timeout)
   {
@@ -140,6 +144,7 @@ public:
 
 private:
   bool m_firstRead{true};
+  bool m_failReads{false};
   bool m_positionUncertain{false};
   bool m_operationRecorded{false};
   int64_t m_position{0};
@@ -421,4 +426,52 @@ TEST(TestFileCache, EOFDoesNotReplayCompletedSeek)
   EXPECT_EQ(0, value);
   EXPECT_EQ(1, cache.GetPosition());
   cache.Close();
+}
+
+TEST(TestFileCache, StalledSourceReadReportsErrorNotEOF)
+{
+  using namespace std::chrono_literals;
+
+  auto source = std::make_unique<CGatedFileCacheSource>();
+  auto* sourcePtr = source.get();
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  // The first source read stays gated, so the cache never receives data
+  const bool readEntered = sourcePtr->WaitForFirstRead(5s);
+  if (!readEntered)
+    sourcePtr->AllowFirstRead();
+  ASSERT_TRUE(readEntered);
+
+  unsigned char value = 0xff;
+  const auto start = std::chrono::steady_clock::now();
+  const ssize_t result = cache.Read(&value, 1);
+  const auto elapsed = std::chrono::steady_clock::now() - start;
+  // Release the gated worker so Close() can join it
+  sourcePtr->AllowFirstRead();
+  cache.Close();
+
+  EXPECT_EQ(-1, result);
+  EXPECT_GE(elapsed, 8s);
+}
+
+TEST(TestFileCache, SourceReadErrorIsReportedAfterCachedData)
+{
+  auto source = std::make_unique<CGatedFileCacheSource>();
+  auto* sourcePtr = source.get();
+  sourcePtr->SetFailReads();
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  sourcePtr->AllowFirstRead();
+
+  unsigned char value = 0xff;
+  const ssize_t cachedRead = cache.Read(&value, 1);
+  const ssize_t failedRead = cache.Read(&value, 1);
+  const DWORD error = GetLastError();
+  cache.Close();
+
+  EXPECT_EQ(1, cachedRead);
+  EXPECT_EQ(-1, failedRead);
+  EXPECT_EQ(EIO, error);
 }
