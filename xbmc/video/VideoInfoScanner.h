@@ -157,6 +157,12 @@ typedef struct SScanSettings
      */
     void AddMovieExtras(int dbId, bool useFolderNames);
 
+    /*! \brief Whether to carry on after a lookup failed. A lookup with a progress dialog shows an
+     error and stops; a scan in the background carries on without asking, as the failure is counted
+     and its folder looked up again by the next scan.
+     \param pDlgProgress the lookup's progress dialog, if it has one
+     \return true to carry on
+     */
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder

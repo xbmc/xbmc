@@ -32,7 +32,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "resources/LocalizeStrings.h"
@@ -82,7 +81,6 @@ using namespace ADDON;
 using namespace KODI::MESSAGING;
 using namespace KODI;
 
-using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
 
 namespace
@@ -3260,16 +3258,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors)
+    // A scan in the background carries on without asking: the failure is counted, has its entry in
+    // the event log and its place in the notification at the end, and its folder is looked up again
+    // by the next scan
+    if (!pDialog ||
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors)
       return true;
 
-    if (pDialog)
-    {
-      HELPERS::ShowOKDialogText(CVariant{20448}, CVariant{20449});
-      return false;
-    }
-    return HELPERS::ShowYesNoDialogText(CVariant{20448}, CVariant{20450}) ==
-           DialogResponse::CHOICE_YES;
+    HELPERS::ShowOKDialogText(CVariant{20448}, CVariant{20449});
+    return false;
   }
 
   bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)
@@ -3498,12 +3495,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (auto* eventLog{CServiceBroker::GetEventLog()}; eventLog)
     {
-      eventLog->Add(std::make_shared<CNotificationEvent>(
-          24145,
-          StringUtils::Format(
-              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24190), added.size(),
-              existing.size(), unchangedDirectories, notFound.size(), failed.size()),
-          notFound.empty() && failed.empty() ? EventLevel::Basic : EventLevel::Warning));
+      // Shown when a lookup failed, as a scan in the background no longer asks about each failure
+      eventLog->Add(
+          std::make_shared<CNotificationEvent>(
+              24145,
+              StringUtils::Format(
+                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24190),
+                  added.size(), existing.size(), unchangedDirectories, notFound.size(),
+                  failed.size()),
+              notFound.empty() && failed.empty() ? EventLevel::Basic : EventLevel::Warning),
+          !failed.empty(), false);
     }
   }
 
