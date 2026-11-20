@@ -8,11 +8,8 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "rendering/RenderSystem.h"
+#include "guilib/test/TestGUIStubs.h"
 #include "threads/Event.h"
-#include "windowing/WinSystem.h"
 
 #include <chrono>
 #include <memory>
@@ -25,9 +22,9 @@ using WaitResult = CGUIDialogBusy::WaitResult;
 
 namespace
 {
-// Every test here keeps the timeout at or under displaytime, so the wait is answered before the
-// busy dialog is looked up. That lookup needs a GUI component and a windowing system, and the test
-// environment registers neither. Raising the timeout past this would crash rather than fail.
+// Tests without the stub GUI keep the timeout at or under displaytime, so the wait is answered
+// before the busy dialog is looked up. That lookup needs a GUI component and a windowing system,
+// which the test environment does not register.
 constexpr unsigned int DISPLAY_TIME{5000};
 
 // The deadline is held in whole milliseconds, so a wait can end up to one short of it.
@@ -39,65 +36,10 @@ std::chrono::milliseconds Elapsed(const std::chrono::steady_clock::time_point st
                                                                start);
 }
 
-// Enough of a windowing system for CGUIWindowManager::GetWindow, which takes the graphics context
-// lock. Duplicated from xbmc/guilib/test/TestGUIWindowOnAction.cpp rather than shared, to keep this
-// change to the files it already touches.
-class CTestRenderSystem : public CRenderSystemBase
-{
-public:
-  bool InitRenderSystem() override { return true; }
-  bool DestroyRenderSystem() override { return true; }
-  bool ResetRenderSystem(int width, int height) override { return true; }
-  bool BeginRender() override { return true; }
-  bool EndRender() override { return true; }
-  void PresentRender(bool rendered, bool videoLayer) override {}
-  bool ClearBuffers(KODI::UTILS::COLOR::Color color) override { return true; }
-  bool IsExtSupported(const char* extension) const override { return false; }
-  void SetViewPort(const CRect& viewPort) override {}
-  void GetViewPort(CRect& viewPort) override {}
-  void SetScissors(const CRect& rect) override {}
-  void ResetScissors() override {}
-  void CaptureStateBlock() override {}
-  void ApplyStateBlock() override {}
-  void SetCameraPosition(const CPoint& camera,
-                         int screenWidth,
-                         int screenHeight,
-                         float stereoFactor) override
-  {
-  }
-};
-
-class CTestWinSystem : public CWinSystemBase
-{
-public:
-  CRenderSystemBase* GetRenderSystem() override { return &m_renderSystem; }
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override
-  {
-    return true;
-  }
-  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override { return true; }
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override
-  {
-    return true;
-  }
-  void Register(IDispResource* resource) override {}
-  void Unregister(IDispResource* resource) override {}
-
-private:
-  CTestRenderSystem m_renderSystem;
-};
-
-// A GUI carrying nothing but an empty window manager, so the busy dialog is looked up and not
-// found - the branch a caller reaches when the dialog is unavailable.
-class CTestGUIComponent : public CGUIComponent
-{
-public:
-  CTestGUIComponent() : CGUIComponent(false)
-  {
-    m_pWindowManager = std::make_unique<CGUIWindowManager>();
-    CServiceBroker::RegisterGUI(this);
-  }
-};
+// The stub GUI holds no busy dialog, so it is looked up and not found - the branch a caller
+// reaches when the dialog is unavailable.
+using KODI::GUILIB::TEST::CTestGUIComponent;
+using KODI::GUILIB::TEST::CTestWinSystem;
 } // unnamed namespace
 
 TEST(TestGUIDialogBusy, ATimeoutEndsTheWait)
@@ -189,8 +131,7 @@ TEST(TestGUIDialogBusy, ATimeoutEndsTheWaitWithNoBusyDialogToShow)
     CEvent event;
     const auto start{std::chrono::steady_clock::now()};
 
-    // longer than displaytime, so the dialog is looked up: without one, master returned at once
-    // and reported the event had arrived
+    // longer than displaytime, so the dialog is looked up and found missing
     EXPECT_EQ(WaitResult::TIMED_OUT, CGUIDialogBusy::WaitOnEventFor(event, 400ms, 100, true));
     EXPECT_GE(Elapsed(start), 400ms - DEADLINE_RESOLUTION);
   }
