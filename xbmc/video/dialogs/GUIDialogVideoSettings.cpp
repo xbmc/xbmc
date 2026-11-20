@@ -37,7 +37,6 @@
 #include <utility>
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
-#define SETTING_VIDEO_ZOOM                "video.zoom"
 #define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
 #define SETTING_VIDEO_BRIGHTNESS          "video.brightness"
 #define SETTING_VIDEO_CONTRAST            "video.contrast"
@@ -122,11 +121,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
     int value = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     const CVideoSettings vs = appPlayer->GetVideoSettings();
 
-    appPlayer->SetRenderViewMode(value, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
-                                 vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
+    appPlayer->SetRenderViewMode(value, vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                 vs.m_CustomNonLinStretch);
 
     m_viewModeChanged = true;
-    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, static_cast<double>(vs.m_CustomZoomAmount));
     GetSettingsManager()->SetNumber(SETTING_VIDEO_PIXEL_RATIO,
                                     static_cast<double>(vs.m_CustomPixelRatio));
     GetSettingsManager()->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT,
@@ -134,15 +132,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
     GetSettingsManager()->SetBool(SETTING_VIDEO_NONLIN_STRETCH, vs.m_CustomNonLinStretch);
     m_viewModeChanged = false;
   }
-  else if (settingId == SETTING_VIDEO_ZOOM ||
-           settingId == SETTING_VIDEO_VERTICAL_SHIFT ||
-           settingId == SETTING_VIDEO_PIXEL_RATIO ||
+  else if (settingId == SETTING_VIDEO_VERTICAL_SHIFT || settingId == SETTING_VIDEO_PIXEL_RATIO ||
            settingId == SETTING_VIDEO_NONLIN_STRETCH)
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
-    if (settingId == SETTING_VIDEO_ZOOM)
-      vs.m_CustomZoomAmount = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    else if (settingId == SETTING_VIDEO_VERTICAL_SHIFT)
+    if (settingId == SETTING_VIDEO_VERTICAL_SHIFT)
       vs.m_CustomVerticalShift = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     else if (settingId == SETTING_VIDEO_PIXEL_RATIO)
       vs.m_CustomPixelRatio = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
@@ -154,8 +148,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
     if (GetSettingsManager()->GetInt(SETTING_VIDEO_VIEW_MODE) != ViewModeCustom)
       GetSettingsManager()->SetInt(SETTING_VIDEO_VIEW_MODE, ViewModeCustom);
     else
-      appPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
-                                   vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
+      appPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                   vs.m_CustomNonLinStretch);
   }
   else if (settingId == SETTING_VIDEO_POSTPROCESS)
   {
@@ -440,9 +434,6 @@ void CGUIDialogVideoSettings::InitializeSettings()
   {
     AddList(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, SettingLevel::Basic, videoSettings.m_ViewMode, CViewModeSettings::ViewModesFiller, 629);
   }
-  if (appPlayer->Supports(RENDERFEATURE_ZOOM))
-    AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, SettingLevel::Basic,
-              videoSettings.m_CustomZoomAmount, "{:2.2f}", 0.5f, 0.01f, 2.0f, 216, usePopup);
   if (appPlayer->Supports(RENDERFEATURE_VERTICAL_SHIFT))
     AddSlider(groupVideo, SETTING_VIDEO_VERTICAL_SHIFT, 225, SettingLevel::Basic,
               videoSettings.m_CustomVerticalShift, "{:2.2f}", -2.0f, 0.01f, 2.0f, 225, usePopup);

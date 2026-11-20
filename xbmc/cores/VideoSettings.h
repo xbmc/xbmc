@@ -197,19 +197,32 @@ private:
                 "add/remove a mapping?");
 };
 
+// The values are stored per file and in settings; the missing ones belong to removed modes.
 enum ViewMode
 {
   ViewModeNormal = 0,
-  ViewModeZoom,
-  ViewModeStretch4x3,
-  ViewModeWideZoom,
-  ViewModeStretch16x9,
-  ViewModeOriginal,
-  ViewModeCustom,
-  ViewModeStretch16x9Nonlin,
-  ViewModeZoom120Width,
-  ViewModeZoom110Width
+  ViewModeStretch4x3 = 2,
+  ViewModeStretch16x9 = 4,
+  ViewModeOriginal = 5,
+  ViewModeCustom = 6,
+  ViewModeStretchToFill = 10
 };
+
+//! The view mode a stored value names, or Normal for one no mode has.
+constexpr int ViewModeFromStored(int value)
+{
+  switch (value)
+  {
+    case ViewModeStretch4x3:
+    case ViewModeStretch16x9:
+    case ViewModeOriginal:
+    case ViewModeCustom:
+    case ViewModeStretchToFill:
+      return value;
+    default:
+      return ViewModeNormal;
+  }
+}
 
 class CVideoSettings
 {
@@ -222,7 +235,6 @@ public:
   EINTERLACEMETHOD m_InterlaceMethod;
   ESCALINGMETHOD m_ScalingMethod;
   int m_ViewMode; // current view mode
-  float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
   float m_CustomVerticalShift; // custom setting vertical shift
   bool  m_CustomNonLinStretch;
@@ -296,7 +308,7 @@ public:
    */
   void SetSubtitleVerticalPosition(int value, bool save);
 
-  void SetViewMode(int mode, float zoom, float par, float shift, bool stretch);
+  void SetViewMode(int mode, float par, float shift, bool stretch);
   void SetVolumeAmplification(float amp);
 
 protected:

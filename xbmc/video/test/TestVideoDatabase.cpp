@@ -420,6 +420,55 @@ TEST_F(TestVideoDatabase, UpdateStoresOrientationAndCenterMixLevel)
   EXPECT_EQ(3, stored.m_CenterMixLevel);
 }
 
+TEST_F(TestVideoDatabase, AStreamLanguageIsStoredAsItsWholeTag)
+{
+  const int idFile = m_db.AddFile("/videos/languages.mkv");
+  ASSERT_GT(idFile, 0);
+
+  auto* video = new CStreamDetailVideo();
+  video->m_language = KODI::LANGUAGE::CLanguageTag::Parse("en-AU");
+  auto* audio = new CStreamDetailAudio();
+  audio->m_language = KODI::LANGUAGE::CLanguageTag::Parse("pt-BR");
+  auto* subtitle = new CStreamDetailSubtitle();
+  subtitle->m_language = KODI::LANGUAGE::CLanguageTag::Parse("zh-Hant");
+  CStreamDetails details;
+  details.AddStream(video);
+  details.AddStream(audio);
+  details.AddStream(subtitle);
+  ASSERT_TRUE(m_db.SetStreamDetailsForFileId(details, idFile));
+
+  CVideoInfoTag stored;
+  stored.m_iFileId = idFile;
+  ASSERT_TRUE(m_db.GetStreamDetails(stored));
+  EXPECT_EQ("en-AU", stored.m_streamDetails.GetVideoLanguage(1).ToString());
+  EXPECT_EQ("pt-BR", stored.m_streamDetails.GetAudioLanguage(1).ToString());
+  EXPECT_EQ("zh-Hant", stored.m_streamDetails.GetSubtitleLanguage(1).ToString());
+}
+
+TEST_F(TestVideoDatabase, AStoredViewModeSinceRemovedReadsAsNormal)
+{
+  const int idFile = m_db.AddFile("/videos/zoomed.mkv");
+  ASSERT_GT(idFile, 0);
+
+  CVideoSettings zoomed;
+  zoomed.m_ViewMode = 1; // Zoom, before it was removed
+  m_db.SetVideoSettings(idFile, zoomed);
+
+  CVideoSettings stored;
+  ASSERT_TRUE(m_db.GetVideoSettings(idFile, stored));
+  EXPECT_EQ(ViewModeNormal, stored.m_ViewMode);
+
+  zoomed.m_ViewMode = ViewModeStretch16x9;
+  m_db.SetVideoSettings(idFile, zoomed);
+  ASSERT_TRUE(m_db.GetVideoSettings(idFile, stored));
+  EXPECT_EQ(ViewModeStretch16x9, stored.m_ViewMode);
+
+  zoomed.m_ViewMode = ViewModeStretchToFill;
+  m_db.SetVideoSettings(idFile, zoomed);
+  ASSERT_TRUE(m_db.GetVideoSettings(idFile, stored));
+  EXPECT_EQ(ViewModeStretchToFill, stored.m_ViewMode);
+}
+
 // zip:// (native) and archive:// (vfs addon) special case
 
 TEST_F(TestVideoDatabase, AddPathReusesRowAcrossZipAndArchiveProtocols)

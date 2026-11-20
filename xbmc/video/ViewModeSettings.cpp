@@ -31,13 +31,9 @@ struct ViewModeProperties
 static const ViewModeProperties viewModes[] =
 {
   { 630,   ViewModeNormal },
-  { 631,   ViewModeZoom },
-  { 39008, ViewModeZoom120Width },
-  { 39009, ViewModeZoom110Width },
   { 632,   ViewModeStretch4x3 },
-  { 633,   ViewModeWideZoom },
   { 634,   ViewModeStretch16x9 },
-  { 644,   ViewModeStretch16x9Nonlin, HIDE_ITEM, HIDE_ITEM },
+  { 627,   ViewModeStretchToFill },
   { 635,   ViewModeOriginal },
   { 636,   ViewModeCustom, HIDE_ITEM }
 };

@@ -59,7 +59,7 @@ public:
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   bool CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result);
   void FlushRenderer();
-  void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
+  void SetRenderViewMode(int mode, float par, float shift, bool stretch);
   float GetRenderAspectRatio() const;
   bool GetRects(CRect& source, CRect& dest, CRect& view) const;
   unsigned int GetOrientation() const;

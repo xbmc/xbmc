@@ -61,7 +61,7 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   CLog::Log(LOGINFO, "create settings table");
   db.ExecuteQuery(
       "CREATE TABLE settings ( idFile integer, Deinterlace bool,"
-      "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream "
+      "ViewMode integer, PixelRatio float, VerticalShift float, AudioStream "
       "integer, SubtitleStream integer,"
       "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
       "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
