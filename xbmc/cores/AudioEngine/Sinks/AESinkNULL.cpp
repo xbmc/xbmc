@@ -43,7 +43,11 @@ bool CAESinkNULL::Initialize(AEAudioFormat& format, std::string& device)
 
   // a raw stream is IEC packed before it reaches the sink, report back what is written
   if (m_format.m_dataFormat == AE_FMT_RAW)
+  {
     m_format.m_dataFormat = AE_FMT_S16NE;
+    // the frame size of a raw stream is 1, recompute it for the packed PCM
+    m_format.m_frameSize = 0;
+  }
 
   if (m_format.m_frameSize == 0)
   {
