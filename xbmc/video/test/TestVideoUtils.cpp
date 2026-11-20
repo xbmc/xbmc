@@ -150,6 +150,25 @@ const auto trailer_tests = std::array{
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, TrailerTest, testing::ValuesIn(trailer_tests));
 
+TEST(TestVideoUtils, FindTrailerOfALibraryItemUsesItsDynamicPath)
+{
+  std::error_code ec;
+  const std::string temp_path{fs::create_temp_directory(ec)};
+  ASSERT_FALSE(ec);
+  const std::string video{URIUtils::AddFileToFolder(temp_path, "movie.mkv")};
+  const std::string trailer{URIUtils::AddFileToFolder(temp_path, "movie-trailer.mkv")};
+  for (const std::string& path : {video, trailer})
+  {
+    std::ofstream of(path);
+  }
+
+  CFileItem item("videodb://movies/titles/1", false);
+  item.SetDynPath(video);
+  EXPECT_EQ(trailer, VIDEO::UTILS::FindTrailer(item, true));
+
+  XFILE::CDirectory::RemoveRecursive(temp_path);
+}
+
 TEST(TestVideoUtils, FindTrailerOfADiscFolderRipPrefersTheOneBesideBDMV)
 {
   std::error_code ec;
