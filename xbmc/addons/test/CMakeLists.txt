@@ -2,6 +2,7 @@ set(SOURCES TestAddonBuilder.cpp
             TestAddonDatabase.cpp
             TestAddonInfoBuilder.cpp
             TestAddonVersion.cpp
+            TestRepository.cpp
             TestResource.cpp
             TestScraper.cpp
             TestSkin.cpp
