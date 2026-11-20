@@ -41,12 +41,11 @@ TEST_F(TestCPUInfo, GetCPUFrequency)
   EXPECT_GE(CServiceBroker::GetCPUInfo()->GetCPUFrequency(), 0.f);
 }
 
-#if defined(TARGET_WINDOWS) or defined(TARGET_DARWIN_OSX)
-TEST_F(TestCPUInfo, DISABLED_GetTemperature)
-#else
 TEST_F(TestCPUInfo, GetTemperature)
-#endif
 {
+#if defined(TARGET_WINDOWS)
+  GTEST_SKIP() << "Kodi does not read the CPU temperature on Windows";
+#endif
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd = "echo '50 c'";
   CTemperature t;
   EXPECT_TRUE(CServiceBroker::GetCPUInfo()->GetTemperature(t));
