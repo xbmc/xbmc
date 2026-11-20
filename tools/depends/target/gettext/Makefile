@@ -1,12 +1,16 @@
 include ../../Makefile.include GETTEXT-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile GETTEXT-VERSION ../../download-files.include
 
+ifeq ($(OS),wasm)
+DEPS+= 01-wasm-getlocalename_l.patch
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
     ./configure --prefix=$(PREFIX) \
     --disable-csharp --disable-native-java --disable-java --without-emacs \
     --disable-libasprintf --disable-openmp \
-    --with-included-gettext \
+    --with-included-libintl \
     --with-included-glib \
     --with-included-libcroco \
     --with-included-libxml \
@@ -20,6 +24,9 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(OS),wasm)
+	cd $(PLATFORM); patch -p1 -i ../01-wasm-getlocalename_l.patch
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
 

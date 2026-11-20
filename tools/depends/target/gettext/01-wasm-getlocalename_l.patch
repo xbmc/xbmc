@@ -1,0 +1,42 @@
+diff -ruN a/gettext-runtime/gnulib-lib/getlocalename_l-unsafe.c b/gettext-runtime/gnulib-lib/getlocalename_l-unsafe.c
+--- a/gettext-runtime/gnulib-lib/getlocalename_l-unsafe.c
++++ b/gettext-runtime/gnulib-lib/getlocalename_l-unsafe.c
+@@ -34,7 +34,7 @@
+ #endif
+ #include "setlocale_null.h"
+ 
+-#if (__GLIBC__ >= 2 && !defined __UCLIBC__) || (defined __linux__ && HAVE_LANGINFO_H) || defined __CYGWIN__
++#if (__GLIBC__ >= 2 && !defined __UCLIBC__) || ((defined __linux__ || defined __EMSCRIPTEN__) && HAVE_LANGINFO_H) || defined __CYGWIN__
+ # include <langinfo.h>
+ #endif
+ #if defined __sun
+@@ -480,7 +480,7 @@
+            nl_langinfo_l (_NL_LOCALE_NAME (category), locale).  */
+         name = locale->__names[category];
+       return (struct string_with_storage) { name, STORAGE_OBJECT };
+-#elif defined __linux__ && HAVE_LANGINFO_H && defined NL_LOCALE_NAME
++#elif (defined __linux__ || defined __EMSCRIPTEN__) && HAVE_LANGINFO_H && defined NL_LOCALE_NAME
+       /* musl libc */
+       const char *name = nl_langinfo_l (NL_LOCALE_NAME (category), locale);
+       return (struct string_with_storage) { name, STORAGE_OBJECT };
+diff -ruN a/gettext-runtime/intl/gnulib-lib/getlocalename_l-unsafe.c b/gettext-runtime/intl/gnulib-lib/getlocalename_l-unsafe.c
+--- a/gettext-runtime/intl/gnulib-lib/getlocalename_l-unsafe.c
++++ b/gettext-runtime/intl/gnulib-lib/getlocalename_l-unsafe.c
+@@ -34,7 +34,7 @@
+ #endif
+ #include "setlocale_null.h"
+ 
+-#if (__GLIBC__ >= 2 && !defined __UCLIBC__) || (defined __linux__ && HAVE_LANGINFO_H) || defined __CYGWIN__
++#if (__GLIBC__ >= 2 && !defined __UCLIBC__) || ((defined __linux__ || defined __EMSCRIPTEN__) && HAVE_LANGINFO_H) || defined __CYGWIN__
+ # include <langinfo.h>
+ #endif
+ #if defined __sun
+@@ -480,7 +480,7 @@
+            nl_langinfo_l (_NL_LOCALE_NAME (category), locale).  */
+         name = locale->__names[category];
+       return (struct string_with_storage) { name, STORAGE_OBJECT };
+-#elif defined __linux__ && HAVE_LANGINFO_H && defined NL_LOCALE_NAME
++#elif (defined __linux__ || defined __EMSCRIPTEN__) && HAVE_LANGINFO_H && defined NL_LOCALE_NAME
+       /* musl libc */
+       const char *name = nl_langinfo_l (NL_LOCALE_NAME (category), locale);
+       return (struct string_with_storage) { name, STORAGE_OBJECT };
