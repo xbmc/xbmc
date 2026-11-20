@@ -208,6 +208,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVACheckCompatibilityPresent;
     int  m_videoFpsDetect;
     float m_gamesPacingMarginMs;
+    float m_minTempo;
     float m_maxTempo;
     bool m_videoPreferStereoStream = false;
 
