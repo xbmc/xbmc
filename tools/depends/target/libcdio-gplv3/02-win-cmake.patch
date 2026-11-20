@@ -1,0 +1,345 @@
+--- a/.vs/config.h
++++ b/.vs/config.h
+@@ -46,7 +46,7 @@
+ #undef HAVE_GLOB_H
+ 
+ /* Define if you have the iconv() function. */
+-#undef HAVE_ICONV
++#define HAVE_ICONV 1
+ 
+ /* Define to 1 if you have the <inttypes.h> header file. */
+ #define HAVE_INTTYPES_H 1
+@@ -148,11 +148,14 @@
+ /* Define to 1 if you have the `vsnprintf' function. */
+ #define HAVE_VSNPRINTF 1
+ 
++/* Define to 1 if you have the <Windows.h> header file. */
++#define HAVE_WINDOWS_H 1
++
+ /* Define 1 if you have MinGW CD-ROM support */
+-#define HAVE_WIN32_CDROM 1
++// #define HAVE_WIN32_CDROM 1
+ 
+ /* Define as const if the declaration of iconv() needs const. */
+-#undef ICONV_CONST
++#define ICONV_CONST
+ 
+ /* Define 1 if you are compiling using MinGW */
+ #undef MINGW32
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,193 @@
++cmake_minimum_required(VERSION 3.15)
++
++project(libcdio VERSION 2.4.0 LANGUAGES C)
++
++find_package(iconv REQUIRED NO_MODULE)
++
++if(MSVC)
++  set(CMAKE_DEBUG_POSTFIX "d")
++endif()
++
++math(EXPR LIBCDIO_VERSION_NUM "${PROJECT_VERSION_MAJOR}*10000 + ${PROJECT_VERSION_MINOR}*100 + ${PROJECT_VERSION_PATCH}")
++set(VERSION ${PROJECT_VERSION})
++set(build Windows)
++
++configure_file(
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/version.h.in
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/version.h
++)
++
++add_library(libcdio
++  ${CMAKE_CURRENT_SOURCE_DIR}/.vs/config.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/.vs/unistd.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/audio.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/bytesex_asm.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/bytesex.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/cd_types.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/cdio.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/cdtext.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/device.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/disc.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/ds.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/dvd.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/ecma_167.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/iso9660.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/logging.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/memory.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/posix.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/read.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/rock.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/sector.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/track.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/types.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/udf_file.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/udf_time.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/udf.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/utf8.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/util.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/version.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/include/cdio/xa.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/_cdio_generic.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/_cdio_stdio.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/_cdio_stdio.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/_cdio_stream.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/_cdio_stream.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/abs_path.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/aix.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/audio.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cd_types.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cdio_assert.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cdio_private.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cdio.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cdtext_private.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/cdtext.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/device.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/disc.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/ds.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/FreeBSD/freebsd.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/gnu_linux.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/filemode.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/generic.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image_common.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image_common.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image/bincue.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image/cdrdao.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image/nrg.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/image/nrg.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/logging.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/memory.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc_cmd_helper.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc_hl_cmds.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc_ll_cmds.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc_private.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc_util.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/mmc/mmc.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/MSWindows/aspi32.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/MSWindows/aspi32.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/MSWindows/win32_ioctl.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/MSWindows/win32.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/MSWindows/win32.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/netbsd.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/osx.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/portable.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/read.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/realpath.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/sector.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/solaris.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/track.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/utf8.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/driver/util.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/iso9660/iso9660_fs.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/iso9660/iso9660_private.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/iso9660/iso9660.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/iso9660/rock.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/iso9660/xa.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/filemode.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf_file.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf_fs.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf_fs.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf_private.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf_time.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/udf/udf.c
++  ${CMAKE_CURRENT_SOURCE_DIR}/lib/libcdio.def
++)
++
++target_include_directories(libcdio PRIVATE
++  $<BUILD_INTERFACE:include;lib;lib/udf;lib/iso9660;lib/driver>
++  $<BUILD_INTERFACE:lib/driver/mmc;lib/driver/image;lib/driver/MSWindows>
++  $<BUILD_INTERFACE:.vs;${CMAKE_CURRENT_BINARY_DIR}>
++  INTERFACE
++  $<INSTALL_INTERFACE:include>
++)
++
++target_compile_definitions(libcdio PRIVATE
++  HAVE_CONFIG_H
++  HAVE_ROCK
++  _CONSOLE
++  _MBCS
++)
++
++if(NOT WINDOWS_STORE)
++  target_compile_definitions(libcdio PRIVATE
++    HAVE_WIN32_CDROM
++  )
++endif()
++
++target_compile_options(libcdio PRIVATE
++  /MP
++  /sdl-
++  /wd4018
++  /wd4133
++  /wd4333
++  /wd4996
++  /wd28159
++)
++
++target_link_libraries(libcdio PRIVATE
++  winmm.lib
++  iconv::iconv
++)
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/libcdio-config-version.cmake
++  VERSION ${PROJECT_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS libcdio EXPORT libcdio
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib
++)
++
++install(DIRECTORY
++  include/
++  DESTINATION include
++)
++
++install(EXPORT libcdio
++  FILE
++    libcdio.cmake
++  NAMESPACE
++    libcdio::
++  DESTINATION
++    lib/cmake/libcdio
++)
++
++install(
++  FILES
++    cmake/libcdio-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/libcdio-config-version.cmake
++  DESTINATION
++    lib/cmake/libcdio
++)
++
++if(MSVC AND BUILD_SHARED_LIBS)
++  install(FILES
++    $<TARGET_PDB_FILE:libcdio>
++    DESTINATION lib
++    OPTIONAL
++  )
++endif()
+--- /dev/null
++++ b/cmake/libcdio-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/libcdio.cmake)
+--- /dev/null
++++ b/lib/libcdio.def
+@@ -0,0 +1,114 @@
++EXPORTS
++  cdio_close_tray
++  cdio_debug
++  cdio_driver_errmsg
++  cdio_eject_media
++  cdio_eject_media_drive
++  cdio_free_device_list
++  cdio_from_bcd8
++  cdio_get_default_device
++  cdio_get_devices
++  cdio_get_devices_with_cap
++  cdio_get_devices_with_cap_ret
++  cdio_get_devices_ret
++  cdio_get_drive_cap
++  cdio_get_drive_cap_dev
++  cdio_get_driver_name
++  cdio_get_driver_name_from_id
++  cdio_get_driver_id
++  cdio_get_hwinfo
++  cdio_get_last_session
++  cdio_get_media_changed
++  cdio_guess_cd_type
++  cdio_have_atapi
++  cdio_have_driver
++  cdio_destroy
++  cdio_driver_describe
++  cdio_log_set_handler
++  cdio_msf_to_lsn
++  cdio_open
++  cdio_open_am
++  cdio_open_bincue
++  cdio_open_am_bincue
++  cdio_open_cdrdao
++  cdio_open_am_cdrdao
++  cdio_get_default_device_bincue
++  cdio_get_devices_bincue
++  cdio_get_default_device_cdrdao
++  cdio_get_devices_cdrdao
++  cdio_open_cd
++  cdio_open_am_cd
++  cdio_open_cue
++  cdio_open_win32
++  cdio_open_am_win32
++  cdio_get_default_device_win32
++  cdio_get_devices_win32
++  cdio_open_nrg
++  cdio_open_am_nrg
++  cdio_get_default_device_nrg
++  cdio_get_devices_nrg
++  cdio_is_binfile
++  cdio_is_cuefile
++  cdio_is_nrg
++  cdio_is_tocfile
++  cdio_is_device
++  cdio_set_blocksize
++  cdio_set_speed
++  cdio_get_arg
++  cdio_set_arg
++  cdio_init
++  cdtext_genre2str
++  cdtext_lang2str
++  cdtext_str2lang
++  cdtext_field2str
++  cdtext_init
++  cdtext_data_init
++  cdtext_destroy
++  cdtext_get
++  cdtext_get_const
++  cdtext_get_genre
++  cdtext_get_language
++  cdtext_get_first_track
++  cdtext_get_last_track
++  cdtext_select_language
++  cdtext_list_languages
++  cdtext_list_languages_v2
++  cdtext_set_language_index
++  cdtext_set
++  cdio_get_cdtext_raw
++  cdio_get_cdtext
++  cdio_get_discmode
++  cdio_get_disc_last_lsn
++  cdio_get_joliet_level
++  cdio_get_mcn
++  cdio_get_num_tracks
++  cdio_is_discmode_cdrom
++  cdio_is_discmode_dvd
++  cdio_lseek
++  cdio_read
++  cdio_read_audio_sector
++  cdio_read_audio_sectors
++  cdio_read_data_sectors
++  cdio_read_mode1_sector
++  cdio_read_mode1_sectors
++  cdio_read_mode2_sector
++  cdio_read_mode2_sectors
++  cdio_read_sector
++  cdio_read_sectors
++  cdio_get_first_track_num
++  cdio_get_last_track_num
++  cdio_get_track
++  cdio_get_track_channels
++  cdio_get_track_copy_permit
++  cdio_get_track_format
++  cdio_get_track_green
++  cdio_get_track_last_lsn
++  cdio_get_track_lba
++  cdio_get_track_lsn
++  cdio_get_track_pregap_lba
++  cdio_get_track_pregap_lsn
++  cdio_get_track_isrc
++  cdio_get_track_msf
++  cdio_get_track_preemphasis
++  cdio_get_track_sec_count
++  mmc_get_tray_status
