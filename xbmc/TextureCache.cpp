@@ -31,7 +31,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <atomic>
 #include <chrono>
 #include <cstring>
 #include <memory>
@@ -502,42 +501,36 @@ bool CTextureCache::CleanAllUnusedImages()
     progress->ShowProgressBar(true);
   }
 
-  // Shared with the job so the result outlives this function's stack frame
-  auto success = std::make_shared<std::atomic<bool>>(false);
+  bool success = false;
   CJobQueue queue;
-  queue.Submit([this, progress, success]() { success->store(CleanAllUnusedImagesJob(progress)); });
+  queue.Submit([this, progress, &success]() { success = CleanAllUnusedImagesJob(progress); });
 
   // Wait for the job itself rather than the dialog, which can close or be
-  // absent while the clean is still running. ProcessRenderLoop keeps
-  // servicing the GUI thread even while the dialog is inactive, which the
-  // job's blocking Close() relies on.
+  // absent while the clean is still running, pumping the GUI so it stays
+  // responsive.
   while (!queue.WaitForCompletion(10ms))
   {
     if (progress)
       progress->ProcessRenderLoop();
   }
 
+  if (progress)
+    progress->Close();
+
   m_cleaningInProgress.clear();
-  return success->load();
+  return success;
 }
 
 bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
 {
   auto cleaner = IMAGE_FILES::CImageCacheCleaner::Create();
   if (!cleaner)
-  {
-    if (progress)
-      progress->Close();
     return false;
-  }
 
   const unsigned int cleanAmount = 1000000;
   const auto result = cleaner->ScanOldestCache(cleanAmount);
   if (progress && progress->IsCanceled())
-  {
-    progress->Close();
     return false;
-  }
 
   const auto total = result.imagesToClean.size();
   unsigned int current = 0;
@@ -547,10 +540,7 @@ bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
     if (progress)
     {
       if (progress->IsCanceled())
-      {
-        progress->Close();
         return false;
-      }
       int percentage = static_cast<unsigned long long>(current) * 100 / total;
       if (progress->GetPercentage() != percentage)
       {
@@ -561,8 +551,6 @@ bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
     }
   }
 
-  if (progress)
-    progress->Close();
   return true;
 }
 
