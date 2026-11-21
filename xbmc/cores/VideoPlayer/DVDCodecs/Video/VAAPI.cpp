@@ -16,6 +16,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/CPUInfo.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
@@ -3016,6 +3017,15 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
   if (image.image_id != VA_INVALID_ID)
     CheckSuccess(vaDestroyImage(config.dpy, image.image_id), "vaDestroyImage");
+
+  // copy_frame() from libsse4 uses SSE4.1 instructions unconditionally
+  if (use_filter && !(CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_SSE4))
+  {
+    CLog::Log(LOGINFO,
+              "VAAPI::SupportsFilter CPU without SSE4.1 - ffmpeg postprocessing and CPU-copy "
+              "rendering will not be available");
+    use_filter = false;
+  }
 
   if (use_filter && !m_dllSSE4.Load())
   {
