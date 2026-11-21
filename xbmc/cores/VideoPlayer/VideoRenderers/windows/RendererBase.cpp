@@ -243,9 +243,6 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_renderOrientation = orientation;
 
   std::tie(m_useDithering, m_ditherDepth) = DX::Windowing()->GetDitherSettings();
-  // TODO: DX does not support Auto dithering yet; treat as 8-bit (previous default)
-  if (m_ditherDepth == 0)
-    m_ditherDepth = 8;
 
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_INVALID;
@@ -522,8 +519,9 @@ void CRendererBase::UpdateVideoFilters()
     m_intermediateState = {};
     m_outputShader = std::make_shared<COutputShader>();
     if (!m_outputShader->Create(
-            m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping, m_toneMapMethod, m_useHLGtoPQ,
-            HueSaturationInConversion() ? AVCOL_TRC_UNSPECIFIED : m_hueSatTransfer, m_useGamma))
+            m_cmsOn, m_useDithering, m_outputDitherDepth, m_toneMapping, m_toneMapMethod,
+            m_useHLGtoPQ, HueSaturationInConversion() ? AVCOL_TRC_UNSPECIFIED : m_hueSatTransfer,
+            m_useGamma))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
@@ -565,8 +563,17 @@ void CRendererBase::CheckVideoParameters()
   // gamma is only offered for SDR, the output shader applies it
   const bool gamma = !m_hdrStream && !m_dolbyVisionEffect && m_videoSettings.m_Gamma != 50.0f;
 
+  // auto dithers to the swap chain depth, which an HDR switch changes
+  int outputDitherDepth = m_ditherDepth;
+  if (outputDitherDepth == 0)
+  {
+    outputDitherDepth =
+        DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM ? 10 : 8;
+  }
+
   if (toneMap != m_toneMapping || m_cmsOn != cms || hlg != m_useHLGtoPQ ||
-      method != m_toneMapMethod || hueSatTransfer != m_hueSatTransfer || gamma != m_useGamma)
+      method != m_toneMapMethod || hueSatTransfer != m_hueSatTransfer || gamma != m_useGamma ||
+      outputDitherDepth != m_outputDitherDepth)
   {
     m_toneMapping = toneMap;
     m_cmsOn = cms;
@@ -574,6 +581,7 @@ void CRendererBase::CheckVideoParameters()
     m_toneMapMethod = method;
     m_hueSatTransfer = hueSatTransfer;
     m_useGamma = gamma;
+    m_outputDitherDepth = outputDitherDepth;
 
     m_outputShader.reset();
     OnOutputReset();
