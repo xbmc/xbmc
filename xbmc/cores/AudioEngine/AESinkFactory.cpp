@@ -129,3 +129,19 @@ void CAESinkFactory::Cleanup()
       reg.second.cleanupFunc();
   }
 }
+
+bool CAESinkFactory::HasDeviceVolume(const std::string& device)
+{
+  const AESinkDevice dev = ParseDevice(device);
+  const auto reg = m_AESinkRegEntry.find(dev.driver);
+  return reg != m_AESinkRegEntry.end() && reg->second.hasDeviceVolumeFunc &&
+         reg->second.hasDeviceVolumeFunc(dev.name);
+}
+
+bool CAESinkFactory::SetDeviceVolume(const std::string& device, float volume, bool mute)
+{
+  const AESinkDevice dev = ParseDevice(device);
+  const auto reg = m_AESinkRegEntry.find(dev.driver);
+  return reg != m_AESinkRegEntry.end() && reg->second.setDeviceVolumeFunc &&
+         reg->second.setDeviceVolumeFunc(dev.name, volume, mute);
+}

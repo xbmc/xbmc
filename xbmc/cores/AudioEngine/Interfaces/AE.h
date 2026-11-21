@@ -49,6 +49,10 @@ struct Interface_AudioEngine;
 #define AE_CONFIG_AUTO  2
 #define AE_CONFIG_MATCH 3
 
+/* volume control options */
+#define AE_VOLUME_STREAM 0 /*! scale Kodi's own audio */
+#define AE_VOLUME_DEVICE 1 /*! set the volume of the output device */
+
 enum AEQuality
 {
   AE_QUALITY_UNKNOWN = -1, /*! Unset, unknown or incorrect quality level */

@@ -17,8 +17,9 @@ namespace KODI
 {
 namespace PIPEWIRE
 {
+class CPipewireNode;
 class CPipewireStream;
-}
+} // namespace PIPEWIRE
 } // namespace KODI
 
 namespace AE
@@ -36,6 +37,8 @@ public:
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList& list, bool force = false);
   static void Destroy();
+  static bool HasDeviceVolume(const std::string& device);
+  static bool SetDeviceVolume(const std::string& device, float volume, bool mute);
 
   // overrides via IAESink
   const char* GetName() override { return "PIPEWIRE"; }
@@ -50,6 +53,8 @@ public:
   void Drain() override;
 
 private:
+  static KODI::PIPEWIRE::CPipewireNode* GetDeviceNode(const std::string& device);
+
   AEAudioFormat m_format;
   std::chrono::duration<double, std::ratio<1>> m_latency;
 
