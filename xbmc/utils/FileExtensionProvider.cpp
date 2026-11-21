@@ -106,18 +106,18 @@ void CFileExtensionProvider::Deinitialize()
 
   // Deinitialization drops all lists
   ReleaseSettingsDerivedLists();
-  std::atomic_store(&m_fileFolderExtensions, {});
+  m_fileFolderExtensions.store({});
 }
 
 void CFileExtensionProvider::ReleaseSettingsDerivedLists()
 {
-  std::atomic_store(&m_discStubExtensions, {});
-  std::atomic_store(&m_musicExtensions, {});
-  std::atomic_store(&m_pictureExtensions, {});
-  std::atomic_store(&m_subtitlesExtensions, {});
-  std::atomic_store(&m_videoExtensions, {});
-  std::atomic_store(&m_archiveExtensions, {});
-  std::atomic_store(&m_compoundArchiveExtensions, {});
+  m_discStubExtensions.store({});
+  m_musicExtensions.store({});
+  m_pictureExtensions.store({});
+  m_subtitlesExtensions.store({});
+  m_videoExtensions.store({});
+  m_archiveExtensions.store({});
+  m_compoundArchiveExtensions.store({});
 }
 
 namespace
@@ -133,14 +133,14 @@ std::string NotInitialized()
 
 std::string GetExtensions(const std::atomic<bool>& initialized,
                           CCriticalSection& mutex,
-                          std::shared_ptr<const std::string>& cache,
+                          CFileExtensionProvider::CAtomicStringPtr& cache,
                           std::function<std::string()> newlist)
 {
   if (!initialized)
     return NotInitialized();
 
   // Double-checked locking - first check
-  auto tmp = std::atomic_load_explicit(&cache, std::memory_order_acquire);
+  auto tmp = cache.load(std::memory_order_acquire);
   if (tmp == nullptr)
   {
     std::lock_guard lock{mutex};
@@ -152,11 +152,11 @@ std::string GetExtensions(const std::atomic<bool>& initialized,
 
     // Second check for threads that saw nullptr but were held by the lock
     // (another thread performed the update)
-    tmp = std::atomic_load_explicit(&cache, std::memory_order_relaxed);
+    tmp = cache.load(std::memory_order_relaxed);
     if (tmp == nullptr)
     {
       tmp = std::make_shared<const std::string>(newlist());
-      std::atomic_store_explicit(&cache, tmp, std::memory_order_release);
+      cache.store(tmp, std::memory_order_release);
     }
   }
   return *tmp;
@@ -413,9 +413,9 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
       }
     }
     // Invalidate dependent cached extensions lists
-    std::atomic_store(&m_musicExtensions, {});
-    std::atomic_store(&m_pictureExtensions, {});
-    std::atomic_store(&m_fileFolderExtensions, {});
+    m_musicExtensions.store({});
+    m_pictureExtensions.store({});
+    m_fileFolderExtensions.store({});
   }
   else if (type == AddonType::VFS)
   {
@@ -443,13 +443,13 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
       }
     }
     // Invalidate dependent cached extensions lists
-    std::atomic_store(&m_musicExtensions, {});
-    std::atomic_store(&m_pictureExtensions, {});
-    std::atomic_store(&m_subtitlesExtensions, {});
-    std::atomic_store(&m_videoExtensions, {});
-    std::atomic_store(&m_archiveExtensions, {});
-    std::atomic_store(&m_compoundArchiveExtensions, {});
-    std::atomic_store(&m_fileFolderExtensions, {});
+    m_musicExtensions.store({});
+    m_pictureExtensions.store({});
+    m_subtitlesExtensions.store({});
+    m_videoExtensions.store({});
+    m_archiveExtensions.store({});
+    m_compoundArchiveExtensions.store({});
+    m_fileFolderExtensions.store({});
   }
 
   m_addonExtensions[type] = StringUtils::Join(extensions, "|");
