@@ -44,7 +44,7 @@ public:
   std::vector<std::string> m_FindFileResults;
   int              m_nFindFileIterator;
   std::string      m_FindFileDir;
-  off64_t          m_iOffset;
+  off_t m_iOffset;
   bool             m_bCDROM;
   bool             m_bEventSet;
   int              m_nRefCount;

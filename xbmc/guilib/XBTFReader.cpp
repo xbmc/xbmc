@@ -216,7 +216,7 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
 #elif defined(TARGET_ANDROID)
   if (fseek(m_file, static_cast<long>(frame.GetOffset()), SEEK_SET) == -1)  // No fseeko64 before N
 #else
-  if (fseeko64(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
+  if (fseeko(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
 #endif
     return false;
 

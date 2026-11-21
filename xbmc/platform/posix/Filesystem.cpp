@@ -37,8 +37,8 @@ space_info space(const std::string& path, std::error_code& ec)
   ec.clear();
   space_info sp;
 #if defined(TARGET_LINUX) || defined(TARGET_WASM)
-  struct statvfs64 fsInfo;
-  auto result = statvfs64(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
+  struct statvfs fsInfo;
+  auto result = statvfs(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
 #else
   struct statfs fsInfo;
   // is 64-bit on android and darwin (10.6SDK + any iOS)
