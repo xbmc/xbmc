@@ -83,6 +83,8 @@ protected:
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
   void SetSyncType(bool passthrough);
+  //! A realtime stream's audio is decoded, to be resampled, unless the stream allows passthrough
+  bool MustDecodeRealtime();
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;

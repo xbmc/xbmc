@@ -6243,6 +6243,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     bool realtime = m_pInputStream->IsRealtime();
     state.cantempo = CanTempo() && !realtime;
 
+    // Before the realtime state, which the audio player acts on as soon as it sees it
+    m_processInfo->SetRealtimeAudioPassthrough(m_pInputStream->AllowsRealtimeAudioPassthrough());
     m_processInfo->SetStateRealtime(realtime);
   }
 
