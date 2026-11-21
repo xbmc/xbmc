@@ -7124,11 +7124,11 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.FirstAudioCodec`</b>,
 ///                  \anchor ListItem_FirstAudioCodec
 ///                  _string_,
-///     @return The codec of the first audio stream of the currently selected video, in the order
+///     @return The codec of the first audio stream of the currently selected video\, in the order
 ///     the source lists them.
 ///     @note Unlike \link ListItem_AudioCodec `ListItem.AudioCodec`\endlink this describes the
-///     stream listed first by the source\ as described for
-///     \link ListItem_FirstAudioLanguage `ListItem.FirstAudioLanguage`\endlink\ rather than the
+///     stream listed first by the source\, as described for
+///     \link ListItem_FirstAudioLanguage `ListItem.FirstAudioLanguage`\endlink\, rather than the
 ///     stream playback will select. Pairs
 ///     with \link ListItem_FirstAudioLanguage `ListItem.FirstAudioLanguage`\endlink.
 ///     <p><hr>
@@ -7139,9 +7139,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///                  \anchor ListItem_FirstAudioChannels
 ///                  _string_,
 ///     @return The number of audio channels of the first audio stream of the currently selected
-///     video, in the order the source lists them.
+///     video\, in the order the source lists them.
 ///     @note Unlike \link ListItem_AudioChannels `ListItem.AudioChannels`\endlink this describes
-///     the stream listed first by the source\ as described for
+///     the stream listed first by the source\, as described for
 ///     \link ListItem_FirstAudioLanguage `ListItem.FirstAudioLanguage`\endlink. Accepts
 ///     the same `DefaultLayout` parameter\, ie. `ListItem.FirstAudioChannels(DefaultLayout)`
 ///     renders 6 as 5.1. Pairs with
@@ -7694,7 +7694,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.Players`</b>,
 ///                  \anchor ListItem_Players
 ///                  _string_,
-///     @return The most players who can play the game at once (e.g. "4"), or empty if unknown
+///     @return The most players who can play the game at once (e.g. "4")\, or empty if unknown
 ///     (RETROPLAYER).
 ///     <p><hr>
 ///     @skinning_v23 **[New Infolabel]** \link ListItem_Players `ListItem.Players`\endlink
@@ -7703,9 +7703,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.AgeRating`</b>,
 ///                  \anchor ListItem_AgeRating
 ///                  _string_,
-///     @return The game's age rating: the rating board followed by its rating, e.g. "PEGI 12"
-///     (Europe, ages 12 and up), "BBFC 15" (UK, ages 15 and up), "ESRB T" (North America, Teen,
-///     ages 13 and up) or "CERO B" (Japan, ages 12 and up). Each region's board has its own scale,
+///     @return The game's age rating: the rating board followed by its rating\, e.g. "PEGI 12"
+///     (Europe\, ages 12 and up)\, "BBFC 15" (UK\, ages 15 and up)\, "ESRB T" (North America\, Teen\,
+///     ages 13 and up) or "CERO B" (Japan\, ages 12 and up). Each region's board has its own scale\,
 ///     and Kodi doesn't convert between them (RETROPLAYER).
 ///     <p><hr>
 ///     @skinning_v23 **[New Infolabel]** \link ListItem_AgeRating `ListItem.AgeRating`\endlink
