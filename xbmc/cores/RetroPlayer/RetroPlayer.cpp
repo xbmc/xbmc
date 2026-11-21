@@ -49,9 +49,13 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/Resolution.h"
 #include "windowing/WinSystem.h"
 
 #include <memory>
@@ -508,6 +512,34 @@ void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = 
 bool CRetroPlayer::IsRenderingVideo() const
 {
   return true;
+}
+
+void CRetroPlayer::TriggerUpdateResolution()
+{
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  if (!gfx.IsFullScreenRoot() || !gfx.IsFullScreenVideo())
+    return;
+
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+    return;
+
+  const double fps = m_gameClient ? m_gameClient->GetFrameRate() : 0.0;
+  if (fps <= 0.0)
+    return;
+
+  // The mode closest to the game's own rate, as long as the game can be kept in step
+  // with it. Failing that, don't stay in a mode that a video left behind.
+  RESOLUTION res = CResolutionUtils::FindClosestRefreshRate(
+      static_cast<float>(fps),
+      static_cast<float>(m_gameServices.GameSettings().SyncToDisplayLimit()));
+  if (res == RES_INVALID)
+    res = CDisplaySettings::GetInstance().GetCurrentResolution();
+
+  CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Display mode for a {:.3f} fps game: {}", fps,
+            gfx.GetResInfo(res).strMode);
+
+  gfx.SetVideoResolution(res, false);
 }
 
 bool CRetroPlayer::HasGameAgent() const

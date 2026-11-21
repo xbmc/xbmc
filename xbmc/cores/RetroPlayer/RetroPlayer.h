@@ -67,6 +67,7 @@ public:
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   bool IsRenderingVideo() const override;
+  void TriggerUpdateResolution() override;
   bool HasGameAgent() const override;
   bool SupportsDiscControl() const override;
   bool IsDiscEjected() const override;
