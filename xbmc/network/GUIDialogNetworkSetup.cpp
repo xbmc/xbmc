@@ -152,7 +152,7 @@ bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(std::string &path)
   dialog->Initialize();
   if (!dialog->SetPath(path))
   {
-    HELPERS::ShowOKDialogText(CVariant{ 10218 }, CVariant{ 39103 });
+    HELPERS::ShowOKDialogText(CVariant{ 10128 }, CVariant{ 39103 });
     return false;
   }
 
