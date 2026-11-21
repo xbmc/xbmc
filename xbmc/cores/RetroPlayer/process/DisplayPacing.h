@@ -73,6 +73,21 @@ public:
   Clock::time_point NextTake(Clock::time_point now) const;
 
   /*!
+   * \brief How many of the screen's refreshes each game frame is shown for
+   *
+   * One where the game runs at about the screen's rate, two for a 60 fps game
+   * on a 120 Hz screen, and so on.
+   *
+   * \param interval The time between refreshes
+   * \param fps The game's own frame rate
+   * \param maxRateDifference How far, as a fraction, the game's speed may change
+   *        to keep in step
+   * \return The number of refreshes, or 0 if keeping in step would change the
+   *         game's speed by more than maxRateDifference
+   */
+  static int RefreshesPerFrame(Clock::duration interval, double fps, double maxRateDifference);
+
+  /*!
    * \brief Whether the game may run at the screen's rate instead of its own
    */
   bool Enabled() const { return m_enabled.load(); }
