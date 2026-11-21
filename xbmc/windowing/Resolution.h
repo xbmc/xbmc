@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
@@ -72,34 +73,34 @@ struct RESOLUTION_INFO
   EdgeInsets guiInsets;
 
   //!< Specify if it is a fullscreen resolution, otherwise windowed
-  bool bFullScreen;
+  bool bFullScreen{true};
 
   //!< Width GUI resolution (pixels), may differ from the screen value if GUI resolution limit, 3D is set or in HiDPI screens
-  int iWidth;
+  int iWidth{0};
 
   //!< Height GUI resolution (pixels), may differ from the screen value if GUI resolution limit, 3D is set or in HiDPI screens
-  int iHeight;
+  int iHeight{0};
 
   //!< Number of pixels of padding between stereoscopic frames
-  int iBlanking;
+  int iBlanking{0};
 
   //!< Screen width (logical width in pixels)
-  int iScreenWidth;
+  int iScreenWidth{0};
 
   //!< Screen height (logical height in pixels)
-  int iScreenHeight;
+  int iScreenHeight{0};
 
   //!< The vertical subtitle baseline position, may be changed by Video calibration
-  int iSubtitles;
+  int iSubtitles{0};
 
   //!< Properties of the resolution e.g. interlaced mode
-  uint32_t dwFlags;
+  uint32_t dwFlags{0};
 
   //!< Pixel aspect ratio
-  float fPixelRatio;
+  float fPixelRatio{1.0f};
 
   //!< Refresh rate
-  float fRefreshRate;
+  float fRefreshRate{0.0f};
 
   //!< Resolution mode description
   std::string strMode;
@@ -111,8 +112,27 @@ struct RESOLUTION_INFO
   std::string strId;
 
 public:
-  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "");
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, std::string mode = "");
+  RESOLUTION_INFO(const RESOLUTION_INFO& res) = default;
+  RESOLUTION_INFO& operator=(const RESOLUTION_INFO&) = default;
+
   float DisplayRatio() const;
+};
+
+//! A display mode that may be chosen for video playback
+struct ResolutionCandidate
+{
+  RESOLUTION resolution;
+  RESOLUTION_INFO info;
+};
+
+//! The whitelist settings used to choose a display mode for video playback
+struct WhitelistOptions
+{
+  bool allowDoubleRefreshRate{false}; //!< videoscreen.whitelistdoublerefreshrate
+  bool allowPulldown{false}; //!< videoscreen.whitelistpulldown
+  bool useMultipleRefreshRates{false}; //!< videoscreen.whitelistmultiplerefreshrate
+  bool matchResolution{false}; //!< videoscreen.matchvideoresolution
 };
 
 class CResolutionUtils
@@ -129,8 +149,28 @@ public:
    */
   static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
 
-protected:
+  /*!
+   * \brief Choose the display mode for a video from the whitelist
+   * \param fps Video frame rate
+   * \param width Video width, which may include decoder padding or cropping
+   * \param height Video height, which may include decoder padding or cropping
+   * \param current The display mode currently chosen for the video
+   * \param desktop The desktop display mode
+   * \param whitelist The user whitelist, if empty a default whitelist is built from allowed
+   * \param allowed The display modes allowed by the display
+   * \param options The whitelist settings
+   * \return The chosen display mode, or RES_INVALID if none matched
+   */
+  static RESOLUTION SelectFromWhitelist(float fps,
+                                        int width,
+                                        int height,
+                                        const RESOLUTION_INFO& current,
+                                        const RESOLUTION_INFO& desktop,
+                                        const std::vector<ResolutionCandidate>& whitelist,
+                                        const std::vector<ResolutionCandidate>& allowed,
+                                        const WhitelistOptions& options);
+
+private:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
-  static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
-  static float RefreshWeight(float refresh, float fps);
+  static bool FindResolutionFromOverride(float fps, RESOLUTION& resolution, bool fallback);
 };
