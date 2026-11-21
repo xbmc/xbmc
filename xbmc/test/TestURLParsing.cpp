@@ -99,18 +99,18 @@ const TestURLGetWithoutUserDetailsData values[] = {
     {"smb://god@example.com/example", "smb://USERNAME@example.com/example", true},
     {"smb://god:universe@example.com/example", "smb://USERNAME:PASSWORD@example.com/example", true},
     {"http://god:universe@example.com:8448/example|auth=digest", "http://USERNAME:PASSWORD@example.com:8448/example|auth=digest", true},
-    {"smb://fd00::1/example", "smb://fd00::1/example", false},
-    {"smb://fd00::1/example", "smb://fd00::1/example", true},
+    {"smb://fd00::1/example", "smb://[fd00::1]/example", false},
+    {"smb://fd00::1/example", "smb://[fd00::1]/example", true},
     {"smb://[fd00::1]:8080/example", "smb://[fd00::1]:8080/example", false},
     {"smb://[fd00::1]:8080/example", "smb://[fd00::1]:8080/example", true},
     {"smb://god:universe@[fd00::1]:8080/example", "smb://[fd00::1]:8080/example", false},
     {"smb://god@[fd00::1]:8080/example", "smb://USERNAME@[fd00::1]:8080/example", true},
-    {"smb://god:universe@fd00::1/example", "smb://USERNAME:PASSWORD@fd00::1/example", true},
+    {"smb://god:universe@fd00::1/example", "smb://USERNAME:PASSWORD@[fd00::1]/example", true},
     {"http://god:universe@[fd00::1]:8448/example|auth=digest", "http://USERNAME:PASSWORD@[fd00::1]:8448/example|auth=digest", true},
-    {"smb://00ff:1:0000:abde::/example", "smb://00ff:1:0000:abde::/example", true},
+    {"smb://00ff:1:0000:abde::/example", "smb://[00ff:1:0000:abde::]/example", true},
     {"smb://god:universe@[00ff:1:0000:abde::]:8080/example", "smb://[00ff:1:0000:abde::]:8080/example", false},
     {"smb://god@[00ff:1:0000:abde::]:8080/example", "smb://USERNAME@[00ff:1:0000:abde::]:8080/example", true},
-    {"smb://god:universe@00ff:1:0000:abde::/example", "smb://USERNAME:PASSWORD@00ff:1:0000:abde::/example", true},
+    {"smb://god:universe@00ff:1:0000:abde::/example", "smb://USERNAME:PASSWORD@[00ff:1:0000:abde::]/example", true},
     {"http://god:universe@[00ff:1:0000:abde::]:8448/example|auth=digest", "http://USERNAME:PASSWORD@[00ff:1:0000:abde::]:8448/example|auth=digest", true},
     {"smb://milkyway;god:universe@example.com/example", "smb://DOMAIN;USERNAME:PASSWORD@example.com/example", true},
     {"smb://milkyway;god@example.com/example", "smb://DOMAIN;USERNAME@example.com/example", true},
@@ -134,6 +134,24 @@ const GetWithoutOptionsCase GetWithoutOptionsCases[] = {
      "https://example.com//stream//example/index.m3u8"},
     {"nfs://192.168.178.23/share/movie.mp4?mimetype=video%2fmp4",
      "nfs://192.168.178.23/share/movie.mp4"},
+};
+
+struct IPv6HostCase
+{
+  const char* input;
+  const char* withoutOptions;
+  const char* withoutFilename;
+};
+
+// An IPv6 host keeps its brackets wherever the URL is rebuilt, with or without a port.
+const IPv6HostCase IPv6HostCases[] = {
+    {"nfs://[2001:db8::1]/mnt/HD/Videos/movie.mp4?mimetype=video%2fmp4",
+     "nfs://[2001:db8::1]/mnt/HD/Videos/movie.mp4", "nfs://[2001:db8::1]/"},
+    {"nfs://[2001:db8::1]:2049/mnt/HD/Videos/movie.mp4?mimetype=video%2fmp4",
+     "nfs://[2001:db8::1]:2049/mnt/HD/Videos/movie.mp4", "nfs://[2001:db8::1]:2049/"},
+    {"smb://[fd00::1]/share/movie.mkv", "smb://[fd00::1]/share/movie.mkv", "smb://[fd00::1]/"},
+    {"smb://[fd00::1]:445/share/movie.mkv", "smb://[fd00::1]:445/share/movie.mkv",
+     "smb://[fd00::1]:445/"},
 };
 
 struct ExtensionCase
@@ -179,6 +197,20 @@ TEST(TestURLParsing, IPv6Host)
   EXPECT_EQ("2001:db8::1", url.GetHostName());
   EXPECT_EQ("mnt/HD/Videos/movie.mp4", url.GetFileName());
   EXPECT_EQ("?mimetype=video%2fmp4", url.GetOptions());
+}
+
+TEST(TestURLParsing, IPv6HostKeepsItsBrackets)
+{
+  for (const auto& [input, withoutOptions, withoutFilename] : IPv6HostCases)
+  {
+    SCOPED_TRACE(input);
+    const CURL url{input};
+    EXPECT_EQ(input, url.Get());
+    EXPECT_EQ(withoutOptions, url.GetWithoutOptions());
+    EXPECT_EQ(withoutFilename, url.GetWithoutFilename());
+    EXPECT_EQ(input, url.GetWithoutUserDetails(false));
+    EXPECT_EQ(input, url.GetRedacted());
+  }
 }
 
 TEST(TestURLParsing, SetFileName)
