@@ -394,14 +394,21 @@ CRect CBaseRenderer::ApplyContentGeometry(float& contentRatio)
     const float limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                             CSettings::SETTING_VIDEOPLAYER_STRETCHTOFILL) *
                         0.01f;
-    // A picture turned by 90 or 270 degrees is shown with the inverse of its ratio
+    // Judged on the window the picture is shown in, which a maintained aspect replaces below
+    const CRect window =
+        inputs.maintainAspect > 0.0f
+            ? KODI::VIDEO::GEOMETRY::FitAspect(inputs.maintainAspect, m_viewRect, pixelRatio)
+            : renderWindow;
+    // CalcDestRect shows a picture turned by 90 or 270 degrees with the square of the output
+    // pixel ratio over its own ratio
     const bool rotated = m_renderOrientation == 90 || m_renderOrientation == 270;
+    const float turned = pixelRatio * pixelRatio;
     if (const std::optional<float> filled = KODI::VIDEO::GEOMETRY::StretchToFill(
-            rotated ? 1.0f / pictureAspect : pictureAspect,
-            renderWindow.Width() / renderWindow.Height() * pixelRatio, limit))
+            rotated ? turned / pictureAspect : pictureAspect,
+            window.Width() / window.Height() * pixelRatio, limit))
     {
       m_sourceRect = source;
-      contentRatio = rotated ? 1.0f / *filled : *filled;
+      contentRatio = rotated ? turned / *filled : *filled;
     }
   }
 
