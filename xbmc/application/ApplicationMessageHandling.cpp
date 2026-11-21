@@ -468,8 +468,13 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     {
       const int profile = pMsg->param1;
       if (profile > INVALID_PROFILE_ID)
-        CServiceBroker::GetSettingsComponent()->GetProfileManager()->LoadProfile(
-            static_cast<unsigned int>(profile));
+      {
+        const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+        // LoadProfile() would stop them while holding the profile lock
+        if (static_cast<size_t>(profile) < profileManager->GetNumberOfProfiles())
+          g_application.StopServiceAddons();
+        profileManager->LoadProfile(static_cast<unsigned int>(profile));
+      }
     }
 
     break;
