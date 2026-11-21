@@ -14,6 +14,7 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "powermanagement/PowerManager.h"
 #include "pvr/PVRManager.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -64,6 +65,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
       SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, CServiceBroker::GetPVRManager().IsStarted());
+      m_hasBattery = CServiceBroker::GetPowerManager().BatteryLevel() >= 0;
       return true;
     }
     break;
@@ -124,7 +126,8 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "{} {}", 13283, SYSTEM_OS_VERSION_INFO);
     SetControlLabel(i++, "{}: {}", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "{}: {}", 12394, SYSTEM_TOTALUPTIME);
-    SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
+    if (m_hasBattery)
+      SetControlLabel(i++, "{}: {}", 12395, SYSTEM_BATTERY_LEVEL);
   }
 
   else if (m_section == CONTROL_BT_STORAGE)

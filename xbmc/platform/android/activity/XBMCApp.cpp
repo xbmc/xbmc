@@ -104,6 +104,7 @@
 #include <androidjni/View.h>
 #include <androidjni/Window.h>
 #include <androidjni/WindowManager.h>
+#include <androidjni/jutils-details.hpp>
 #include <crossguid/guid.hpp>
 #include <dlfcn.h>
 #include <jni.h>
@@ -1199,7 +1200,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 
   // Most actions can be processed only after the app is fully initialized,
   // but some actions should be processed even during initialization phase.
-  if (!g_application.IsInitialized() && action != CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
+  // The battery's state arrives once, as the sticky broadcast at registration.
+  if (!g_application.IsInitialized() && action != CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG &&
+      action != CJNIIntent::ACTION_BATTERY_CHANGED)
   {
     android_printf("CXBMCApp::onReceive - ignoring action %s during app initialization phase",
                    action.c_str());
@@ -1207,7 +1210,13 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
 
   if (action == CJNIIntent::ACTION_BATTERY_CHANGED)
-    m_batteryLevel = intent.getIntExtra("level", -1);
+  {
+    // BatteryManager.EXTRA_PRESENT; CJNIIntent has no getBooleanExtra()
+    const bool present =
+        jni::call_method<jboolean>(intent.get_raw(), "getBooleanExtra", "(Ljava/lang/String;Z)Z",
+                                   jni::jcast<jni::jhstring>(std::string("present")), JNI_TRUE);
+    m_batteryLevel = present ? intent.getIntExtra("level", -1) : -1;
+  }
   else if (action == CJNIIntent::ACTION_DREAMING_STOPPED)
   {
     if (HasFocus())

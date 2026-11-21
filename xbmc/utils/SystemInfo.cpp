@@ -382,7 +382,8 @@ std::string CSysInfoJob::GetVideoEncoder()
 
 std::string CSysInfoJob::GetBatteryLevel()
 {
-  return StringUtils::Format("{}%", CServiceBroker::GetPowerManager().BatteryLevel());
+  const int level = CServiceBroker::GetPowerManager().BatteryLevel();
+  return level < 0 ? std::string() : StringUtils::Format("{}%", level);
 }
 
 bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)

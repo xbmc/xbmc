@@ -47,6 +47,7 @@ public:
   virtual int  CountPowerFeatures() = 0;
 
 // Battery related functions
+  //! The remaining battery level in percent, or -1 when the device has no battery
   virtual int  BatteryLevel() = 0;
 
   /*!
