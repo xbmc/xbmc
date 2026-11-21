@@ -50,6 +50,7 @@ protected:
   bool LoadShadersHook() override;
   bool RenderHook(int idx) override;
   void AfterRenderHook(int idx) override;
+  bool IsHwScaled() const override { return m_hwScaled; }
 
   // textures
   bool UploadTexture(int index) override;
@@ -60,6 +61,7 @@ protected:
 
   bool m_isVAAPIBuffer = true;
   bool m_nv12Allocated[NUM_BUFFERS]{};
+  bool m_hwScaled = false;
   // VA fourcc of the surfaces being received (NV12 / P010 / P012 / P016 /
   // YUY2 / Y210 / Y212 / Y216). Captured at Configure and read by
   // GetShaderFormat to pick the matching sampling path.
