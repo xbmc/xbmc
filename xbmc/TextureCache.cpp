@@ -22,6 +22,7 @@
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "profiles/ProfileManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"
@@ -146,7 +147,10 @@ void CTextureCache::BackgroundCacheImage(const std::string& url, const std::stri
 
   CTextureDetails details;
   std::string path(GetCachedImage(url, details));
-  if (!path.empty() && details.hash.empty())
+  if (!path.empty() &&
+      (details.hash.empty() ||
+       (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline &&
+        XFILE::CFile::Exists(path))))
     return; // image is already cached and doesn't need to be checked further
 
   path = IMAGE_FILES::ToCacheKey(url);

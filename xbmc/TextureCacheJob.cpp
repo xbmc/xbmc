@@ -107,6 +107,15 @@ bool CTextureCacheJob::CacheTexture()
   const auto& image = imageURL.GetTargetFile();
   m_details.updateable = ShouldCheckForChanges(imageURL.GetSpecialType(), image);
 
+  const bool artworkOffline{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline};
+
+  if (artworkOffline && HasCachedFile())
+  {
+    m_details.hashRevalidated = true;
+    return true;
+  }
+
   if (m_details.updateable)
   {
     // generate the hash, unless the caller already knows it (saves a file stat)
