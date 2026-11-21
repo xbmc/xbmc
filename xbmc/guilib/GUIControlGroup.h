@@ -31,6 +31,7 @@ public:
   CGUIControlGroup* Clone() const override { return new CGUIControlGroup(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  CRect GetDrawnRegion() const override;
   void Render() override;
   void RenderEx() override;
   bool OnAction(const CAction &action) override;
@@ -90,6 +91,7 @@ protected:
   bool m_defaultAlways;
   int m_focusedControl;
   bool m_renderFocusedLast;
+  CRect m_childRegion; ///< region the children are drawn in, in screen coordinates
 private:
   typedef std::vector< std::vector<CGUIControl *> * > COLLECTORTYPE;
 

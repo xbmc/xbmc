@@ -194,6 +194,10 @@ public:
   /*! \brief return the render region in screen coordinates of this control
    */
   const CRect& GetRenderRegion() const { return m_renderRegion; }
+  /*! \brief return the region in screen coordinates this control and its children are drawn in
+   Marked dirty when the control itself changed
+   */
+  virtual CRect GetDrawnRegion() const { return m_renderRegion; }
   /*! \brief calculate the render region in parentcontrol coordinates of this control
    Called during process to update m_renderRegion
    */
