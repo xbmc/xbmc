@@ -247,7 +247,7 @@ void CSaveFileState::DoWork(CFileItem& item,
                   tag->m_strFileNameAndPath != item.GetDynPath())
                 return true; // Bluray path to update
               if (item.GetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH).asBoolean(false))
-                return true; // Bluray playlist replaced by user selection
+                return true; // Bluray playlist chosen by the user, or main title of a disc
               if (item.GetProperty(ITEM::PROPERTY::NEW_STACK_PATH).asBoolean(false))
                 return true; // Stack path to update
               return false;
