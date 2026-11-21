@@ -1,0 +1,22 @@
+/*!
+
+\page Camera_Control Camera control
+\brief The camera control displays images from a ROS image topic.
+
+The camera control uses the following camera-specific elements:
+
+| Element | Description |
+| ------- | ----------- |
+| `topic` | The base ROS image topic. This value may be a GUI info label. Do not append an image transport suffix such as `/compressed`. |
+| `imagetransport` | The ROS image transport plugin name, such as `compressed` or `raw`. This value may be a GUI info label and defaults to `compressed` when it is omitted or evaluates to an empty string. |
+
+Example:
+
+\code{.xml}
+<control type="cameraview">
+  <topic>/camera/image</topic>
+  <imagetransport>compressed</imagetransport>
+</control>
+\endcode
+
+*/

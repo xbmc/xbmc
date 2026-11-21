@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>Dell monitor display area</description>
+			<height>771</height> <!-- floor(1920/(1920+768)*1080) -->
+			<width>1686</width> <!-- floor(1200/1366*1920) -->
+			<control type="group">
+				<description>Upper Dell display content area</description>
+				<top>30</top>
+				<height>175</height>
+				<left>140</left>
+				<right>140</right>
+				<!--
+				<control type="image">
+					<description>Upper Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				-->
+				<control type="image">
+					<description>OASIS logo</description>
+					<texture>OASIS.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control>
+			<control type="group">
+				<description>Lower Dell display content area</description>
+				<bottom>40</bottom>
+				<height>500</height>
+				<left>140</left>
+				<right>140</right>
+				<control type="image">
+					<description>Lower Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="list">
+					<description>Node list</description>
+					<orientation>vertical</orientation>
+					<top>8</top>
+					<itemlayout width="1466" height="60">
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<left>125</left>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<right>350</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>125</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+					</itemlayout>
+					<focusedlayout width="1466" height="60">
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<left>125</left>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<right>350</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>125</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>Workstation</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(starship).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(starship).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Perception</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(cinder).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(cinder).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>OASIS HUD</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(lenovo).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(lenovo).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Wall Art</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(nuc).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(nuc).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Bar Art</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(asus).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(asus).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Train Station</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(station).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(station).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Air Quality Lab</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(substation).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(substation).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Patio</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(patio).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(patio).CPUUtilization]</property>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<description>Laptop LCD display area</description>
+			<top>772</top>
+			<control type="group">
+				<description>Dell display content area</description>
+				<top>30</top>
+				<bottom>30</bottom>
+				<left>100</left>
+				<right>100</right>
+				<!--
+				<control type="image">
+					<description>LCD content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				-->
+				<control type="image">
+					<description>OASIS logo</description>
+					<texture>OASIS.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

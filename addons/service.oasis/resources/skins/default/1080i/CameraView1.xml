@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="panel">
+			<itemlayout width="1920" height="1080">
+				<control type="cameraview">
+					<description>Camera view</description>
+					<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<description>Label background</description>
+					<bottom>-20</bottom>
+					<height>90</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<description>Camera label</description>
+					<bottom>0</bottom>
+					<height>50</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font37</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout width="1920" height="1080">
+				<control type="cameraview">
+					<description>Camera view</description>
+					<topic>$INFO[ListItem.Property(smarthome.cameratopic)]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<description>Label background</description>
+					<bottom>-20</bottom>
+					<height>90</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<description>Camera label</description>
+					<bottom>0</bottom>
+					<height>50</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font37</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<visible>String.IsEqual(Window(Home).Property(hostname),bar)</visible>
+					<label>Bar AI</label>
+					<property name="smarthome.cameratopic">/oasis/bar/sd/pose_image</property>
+				</item>
+				<item>
+					<visible>String.IsEqual(Window(Home).Property(hostname),cinder)</visible>
+					<label>Hallway AI</label>
+					<property name="smarthome.cameratopic">/oasis/hallway/sd/pose_image</property>
+				</item>
+				<item>
+					<visible>String.IsEqual(Window(Home).Property(hostname),kitchen)</visible>
+					<label>Kitchen AI</label>
+					<property name="smarthome.cameratopic">/oasis/kitchen/sd/pose_image</property>
+				</item>
+				<item>
+					<visible>String.IsEqual(Window(Home).Property(hostname),megapegasus)</visible>
+					<label>Living Room AI</label>
+					<property name="smarthome.cameratopic">/oasis/livingroom/sd/pose_image</property>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>
