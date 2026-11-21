@@ -1696,7 +1696,8 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///   \table_row3{   <b>`System.BatteryLevel`</b>,
 ///                  \anchor System_BatteryLevel
 ///                  _string_,
-///     @return The remaining battery level in range 0-100.
+///     @return The remaining battery level in range 0-100, or empty when the platform reports
+///     that the device has no battery (currently Android only).
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FreeSpace`</b>,
