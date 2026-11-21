@@ -878,6 +878,26 @@ TEST_F(TestDiscMainTitleSave, AMovieStoppedWhereItsImageWasStoppedBeforeKeepsTha
   EXPECT_EQ(664.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
 }
 
+TEST_F(TestDiscMainTitleSave, AMovieStaysOnItsImageWhenItsResumePointCannotBeWrittenToThePlaylist)
+{
+  // Moving to the playlist could delete the image's file and its resume point, leaving none
+  ASSERT_GT(AddMovie(), 0);
+  CBookmark before;
+  before.timeInSeconds = 100.0;
+  before.totalTimeInSeconds = 7461.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile(m_image, before, CBookmark::RESUME));
+
+  // A new resume point fails to be written, as on a database error
+  ASSERT_TRUE(m_db.ExecuteQuery("CREATE TRIGGER test_fail_bookmark BEFORE INSERT ON bookmark "
+                                "BEGIN SELECT RAISE(ABORT, 'test'); END"));
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie, 664.0);
+  ASSERT_TRUE(m_db.ExecuteQuery("DROP TRIGGER test_fail_bookmark"));
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  EXPECT_EQ(m_image, relisted.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(100.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
 TEST_F(TestDiscMainTitleSave, AMovieKeepsItsWatchedStateWhenItsMainTitleIsFinished)
 {
   ASSERT_GT(AddMovie(), 0);
