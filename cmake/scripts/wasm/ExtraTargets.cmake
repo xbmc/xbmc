@@ -2,6 +2,7 @@
 set_property(TARGET ${APP_NAME_LC} APPEND PROPERTY LINK_DEPENDS
   ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/kodi_pre.js
   ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/audio_worklet.js
+  ${CMAKE_SOURCE_DIR}/cmake/scripts/wasm/addon-exports.txt
   ${CMAKE_SOURCE_DIR}/xbmc/windowing/wasm/webgl_commit.js
   ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/network/tizen_sockets.js
   ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDCodecs/Video/webcodecs_bridge.js

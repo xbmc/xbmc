@@ -786,6 +786,8 @@ const char* CAddonInfoBuilder::GetPlatformLibraryName(const tinyxml2::XMLElement
     libraryName = element->Attribute("library_windows");
 #elif defined(TARGET_WINDOWS_STORE)
   libraryName = element->Attribute("library_windowsstore");
+#elif defined(TARGET_WASM)
+  libraryName = element->Attribute("library_wasm");
 #elif defined(TARGET_DARWIN)
 #if defined(TARGET_DARWIN_EMBEDDED)
   libraryName = element->Attribute("library_darwin_embedded");
@@ -861,6 +863,8 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "tvos",
     "tvos-aarch64",
 #endif
+#elif defined(TARGET_WASM)
+      "wasm",
 #elif defined(TARGET_DARWIN_OSX)
     "osx",
 #if defined(__x86_64__)

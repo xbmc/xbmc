@@ -476,6 +476,8 @@ void CEGLContextUtils::SurfaceAttrib()
   }
 }
 
+// Emscripten has no eglSurfaceAttrib().
+#if !defined(TARGET_WASM)
 void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value)
 {
   if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, attribute, value) != EGL_TRUE)
@@ -483,6 +485,7 @@ void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value)
     CEGLUtils::Log(LOGERROR, "failed to set EGL_BUFFER_PRESERVED swap behavior");
   }
 }
+#endif
 
 bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace /* = EGL_NONE */)
 {
