@@ -56,10 +56,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
 
-      get_target_property(_crossguid_include_dir PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
+      # An include directory from pkg-config names a path on the target and
+      # is omitted altogether when it is a default one, so it cannot be
+      # tested for the header. Look the header up instead.
+      find_path(_crossguid_include_dir NAMES crossguid/guid.hpp)
 
       # NEW_CROSSGUID >= 0.2.0 release
-      if(EXISTS "${_crossguid_include_dir}/crossguid/guid.hpp")
+      if(_crossguid_include_dir)
         list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
       endif()
     elseif(TARGET crossguid AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

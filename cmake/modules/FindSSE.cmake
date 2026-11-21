@@ -4,7 +4,9 @@ include(TestCXXAcceptsFlag)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
    if(CPU MATCHES "x86_64" OR CPU MATCHES "i.86")
-     execute_process(COMMAND cat /proc/cpuinfo OUTPUT_VARIABLE CPUINFO)
+     # cross compiling: the build host's CPU says nothing about the target,
+     # so list every extension and let the compiler flag checks decide
+     set(CPUINFO "sse sse2 pni ssse3 sse4_1 sse4_2 avx avx2")
 
      string(REGEX REPLACE "^.*(sse).*$" "\\1" _SSE_THERE "${CPUINFO}")
      string(COMPARE EQUAL "sse" "${_SSE_THERE}" _SSE_TRUE)
