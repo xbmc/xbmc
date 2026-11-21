@@ -3,6 +3,7 @@ set(SOURCES TestAddonBuilder.cpp
             TestAddonInfoBuilder.cpp
             TestAddonVersion.cpp
             TestResource.cpp
+            TestRepository.cpp
             TestScraper.cpp
             TestSkin.cpp
             TestVFSEntry.cpp)
