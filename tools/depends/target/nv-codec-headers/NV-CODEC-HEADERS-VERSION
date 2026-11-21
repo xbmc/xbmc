@@ -1,0 +1,5 @@
+LIBNAME=nv-codec-headers
+VERSION=12.1.14.0
+BASE_URL=https://github.com/FFmpeg/nv-codec-headers/releases/download/n$(VERSION)
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=2b70becf2896a2bb1d1fe06a7e12245c69c34eb67592bb30fa64784063de0b952f9b066ab74c01aec4caca301fe7a3ecc615eeec919f23f6a5fafeff2ada6c18

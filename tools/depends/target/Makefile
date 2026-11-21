@@ -93,8 +93,9 @@ ifeq ($(OS),linux)
   LIBUUID = libuuid
 
   ifeq ($(CPU),x86_64)
-    DEPENDS += libva
+    DEPENDS += libva nv-codec-headers
     LIBVA = libva
+    NVCODECHEADERS = nv-codec-headers
   endif
 
   ifneq (,$(findstring wayland,$(TARGET_PLATFORM)))
@@ -153,7 +154,7 @@ crossguid: $(LIBUUID)
 curl: brotli openssl nghttp2 $(ZLIB) zstd
 dbus: expat
 exiv2: $(ICONV) $(ZLIB) expat
-ffmpeg: $(ICONV) $(ZLIB) bzip2 openssl dav1d $(LIBVA)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 openssl dav1d $(LIBVA) $(NVCODECHEADERS)
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)
