@@ -288,7 +288,11 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       newEvent.motion.y = (uint16_t)pos.y;
       CServiceBroker::GetAppPort()->OnEvent(
           newEvent); // had to call this to update g_Mouse position
-      return g_application.OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
+      const float dx = pos.x - m_Mouse.GetX();
+      const float dy = pos.y - m_Mouse.GetY();
+      // A repeated position is not a mouse move, a move without movement is what a touch sends
+      if (dx != 0.0f || dy != 0.0f)
+        return g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, pos.x, pos.y, dx, dy));
     }
   }
 
@@ -438,11 +442,6 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     }
     case XBMC_TOUCH:
     {
-      if (newEvent.touch.action == ACTION_TOUCH_TAP)
-      { // Send a mouse motion event with no dx,dy for getting the current guiitem selected
-        g_application.OnAction(
-            CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
-      }
       int actionId = 0;
       std::string actionString;
       if (newEvent.touch.action == ACTION_GESTURE_BEGIN ||
