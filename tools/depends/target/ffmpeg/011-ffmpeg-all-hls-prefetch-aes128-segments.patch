@@ -1,0 +1,153 @@
+--- a/libavformat/crypto.c
++++ b/libavformat/crypto.c
+@@ -76,11 +76,18 @@
+     { NULL }
+ };
+ 
++static void *crypto_child_next(void *obj, void *prev)
++{
++    CryptoContext *c = obj;
++    return prev ? NULL : c->hd;
++}
++
+ static const AVClass crypto_class = {
+     .class_name     = "crypto",
+     .item_name      = av_default_item_name,
+     .option         = crypto_options,
+     .version        = LIBAVUTIL_VERSION_INT,
++    .child_next     = crypto_child_next,
+ };
+ 
+ static int set_aes_arg(URLContext *h, uint8_t **buf, int *buf_len,
+--- a/libavformat/hls.c
++++ b/libavformat/hls.c
+@@ -56,6 +56,10 @@
+ #define MPEG_TIME_BASE 90000
+ #define MPEG_TIME_BASE_Q (AVRational){1, MPEG_TIME_BASE}
+ 
++/* Some servers drop a connection that isn't read for a few seconds, so the
++ * next segment is only opened this long before the current one ends. */
++#define PREFETCH_LEAD_TIME (2 * AV_TIME_BASE)
++
+ /*
+  * An apple http stream consists of a playlist with media segment files,
+  * played sequentially. There may be several playlists with the same
+@@ -134,6 +138,9 @@
+     int m3u8_hold_counters;
+     int64_t cur_seg_offset;
+     int64_t last_load_time;
++    int64_t cur_seg_open_time;
++    int64_t cur_seg_duration;
++    int fast_reader;
+ 
+     /* Currently active Media Initialization Section */
+     struct segment *cur_init_section;
+@@ -1744,6 +1751,16 @@
+     return ret;
+ }
+ 
++static int prefetch_due(struct playlist *v, struct segment *cur)
++{
++    int64_t size = cur->size >= 0 ? cur->size : avio_size(v->input);
++
++    if (v->fast_reader || size <= 0 || cur->duration <= PREFETCH_LEAD_TIME)
++        return 1;
++    return av_rescale(cur->duration, FFMAX(size - v->cur_seg_offset, 0), size) <=
++           PREFETCH_LEAD_TIME;
++}
++
+ static int read_data_continuous(void *opaque, uint8_t *buf, int buf_size)
+ {
+     struct playlist *v = opaque;
+@@ -1751,7 +1768,8 @@
+     int ret;
+     int just_opened = 0;
+     int segment_retries = 0;
+-    struct segment *seg;
++    int64_t now;
++    struct segment *seg, *cur;
+ 
+     if (c->http_persistent && v->input_read_done) {
+         ret = reload_playlist(v, c);
+@@ -1774,12 +1792,13 @@
+         if (ret)
+             return ret;
+ 
+-        if (c->http_multiple == 1 && v->input_next_requested) {
++        if (c->http_multiple == 1 && v->input_next_requested && v->input_next) {
+             FFSWAP(AVIOContext *, v->input, v->input_next);
+             v->cur_seg_offset = 0;
+             v->input_next_requested = 0;
+             ret = 0;
+         } else {
++            v->input_next_requested = 0;
+             ret = open_input(c, v, seg, &v->input);
+         }
+         if (ret < 0) {
+@@ -1801,6 +1820,13 @@
+         }
+         segment_retries = 0;
+         just_opened = 1;
++        /* A reader faster than real time gains nothing from waiting to open
++         * the next segment, but loses the overlap of its request. */
++        now = av_gettime_relative();
++        if (v->cur_seg_open_time)
++            v->fast_reader = 2 * (now - v->cur_seg_open_time) < v->cur_seg_duration;
++        v->cur_seg_open_time = now;
++        v->cur_seg_duration  = seg->duration;
+     }
+ 
+     if (c->http_multiple == -1) {
+@@ -1813,19 +1839,31 @@
+     }
+ 
+     seg = next_segment(v);
++    cur = current_segment(v);
++    /* AES-128 segments get their own key and IV when opened, so they can be
++     * prefetched too, but not while a SAMPLE-AES segment, which is decrypted
++     * with the playlist key, is still being read. */
+     if (c->http_multiple == 1 && !v->input_next_requested &&
+-        seg && seg->key_type == KEY_NONE && av_strstart(seg->url, "http", NULL) &&
+-        !segment_reusable(v->input, current_segment(v), seg)) {
++        seg && (seg->key_type == KEY_NONE ||
++                (seg->key_type == KEY_AES_128 && cur->key_type != KEY_SAMPLE_AES)) &&
++        av_strstart(seg->url, "http", NULL) &&
++        !segment_reusable(v->input, cur, seg) && prefetch_due(v, cur)) {
++        /* open_input() resets the offset, which is still read in the current
++         * segment */
++        int64_t cur_seg_offset = v->cur_seg_offset;
++
+         ret = open_input(c, v, seg, &v->input_next);
++        v->cur_seg_offset = cur_seg_offset;
+         if (ret < 0) {
+             if (ff_check_interrupt(c->interrupt_callback))
+                 return AVERROR_EXIT;
+             av_log(v->parent, AV_LOG_WARNING, "Failed to open segment %"PRId64" of playlist %d\n",
+                    v->cur_seq_no + 1,
+                    v->index);
+-        } else {
+-            v->input_next_requested = 1;
++            ff_format_io_close(v->parent, &v->input_next);
+         }
++        /* After a failure, the segment is opened again when it is reached */
++        v->input_next_requested = 1;
+     }
+ 
+     if (v->init_sec_buf_read_offset < v->init_sec_data_len) {
+@@ -2443,6 +2481,8 @@
+             pls->input_next = NULL;
+             pls->input_next_requested = 0;
+             pls->cur_seg_offset = 0;
++            pls->cur_seg_open_time = 0;
++            pls->fast_reader = 0;
+             pls->cur_init_section = NULL;
+             /* Reset EOF flag */
+             pls->pb.pub.eof_reached = 0;
+@@ -2942,6 +2982,7 @@
+         pls->input_reuse = 0;
+         ff_format_io_close(pls->parent, &pls->input_next);
+         pls->input_next_requested = 0;
++        pls->cur_seg_open_time = 0;
+         av_packet_unref(pls->pkt);
+         pb->eof_reached = 0;
+         /* Clear any buffered data */

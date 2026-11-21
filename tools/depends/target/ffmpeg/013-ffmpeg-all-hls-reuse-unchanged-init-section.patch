@@ -1,0 +1,31 @@
+--- a/libavformat/hls.c
++++ b/libavformat/hls.c
+@@ -1561,6 +1561,15 @@
+     return ret;
+ }
+ 
++static int same_init_section(const struct segment *a, const struct segment *b)
++{
++    return a && b && !strcmp(a->url, b->url) &&
++           a->url_offset == b->url_offset && a->size == b->size &&
++           a->key_type == b->key_type &&
++           (a->key_type == KEY_NONE ||
++            (!strcmp(a->key, b->key) && !memcmp(a->iv, b->iv, sizeof(a->iv))));
++}
++
+ static int update_init_section(struct playlist *pls, struct segment *seg)
+ {
+     static const int max_init_section_size = 1024*1024;
+@@ -1572,6 +1581,12 @@
+     if (seg->init_section == pls->cur_init_section)
+         return 0;
+ 
++    /* A reloaded live playlist lists the same section again. */
++    if (same_init_section(seg->init_section, pls->cur_init_section)) {
++        pls->cur_init_section = seg->init_section;
++        return 0;
++    }
++
+     pls->cur_init_section = NULL;
+ 
+     if (!seg->init_section)
