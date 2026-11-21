@@ -213,6 +213,9 @@ public:
    */
   virtual bool SupportsRaw(AEAudioFormat &format) { return false; }
 
+  // True when RAW passthrough silence is emitted as IEC pause bursts.
+  virtual bool SupportsPassthroughSilence() { return false; }
+
   /*!
    * \brief Returns true if the AudioEngine supports drain mode which is not streaming silence when idle
    *

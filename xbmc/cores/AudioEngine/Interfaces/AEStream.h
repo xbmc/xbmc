@@ -60,6 +60,8 @@ public:
   struct ExtData
   {
     double pts = 0;
+    // Request silent output for these frames, independent of the reason.
+    bool silence = false;
     bool hasDownmix = false;
     double centerMixLevel = 1;
   };

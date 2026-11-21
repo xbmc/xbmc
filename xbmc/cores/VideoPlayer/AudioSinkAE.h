@@ -43,7 +43,7 @@ public:
   //!        the wire changed and a downstream device has to acquire it again.
   bool HasSinkFormatChanged();
   void Destroy(bool finish);
-  unsigned int AddPackets(const DVDAudioFrame &audioframe);
+  unsigned int AddPackets(const DVDAudioFrame& audioframe, bool silence);
   double GetPlayingPts();
   double GetCacheTime();
   double GetCacheTotal(); // returns total time a stream can buffer
@@ -61,6 +61,7 @@ public:
   void Flush();
   void Drain();
   void AbortAddPackets();
+  bool SupportsPassthroughSilence() const;
 
   double GetClock() override;
   double GetClockSpeed() override;
@@ -74,7 +75,7 @@ protected:
   double m_syncError;
   unsigned int m_syncErrorTime;
   double m_resampleRatio = 0.0; // invalid
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 
   AEDataFormat m_dataFormat;
   unsigned int m_sampleRate;
