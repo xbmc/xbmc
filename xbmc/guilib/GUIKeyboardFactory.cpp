@@ -22,11 +22,14 @@
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM) || \
+    defined(TARGET_WEBOS)
 #include "dialogs/GUIDialogKeyboardTouch.h"
 
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
+#elif defined(TARGET_WEBOS)
+#include "windowing/wayland/WebOSKeyboard.h"
 #endif
 #endif
 
@@ -93,9 +96,13 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
         (uint32_t)heading.asInteger());
 
   bool useKodiKeyboard = true;
-#if defined(TARGET_DARWIN_TVOS) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
+#if defined(TARGET_DARWIN_TVOS) || defined(TARGET_ANDROID) || defined(TARGET_WASM) || \
+    defined(TARGET_WEBOS)
   useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_INPUT_USEAPPLICATIONKEYBOARD);
+#if defined(TARGET_WEBOS)
+  useKodiKeyboard = useKodiKeyboard || !KODI::WINDOWING::WAYLAND::CWebOSKeyboard::IsAvailable();
+#endif
 #elif defined(TARGET_DARWIN_EMBEDDED)
   useKodiKeyboard = CDarwinEmbedKeyboard::hasExternalKeyboard();
 #endif
@@ -104,10 +111,11 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
   CGUIKeyboard* kb = nullptr;
   if (useKodiKeyboard)
     kb = winManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM) || \
+    defined(TARGET_WEBOS)
   else
     kb = winManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
-#endif // defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
+#endif
 
   if (kb)
   {

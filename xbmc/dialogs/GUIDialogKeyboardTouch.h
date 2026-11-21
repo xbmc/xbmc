@@ -27,7 +27,9 @@ public:
 protected:
   void OnInitWindow() override;
   using CGUIControlGroup::Process;
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Process() override;
+  void Render() override;
 
   char_callback_t m_pCharCallback;
   std::string m_initialString;

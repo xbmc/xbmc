@@ -72,11 +72,13 @@ if(TARGET_WEBOS)
   list(APPEND SOURCES OSScreenSaverWebOS.cpp
                       SeatWebOS.cpp
                       ShellSurfaceWebOSShell.cpp
+                      WebOSKeyboard.cpp
                       WinSystemWaylandWebOS.cpp
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp)
   list(APPEND HEADERS OSScreenSaverWebOS.h
                       SeatWebOS.h
                       ShellSurfaceWebOSShell.h
+                      WebOSKeyboard.h
                       WinSystemWaylandWebOS.h
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp)
 endif()
