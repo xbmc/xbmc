@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <string.h>
 #include <thread>
+#include <utility>
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
@@ -30,12 +31,6 @@ using namespace KODI::WINDOWING::GBM;
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
-  // Declared at function scope so the blob outlives drmModeAtomicCommit.
-  // DRM requires the blob to remain alive for the duration of the commit;
-  // destroying it before the commit returns leaves the atomic request
-  // referencing an invalid id and the kernel rejects with EINVAL.
-  CDRMPropertyBlob modeBlob;
-
   if (m_old_crtc != nullptr)
   {
     if (m_old_crtc->GetId() != m_crtc->GetId())
@@ -77,11 +72,11 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     if (!AddProperty(m_connector, "CRTC_ID", m_crtc->GetCrtcId()))
       return;
 
-    modeBlob = CDRMPropertyBlob(m_fd, m_mode, sizeof(*m_mode));
+    CDRMPropertyBlob modeBlob(m_fd, m_mode, sizeof(*m_mode));
     if (!modeBlob.IsValid())
       return;
 
-    if (!AddProperty(m_crtc, "MODE_ID", modeBlob.Get()))
+    if (!m_req->AddProperty(m_crtc, "MODE_ID", std::move(modeBlob)))
       return;
 
     if (!AddProperty(m_crtc, "ACTIVE", m_active ? 1 : 0))
@@ -106,12 +101,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(outputPlane, "CRTC_Y", 0);
     AddProperty(outputPlane, "CRTC_W", m_mode->hdisplay);
     AddProperty(outputPlane, "CRTC_H", m_mode->vdisplay);
-
-    if (m_inFenceFd != -1)
-    {
-      AddProperty(m_crtc, "OUT_FENCE_PTR", reinterpret_cast<uint64_t>(&m_outFenceFd));
-      AddProperty(outputPlane, "IN_FENCE_FD", m_inFenceFd);
-    }
+    AddFences(outputPlane);
   }
   //! @todo Reaching out to the window manager and application player
   //! singletons from inside the DRM layer is a layering violation. The
@@ -141,19 +131,26 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
                "request",
                strerror(errno));
 
-    auto oldRequest = m_atomicRequestQueue.front().get();
-    CDRMAtomicRequest::LogAtomicDiff(m_req, oldRequest);
-    m_req = oldRequest;
+    ret = UseLastRequest() ? 0 : -1;
 
     // update the old atomic request with the new fb id to avoid tearing
-    if (rendered)
+    if (ret == 0 && rendered)
+    {
       AddProperty(outputPlane, "FB_ID", fb_id);
+      AddFences(outputPlane);
+    }
   }
 
-  ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+  if (ret == 0)
+  {
+    ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+    if (ret < 0)
+      CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
+  }
+
+  // a failed request is not kept, so a fallback the kernel refused is not tried again
   if (ret < 0)
   {
-    CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
     m_atomicRequestQueue.pop_back();
   }
   else
@@ -165,7 +162,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     // incorrect plane cleanup on subsequent video playback.
     m_req->CacheProperties();
 
-    if (m_atomicRequestQueue.size() > 1)
+    while (m_atomicRequestQueue.size() > 1)
       m_atomicRequestQueue.pop_front();
   }
 
@@ -177,6 +174,32 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
   m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
   m_req = m_atomicRequestQueue.back().get();
+}
+
+bool CDRMAtomic::UseLastRequest()
+{
+  if (m_atomicRequestQueue.size() < 2)
+    return false;
+
+  auto lastRequest = m_atomicRequestQueue.front().get();
+  CDRMAtomicRequest::LogAtomicDiff(m_req, lastRequest);
+
+  m_atomicRequestQueue.pop_back();
+  m_req = lastRequest;
+
+  // the fences of the frame it was committed with are closed by now
+  m_req->RemoveProperty("IN_FENCE_FD");
+  m_req->RemoveProperty("OUT_FENCE_PTR");
+  return true;
+}
+
+void CDRMAtomic::AddFences(CDRMPlane* plane)
+{
+  if (m_inFenceFd == -1)
+    return;
+
+  AddProperty(m_crtc, "OUT_FENCE_PTR", reinterpret_cast<uint64_t>(&m_outFenceFd));
+  AddProperty(plane, "IN_FENCE_FD", m_inFenceFd);
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
@@ -333,6 +356,35 @@ bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
 
   m_atomicRequestItems[object][propertyId] = value;
   return true;
+}
+
+bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
+                                                const char* name,
+                                                CDRMPropertyBlob blob)
+{
+  if (!AddProperty(object, name, blob.Get()))
+    return false;
+
+  m_blobs.emplace_back(std::move(blob));
+  return true;
+}
+
+void CDRMAtomic::CDRMAtomicRequest::RemoveProperty(const char* name)
+{
+  bool removed = false;
+  for (auto& [object, properties] : m_atomicRequestItems)
+    removed |= properties.erase(object->GetPropertyId(name)) > 0;
+
+  if (!removed)
+    return;
+
+  // a libdrm request only grows, so it is built again from what is left
+  m_atomicRequest.reset(drmModeAtomicAlloc());
+  for (const auto& [object, properties] : m_atomicRequestItems)
+  {
+    for (const auto& [propertyId, value] : properties)
+      drmModeAtomicAddProperty(m_atomicRequest.get(), object->GetId(), propertyId, value);
+  }
 }
 
 void CDRMAtomic::CDRMAtomicRequest::CacheProperties()
