@@ -47,6 +47,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
+#include "jobs/JobManager.h"
 #include "jobs/JobQueue.h"
 #include "language/LangInfo.h"
 #include "messaging/ApplicationMessenger.h"
@@ -833,9 +834,10 @@ CVideoPlayer::~CVideoPlayer()
   CloseFile();
   DestroyPlayers();
 
-  while (m_outboundEvents->IsProcessing())
+  // WaitForCompletion only watches this queue; keep the job-manager-stopped
+  // escape that IsProcessing() provided for jobs that will never complete
+  while (CServiceBroker::GetJobManager()->IsRunning() && !m_outboundEvents->WaitForCompletion(100ms))
   {
-    CThread::Sleep(10ms);
   }
 }
 
