@@ -315,6 +315,25 @@ bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t valu
   return m_req->AddProperty(object, name, value);
 }
 
+bool CDRMAtomic::CommitProperty(CDRMObject* object, const char* name, uint64_t value)
+{
+  if (!object)
+    return false;
+
+  CDRMAtomicRequest request;
+  if (!request.AddProperty(object, name, value))
+    return false;
+
+  if (drmModeAtomicCommit(m_fd, request.Get(), DRM_MODE_ATOMIC_ALLOW_MODESET, nullptr) < 0)
+  {
+    CLog::LogF(LOGERROR, "atomic commit of {} failed: {}", name, strerror(errno));
+    return false;
+  }
+
+  request.CacheProperties();
+  return true;
+}
+
 CDRMAtomic::CDRMAtomicRequest::CDRMAtomicRequest() : m_atomicRequest(drmModeAtomicAlloc())
 {
 }

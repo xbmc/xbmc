@@ -21,6 +21,7 @@
 #include "platform/linux/input/LibInputHandler.h"
 
 #include <atomic>
+#include <optional>
 #include <utility>
 
 #include <gbm.h>
@@ -112,6 +113,8 @@ protected:
   std::unique_ptr<CLibInputHandler> m_libinput;
 
 private:
+  void UpdateContentType();
+  void ResetContentType();
   static void ApplyLimitGuiSize(void* userptr);
   static void ApplyColorRangeSetting(void* userptr);
 
@@ -141,6 +144,8 @@ private:
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+  std::optional<uint64_t> m_contentTypeRequested;
+  int m_contentTypeAttempts = 0;
 
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };
