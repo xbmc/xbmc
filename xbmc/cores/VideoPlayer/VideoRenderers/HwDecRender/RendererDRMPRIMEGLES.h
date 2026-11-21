@@ -64,6 +64,8 @@ public:
   void RenderUpdate(
       int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   bool ConfigChanged(const VideoPicture& picture) override;
+  bool UpdateLightMetadata(const VideoPicture& picture) override;
+  bool SupportsLiveHDRMetadata() const override;
 
   // Feature support
   bool SupportsMultiPassRendering() override { return false; }

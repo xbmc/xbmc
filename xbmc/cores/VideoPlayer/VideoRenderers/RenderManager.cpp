@@ -97,9 +97,46 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     if (!m_bRenderGUI)
       return true;
 
-    if (m_pRenderer != nullptr && m_picture.IsSameParams(picture) && m_orientation == orientation &&
-        m_NumberBuffers == buffers && !m_pRenderer->ConfigChanged(picture))
+    const bool liveHDRMetadata = m_pRenderer != nullptr && m_pRenderer->SupportsLiveHDRMetadata();
+
+    if (m_pRenderer != nullptr && m_picture.IsSameParams(picture, liveHDRMetadata) &&
+        m_orientation == orientation && m_NumberBuffers == buffers &&
+        !m_pRenderer->ConfigChanged(picture))
     {
+      // HDR light metadata is deliberately not part of IsSameParams(): a change must never
+      // force a reconfigure, but the renderer may push it live.
+      if (liveHDRMetadata && (!m_picture.CompareLightMetadata(picture) ||
+                              !m_picture.CompareDisplayMetadata(picture, false)))
+      {
+        if (m_picture.hasDisplayMetadata && picture.hasDisplayMetadata)
+        {
+          CLog::Log(LOGDEBUG,
+                    "CRenderManager::Configure - HDR mastering metadata changed: "
+                    "lum min {:.4f} -> {:.4f}, max {:.1f} -> {:.1f}, "
+                    "wp x {:.4f} -> {:.4f}, y {:.4f} -> {:.4f}",
+                    av_q2d(m_picture.displayMetadata.min_luminance),
+                    av_q2d(picture.displayMetadata.min_luminance),
+                    av_q2d(m_picture.displayMetadata.max_luminance),
+                    av_q2d(picture.displayMetadata.max_luminance),
+                    av_q2d(m_picture.displayMetadata.white_point[0]),
+                    av_q2d(picture.displayMetadata.white_point[0]),
+                    av_q2d(m_picture.displayMetadata.white_point[1]),
+                    av_q2d(picture.displayMetadata.white_point[1]));
+        }
+
+        if (m_picture.hasLightMetadata && picture.hasLightMetadata)
+        {
+          CLog::Log(LOGDEBUG, "CRenderManager::Configure - HDR MaxCLL {} -> {}, MaxFALL {} -> {}",
+                    m_picture.lightMetadata.MaxCLL, picture.lightMetadata.MaxCLL,
+                    m_picture.lightMetadata.MaxFALL, picture.lightMetadata.MaxFALL);
+        }
+
+        // only remember the new metadata once it has been applied, so that a failed live update
+        // is retried with the next picture
+        if (m_pRenderer->UpdateLightMetadata(picture))
+          m_picture.SetParams(picture);
+      }
+
       if (m_fps != fps)
       {
         CLog::Log(LOGDEBUG, "CRenderManager::Configure - framerate changed from {:4.2f} to {:4.2f}",

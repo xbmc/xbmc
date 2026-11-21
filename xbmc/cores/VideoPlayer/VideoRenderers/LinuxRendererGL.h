@@ -74,6 +74,8 @@ public:
   void Update() override;
   CRenderInfo GetRenderInfo() override;
   bool ConfigChanged(const VideoPicture &picture) override;
+  bool UpdateLightMetadata(const VideoPicture& picture) override;
+  bool SupportsLiveHDRMetadata() const override;
 
   // Feature support
   bool SupportsMultiPassRendering() override;
