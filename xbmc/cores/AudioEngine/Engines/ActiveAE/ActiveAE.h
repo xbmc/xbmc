@@ -16,6 +16,7 @@
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <list>
 #include <memory>
 #include <queue>
@@ -207,6 +208,9 @@ public:
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   void SetSinkNeedIec(bool needIEC) { m_sinkNeedIecPack = needIEC; }
+  // The sink ran out of sound or was flushed, until the engine sends sound again
+  void SetSinkStarved(bool starved) { m_sinkStarved = starved; }
+  bool IsSinkStarved() const { return m_sinkStarved; }
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
 protected:
@@ -219,6 +223,7 @@ protected:
   AEAudioFormat m_sinkFormat;
   bool m_pcmOutput;
   bool m_sinkNeedIecPack{false};
+  std::atomic<bool> m_sinkStarved{false};
   CCriticalSection m_lock;
   struct StreamStats
   {

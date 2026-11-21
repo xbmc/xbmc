@@ -140,6 +140,7 @@ protected:
   std::chrono::milliseconds m_extSilenceTimeout;
   bool m_extAppFocused;
   bool m_extStreaming;
+  bool m_extPadding{false};
   bool m_extReserved{false};
   //! No device could be opened, so output goes to the null sink until the engine reconfigures
   bool m_extFallback{false};
