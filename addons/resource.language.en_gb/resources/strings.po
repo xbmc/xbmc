@@ -7863,7 +7863,13 @@ msgctxt "#13486"
 msgid "and Play"
 msgstr ""
 
-#empty strings from id 13487 to 13504
+#. Value of setting with label #36100 "Dither depth"
+#: system/settings/settings.xml
+msgctxt "#13487"
+msgid "10 bit"
+msgstr ""
+
+#empty strings from id 13488 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
