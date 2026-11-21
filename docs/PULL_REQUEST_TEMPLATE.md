@@ -31,6 +31,11 @@
 - [ ] **Student submission** (PR was done for educational purposes and will be reviewed with support)
 - [ ] **None of the above** (please explain below)
 
+**AI disclosure (if applicable):** For materially AI-assisted work, include
+model/version and reasoning effort (or state if unavailable) in the PR
+per [AGENTS.md](https://github.com/xbmc/xbmc/blob/master/AGENTS.md#ai-use-and-disclosure).
+No declaration is required for entirely human-written contributions.
+
 ## Checklist:
 <!--- Go over all the following points, and put an `X` with no space in all the boxes that apply like this: [X] -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->

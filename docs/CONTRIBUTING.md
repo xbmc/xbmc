@@ -15,6 +15,11 @@ If you are a *git ninja*, we feel happy and sad for you at the same time. Your s
 Reviews are a great way to get familiar with the codebase. If you would like to start with reviewing just use **[this handy github filter](https://github.com/xbmc/xbmc/pulls?q=is%3Apr+is%3Aopen+review%3Anone)** to see PRs that are in need of one (we have plenty!).
 
 ## Pull request submission guidelines
+AI assistance is optional. If AI materially contributed to your changes or
+review, disclose the model/version and reasoning effort (or note if the
+setting is unavailable) following [AGENTS.md](../AGENTS.md#ai-use-and-disclosure).
+Human-only contributions require no declaration of non-use.
+
 * **Create topic branches**. Never, ever open a pull request from your master branch. **Ever!**
 * **Code against master branch**. Unless release-specific, all Kodi development occurs in the `master` branch. If it needs backporting it can be done after it hits master.
 * **One topic branch per change**. Found something that needs fixing but is unrelated to the current work? Create a new topic branch and open another *pull request*.
