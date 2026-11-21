@@ -47,6 +47,8 @@
 #include "platform/linux/TimeUtils.h"
 
 #include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <limits>
 #include <memory>
 #include <mutex>
@@ -170,6 +172,7 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_viewporter, 1, 1, false);
   m_registry->RequestSingleton(m_fractionalScaleManager, 1, 1, false);
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
+  m_registry->RequestSingleton(m_contentFrameRateManager, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
   // version 4 adds name() and description() -> optional
@@ -295,6 +298,12 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   if (m_viewporter)
   {
     m_viewport = m_viewporter.get_viewport(m_surface);
+  }
+
+  if (m_contentFrameRateManager)
+  {
+    m_contentFrameRate = m_contentFrameRateManager.get_surface_content_frame_rate(m_surface);
+    m_contentFrameRateSent = {0, 1};
   }
 
   if (m_fractionalScaleManager)
@@ -433,6 +442,7 @@ bool CWinSystemWayland::DestroyWindow()
   // waylandpp automatically calls wl_surface_destroy when the last reference is removed
   m_viewport = wayland::viewport_t();
   m_fractionalScale = wayland::fractional_scale_v1_t();
+  m_contentFrameRate = wayland::content_frame_rate_v1_t();
   m_surface = wayland::surface_t();
   m_windowDecorator.reset();
   m_seats.clear();
@@ -1677,6 +1687,39 @@ std::string CWinSystemWayland::GetClipboardText()
     }
   }
   return "";
+}
+
+void CWinSystemWayland::SetContentFrameRate(float fps)
+{
+  if (!m_contentFrameRate)
+    return;
+
+  // NTSC rates as exact n*1000/1001
+  std::uint32_t numerator{0};
+  std::uint32_t denominator{1};
+  if (fps > 0.0f)
+  {
+    const double rate{static_cast<double>(fps)};
+    const double ntsc{rate * 1.001};
+    if (std::abs(rate - std::round(rate)) < 0.01)
+      numerator = static_cast<std::uint32_t>(std::round(rate));
+    else if (std::abs(ntsc - std::round(ntsc)) < 0.01)
+    {
+      numerator = static_cast<std::uint32_t>(std::round(ntsc)) * 1000;
+      denominator = 1001;
+    }
+    else
+    {
+      numerator = static_cast<std::uint32_t>(std::round(rate * 1000.0));
+      denominator = 1000;
+    }
+  }
+  if (m_contentFrameRateSent == std::pair{numerator, denominator})
+    return;
+
+  m_contentFrameRateSent = {numerator, denominator};
+  CLog::Log(LOGDEBUG, "Wayland content frame rate: {}/{}", numerator, denominator);
+  m_contentFrameRate.set_frame_rate(numerator, denominator);
 }
 
 bool CWinSystemWayland::SetHDR(const VideoPicture* videoPicture)
