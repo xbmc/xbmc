@@ -79,6 +79,21 @@ protected:
     CServiceBroker::GetJobManager()->Restart();
     CServiceBroker::UnregisterJobManager();
   }
+
+  //! Does what a worker does when it is told there is no more work, short of leaving
+  static void BeginRetiringWorker()
+  {
+    CJobManager& manager{*CServiceBroker::GetJobManager()};
+    std::unique_lock lock(manager.m_section);
+    manager.m_workers.emplace_back(nullptr);
+
+    // Stopping reaches the same last PopJob() as an idle timeout, without the 30 second wait
+    manager.m_running = false;
+    EXPECT_EQ(nullptr, manager.GetNextJob());
+    manager.m_running = true;
+  }
+
+  static void FinishRetiringWorker() { CServiceBroker::GetJobManager()->RemoveWorker(nullptr); }
 };
 
 TEST_F(TestJobManager, AddJob)
@@ -436,6 +451,18 @@ TEST_F(TestJobManager, CallbacksCountTowardsTheConcurrencyLimit)
 
   for (auto& callback : callbacks)
     callback->Release();
+
+  EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
+}
+
+TEST_F(TestJobManager, JobAddedWhileAWorkerRetiresRuns)
+{
+  BeginRetiringWorker();
+
+  Flags flags;
+  AddDumbJob(flags, nullptr, CJob::PRIORITY_NORMAL);
+
+  FinishRetiringWorker();
 
   EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
 }

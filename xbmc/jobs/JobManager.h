@@ -183,6 +183,8 @@ public:
   size_t GetPendingCallbackCount(const CJob* job) const;
 
 private:
+  friend class TestJobManager;
+
   CJobManager(const CJobManager&) = delete;
   CJobManager const& operator=(CJobManager const&) = delete;
 
@@ -276,6 +278,8 @@ private:
   // Jobs out of m_processing whose callbacks are still running, by priority
   std::array<size_t, CJob::PRIORITY_DEDICATED + 1> m_completing{};
   Workers m_workers;
+  // Workers in m_workers that have been given no job and are leaving
+  size_t m_retiring{0};
 
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;
