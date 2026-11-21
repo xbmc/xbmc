@@ -104,6 +104,11 @@ void CGUIDialogProgress::Progress()
   }
 }
 
+void CGUIDialogProgress::ProcessRenderLoop(bool renderOnly)
+{
+  CGUIDialog::ProcessRenderLoop(renderOnly);
+}
+
 bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
