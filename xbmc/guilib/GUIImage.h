@@ -101,6 +101,8 @@ protected:
   void ProcessAllocation();
   void ProcessInstantTransition();
   void StartFadeTransition();
+  void FadeOutCurrent();
+  void ProcessStaleTexture(unsigned int frameTime);
   void ProcessFades(unsigned int currentTime, unsigned int frameTime);
   bool ProcessFading(CFadingTexture& texture, unsigned int frameTime, unsigned int currentTime);
 
@@ -129,6 +131,10 @@ protected:
   // bounded, so fast image changes can't pile up textures
   static constexpr size_t MAX_FADING_TEXTURES = 2;
   std::vector<std::unique_ptr<CFadingTexture>> m_fadingTextures; ///< fading out, oldest first
+
+  // The old texture gives way to the fallback once the next one has been loading this long (ms)
+  static constexpr unsigned int STALE_TEXTURE_DELAY = 500;
+  unsigned int m_nextLoadTime{0}; ///< how long the next texture has been loading (ms)
 
   std::string m_nameCurrent{};
   std::string m_nameNext{};
