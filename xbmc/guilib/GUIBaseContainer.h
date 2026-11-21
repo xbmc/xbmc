@@ -129,6 +129,13 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {}
   virtual bool SelectItemFromPoint(const CPoint& point) { return false; }
+  /*!
+   \brief Select the item at the point where a touch started.
+   A touch doesn't hover over the list first, so the touched item has to be selected right away.
+   \param point the position of the touch, relative to the container
+   \return true if the point was handled
+   */
+  virtual bool SelectItemFromTouch(const CPoint& point) { return SelectItemFromPoint(point); }
   virtual int GetCursorFromPoint(const CPoint& point, CPoint* itemPoint = NULL) const { return -1; }
   virtual void Reset();
   virtual size_t GetNumItems() const { return m_items.size(); }
