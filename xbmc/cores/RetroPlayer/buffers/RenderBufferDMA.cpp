@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "utils/BufferObject.h"
+#include "utils/BufferObjectFactory.h"
 #if defined(HAVE_LINUX_DMA_HEAP)
 #include "utils/DMAHeapBufferObject.h"
 #endif
@@ -23,6 +24,13 @@
 
 using namespace KODI;
 using namespace RETRO;
+
+namespace
+{
+// From this size up, uploading a frame costs more than it is worth when a buffer
+// type is available that the GPU can sample in place
+constexpr unsigned int DIRECT_IMPORT_MIN_PIXELS = 1280 * 720;
+} // namespace
 
 CRenderBufferDMA::CRenderBufferDMA(int fourcc)
   : m_fourcc(fourcc),
@@ -53,9 +61,34 @@ bool CRenderBufferDMA::Allocate(AVPixelFormat format, unsigned int width, unsign
   m_width = width;
   m_height = height;
 
+  if (RequiresCoherencyWorkaround() && m_width * m_height >= DIRECT_IMPORT_MIN_PIXELS)
+  {
+    auto bo = CBufferObjectFactory::CreateBufferObjectByName("CGBMBufferObject");
+    if (bo != nullptr && bo->CreateBufferObject(m_fourcc, m_width, m_height))
+    {
+      // Mapping it gives it the stride the import needs. A buffer the GPU
+      // can't import would never show a picture.
+      bo->GetMemory();
+      bo->ReleaseMemory();
+      const bool imported = CreateImage(*bo);
+      m_egl->DestroyImage();
+      if (imported)
+      {
+        m_bo = std::move(bo);
+        m_writeOnly = true;
+        return true;
+      }
+    }
+  }
+
   m_bo->CreateBufferObject(m_fourcc, m_width, m_height);
 
   return true;
+}
+
+DataAccess CRenderBufferDMA::GetMemoryAccess() const
+{
+  return m_writeOnly ? DataAccess::WRITE_ONLY : CBaseRenderBuffer::GetMemoryAccess();
 }
 
 size_t CRenderBufferDMA::GetFrameSize() const
@@ -157,12 +190,25 @@ bool CRenderBufferDMA::UploadTexture()
     return bUploaded;
   }
 
+  const bool imported = CreateImage(*m_bo);
+  if (imported)
+    m_egl->UploadImage(m_textureTarget);
+
+  m_egl->DestroyImage();
+
+  glBindTexture(m_textureTarget, 0);
+
+  return imported;
+}
+
+bool CRenderBufferDMA::CreateImage(IBufferObject& bo)
+{
   std::array<CEGLImage::EglPlane, CEGLImage::MAX_NUM_PLANES> planes;
 
-  planes[0].fd = m_bo->GetFd();
+  planes[0].fd = bo.GetFd();
   planes[0].offset = 0;
-  planes[0].pitch = m_bo->GetStride();
-  planes[0].modifier = m_bo->GetModifier();
+  planes[0].pitch = bo.GetStride();
+  planes[0].modifier = bo.GetModifier();
 
   CEGLImage::EglAttrs attribs;
 
@@ -171,14 +217,7 @@ bool CRenderBufferDMA::UploadTexture()
   attribs.format = m_fourcc;
   attribs.planes = planes;
 
-  if (m_egl->CreateImage(attribs))
-    m_egl->UploadImage(m_textureTarget);
-
-  m_egl->DestroyImage();
-
-  glBindTexture(m_textureTarget, 0);
-
-  return true;
+  return m_egl->CreateImage(attribs);
 }
 
 void CRenderBufferDMA::DeleteTexture()

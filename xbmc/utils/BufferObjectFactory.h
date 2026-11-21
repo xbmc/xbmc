@@ -13,6 +13,7 @@
 #include <functional>
 #include <list>
 #include <memory>
+#include <string>
 
 /**
  * @brief Factory that provides CBufferObject registration and creation
@@ -30,6 +31,13 @@ public:
    * @return std::unique_ptr<CBufferObject>
    */
   static std::unique_ptr<CBufferObject> CreateBufferObject(bool needsCreateBySize);
+
+  /**
+   * @brief Create a CBufferObject of the registered type with the given name.
+   *
+   * @return std::unique_ptr<CBufferObject>, or nullptr if no type of that name is registered
+   */
+  static std::unique_ptr<CBufferObject> CreateBufferObjectByName(const std::string& name);
 
   /**
    * @brief Registers a CBufferObject class to class to the factory.
