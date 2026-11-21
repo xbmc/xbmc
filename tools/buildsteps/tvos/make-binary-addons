@@ -4,8 +4,9 @@ XBMC_PLATFORM_DIR=tvos
 
 . $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-native-depends
 
-#clear the build failed file
+#clear the build failed file and the add-on results of an earlier build
 rm -f $WORKSPACE/cmake/$FAILED_BUILD_FILENAME
+rm -f $WORKSPACE/cmake/addons/.success $WORKSPACE/cmake/addons/.failure
 
 ALL_BINARY_ADDONS_BUILT="1"
 #only build binary addons when requested by env/jenkins
