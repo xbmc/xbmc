@@ -163,6 +163,10 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");
     m_doneEvent.Set();
 
+    // Installing an update can wait for the main thread (the skin in use is unloaded first), and
+    // the main thread takes this lock in CheckForUpdates().
+    lock.unlock();
+
     VECADDONS updates = m_addonMgr.GetAvailableUpdates();
 
     if (!updates.empty() &&
