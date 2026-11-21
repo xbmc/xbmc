@@ -8,10 +8,15 @@
 
 #include "DebugRenderer.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 using namespace OVERLAY;
 
@@ -56,6 +61,7 @@ void CDebugRenderer::Dispose()
     return;
 
   m_isInitialized = false;
+  m_coreUsage.Reset();
   m_overlayRenderer.Flush();
   m_overlay.reset();
   OVERLAY::MarkDirty();
@@ -80,6 +86,32 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
   m_adapter->AddSubtitle(info.audio, 0., 5000000.);
   m_adapter->AddSubtitle(info.video, 0., 5000000.);
   m_adapter->AddSubtitle(info.player, 0., 5000000.);
+
+  const auto& advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  m_coreGraph = static_cast<CDebugCoreUsage::Graph>(advancedSettings->m_videoDebugThreadsGraph);
+  if (advancedSettings->m_videoDebugThreadsCores || m_coreGraph != CDebugCoreUsage::Graph::OFF)
+    m_coreUsage.Update();
+  if (advancedSettings->m_videoDebugThreadsCores)
+  {
+    const std::string coreUsage = m_coreUsage.GetSummary();
+    if (!coreUsage.empty())
+    {
+      std::string cores = "Cores: " + coreUsage;
+      m_adapter->AddSubtitle(cores, 0., 5000000.);
+    }
+  }
+
+  if (advancedSettings->m_videoDebugThreads)
+  {
+    const std::string& threadUsage =
+        m_threadUsage.GetSummary(advancedSettings->m_videoDebugThreadsCount);
+    if (!threadUsage.empty())
+    {
+      std::string threads = "Threads: " + threadUsage;
+      m_adapter->AddSubtitle(threads, 0., 5000000.);
+    }
+  }
+
   m_adapter->AddSubtitle(info.vsync, 0., 5000000.);
   if (!info.contentGeometry.empty())
     m_adapter->AddSubtitle(info.contentGeometry, 0., 5000000.);
@@ -89,6 +121,8 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
 {
   if (!m_isInitialized)
     return;
+
+  m_coreGraph = CDebugCoreUsage::Graph::OFF;
 
   // FIXME: We currently force ASS_Event's and the current PTS
   // of rendering with fixed values to allow perpetual
@@ -109,6 +143,10 @@ void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
 {
   if (!m_isInitialized)
     return;
+
+  if (m_coreGraph != CDebugCoreUsage::Graph::OFF &&
+      CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
+    m_coreUsage.Render(view, m_coreGraph);
 
   m_overlayRenderer.SetVideoRect(src, dst, view);
   m_overlayRenderer.Render(0);

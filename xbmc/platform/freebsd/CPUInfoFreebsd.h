@@ -18,6 +18,7 @@ public:
   CCPUInfoFreebsd();
   ~CCPUInfoFreebsd() = default;
 
+  bool SupportsCoreUsage() const override { return true; }
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
   bool GetTemperature(CTemperature& temperature) override;
