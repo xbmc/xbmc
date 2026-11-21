@@ -182,6 +182,7 @@ private:
   std::string m_strBackendChannels;
   long long m_iBackendDiskTotal;
   long long m_iBackendDiskUsed;
+  PVR_DRIVE_SPACE_UNIT m_backendDiskUnit;
   bool m_bIsPlayingTV;
   bool m_bIsPlayingRadio;
   bool m_bIsPlayingRecording;
