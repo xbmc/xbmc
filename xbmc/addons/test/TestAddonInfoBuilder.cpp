@@ -313,7 +313,9 @@ TEST_F(TestAddonInfoBuilder, EnglishIsTheFallbackHoweverItsKeyIsSpelled)
     const AddonInfoPtr addon{CAddonInfoBuilder::Generate(doc.RootElement(), RepositoryDirInfo{})};
     EXPECT_NE(nullptr, addon);
     if (addon)
+    {
       EXPECT_EQ("English", addon->Summary()) << english;
+    }
   }
 
   CLanguage::GetInstance().SetUI(previous);
