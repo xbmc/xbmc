@@ -299,13 +299,18 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 {
   if (m_currentStream)
   {
-    // check if we advance a track of a CUE sheet
+    // check if we advance a track of a CUE sheet or a file with chapters (e.g. MKA)
     // if this is the case we don't need to open a new stream
-    std::string newURL = file.GetDynURL().GetFileName();
-    std::string oldURL = m_currentStream->m_fileItem->GetDynURL().GetFileName();
-    if (newURL.compare(oldURL) == 0 && file.GetStartOffset() &&
-        file.GetStartOffset() == m_currentStream->m_fileItem->GetEndOffset() && m_currentStream &&
-        m_currentStream->m_prepareTriggered)
+    const bool isSameFile = (file.GetPath() == m_currentStream->m_fileItem->GetPath()) ||
+                            (file.GetDynPath() == m_currentStream->m_fileItem->GetDynPath()) ||
+                            (file.GetDynURL().GetFileName() ==
+                             m_currentStream->m_fileItem->GetDynURL().GetFileName());
+    const bool isConsecutive =
+        file.GetStartOffset() > 0 &&
+        (file.GetStartOffset() == m_currentStream->m_fileItem->GetEndOffset() ||
+         std::abs(file.GetStartOffset() - m_currentStream->m_fileItem->GetEndOffset()) <= 2);
+
+    if (isSameFile && isConsecutive && m_currentStream->m_prepareTriggered)
     {
       m_currentStream->m_nextFileItem = std::make_unique<CFileItem>(file);
       m_upcomingCrossfadeMS = 0;
