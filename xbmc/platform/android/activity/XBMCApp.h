@@ -23,6 +23,7 @@
 #include <atomic>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <thread>
 #include <vector>
@@ -244,6 +245,7 @@ private:
   bool m_wakeUp{false};
   bool m_aeReset{false};
   bool m_hdmiPlugged{true};
+  std::optional<std::vector<int>> m_hdmiEncodings;
   bool m_mediaSessionUpdated{false};
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
