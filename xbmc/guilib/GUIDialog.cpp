@@ -16,6 +16,7 @@
 #include "input/actions/Action.h"
 #include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
+#include "threads/Thread.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 
@@ -162,6 +163,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
   // thread (this should really be handled via a thread message though IMO)
   m_active = true;
   m_closing = false;
+  m_abandoned = false;
   CServiceBroker::GetGUI()->GetWindowManager().RegisterDialog(this);
 
   // active this window
@@ -177,6 +179,8 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 
     while (m_active)
     {
+      if (m_abandoned)
+        Close(true);
       if (!CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(false))
         break;
     }
@@ -195,8 +199,20 @@ void CGUIDialog::Open(bool bProcessRenderLoop, const std::string& param /* = "" 
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_OPEN, -1, bProcessRenderLoop,
-                                               static_cast<void*>(this), param);
+    // the thread's owner may be stopping it while waiting for it, e.g. a player being closed
+    if (CThread* thread = CThread::GetCurrentThread(); thread)
+    {
+      // not owned: deleted windows are freed on the app thread, after this message
+      std::shared_ptr<void> dialog(this, [](void*) {});
+      CServiceBroker::GetAppMessenger()->SendMsgAbortable(TMSG_GUI_DIALOG_OPEN, -1,
+                                                          bProcessRenderLoop, std::move(dialog),
+                                                          thread->GetStopEvent(), param);
+      if (thread->GetStopEvent().Signaled())
+        m_abandoned = true;
+    }
+    else
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_OPEN, -1, bProcessRenderLoop,
+                                                 static_cast<void*>(this), param);
   }
   else
     Open_Internal(bProcessRenderLoop, param);
