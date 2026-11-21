@@ -67,6 +67,8 @@ private:
 
   std::mutex m_mutex;
   std::condition_variable m_condition;
+  //! Serializes stop() calls; m_mutex is held by the run loop while waiting
+  std::mutex m_stopMutex;
   std::atomic<bool> m_restart{false};
   //! Read by the manager as its last run ends
   std::atomic<bool> m_reusable{false};

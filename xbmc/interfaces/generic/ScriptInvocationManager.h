@@ -17,6 +17,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <set>
 #include <string>
 #include <vector>
@@ -182,6 +183,14 @@ public:
   bool IsRunning(int scriptId) const;
   bool IsRunning(const std::string& scriptPath) const;
 
+  /*!
+   * \brief Block until the given script is no longer running or the timeout expires.
+   * \param scriptId ID of the script as returned by ExecuteAsync
+   * \param timeout Maximum time to wait; pass std::chrono::milliseconds::max() to wait indefinitely
+   * \return true if the script finished, false on timeout
+   */
+  bool WaitForScript(int scriptId, std::chrono::milliseconds timeout) const;
+
 protected:
   friend class CLanguageInvokerThread;
   friend class TestScriptInvocationManager;
@@ -247,4 +256,6 @@ private:
   mutable CCriticalSection m_critSection;
   //! Told when a kept thread is released, or an affinity goes
   std::condition_variable_any m_released;
+  mutable std::mutex m_waitMutex;
+  mutable std::condition_variable m_scriptDoneCv;
 };
