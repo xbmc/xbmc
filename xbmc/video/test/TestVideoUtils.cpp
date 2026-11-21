@@ -670,6 +670,23 @@ TEST_F(TestDiscMainTitleSave, AMovieKeepsTheResumePointOfItsMainTitle)
   EXPECT_EQ(664.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
 }
 
+TEST_F(TestDiscMainTitleSave, AMovieStoppedWhereItsImageWasStoppedBeforeKeepsThatResumePoint)
+{
+  // The image's file, and the resume point with it, is deleted when the movie moves to the
+  // playlist, so the resume point has to be written to the playlist though it is the same
+  ASSERT_GT(AddMovie(), 0);
+  CBookmark before;
+  before.timeInSeconds = 664.0;
+  before.totalTimeInSeconds = 7461.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile(m_image, before, CBookmark::RESUME));
+
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie, 664.0);
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  EXPECT_EQ(Playlist(), relisted.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(664.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
 TEST_F(TestDiscMainTitleSave, AMovieKeepsItsWatchedStateWhenItsMainTitleIsFinished)
 {
   ASSERT_GT(AddMovie(), 0);
