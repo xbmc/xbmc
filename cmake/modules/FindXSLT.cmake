@@ -37,9 +37,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(APPEND CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF)
     endif()
 
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/libxslt/01-cmake-libxml2-module-mode.patch")
-    generate_patchcommand("${patches}")
-    unset(patches)
+    # Windows libxml2 is built with cmake and provides a config package
+    if(NOT (WIN32 OR WINDOWS_STORE))
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/libxslt/01-cmake-libxml2-module-mode.patch")
+      generate_patchcommand("${patches}")
+      unset(patches)
+    endif()
 
     BUILD_DEP_TARGET()
 

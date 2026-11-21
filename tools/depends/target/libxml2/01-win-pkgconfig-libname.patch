@@ -1,0 +1,20 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -759,7 +759,16 @@
+ 
+ set(XML_INCLUDEDIR "-I\${includedir}/libxml2")
+ set(XML_LIBDIR "-L\${libdir}")
+-set(XML_LIBS "-lxml2")
++if(MSVC)
++    # Import library name differs from the xml2 output name
++    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
++        set(XML_LIBS "-llibxml2d")
++    else()
++        set(XML_LIBS "-llibxml2")
++    endif()
++else()
++    set(XML_LIBS "-lxml2")
++endif()
+ 
+ if(BUILD_SHARED_LIBS)
+     set(XML_PC_PRIVATE ".private")
