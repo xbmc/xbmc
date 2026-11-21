@@ -1780,6 +1780,12 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     return strAmpName;
   }
 
+  if (m_adapter->GetSettingInt("volume_control") == LOCALISED_ID_NONE)
+  {
+    m_adapter->SetAmpControlsVolume(false);
+    return strAmpName;
+  }
+
   // request the OSD name of the amp
   std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
   strAmpName += ampName;
