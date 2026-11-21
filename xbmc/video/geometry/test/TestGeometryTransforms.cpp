@@ -277,6 +277,25 @@ TEST(TestGeometryTransforms, ScaleRectLeavesADegenerateSpaceAlone)
   EXPECT_EQ(rect, ScaleRect(rect, 960, 540, 0, 2160));
 }
 
+TEST(TestGeometryTransforms, StretchToFillTakesANearMissToTheScreen)
+{
+  constexpr float SCREEN = 16.0f / 9.0f;
+
+  EXPECT_EQ(SCREEN, StretchToFill(1.85f, SCREEN, 0.1f));
+  EXPECT_EQ(SCREEN, StretchToFill(1.66f, SCREEN, 0.1f));
+  EXPECT_EQ(SCREEN, StretchToFill(SCREEN, SCREEN, 0.0f));
+}
+
+TEST(TestGeometryTransforms, StretchToFillLeavesAPictureThatWouldTakeMore)
+{
+  constexpr float SCREEN = 16.0f / 9.0f;
+
+  EXPECT_EQ(std::nullopt, StretchToFill(2.40f, SCREEN, 0.1f));
+  EXPECT_EQ(std::nullopt, StretchToFill(4.0f / 3.0f, SCREEN, 0.1f));
+  EXPECT_EQ(std::nullopt, StretchToFill(1.85f, SCREEN, 0.0f));
+  EXPECT_EQ(std::nullopt, StretchToFill(0.0f, SCREEN, 0.1f));
+}
+
 TEST(TestGeometryTransforms, FitAspectFitsADisplayRatioToWidePixels)
 {
   // A 2.40 raster on 1440x1080 output whose pixels are 4/3 wide.

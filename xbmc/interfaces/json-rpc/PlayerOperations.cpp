@@ -727,14 +727,10 @@ JSONRPC_STATUS CPlayerOperations::Zoom(const CVariant& parameterObject, CVariant
 std::map<std::string, ViewMode> viewModes =
 {
   {"normal", ViewModeNormal},
-  {"zoom", ViewModeZoom},
   {"stretch4x3", ViewModeStretch4x3},
-  {"widezoom", ViewModeWideZoom, },
   {"stretch16x9", ViewModeStretch16x9},
+  {"stretchtofill", ViewModeStretchToFill},
   {"original", ViewModeOriginal},
-  {"stretch16x9nonlin", ViewModeStretch16x9Nonlin},
-  {"zoom120width", ViewModeZoom120Width},
-  {"zoom110width", ViewModeZoom110Width}
 };
 
 std::string GetStringFromViewMode(ViewMode viewMode)
@@ -797,16 +793,9 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const CVariant& parameterObject, C
   else if (viewMode.isObject())
   {
     mode = ViewModeCustom;
-    CVariant zoom = viewMode["zoom"];
     CVariant pixelRatio = viewMode["pixelratio"];
     CVariant verticalShift = viewMode["verticalshift"];
     CVariant stretch = viewMode["nonlinearstretch"];
-
-    if (!zoom.isNull())
-    {
-      GetNewValueForViewModeParameter(zoom, 0.01f, 0.5f, 2.f, vs.m_CustomZoomAmount);
-      jsonStatus = ACK;
-    }
 
     if (!pixelRatio.isNull())
     {
@@ -829,9 +818,8 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const CVariant& parameterObject, C
 
   if (jsonStatus == ACK)
   {
-    appPlayer->SetRenderViewMode(static_cast<int>(mode), vs.m_CustomZoomAmount,
-                                 vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                 vs.m_CustomNonLinStretch);
+    appPlayer->SetRenderViewMode(static_cast<int>(mode), vs.m_CustomPixelRatio,
+                                 vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
   }
 
   return jsonStatus;

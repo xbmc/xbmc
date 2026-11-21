@@ -10,6 +10,7 @@
 
 #include "utils/Geometry.h"
 
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -75,6 +76,11 @@ CRect ToSquarePixels(const CRectInt& coded, const StreamGeometry& stream);
 //! \brief The largest rectangle of ratio \p aspect that fits centred inside \p frame, whose
 //! pixels are \p pixelRatio wide.
 CRect FitAspect(float aspect, const CRect& frame, float pixelRatio = 1.0f);
+
+//! \brief The ratio to show a picture of \p pictureAspect at so it fills a screen of
+//! \p screenAspect, when that stretches it by no more than \p limit (0.1 for 10%); none when
+//! it would take more.
+std::optional<float> StretchToFill(float pictureAspect, float screenAspect, float limit);
 
 //! \brief The resolved geometry reduced to what a render path reads.
 struct RenderGeometry

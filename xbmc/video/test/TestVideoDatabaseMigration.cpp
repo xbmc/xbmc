@@ -30,13 +30,18 @@ constexpr int SHARED_TYPE{50000}; // user type used by versions and an extra, fl
 constexpr int QUALITY_TYPE{50001}; // user type used only by versions, flagged as extras
 constexpr int EXTRAS_TYPE{50002}; // user type used only by extras
 
-//! The repair is for UpdateTables() only, the test calls it directly.
+//! The steps are for UpdateTables() only, the tests call them directly.
 class CRepairableDatabase : public CVideoDatabase
 {
 public:
   void RepairAssetTypes(int fromVersion)
   {
     KODI::DATABASE::MIGRATION::RepairVideoAssetTypesV154(*this, *m_pDS, *m_pDS2, fromVersion);
+  }
+
+  void StoreStreamLanguagesAsTags()
+  {
+    KODI::DATABASE::MIGRATION::StoreStreamLanguagesAsTagsV157(*this, *m_pDS, *m_pDS2);
   }
 };
 
@@ -244,4 +249,38 @@ TEST_F(TestVideoDatabaseMigration, AnUpgradeFrom131To133IsLeftAlone)
   EXPECT_EQ(ASSET_EXTRA, AssetItemType(100));
   EXPECT_EQ(ASSET_EXTRA, TypeItemType(VIDEO_VERSION_ID_DEFAULT));
   EXPECT_EQ(SHARED_TYPE, AssetTypeId(202));
+}
+
+TEST_F(TestVideoDatabaseMigration, StreamLanguagesAreRewrittenAsTags)
+{
+  const auto addStream =
+      [this](int id, int type, const std::string& column, const std::string& language)
+  {
+    ASSERT_TRUE(m_db.ExecuteQuery(StringUtils::Format(
+        "INSERT INTO streamdetails (idFile, iStreamType, {}) VALUES ({}, {}, '{}')", column, id,
+        type, language)));
+  };
+  addStream(1, 0, "strVideoLanguage", "eng");
+  addStream(2, 1, "strAudioLanguage", "por");
+  addStream(3, 1, "strAudioLanguage", "chi");
+  addStream(4, 2, "strSubtitleLanguage", "ger");
+  // Neither has an ISO 639-1 code, and both are already the tag
+  addStream(5, 2, "strSubtitleLanguage", "und");
+  addStream(6, 1, "strAudioLanguage", "rue");
+  addStream(7, 1, "strAudioLanguage", "");
+
+  m_db.StoreStreamLanguagesAsTags();
+
+  const auto language = [this](int id, const std::string& column)
+  {
+    return m_db.GetSingleValue(
+        StringUtils::Format("SELECT {} FROM streamdetails WHERE idFile = {}", column, id));
+  };
+  EXPECT_EQ("en", language(1, "strVideoLanguage"));
+  EXPECT_EQ("pt", language(2, "strAudioLanguage"));
+  EXPECT_EQ("zh", language(3, "strAudioLanguage"));
+  EXPECT_EQ("de", language(4, "strSubtitleLanguage"));
+  EXPECT_EQ("und", language(5, "strSubtitleLanguage"));
+  EXPECT_EQ("rue", language(6, "strAudioLanguage"));
+  EXPECT_EQ("", language(7, "strAudioLanguage"));
 }

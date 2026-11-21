@@ -75,9 +75,9 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
+        <setting id="videoplayer.stretchtofill" type="integer" label="22021" help="36170">
           <level>2</level>
-          <default>0</default>
+          <default>10</default>
           <dependencies>
             <!-- Disabled while a screen shape is stated; the runtime ignores the stored value
                  then too. -->
@@ -101,10 +101,7 @@
           <constraints>
             <options>
               <option label="630">0</option> <!-- ViewModeNormal -->
-              <option label="633">3</option> <!-- ViewModeWideZoom -->
               <option label="634">4</option> <!-- ViewModeStretch16x9 -->
-              <option label="644">7</option> <!-- ViewModeStretch16x9 - nonlinear -->
-              <option label="631">1</option> <!-- ViewModeZoom -->
             </options>
           </constraints>
           <control type="list" format="string" />

@@ -144,8 +144,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_ViewMode = CViewModeSettings::GetNextQuickCycleViewMode(vs.m_ViewMode);
-        appPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
-                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
+                                     vs.m_CustomNonLinStretch);
       }
       else
         m_viewModeChanged = true;
