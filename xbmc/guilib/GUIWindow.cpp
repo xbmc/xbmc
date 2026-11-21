@@ -567,6 +567,7 @@ void CGUIWindow::OnInitWindow()
   m_hasProcessed = false;
   m_closing = false;
   m_active = true;
+  m_animationsEnabled = true;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
                       // need their anims reset. An alternative solution is turning off all non-dynamic
                       // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
