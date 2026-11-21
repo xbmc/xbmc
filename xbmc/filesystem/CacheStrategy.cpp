@@ -25,8 +25,8 @@
 #define CacheLocalFile CWin32File
 #endif // TARGET_WINDOWS
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 
 using namespace XFILE;
 
@@ -133,7 +133,7 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
                 m_filename);
       return CACHE_RC_ERROR;
     }
-    m_nWritePosition += lastWritten;
+    m_nWritePosition.fetch_add(lastWritten, std::memory_order_release);
     iSize -= lastWritten;
     written += lastWritten;
   }
@@ -146,7 +146,8 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
 
 int64_t CSimpleFileCache::GetAvailableRead()
 {
-  return m_nWritePosition - m_nReadPosition;
+  return m_nWritePosition.load(std::memory_order_acquire) -
+         m_nReadPosition.load(std::memory_order_relaxed);
 }
 
 int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
@@ -171,7 +172,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
                 m_filename);
       return CACHE_RC_ERROR;
     }
-    m_nReadPosition += lastRead;
+    m_nReadPosition.fetch_add(lastRead, std::memory_order_relaxed);
     toRead -= lastRead;
     readBytes += lastRead;
   }
@@ -202,7 +203,7 @@ int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, std::chrono::milliseco
 
 int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 {
-  int64_t iTarget = iFilePosition - m_nStartPosition;
+  const int64_t iTarget = iFilePosition - m_nStartPosition.load(std::memory_order_acquire);
 
   if (iTarget < 0)
   {
@@ -211,7 +212,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
     return CACHE_RC_ERROR;
   }
 
-  int64_t nDiff = iTarget - m_nWritePosition;
+  int64_t nDiff = iTarget - m_nWritePosition.load(std::memory_order_acquire);
   if (nDiff > 500000)
   {
     CLog::Log(LOGDEBUG,
@@ -220,16 +221,23 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
     return CACHE_RC_ERROR;
   }
 
-  if (nDiff > 0 &&
-      WaitForData(static_cast<uint32_t>(iTarget - m_nReadPosition), 5s) == CACHE_RC_TIMEOUT)
+  if (nDiff > 0)
   {
-    CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
-              __FUNCTION__, m_filename, iFilePosition, m_nWritePosition);
-    return CACHE_RC_ERROR;
+    const uint32_t minAvail =
+        static_cast<uint32_t>(iTarget - m_nReadPosition.load(std::memory_order_relaxed));
+    const auto waitResult = WaitForData(minAvail, 5s);
+    if (waitResult == CACHE_RC_TIMEOUT)
+    {
+      CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
+                __FUNCTION__, m_filename, iFilePosition,
+                m_nWritePosition.load(std::memory_order_acquire));
+      return CACHE_RC_ERROR;
+    }
   }
 
-  m_nReadPosition = m_cacheFileRead->Seek(iTarget, SEEK_SET);
-  if (m_nReadPosition != iTarget)
+  const int64_t readPos = m_cacheFileRead->Seek(iTarget, SEEK_SET);
+  m_nReadPosition.store(readPos, std::memory_order_relaxed);
+  if (readPos != iTarget)
   {
     CLog::Log(LOGERROR, "CSimpleFileCache::{} - <{}> Can't seek cache file for position {}",
               __FUNCTION__, iFilePosition, m_filename);
@@ -245,13 +253,15 @@ bool CSimpleFileCache::Reset(int64_t iSourcePosition)
 {
   if (IsCachedPosition(iSourcePosition))
   {
-    m_nReadPosition = m_cacheFileRead->Seek(iSourcePosition - m_nStartPosition, SEEK_SET);
+    const int64_t readPos = m_cacheFileRead->Seek(
+        iSourcePosition - m_nStartPosition.load(std::memory_order_acquire), SEEK_SET);
+    m_nReadPosition.store(readPos, std::memory_order_relaxed);
     return false;
   }
 
-  m_nStartPosition = iSourcePosition;
-  m_nWritePosition = m_cacheFileWrite->Seek(0, SEEK_SET);
-  m_nReadPosition = m_cacheFileRead->Seek(0, SEEK_SET);
+  m_nStartPosition.store(iSourcePosition, std::memory_order_release);
+  m_nWritePosition.store(m_cacheFileWrite->Seek(0, SEEK_SET), std::memory_order_release);
+  m_nReadPosition.store(m_cacheFileRead->Seek(0, SEEK_SET), std::memory_order_relaxed);
   return true;
 }
 
@@ -263,24 +273,29 @@ void CSimpleFileCache::EndOfInput()
 
 int64_t CSimpleFileCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 {
-  if (iFilePosition >= m_nStartPosition && iFilePosition <= m_nStartPosition + m_nWritePosition)
-    return m_nStartPosition + m_nWritePosition;
+  const int64_t start = m_nStartPosition.load(std::memory_order_acquire);
+  const int64_t end = start + m_nWritePosition.load(std::memory_order_acquire);
+  if (iFilePosition >= start && iFilePosition <= end)
+    return end;
   return iFilePosition;
 }
 
 int64_t CSimpleFileCache::CachedDataStartPos()
 {
-  return m_nStartPosition;
+  return m_nStartPosition.load(std::memory_order_acquire);
 }
 
 int64_t CSimpleFileCache::CachedDataEndPos()
 {
-  return m_nStartPosition + m_nWritePosition;
+  return m_nStartPosition.load(std::memory_order_acquire) +
+         m_nWritePosition.load(std::memory_order_acquire);
 }
 
 bool CSimpleFileCache::IsCachedPosition(int64_t iFilePosition)
 {
-  return iFilePosition >= m_nStartPosition && iFilePosition <= m_nStartPosition + m_nWritePosition;
+  const int64_t start = m_nStartPosition.load(std::memory_order_acquire);
+  return iFilePosition >= start &&
+         iFilePosition <= start + m_nWritePosition.load(std::memory_order_acquire);
 }
 
 CCacheStrategy *CSimpleFileCache::CreateNew()
