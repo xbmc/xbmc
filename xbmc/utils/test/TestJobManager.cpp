@@ -444,8 +444,7 @@ TEST_F(TestJobManager, CancelJobWaitsForInFlightAbort)
 {
   Flags flags;
   BlockingCallback callback;
-  const unsigned int id =
-      CServiceBroker::GetJobManager()->AddJob(new DummyJob(&flags), &callback);
+  const unsigned int id = CServiceBroker::GetJobManager()->AddJob(new DummyJob(&flags), &callback);
 
   ASSERT_TRUE(poll([&flags]() { return flags.started.load(); }));
 
@@ -457,11 +456,12 @@ TEST_F(TestJobManager, CancelJobWaitsForInFlightAbort)
   // A callback-less CancelJob, as every direct caller uses, must not return
   // while the abort is still in flight
   std::atomic<bool> cancelReturned{false};
-  std::thread canceller([&]()
-                        {
-                          CServiceBroker::GetJobManager()->CancelJob(id);
-                          cancelReturned = true;
-                        });
+  std::thread canceller(
+      [&]()
+      {
+        CServiceBroker::GetJobManager()->CancelJob(id);
+        cancelReturned = true;
+      });
 
   EXPECT_FALSE(poll(200, [&cancelReturned]() { return cancelReturned.load(); }));
 
@@ -519,8 +519,8 @@ TEST_F(TestJobManager, AddJobDoesNotMergeIntoJobWithCancelledSubscribers)
   CompleteCallback cb1;
   CompleteCallback cb2;
 
-  const unsigned int id1 = CServiceBroker::GetJobManager()->AddJob(
-      new ScanJob("/music", &flags1), &cb1);
+  const unsigned int id1 =
+      CServiceBroker::GetJobManager()->AddJob(new ScanJob("/music", &flags1), &cb1);
   ASSERT_TRUE(poll([&flags1]() { return flags1.started.load(); }));
 
   // strip the only subscriber while the job keeps running

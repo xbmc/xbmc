@@ -208,8 +208,9 @@ unsigned int CJobManager::AddJob(CJob* job,
   // the completing job's results are about to be delivered to existing callbacks.
   // Work items whose subscribers all cancelled are skipped: merging would delete
   // the new job while the surviving one may already be cancelled itself.
-  auto procIt = std::ranges::find_if(m_processing, [job](const CWorkItem& wi)
-                                     { return !wi.SubscribersCancelled() && wi.GetJob()->Equals(job); });
+  auto procIt =
+      std::ranges::find_if(m_processing, [job](const CWorkItem& wi)
+                           { return !wi.SubscribersCancelled() && wi.GetJob()->Equals(job); });
   if (procIt != m_processing.end())
   {
     procIt->AddCallback(callback);
