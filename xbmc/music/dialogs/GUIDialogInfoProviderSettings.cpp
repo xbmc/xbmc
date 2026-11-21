@@ -62,6 +62,10 @@ bool CGUIDialogInfoProviderSettings::Show()
   // Get current default info provider settings from service broker
   dialog->m_fetchInfo = settings->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO);
 
+  // Not those of the last time the dialog was shown, as either default may name a scraper Kodi
+  // can't load
+  dialog->SetAlbumScraper(nullptr);
+  dialog->SetArtistScraper(nullptr);
   ADDON::AddonPtr defaultScraper;
   // Get default album scraper (when enabled - can default scraper be disabled??)
   if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::SCRAPER_ALBUMS,
@@ -278,10 +282,16 @@ bool CGUIDialogInfoProviderSettings::Save()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   settings->SetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, m_fetchInfo);
   // Save default scrapers and addon setting values
-  settings->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, m_albumscraper->ID());
-  m_albumscraper->SaveSettings();
-  settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, m_artistscraper->ID());
-  m_artistscraper->SaveSettings();
+  if (m_albumscraper)
+  {
+    settings->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, m_albumscraper->ID());
+    m_albumscraper->SaveSettings();
+  }
+  if (m_artistscraper)
+  {
+    settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, m_artistscraper->ID());
+    m_artistscraper->SaveSettings();
+  }
   // Save artist information folder
   settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, m_strArtistInfoPath);
   settings->Save();

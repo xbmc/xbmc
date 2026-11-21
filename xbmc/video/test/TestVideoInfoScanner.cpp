@@ -12,19 +12,21 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/IAddon.h"
 #include "addons/Scraper.h"
-#include "addons/addoninfo/AddonInfo.h"
-#include "addons/addoninfo/AddonInfoBuilder.h"
-#include "addons/addoninfo/AddonType.h"
 #include "events/EventLog.h"
 #include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "jobs/JobManager.h"
 #include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
@@ -35,7 +37,11 @@
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/Artwork.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "video/FilenameAttributes.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
@@ -50,8 +56,11 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
+#include <string_view>
+#include <thread>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -66,80 +75,210 @@ constexpr const char* DB_NAME = "TestVideoInfoScanner";
 
 constexpr const char* SCRAPER_ID = "metadata.test.videoinfoscanner";
 
-//! A movie and tv show scraper whose search results, details and episode guides are files a test
-//! writes. Each url it gives names a cache file, which is read in place of fetching the url.
 constexpr const char* SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
 <addon id="metadata.test.videoinfoscanner" name="Test scraper" version="1.0.0"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.movies" library="scraper.xml"
-             cachepersistence="01:00"/>
-  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.xml"
-             cachepersistence="01:00"/>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
+  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.py"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
   </extension>
 </addon>)";
 
-//! Searching for a title reads search-<title>.xml, and each other function returns the content of
-//! the file its url names
-constexpr const char* SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1">
-  <CreateSearchUrl dest="3">
-    <RegExp input="$$1" output="&lt;url cache=&quot;search-$$1.xml&quot;&gt;http://scraper.invalid/$$1&lt;/url&gt;" dest="3">
-      <expression/>
-    </RegExp>
-  </CreateSearchUrl>
-  <GetSearchResults dest="3">
-    <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
-  </GetSearchResults>
-  <GetDetails dest="3">
-    <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
-  </GetDetails>
-  <GetEpisodeList dest="3">
-    <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
-  </GetEpisodeList>
-  <GetEpisodeDetails dest="3">
-    <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
-  </GetEpisodeDetails>
-</scraper>)";
-
 constexpr const char* OTHER_SCRAPER_ID = "metadata.alternative.videoinfoscanner";
 
-//! Another movie and tv show scraper, which the add-on manager is given. It recognises a url to
-//! other.invalid, whose content is read from other-<id>.xml. Its id sorts before metadata.local,
-//! where the search for an nfo's url once stopped, so that it would be asked.
 constexpr const char* OTHER_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
 <addon id="metadata.alternative.videoinfoscanner" name="Other test scraper" version="1.0.0"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.movies" library="scraper.xml"/>
-  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.xml"/>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
+  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.py"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
   </extension>
 </addon>)";
 
-constexpr const char* OTHER_SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1">
-  <NfoUrl dest="3">
-    <RegExp input="$$1" output="&lt;url cache=&quot;other-\1.xml&quot;&gt;http://other.invalid/\1&lt;/url&gt;" dest="3">
-      <expression>other\.invalid/([0-9]+)</expression>
-    </RegExp>
-  </NfoUrl>
-  <CreateSearchUrl dest="3">
-    <RegExp input="$$1" output="&lt;url&gt;http://other.invalid/search&lt;/url&gt;" dest="3">
-      <expression/>
-    </RegExp>
-  </CreateSearchUrl>
-  <GetEpisodeList dest="3">
-    <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
-  </GetEpisodeList>
-</scraper>)";
+constexpr std::string_view OTHER_URL{"http://other.invalid/"};
+
+constexpr const char* SITES = "special://temp/TestVideoInfoScanner/sites/";
+
+std::string SiteFolder(const std::string& scraper)
+{
+  return URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath(SITES), scraper);
+}
+
+struct SRuns
+{
+  std::mutex lock;
+  std::vector<int> threads;
+};
+
+/*!
+ \brief Stands in for the python interpreter running a test scraper, answering each call from the
+ pages of the scraper's site:
+ - a search for a title: the page search-<title>, a <results> element holding an <entity> with the
+   <title> and <url> of each video found. A search without a page finds nothing.
+ - details: the page the url names, a <details> element holding them as an nfo would. Details
+   asked for by ids, rather than by a url, are read from the page <type>-<id> of the first id that
+   has one.
+ - an episode guide: the page the url names, an <episodeguide> element holding an <episode> with
+   the <title>, <season>, <epnum> and <url> of each episode.
+ - an nfo: other-<n> for the url other.invalid/<n> in it, which only the other scraper recognises.
+ A page holding <error/> fails the call, as a site that doesn't answer does; so does asking for
+ details or an episode guide that has no page.
+ */
+class CSiteInvoker : public ILanguageInvoker
+{
+public:
+  CSiteInvoker(ILanguageInvocationHandler* handler, SRuns& runs)
+    : ILanguageInvoker(handler),
+      m_runs(runs)
+  {
+  }
+
+protected:
+  bool execute(const std::string& script, const std::vector<std::string>& arguments) override
+  {
+    setState(InvokerStateRunning);
+    {
+      std::unique_lock lock(m_runs.lock);
+      m_runs.threads.push_back(GetId());
+    }
+
+    const CURL call{arguments[0] + arguments[2]};
+    const int handle{std::stoi(arguments[1])};
+    const std::string site{SiteFolder(call.GetHostName())};
+    const std::string action{call.GetOption("action")};
+    if (action == "find")
+      Find(handle, site, call.GetOption("title"));
+    else if (action == "getdetails" || action == "getepisodedetails")
+      Details(handle, site, call.GetOption("url"), call.GetOption("uniqueIDs"));
+    else if (action == "getepisodelist")
+      Guide(handle, site, call.GetOption("url"));
+    else if (action == "NfoUrl")
+      NfoUrl(handle, call.GetHostName(), call.GetOption("nfo"));
+    else
+      XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+
+    setState(InvokerStateScriptDone);
+    return true;
+  }
+
+  bool stop(bool abort) override { return true; }
+
+private:
+  static bool Page(const std::string& site, const std::string& url, CXBMCTinyXML& page)
+  {
+    const std::string path{URIUtils::AddFileToFolder(site, url)};
+    return !url.empty() && XFILE::CFile::Exists(path) && page.LoadFile(path) &&
+           page.RootElement() != nullptr;
+  }
+
+  static bool IsError(const CXBMCTinyXML& page)
+  {
+    return page.RootElement()->ValueStr() == "error";
+  }
+
+  static void Find(int handle, const std::string& site, const std::string& title)
+  {
+    CXBMCTinyXML page;
+    const bool found{Page(site, "search-" + title, page)};
+    if (found && !IsError(page))
+    {
+      for (const TiXmlElement* entity = page.RootElement()->FirstChildElement("entity"); entity;
+           entity = entity->NextSiblingElement("entity"))
+      {
+        std::string name;
+        std::string url;
+        XMLUtils::GetString(entity, "title", name);
+        XMLUtils::GetString(entity, "url", url);
+        CFileItem result{url, false};
+        result.SetLabel(name);
+        XFILE::CPluginDirectory::AddItem(handle, &result, 0);
+      }
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, !found || !IsError(page), false, false);
+  }
+
+  static void Details(int handle,
+                      const std::string& site,
+                      const std::string& url,
+                      const std::string& ids)
+  {
+    CXBMCTinyXML page;
+    bool found{Page(site, url, page)};
+    CVariant uniqueIDs;
+    if (url.empty() && CJSONVariantParser::Parse(ids, uniqueIDs))
+    {
+      for (auto it = uniqueIDs.begin_map(); !found && it != uniqueIDs.end_map(); ++it)
+        found = Page(site, it->first + "-" + it->second.asString(), page);
+    }
+
+    CFileItem details{url, false};
+    if (!found || IsError(page))
+    {
+      XFILE::CPluginDirectory::SetResolvedUrl(handle, false, &details);
+      return;
+    }
+    details.GetVideoInfoTag()->Load(page.RootElement(), false);
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &details);
+  }
+
+  static void Guide(int handle, const std::string& site, const std::string& url)
+  {
+    CXBMCTinyXML page;
+    if (!Page(site, url, page) || IsError(page))
+    {
+      XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+      return;
+    }
+    for (const TiXmlElement* episode = page.RootElement()->FirstChildElement("episode"); episode;
+         episode = episode->NextSiblingElement("episode"))
+    {
+      std::string title;
+      std::string episodeUrl;
+      CFileItem item;
+      CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+      XMLUtils::GetString(episode, "title", title);
+      XMLUtils::GetString(episode, "url", episodeUrl);
+      XMLUtils::GetInt(episode, "season", tag.m_iSeason);
+      XMLUtils::GetInt(episode, "epnum", tag.m_iEpisode);
+      tag.SetTitle(title);
+      item.SetPath(episodeUrl);
+      XFILE::CPluginDirectory::AddItem(handle, &item, 0);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+
+  static void NfoUrl(int handle, const std::string& scraper, const std::string& nfo)
+  {
+    if (const size_t at{nfo.find(OTHER_URL)};
+        scraper == OTHER_SCRAPER_ID && at != std::string::npos)
+    {
+      CFileItem url{"other-" + nfo.substr(at + OTHER_URL.size()), false};
+      XFILE::CPluginDirectory::AddItem(handle, &url, 1);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+
+  SRuns& m_runs;
+};
+
+class CSiteHandler : public ILanguageInvocationHandler
+{
+public:
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override
+  {
+    return std::make_shared<CSiteInvoker>(this, m_runs);
+  }
+
+  SRuns m_runs;
+};
 
 //! The test's database, named as CVideoDatabase::Open() names the one the settings give it
 class TestDatabase : public CVideoDatabase
@@ -177,14 +316,6 @@ public:
     m_similarVideoAction = SimilarVideoScanAction::NONE;
     m_ignoreVideoExtras = ignoreVideoExtras;
     m_bClean = clean;
-  }
-
-  //! Looks the videos up with this scraper, which the add-on manager doesn't know of. The path's
-  //! scraper is looked for here before it is asked.
-  void UseScraper(const ADDON::ScraperPtr& scraper)
-  {
-    m_scraperCache.try_emplace(scraper->ID() + ADDON::TranslateContent(scraper->Content()),
-                               scraper);
   }
 
   //! As Start() and Process() do
@@ -303,25 +434,31 @@ protected:
         m_fastHash;
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
         CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, m_extractFlags);
-    if (!m_installedScraper.empty())
+    if (m_standIn)
     {
-      CServiceBroker::GetAddonMgr().UnloadAddon(SCRAPER_ID);
-      XFILE::CDirectory::RemoveRecursive(m_installedScraper);
+      std::vector<int> threads;
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        threads = m_handler.m_runs.threads;
+      }
+      const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+      for (const int id : threads)
+      {
+        while (Scripts().IsRunning(id) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        EXPECT_FALSE(Scripts().IsRunning(id));
+      }
+      Scripts().UnregisterLanguageInvocationHandler(&m_handler);
     }
-    if (!m_otherScraper.empty())
+    for (const auto& [id, folder] : m_installedScrapers)
     {
-      CServiceBroker::GetAddonMgr().UnloadAddon(OTHER_SCRAPER_ID);
-      XFILE::CDirectory::RemoveRecursive(m_otherScraper);
-      XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder(OTHER_SCRAPER_ID));
+      CServiceBroker::GetAddonMgr().UnloadAddon(id);
+      XFILE::CDirectory::RemoveRecursive(folder);
     }
+    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(SITES));
     if (m_similarVideoAction >= 0)
       CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(
           CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION, m_similarVideoAction);
-    if (m_scraperInfo)
-    {
-      XFILE::CDirectory::RemoveRecursive(m_scraperInfo->Path());
-      XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder());
-    }
 
     CServiceBroker::UnregisterAnnouncementManager();
     if (m_previousAnnouncementManager)
@@ -453,95 +590,71 @@ protected:
                                 const std::string& path = {})
   {
     TestScanner scanner{m_settings, ignoreVideoExtras, clean};
-    if (m_scraperInfo)
-      scanner.UseScraper(std::make_shared<ADDON::CScraper>(m_scraperInfo, m_scraperType));
     if (m_similarVideoAction >= 0)
       scanner.GroupSimilarVideos();
     scanner.Scan(path.empty() ? m_root : path);
     return scanner.Summary();
   }
 
+  static CScriptInvocationManager& Scripts() { return CScriptInvocationManager::GetInstance(); }
+
+  void InstallScraper(const std::string& id, const std::string& addonXml)
+  {
+    if (!m_standIn)
+    {
+      ASSERT_FALSE(Scripts().HasLanguageInvoker("scraper.py"))
+          << "python scripts are run by python";
+      Scripts().RegisterLanguageInvocationHandler(&m_handler, ".py");
+      m_standIn = true;
+    }
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    static_cast<void>(XFILE::CDirectory::Create(addons));
+    const std::string folder{Folder(addons, id)};
+    File(folder, "addon.xml", addonXml);
+    File(folder, "scraper.py");
+    m_installedScrapers.emplace_back(id, folder);
+    // Found rather than loaded, as loading publishes an event through the job manager a test
+    // doesn't have
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(id, ADDON::ORIGIN_SYSTEM,
+                                                        ADDON::CAddonVersion{"1.0.0"}));
+  }
+
   //! Looks the source's videos up with the test scraper, rather than reading them only from their
   //! nfos
-  void UseTestScraper(ADDON::AddonType type)
+  void UseTestScraper()
   {
-    const std::string addon{Folder(
-        CSpecialProtocol::TranslatePath("special://temp/TestVideoInfoScanner/"), SCRAPER_ID)};
-    File(addon, "addon.xml", SCRAPER_ADDON);
-    File(addon, "scraper.xml", SCRAPER_XML);
-    m_scraperInfo = ADDON::CAddonInfoBuilder::Generate(addon);
-    ASSERT_TRUE(m_scraperInfo);
-    m_scraperType = type;
-
+    InstallScraper(SCRAPER_ID, SCRAPER_ADDON);
     ASSERT_TRUE(m_db.ExecuteQuery(
         m_db.PrepareSQL("UPDATE path SET strScraper='%s', strSettings='' WHERE idPath=%i",
                         SCRAPER_ID, m_db.GetPathId(m_root))));
   }
 
-  //! Installs the test scraper, as a refresh finds the scraper of a path through the add-on manager
-  void InstallTestScraper()
+  void InstallOtherScraper() { InstallScraper(OTHER_SCRAPER_ID, OTHER_SCRAPER_ADDON); }
+
+  static void Page(const std::string& url,
+                   const std::string& content,
+                   const std::string& scraper = SCRAPER_ID)
   {
-    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
-    static_cast<void>(XFILE::CDirectory::Create(addons));
-    m_installedScraper = Folder(addons, SCRAPER_ID);
-    File(m_installedScraper, "addon.xml", SCRAPER_ADDON);
-    File(m_installedScraper, "scraper.xml", SCRAPER_XML);
-    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
-                                                        ADDON::CAddonVersion{"1.0.0"}));
+    const std::string site{SiteFolder(scraper)};
+    static_cast<void>(XFILE::CDirectory::Create(CSpecialProtocol::TranslatePath(SITES)));
+    static_cast<void>(XFILE::CDirectory::Create(site));
+    File(site, url, content);
   }
 
-  //! Installs the other scraper. Neither scraper can fetch the url it recognises, nor does the
-  //! other one find an episode guide.
-  void InstallOtherScraper()
-  {
-    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
-    static_cast<void>(XFILE::CDirectory::Create(addons));
-    m_otherScraper = Folder(addons, OTHER_SCRAPER_ID);
-    File(m_otherScraper, "addon.xml", OTHER_SCRAPER_ADDON);
-    File(m_otherScraper, "scraper.xml", OTHER_SCRAPER_XML);
-    // Found rather than loaded, as loading publishes an event through the job manager a test
-    // doesn't have
-    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(OTHER_SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
-                                                        ADDON::CAddonVersion{"1.0.0"}));
-    ScraperFile("guide.xml", "<error/>", OTHER_SCRAPER_ID);
-    ScraperFile("other-1.xml", "<error/>", OTHER_SCRAPER_ID);
-    ScraperFile("other-1.xml", "<error/>");
-  }
-
-  static std::string ScraperCacheFolder(const std::string& scraper = SCRAPER_ID)
-  {
-    return URIUtils::AddFileToFolder(
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers",
-        scraper);
-  }
-
-  //! What a test scraper returns for a url naming this file
-  static void ScraperFile(const std::string& name,
-                          const std::string& content,
-                          const std::string& scraper = SCRAPER_ID)
-  {
-    static_cast<void>(XFILE::CDirectory::Create(ScraperCacheFolder(scraper)));
-    File(ScraperCacheFolder(scraper), name, content);
-  }
-
-  //! Searching for the title finds it, with the details in details-<title>.xml
   static void Found(const std::string& title)
   {
-    ScraperFile("search-" + title + ".xml",
-                "<results><entity><title>" + title + "</title><url cache=\"details-" + title +
-                    ".xml\">http://scraper.invalid/details/" + title + "</url></entity></results>");
+    Page("search-" + title, "<results><entity><title>" + title + "</title><url>details-" + title +
+                                "</url></entity></results>");
   }
 
   //! Searching for the title fails, as when the site can't be reached
-  static void SearchFails(const std::string& title)
-  {
-    ScraperFile("search-" + title + ".xml", "<error><message>Search failed</message></error>");
-  }
+  static void SearchFails(const std::string& title) { Page("search-" + title, "<error/>"); }
 
   //! The title's details, once found
   static void Details(const std::string& title, const std::string& details)
   {
-    ScraperFile("details-" + title + ".xml", details);
+    Page("details-" + title, details);
   }
 
   //! The title is found, but its details can't be retrieved
@@ -565,13 +678,14 @@ protected:
 
   int CountMovies() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"); }
 
-  //! Searching for Film finds it, with its tmdb id
+  //! Searching for Film finds it, with its tmdb id, which a refresh looks it up by
   static void FilmFound()
   {
+    static constexpr const char* FILM{
+        R"(<details><title>Film</title><uniqueid type="tmdb" default="true">100</uniqueid></details>)"};
     Found("Film");
-    Details(
-        "Film",
-        R"(<details><title>Film</title><uniqueid type="tmdb" default="true">100</uniqueid></details>)");
+    Details("Film", FILM);
+    Page("tmdb-100", FILM);
   }
 
   //! Refreshes a movie as the information dialog does, or as a refresh of a source does each of
@@ -682,8 +796,7 @@ protected:
   //! kept. The movie has no nfo, or one that overrides some of the details it is looked up for.
   void RefreshThatCantReadTheDetails(bool overrideNfo)
   {
-    UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-    InstallTestScraper();
+    UseTestScraper();
     const std::string folder{Folder(m_root, "Afilm")};
     const std::string film{File(folder, "Afilm.mkv")};
     if (overrideNfo)
@@ -713,10 +826,9 @@ protected:
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash};
   const bool m_extractFlags{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)};
-  ADDON::AddonInfoPtr m_scraperInfo;
-  ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
-  std::string m_otherScraper;
-  std::string m_installedScraper;
+  CSiteHandler m_handler;
+  bool m_standIn{false};
+  std::vector<std::pair<std::string, std::string>> m_installedScrapers;
   int m_similarVideoAction{-1};
 };
 } // namespace
@@ -881,7 +993,7 @@ TEST_F(TestVideoInfoScanner, AMovieADiscJoinsIsNotNamedByItsOtherDisc)
 {
   const Strings strings;
   ASSERT_TRUE(strings.loaded);
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   GroupSimilarVideosAutomatically();
   FilmFound();
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -1273,7 +1385,7 @@ TEST_F(TestVideoInfoScannerMovieIdentifier, TheFileNameGivesTheIdentifierBeforeT
 
 TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   Found("Film");
   Details("Film", "<details><title>Film from the scraper</title></details>");
   const std::string movie{File(m_root, "Film.mkv")};
@@ -1286,7 +1398,7 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
 
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   SearchFails("Afilm");
   File(m_root, "Afilm.mkv");
   Nfo(m_root, "Bfilm.nfo", "Bfilm");
@@ -1300,7 +1412,7 @@ TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
 
 TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterASearchFailed)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   SearchFails("Afilm");
   const std::string first{File(m_root, "Afilm.mkv")};
   Nfo(m_root, "Bfilm.nfo", "Bfilm");
@@ -1318,7 +1430,7 @@ TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterASearchFailed)
 
 TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterDetailsFailed)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   DetailsFail("Afilm");
   const std::string first{File(m_root, "Afilm.mkv")};
   Nfo(m_root, "Bfilm.nfo", "Bfilm");
@@ -1348,8 +1460,7 @@ TEST_F(TestVideoInfoScanner, ARefreshWithAnOverrideNfoThatCantReadTheDetailsKeep
 // A refresh adds the movie again for the same files, so the next scan doesn't look at its folders
 TEST_F(TestVideoInfoScanner, ARefreshKeepsTheHashesOfTheMoviesFolders)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-  InstallTestScraper();
+  UseTestScraper();
   const std::string folder{Folder(m_root, "Afilm")};
   const std::string film{File(folder, "Afilm.mkv")};
   Found("Afilm");
@@ -1409,8 +1520,7 @@ TEST_F(TestVideoInfoScanner, ARefreshOfADiscGivesTheMovieBackItsOtherDisc)
 {
   const Strings strings;
   ASSERT_TRUE(strings.loaded);
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-  InstallTestScraper();
+  UseTestScraper();
   GroupSimilarVideosAutomatically();
   FilmFound();
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -1438,8 +1548,7 @@ TEST_F(TestVideoInfoScanner, ARefreshOfADiscGivesTheMovieBackItsOtherDisc)
 // added extras to since. The database is asked which assets it has.
 TEST_F(TestVideoInfoScanner, ARefreshKeepsTheExtrasAddedSinceTheMovieWasListed)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-  InstallTestScraper();
+  UseTestScraper();
   const std::string folder{Folder(m_root, "Film (2010)")};
   const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
   Scan();
@@ -1464,8 +1573,7 @@ TEST_F(TestVideoInfoScanner, ARefreshKeepsTheExtrasAddedSinceTheMovieWasListed)
 // where it becomes the default version. That movie is still refreshed from its own disc.
 TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesEachDiscOfAMovie)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-  InstallTestScraper();
+  UseTestScraper();
   GroupSimilarVideosAutomatically();
   FilmFound();
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -1492,8 +1600,7 @@ TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesADiscMergedBeforeItsTurn)
 {
   const Strings strings;
   ASSERT_TRUE(strings.loaded);
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
-  InstallTestScraper();
+  UseTestScraper();
   GroupSimilarVideosAutomatically();
   FilmFound();
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -1525,7 +1632,7 @@ TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesADiscMergedBeforeItsTurn)
 // removes the movie
 TEST_F(TestVideoInfoScanner, ARefreshWithAUrlNfoThatCantReadTheDetailsKeepsTheMovie)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   InstallOtherScraper();
   ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL("UPDATE path SET strScraper='%s' WHERE idPath=%i",
                                                 OTHER_SCRAPER_ID, m_db.GetPathId(m_root))));
@@ -1550,7 +1657,7 @@ TEST_F(TestVideoInfoScanner, ARefreshWithAUrlNfoThatCantReadTheDetailsKeepsTheMo
 // A url is only taken from the scraper chosen for the path, which is the one it is fetched with
 TEST_F(TestVideoInfoScanner, AMovieIsLookedUpWithItsPathsScraperWhenItsNfoNamesAnother)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  UseTestScraper();
   InstallOtherScraper();
   Found("Film");
   Details("Film", "<details><title>Film from the path's scraper</title></details>");
@@ -1562,6 +1669,24 @@ TEST_F(TestVideoInfoScanner, AMovieIsLookedUpWithItsPathsScraperWhenItsNfoNamesA
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film from the path's scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// The nfo gives the set no overview, so its movie's path is asked for a scraper to look it up with
+TEST_F(TestVideoInfoScanner, ARefreshOfASetPassesOverAMovieWithAScraperKodiNoLongerHas)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  File(folder, "movie.nfo", "<movie><title>Film</title><set><name>Films</name></set></movie>");
+  File(folder, "Film (2010).mkv");
+  Scan();
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET strScraper='metadata.gone.videoinfoscanner' WHERE idPath=%i",
+                      m_db.GetPathId(m_root))));
+  const auto set{std::make_shared<CFileItem>()};
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetSetInfo(m_db.GetSingleValueInt("SELECT idSet FROM sets"), tag, set.get()));
+
+  TestRefreshingJob refresh{set, true, false};
+  EXPECT_TRUE(refresh.Work(m_db));
 }
 
 // Movie extras
@@ -1981,8 +2106,7 @@ protected:
   //! details it is looked up for.
   void RefreshThatCantReadTheDetails(bool overrideNfo)
   {
-    UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
-    InstallTestScraper();
+    UseTestScraper();
     Found("Show");
     Details("Show", "<details><title>Show</title></details>");
     const std::string show{Folder(m_root, "Show")};
@@ -2177,7 +2301,7 @@ TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)
 
 TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  UseTestScraper();
   DetailsFail("Show");
   const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
   CEventLog* eventLog{CServiceBroker::GetEventLog()};
@@ -2215,8 +2339,7 @@ TEST_F(TestVideoInfoScannerTvShows, ARefreshWithAnOverrideNfoThatCantReadTheDeta
 // show's folder again
 TEST_F(TestVideoInfoScannerTvShows, ARefreshOfAnEpisodeKeepsTheHashOfItsShowsFolder)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
-  InstallTestScraper();
+  UseTestScraper();
   Found("Show");
   Details("Show", "<details><title>Show</title></details>");
   const std::string show{Folder(m_root, "Show")};
@@ -2241,12 +2364,11 @@ TEST_F(TestVideoInfoScannerTvShows, ARefreshOfAnEpisodeKeepsTheHashOfItsShowsFol
 
 TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuideFails)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  UseTestScraper();
   const std::string show{Folder(m_root, "Show")};
   File(show, "tvshow.nfo",
-       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
-       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
-  ScraperFile("guide.xml", "<error/>");
+       "<tvshow><title>Show</title><episodeguide>guide</episodeguide></tvshow>");
+  Page("guide", "<error/>");
   const std::string season{Folder(show, "Season 1")};
   const std::string first{File(season, "Show S01E01.mkv")};
   const std::string second{Episode(season, "Show S01E02.mkv")};
@@ -2254,10 +2376,9 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuide
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   ASSERT_EQ(1, CountEpisodes());
 
-  ScraperFile("guide.xml", "<episodeguide><episode><title>First</title><url cache=\"first.xml\">"
-                           "http://scraper.invalid/first</url><epnum>1</epnum><season>1</season>"
-                           "</episode></episodeguide>");
-  ScraperFile("first.xml", "<details><title>First</title></details>");
+  Page("guide", "<episodeguide><episode><title>First</title><url>first</url>"
+                "<epnum>1</epnum><season>1</season></episode></episodeguide>");
+  Page("first", "<details><title>First</title></details>");
   Scan();
 
   EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
@@ -2266,15 +2387,13 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuide
 
 TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  UseTestScraper();
   const std::string show{Folder(m_root, "Show")};
   File(show, "tvshow.nfo",
-       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
-       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
-  ScraperFile("guide.xml", "<episodeguide><episode><title>First</title><url cache=\"first.xml\">"
-                           "http://scraper.invalid/first</url><epnum>1</epnum><season>1</season>"
-                           "</episode></episodeguide>");
-  ScraperFile("first.xml", "<error/>");
+       "<tvshow><title>Show</title><episodeguide>guide</episodeguide></tvshow>");
+  Page("guide", "<episodeguide><episode><title>First</title><url>first</url>"
+                "<epnum>1</epnum><season>1</season></episode></episodeguide>");
+  Page("first", "<error/>");
   const std::string season{Folder(show, "Season 1")};
   const std::string first{File(season, "Show S01E01.mkv")};
   const std::string second{Episode(season, "Show S01E02.mkv")};
@@ -2282,7 +2401,7 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   ASSERT_EQ(1, CountEpisodes());
 
-  ScraperFile("first.xml", "<details><title>First</title></details>");
+  Page("first", "<details><title>First</title></details>");
   Scan();
 
   EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
@@ -2293,20 +2412,19 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
 // scraper that added it understands
 TEST_F(TestVideoInfoScannerTvShows, AnExistingShowKeepsItsScraperWhenItsNfoNamesAnother)
 {
-  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  UseTestScraper();
   InstallOtherScraper();
   const std::string show{Folder(m_root, "Show")};
   File(show, "tvshow.nfo",
-       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
-       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
-  ScraperFile("guide.xml",
-              "<episodeguide><episode><title>First</title><url cache=\"first.xml\">"
-              "http://scraper.invalid/first</url><epnum>1</epnum><season>1</season></episode>"
-              "<episode><title>Second</title><url cache=\"second.xml\">"
-              "http://scraper.invalid/second</url><epnum>2</epnum><season>1</season></episode>"
-              "</episodeguide>");
-  ScraperFile("first.xml", "<details><title>First</title></details>");
-  ScraperFile("second.xml", "<details><title>Second</title></details>");
+       "<tvshow><title>Show</title><episodeguide>guide</episodeguide></tvshow>");
+  Page("guide", "<episodeguide>"
+                "<episode><title>First</title><url>first</url><epnum>1</epnum><season>1</season>"
+                "</episode>"
+                "<episode><title>Second</title><url>second</url><epnum>2</epnum><season>1</season>"
+                "</episode>"
+                "</episodeguide>");
+  Page("first", "<details><title>First</title></details>");
+  Page("second", "<details><title>Second</title></details>");
   const std::string season{Folder(show, "Season 1")};
   File(season, "Show S01E01.mkv");
   Scan();

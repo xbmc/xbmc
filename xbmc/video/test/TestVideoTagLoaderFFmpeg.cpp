@@ -8,13 +8,18 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "addons/AddonManager.h"
+#include "addons/AddonVersion.h"
 #include "addons/Scraper.h"
-#include "addons/addoninfo/AddonInfoBuilder.h"
-#include "addons/addoninfo/AddonType.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "interfaces/generic/ILanguageInvoker.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/EmbeddedArt.h"
@@ -23,45 +28,94 @@
 #include "video/VideoInfoTag.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
 #include <utility>
+#include <vector>
 
 #include <gtest/gtest.h>
 
+using namespace std::chrono_literals;
+
 namespace
 {
+constexpr const char* SCRAPER_ID = "metadata.test.videotagloaderffmpeg";
+
 constexpr const char* SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
 <addon id="metadata.test.videotagloaderffmpeg" name="Test scraper" version="1.0.0"
        provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.metadata" version="2.1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.movies" library="scraper.xml"/>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
   </extension>
 </addon>)";
 
-//! A movie scraper that recognises a url to imdb.invalid, as the IMDb scraper recognises its own.
-//! A scraper that can't search does nothing else either.
-constexpr const char* SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1">
-  <NfoUrl dest="3">
-    <RegExp input="$$1" output="&lt;url&gt;http://imdb.invalid/title/\1/&lt;/url&gt;" dest="3">
-      <expression>imdb\.invalid/title/(tt[0-9]+)</expression>
-    </RegExp>
-  </NfoUrl>
-  <CreateSearchUrl dest="3">
-    <RegExp input="$$1" output="&lt;url&gt;http://imdb.invalid/search&lt;/url&gt;" dest="3">
-      <expression/>
-    </RegExp>
-  </CreateSearchUrl>
-</scraper>)";
-
 constexpr const char* URL = "http://imdb.invalid/title/tt0111161/";
+
+//! The threads the stand-in for python ran the scraper on
+struct SRuns
+{
+  std::mutex lock;
+  std::vector<int> threads;
+};
+
+//! Stands in for the python interpreter running a movie scraper, which recognises a url to
+//! imdb.invalid in an nfo, as the IMDb scraper recognises its own
+class CNfoUrlInvoker : public ILanguageInvoker
+{
+public:
+  CNfoUrlInvoker(ILanguageInvocationHandler* handler, SRuns& runs)
+    : ILanguageInvoker(handler),
+      m_runs(runs)
+  {
+  }
+
+protected:
+  bool execute(const std::string& script, const std::vector<std::string>& arguments) override
+  {
+    setState(InvokerStateRunning);
+    {
+      std::unique_lock lock(m_runs.lock);
+      m_runs.threads.push_back(GetId());
+    }
+
+    // As a plugin is run: its url, handle and options
+    const int handle{std::stoi(arguments[1])};
+    if (CURL{arguments[0] + arguments[2]}.GetOption("nfo").find(URL) != std::string::npos)
+    {
+      CFileItem url{URL, false};
+      XFILE::CPluginDirectory::AddItem(handle, &url, 1);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+
+    setState(InvokerStateScriptDone);
+    return true;
+  }
+
+  bool stop(bool abort) override { return true; }
+
+private:
+  SRuns& m_runs;
+};
+
+class CNfoUrlHandler : public ILanguageInvocationHandler
+{
+public:
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override
+  {
+    return std::make_shared<CNfoUrlInvoker>(this, m_runs);
+  }
+
+  SRuns m_runs;
+};
 
 //! A png of one pixel
 constexpr uint8_t POSTER[]{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
@@ -86,6 +140,19 @@ protected:
     XFILE::CFile::Delete(m_m4v);
     XFILE::CFile::Delete(m_nfo);
     XFILE::CFile::Delete(m_mkv);
+    if (m_registered)
+    {
+      std::unique_lock lock(m_handler.m_runs.lock);
+      const auto end{std::chrono::steady_clock::now() + 5s};
+      for (const int id : m_handler.m_runs.threads)
+      {
+        while (Scripts().IsRunning(id) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(1ms);
+        EXPECT_FALSE(Scripts().IsRunning(id));
+      }
+      Scripts().UnregisterLanguageInvocationHandler(&m_handler);
+      CServiceBroker::GetAddonMgr().UnloadAddon(SCRAPER_ID);
+    }
     XFILE::CDirectory::RemoveRecursive(m_scraper);
   }
 
@@ -93,6 +160,8 @@ protected:
   {
     return CServiceBroker::GetSettingsComponent()->GetSettings();
   }
+
+  static CScriptInvocationManager& Scripts() { return CScriptInvocationManager::GetInstance(); }
 
   bool WriteMp4(const char* track) { return WriteMp4(track, m_path); }
 
@@ -201,23 +270,33 @@ protected:
     return written;
   }
 
-  //! The scraper a scan of the mkv's folder would use
-  ADDON::ScraperPtr Scraper() const
+  //! The scraper a scan of the mkv's folder would use. Its script is run by the stand-in for
+  //! python, which the tests don't have.
+  ADDON::ScraperPtr Scraper()
   {
+    if (Scripts().HasLanguageInvoker("scraper.py"))
+      return {};
+    Scripts().RegisterLanguageInvocationHandler(&m_handler, ".py");
+    m_registered = true;
+
+    static_cast<void>(
+        XFILE::CDirectory::Create(CSpecialProtocol::TranslatePath("special://home/addons/")));
     if (!XFILE::CDirectory::Create(m_scraper))
       return {};
     for (const auto& [name, content] :
-         {std::pair{"addon.xml", SCRAPER_ADDON}, std::pair{"scraper.xml", SCRAPER_XML}})
+         {std::pair{"addon.xml", SCRAPER_ADDON}, std::pair{"scraper.py", ""}})
     {
       XFILE::CFile file;
       if (!file.OpenForWrite(URIUtils::AddFileToFolder(m_scraper, name), true))
         return {};
       file.Write(content, std::strlen(content));
     }
-    const ADDON::AddonInfoPtr info{ADDON::CAddonInfoBuilder::Generate(m_scraper)};
-    if (!info)
+    ADDON::AddonPtr addon;
+    if (!CServiceBroker::GetAddonMgr().FindAddon(SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
+                                                 ADDON::CAddonVersion{"1.0.0"}) ||
+        !CServiceBroker::GetAddonMgr().GetAddon(SCRAPER_ID, addon, ADDON::OnlyEnabled::CHOICE_YES))
       return {};
-    return std::make_shared<ADDON::CScraper>(info, ADDON::AddonType::SCRAPER_MOVIES);
+    return std::dynamic_pointer_cast<ADDON::CScraper>(addon);
   }
 
   const std::string m_path{
@@ -229,8 +308,10 @@ protected:
   const std::string m_mkv{
       CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg.mkv")};
   const std::string m_scraper{
-      CSpecialProtocol::TranslatePath("special://temp/TestVideoTagLoaderFFmpeg/")};
+      CSpecialProtocol::TranslatePath(std::string{"special://home/addons/"} + SCRAPER_ID + "/")};
   bool m_useTags{false};
+  CNfoUrlHandler m_handler;
+  bool m_registered{false};
 };
 } // namespace
 

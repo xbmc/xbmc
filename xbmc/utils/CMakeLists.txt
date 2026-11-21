@@ -59,7 +59,6 @@ set(SOURCES ActorProtocol.cpp
             RssReader.cpp
             ProgressJob.cpp
             SaveFileStateJob.cpp
-            ScraperParser.cpp
             ScraperUrl.cpp
             Screenshot.cpp
             SortUtils.cpp
@@ -175,7 +174,6 @@ set(HEADERS ActorProtocol.h
             RssReader.h
             SaveFileStateJob.h
             ScopeGuard.h
-            ScraperParser.h
             ScraperUrl.h
             Screenshot.h
             Set.h
@@ -206,10 +204,6 @@ set(HEADERS ActorProtocol.h
             XMLUtils.h
             XTimeUtils.h)
 
-if(TARGET ${APP_NAME_LC}::XSLT)
-  list(APPEND SOURCES XSLTUtils.cpp)
-  list(APPEND HEADERS XSLTUtils.h)
-endif()
 if(TARGET ${APP_NAME_LC}::EGL)
   list(APPEND SOURCES EGLUtils.cpp
                       EGLFence.cpp)

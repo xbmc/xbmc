@@ -26,9 +26,6 @@ TEST(TestScraperUrl, General)
   const auto url = a.GetFirstUrlByType();
   EXPECT_STREQ("blah", url.m_spoof.c_str());
   EXPECT_STREQ("someurl", url.m_url.c_str());
-  EXPECT_STREQ("", url.m_cache.c_str());
   EXPECT_EQ(CScraperUrl::UrlType::General, url.m_type);
-  EXPECT_FALSE(url.m_post);
-  EXPECT_TRUE(url.m_isgz);
   EXPECT_EQ(-1, url.m_season);
 }

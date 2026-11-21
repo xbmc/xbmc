@@ -113,7 +113,7 @@ foreach(_lib ${_nodefaultlibs_DEBUG})
 endforeach()
 
 # DELAYLOAD option
-set(_delayloadlibs libmariadb.dll libxslt.dll dnssd.dll dwmapi.dll sqlite3.dll d3dcompiler_47.dll)
+set(_delayloadlibs libmariadb.dll dnssd.dll dwmapi.dll sqlite3.dll d3dcompiler_47.dll)
 foreach(_lib ${_delayloadlibs})
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:\"${_lib}\"")
 endforeach()

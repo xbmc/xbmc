@@ -13,7 +13,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "MusicAlbumInfo.h"
-#include "MusicInfoScraper.h"
+#include "MusicArtistInfo.h"
 #include "NfoFile.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -1505,10 +1505,8 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
-  // clear our scraper cache
-  info->ClearCache();
-
-  CMusicInfoScraper scraper(info);
+  ADDON::ScraperPtr scraper{info};
+  std::vector<CMusicAlbumInfo> albums;
   bool bMusicBrainz = false;
   /*
   When the mbid is derived from tags scraping of album information is done directly
@@ -1523,8 +1521,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     if (ResolveMusicBrainz(album.strMusicBrainzAlbumID, info, musicBrainzURL))
     {
       CMusicAlbumInfo albumNfo("nfo", musicBrainzURL);
-      scraper.GetAlbums().clear();
-      scraper.GetAlbums().push_back(albumNfo);
+      albums.push_back(albumNfo);
       bMusicBrainz = true;
     }
   }
@@ -1562,42 +1559,19 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
       CLog::Log(LOGDEBUG, "-- nfo-scraper: {}", nfoReaderScraper->Name());
       CLog::Log(LOGDEBUG, "-- nfo url: {}", scrUrl.GetFirstThumbUrl());
-      scraper.SetScraperInfo(nfoReaderScraper);
-      scraper.GetAlbums().clear();
-      scraper.GetAlbums().push_back(albumNfo);
+      scraper = nfoReaderScraper;
+      albums.clear();
+      albums.push_back(albumNfo);
     }
     else if (result != InfoType::OVERRIDE)
       CLog::Log(LOGERROR, "Unable to find an url in nfo file: {}", strNfo);
   }
 
-  if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
-  { // the current scraper is invalid, as is the default - bail
-    CLog::Log(LOGERROR, "{} - current and default scrapers are invalid.  Pick another one",
-              __FUNCTION__);
-    return InfoRet::INFO_ERROR;
-  }
-
-  if (!scraper.GetAlbumCount())
+  if (albums.empty())
   {
-    scraper.FindAlbumInfo(album.strAlbum, album.GetAlbumArtistString());
-
-    while (!scraper.Completed())
-    {
-      if (m_bStop)
-      {
-        scraper.Cancel();
-        return InfoRet::CANCELLED;
-      }
-      ScannerWait(1);
-    }
-    /*
-    Finding album using xml scraper may request data from Musicbrainz.
-    MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
-    returns 503 errors for all calls from that IP address.
-    To stay below the rate-limit threshold wait 1s before proceeding
-    */
-    if (!info->IsPython())
-      ScannerWait(1000);
+    albums = scraper->FindAlbum(album.strAlbum, album.GetAlbumArtistString());
+    if (m_bStop)
+      return InfoRet::CANCELLED;
   }
 
   CGUIDialogSelect *pDlg = NULL;
@@ -1605,11 +1579,11 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   if ((result == InfoType::NONE || result == InfoType::OVERRIDE) && !bMusicBrainz)
   {
     iSelectedAlbum = -1; // set negative so that we can detect a failure
-    if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
+    if (!albums.empty())
     {
       double bestRelevance = 0;
       double minRelevance = static_cast<double>(THRESHOLD);
-      if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
+      if (pDialog || albums.size() > 1) // score the matches
       {
         //show dialog with all albums found
         if (pDialog)
@@ -1623,9 +1597,9 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         }
 
         CFileItemList items;
-        for (int i = 0; i < scraper.GetAlbumCount(); ++i)
+        for (int i = 0; i < static_cast<int>(albums.size()); ++i)
         {
-          CMusicAlbumInfo& info = scraper.GetAlbum(i);
+          CMusicAlbumInfo& info = albums[i];
           double relevance = static_cast<double>(info.GetRelevance());
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
@@ -1647,17 +1621,17 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
             item->SetLabel(strTemp);
 
             std::string strTemp2;
-            if (!scraper.GetAlbum(i).GetAlbum().strType.empty())
-              strTemp2 += scraper.GetAlbum(i).GetAlbum().strType;
-            if (!scraper.GetAlbum(i).GetAlbum().strReleaseDate.empty())
-              strTemp2 += " - " + scraper.GetAlbum(i).GetAlbum().strReleaseDate;
-            if (!scraper.GetAlbum(i).GetAlbum().strReleaseStatus.empty())
-              strTemp2 += " - " + scraper.GetAlbum(i).GetAlbum().strReleaseStatus;
-            if (!scraper.GetAlbum(i).GetAlbum().strLabel.empty())
-              strTemp2 += " - " + scraper.GetAlbum(i).GetAlbum().strLabel;
+            if (!info.GetAlbum().strType.empty())
+              strTemp2 += info.GetAlbum().strType;
+            if (!info.GetAlbum().strReleaseDate.empty())
+              strTemp2 += " - " + info.GetAlbum().strReleaseDate;
+            if (!info.GetAlbum().strReleaseStatus.empty())
+              strTemp2 += " - " + info.GetAlbum().strReleaseStatus;
+            if (!info.GetAlbum().strLabel.empty())
+              strTemp2 += " - " + info.GetAlbum().strLabel;
             item->SetLabel2(strTemp2);
 
-            item->SetArt(scraper.GetAlbum(i).GetAlbum().art);
+            item->SetArt(info.GetAlbum().art);
 
             items.Add(item);
           }
@@ -1711,7 +1685,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       }
       else
       {
-        CMusicAlbumInfo& info = scraper.GetAlbum(0);
+        CMusicAlbumInfo& info = albums[0];
         double relevance = static_cast<double>(info.GetRelevance());
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
@@ -1729,29 +1703,16 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       return InfoRet::NOT_FOUND;
   }
 
-  scraper.LoadAlbumInfo(iSelectedAlbum);
-  while (!scraper.Completed())
-  {
-    if (m_bStop)
-    {
-      scraper.Cancel();
-      return InfoRet::CANCELLED;
-    }
-    ScannerWait(1);
-  }
-  if (!scraper.Succeeded())
+  if (iSelectedAlbum < 0 || iSelectedAlbum >= static_cast<int>(albums.size()))
     return InfoRet::INFO_ERROR;
-  /*
-  Fetching album details using xml scraper may makes requests for data from Musicbrainz.
-  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
-  returns 503 errors for all calls from that IP address.
-  To stay below the rate-limit threshold wait 1s before proceeding incase next action is
-  to scrape another album or artist
-  */
-  if (!info->IsPython())
-    ScannerWait(1000);
-
-  albumInfo = scraper.GetAlbum(iSelectedAlbum);
+  CMusicAlbumInfo& selected = albums[iSelectedAlbum];
+  selected.GetAlbum().artistCredits.clear();
+  const bool loaded = selected.Load(scraper);
+  if (m_bStop)
+    return InfoRet::CANCELLED;
+  if (!loaded)
+    return InfoRet::INFO_ERROR;
+  albumInfo = selected;
 
   if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
     nfoReader.GetDetails(albumInfo.GetAlbum(), NULL, true);
@@ -1773,10 +1734,8 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
     m_handle->SetText(artist.strArtist);
   }
 
-  // clear our scraper cache
-  info->ClearCache();
-
-  CMusicInfoScraper scraper(info);
+  ADDON::ScraperPtr scraper{info};
+  std::vector<CMusicArtistInfo> artists;
   bool bMusicBrainz = false;
   /*
   When the mbid is derived from tags scraping of artist information is done directly
@@ -1791,8 +1750,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
     if (ResolveMusicBrainz(artist.strMusicBrainzArtistID, info, musicBrainzURL))
     {
       CMusicArtistInfo artistNfo("nfo", musicBrainzURL);
-      scraper.GetArtists().clear();
-      scraper.GetArtists().push_back(artistNfo);
+      artists.push_back(artistNfo);
       bMusicBrainz = true;
     }
   }
@@ -1852,43 +1810,27 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
       ADDON::ScraperPtr nfoReaderScraper = nfoReader.GetScraperInfo();
       CLog::Log(LOGDEBUG, "-- nfo-scraper: {}", nfoReaderScraper->Name());
       CLog::Log(LOGDEBUG, "-- nfo url: {}", scrUrl.GetFirstThumbUrl());
-      scraper.SetScraperInfo(nfoReaderScraper);
-      scraper.GetArtists().push_back(artistNfo);
+      scraper = nfoReaderScraper;
+      artists.push_back(artistNfo);
     }
     else
       CLog::Log(LOGERROR, "Unable to find an url in nfo file: {}", strNfo);
   }
 
-  if (!scraper.GetArtistCount())
+  if (artists.empty())
   {
-    scraper.FindArtistInfo(artist.strArtist);
-
-    while (!scraper.Completed())
-    {
-      if (m_bStop)
-      {
-        scraper.Cancel();
-        return InfoRet::CANCELLED;
-      }
-      ScannerWait(1);
-    }
-    /*
-    Finding artist using xml scraper makes a request for data from Musicbrainz.
-    MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter
-    the server returns 503 errors for all calls from that IP address. To stay
-    below the rate-limit threshold wait 1s before proceeding
-    */
-    if (!info->IsPython())
-      ScannerWait(1000);
+    artists = scraper->FindArtist(artist.strArtist);
+    if (m_bStop)
+      return InfoRet::CANCELLED;
   }
 
   int iSelectedArtist = 0;
   if (result == InfoType::NONE && !bMusicBrainz)
   {
-    if (scraper.GetArtistCount() >= 1)
+    if (!artists.empty())
     {
       // now load the first match
-      if (pDialog && scraper.GetArtistCount() > 1)
+      if (pDialog && artists.size() > 1)
       {
         // if we found more then 1 album, let user choose one
         CGUIDialogSelect *pDlg = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
@@ -1899,18 +1841,22 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
           pDlg->Reset();
           pDlg->EnableButton(true, 413); // manual
 
-          for (int i = 0; i < scraper.GetArtistCount(); ++i)
+          for (int i = 0; i < static_cast<int>(artists.size()); ++i)
           {
             // set the label to artist
-            CFileItem item(scraper.GetArtist(i).GetArtist());
-            std::string strTemp = scraper.GetArtist(i).GetArtist().strArtist;
-            if (!scraper.GetArtist(i).GetArtist().strBorn.empty())
-              strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
-            if (!scraper.GetArtist(i).GetArtist().strDisambiguation.empty())
-              strTemp += " - " + scraper.GetArtist(i).GetArtist().strDisambiguation;
-            if (!scraper.GetArtist(i).GetArtist().genre.empty())
+            const CArtist& found = artists[i].GetArtist();
+            CFileItem item(found);
+            std::string strTemp = found.strArtist;
+            if (!found.strBorn.empty())
+              strTemp += " (" + found.strBorn + ")";
+            if (!found.strDisambiguation.empty())
+              strTemp += " - " + found.strDisambiguation;
+            if (!found.genre.empty())
             {
-              std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+              std::string genres =
+                  StringUtils::Join(found.genre, CServiceBroker::GetSettingsComponent()
+                                                     ->GetAdvancedSettings()
+                                                     ->m_musicItemSeparator);
               if (!genres.empty())
                 strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
             }
@@ -1953,31 +1899,17 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
     else
       return InfoRet::NOT_FOUND;
   }
-  /*
-  Fetching artist details using xml scraper makes requests for data from Musicbrainz.
-  MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter the server
-  returns 503 errors for all calls from that IP address.
-  To stay below the rate-limit threshold wait 1s before proceeding incase next action is
-  to scrape another album or artist
-  */
-  if (!info->IsPython())
-    ScannerWait(1000);
-
-  scraper.LoadArtistInfo(iSelectedArtist, artist.strArtist);
-  while (!scraper.Completed())
-  {
-    if (m_bStop)
-    {
-      scraper.Cancel();
-      return InfoRet::CANCELLED;
-    }
-    ScannerWait(1);
-  }
-
-  if (!scraper.Succeeded())
+  if (iSelectedArtist < 0 || iSelectedArtist >= static_cast<int>(artists.size()))
+    return InfoRet::INFO_ERROR;
+  CMusicArtistInfo& selected = artists[iSelectedArtist];
+  selected.GetArtist().strArtist.clear();
+  const bool loaded = selected.Load(scraper);
+  if (m_bStop)
+    return InfoRet::CANCELLED;
+  if (!loaded)
     return InfoRet::INFO_ERROR;
 
-  artistInfo = scraper.GetArtist(iSelectedArtist);
+  artistInfo = selected;
 
   if (result == InfoType::COMBINED)
     nfoReader.GetDetails(artistInfo.GetArtist(), NULL, true);
@@ -1991,15 +1923,7 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
   // Get a scraper that can resolve it to a MusicBrainz URL & force our
   // search directly to the specific album.
   bool bMusicBrainz = false;
-  try
-  {
-    musicBrainzURL = preferredScraper->ResolveIDToUrl(strMusicBrainzID);
-  }
-  catch (const ADDON::CScraperError &sce)
-  {
-    if (sce.FAborted())
-      return false;
-  }
+  musicBrainzURL = preferredScraper->ResolveIDToUrl(strMusicBrainzID);
 
   if (musicBrainzURL.HasUrls())
   {
@@ -2009,17 +1933,6 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
   }
 
   return bMusicBrainz;
-}
-
-void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
-{
-  if (milliseconds > 10)
-  {
-    CEvent m_StopEvent;
-    m_StopEvent.Wait(std::chrono::milliseconds(milliseconds));
-  }
-  else
-    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& artfolder)

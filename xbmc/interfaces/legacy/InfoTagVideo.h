@@ -3310,14 +3310,12 @@ namespace XBMCAddon
       /// @param arttype       string - image type
       /// @param preview        [opt] string - image preview path url
       /// @param referrer       [opt] string - referrer url
-      /// @param cache          [opt] string - filename in cache
-      /// @param post           [opt] bool - use post to retrieve the image (default false)
-      /// @param isgz           [opt] bool - use gzip to retrieve the image (default false)
       /// @param season         [opt] integer - number of season in case of season thumb
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
+      /// @python_v23 Removed options **cache**, **post** and **isgz**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -3329,13 +3327,10 @@ namespace XBMCAddon
       addAvailableArtwork(...);
 #else
       void addAvailableArtwork(const std::string& url,
-        const std::string& arttype = "",
-        const std::string& preview = "",
-        const std::string& referrer = "",
-        const std::string& cache = "",
-        bool post = false,
-        bool isgz = false,
-        int season = -1);
+                               const std::string& arttype = "",
+                               const std::string& preview = "",
+                               const std::string& referrer = "",
+                               int season = -1);
 #endif
       /// @}
 
@@ -3451,9 +3446,6 @@ namespace XBMCAddon
                                          const std::string& art_type = "",
                                          const std::string& preview = "",
                                          const std::string& referrer = "",
-                                         const std::string& cache = "",
-                                         bool post = false,
-                                         bool isgz = false,
                                          int season = -1);
       static void setAvailableFanartRaw(CVideoInfoTag* infoTag,
                                         const std::vector<Properties>& images);

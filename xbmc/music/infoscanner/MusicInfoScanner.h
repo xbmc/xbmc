@@ -275,8 +275,6 @@ protected:
    */
   bool ResolveMusicBrainz(const std::string &strMusicBrainzID, const ADDON::ScraperPtr &preferredScraper, CScraperUrl &musicBrainzURL);
 
-  void ScannerWait(unsigned int milliseconds);
-
   int m_currentItem;
   int m_itemCount;
   //! Sticky - never reset, so a scanner instance is good for one scan only

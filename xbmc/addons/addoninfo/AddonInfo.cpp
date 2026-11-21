@@ -40,7 +40,7 @@ struct TypeMapping
 };
 
 // clang-format off
-static constexpr const std::array<TypeMapping, 42> types =
+static constexpr const std::array<TypeMapping, 41> types =
   {{
    {"unknown",                           "", AddonType::UNKNOWN,                 0, AddonInstanceSupport::SUPPORT_NONE,      "" },
    {"xbmc.metadata.scraper.albums",      "", AddonType::SCRAPER_ALBUMS,      24016, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_ALBUM_INFO },
@@ -48,7 +48,6 @@ static constexpr const std::array<TypeMapping, 42> types =
    {"xbmc.metadata.scraper.movies",      "", AddonType::SCRAPER_MOVIES,      24007, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_MOVIE_INFO },
    {"xbmc.metadata.scraper.musicvideos", "", AddonType::SCRAPER_MUSICVIDEOS, 24015, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_MUSIC_VIDEO_INFO },
    {"xbmc.metadata.scraper.tvshows",     "", AddonType::SCRAPER_TVSHOWS,     24014, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_TV_INFO },
-   {"xbmc.metadata.scraper.library",     "", AddonType::SCRAPER_LIBRARY,     24083, AddonInstanceSupport::SUPPORT_NONE,      KODI::ART::DEFAULT::ADDON_INFO_LIBRARY },
    {"xbmc.ui.screensaver",               "", AddonType::SCREENSAVER,         24008, AddonInstanceSupport::SUPPORT_OPTIONAL,  KODI::ART::DEFAULT::ADDON_SCREENSAVER },
    {"xbmc.player.musicviz",              "", AddonType::VISUALIZATION,       24010, AddonInstanceSupport::SUPPORT_OPTIONAL,  KODI::ART::DEFAULT::ADDON_VISUALIZATION },
    {"xbmc.python.pluginsource",          "", AddonType::PLUGIN,              24005, AddonInstanceSupport::SUPPORT_NONE,      "" },

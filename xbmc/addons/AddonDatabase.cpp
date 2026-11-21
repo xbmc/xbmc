@@ -988,7 +988,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
       if (GetAddon(id, addon) && addon != nullptr)
       {
         if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::UNKNOWN) + 1 &&
-            static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRAPER_LIBRARY))
+            static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRIPT_LIBRARY))
           addons.push_back(addon);
       }
       m_pDS->next();

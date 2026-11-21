@@ -42,7 +42,7 @@ public:
    *
    * @return A CAddonInfo with all of the add-on's info, or empty if unknown
    */
-  AddonInfoPtr AddonInfo() { return m_addonInfo; }
+  AddonInfoPtr AddonInfo() const { return m_addonInfo; }
 
   /**
    * @brief To get the main type of this addon
