@@ -2569,6 +2569,9 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_backwardRefs = 0;
   m_currentIdx = 0;
   m_frameCount = 0;
+  m_lastAddedPts = DVD_NOPTS_VALUE;
+  m_frametimes.fill(0);
+  m_frametimeCount = 0;
   m_vppMethod = VS_INTERLACEMETHOD_AUTO;
 
   return UpdateDeintMethod(method);
@@ -2681,6 +2684,14 @@ void CVppPostproc::Dispose()
 
 bool CVppPostproc::AddPicture(CVaapiDecodedPicture &pic)
 {
+  // the last intervals between pictures, for a second field without forward references
+  if (pic.DVDPic.pts != DVD_NOPTS_VALUE)
+  {
+    if (m_lastAddedPts != DVD_NOPTS_VALUE && pic.DVDPic.pts > m_lastAddedPts)
+      m_frametimes[m_frametimeCount++ % m_frametimes.size()] = pic.DVDPic.pts - m_lastAddedPts;
+    m_lastAddedPts = pic.DVDPic.pts;
+  }
+
   pic.index = m_frameCount;
   m_decodedPics.push_front(pic);
   m_frameCount++;
@@ -2850,6 +2861,18 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   // set pts for 2nd frame
   if (m_step && pts != DVD_NOPTS_VALUE && ptsLast != DVD_NOPTS_VALUE)
     outPic.DVDPic.pts += (pts-ptsLast)/2;
+  else if (m_step && pts != DVD_NOPTS_VALUE)
+  {
+    // no forward references (e.g. Bob): the shortest recent interval, a gap left by dropped
+    // frames is longer
+    double frametime = 0;
+    for (const double interval : m_frametimes)
+    {
+      if (interval > 0 && (frametime == 0 || interval < frametime))
+        frametime = interval;
+    }
+    outPic.DVDPic.pts += frametime / 2;
+  }
 
   if (pipelineParams->surface == VA_INVALID_SURFACE)
     return false;
@@ -2912,6 +2935,10 @@ void CVppPostproc::ClearRef(CVaapiProcessedPicture &pic)
 
 void CVppPostproc::Flush()
 {
+  m_lastAddedPts = DVD_NOPTS_VALUE;
+  m_frametimes.fill(0);
+  m_frametimeCount = 0;
+
   // release all decoded pictures
   auto it = m_decodedPics.begin();
   while (it != m_decodedPics.end())
