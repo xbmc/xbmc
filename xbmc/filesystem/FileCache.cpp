@@ -145,6 +145,8 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
+  m_bReadError = false;
+
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (!settings)
     return false;
@@ -338,6 +340,7 @@ void CFileCache::Process()
       if (!sourceSeekFailed)
       {
         m_pCache->ClearEndOfInput();
+        m_bReadError = false;
         const bool bCompleteReset = m_pCache->Reset(m_seekPos);
         m_readPos = m_seekPos;
         m_writePos = m_pCache->CachedDataEndPos();
@@ -443,11 +446,13 @@ void CFileCache::Process()
           CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> source read hit eof", __FUNCTION__,
                     m_sourcePath);
 
+        m_bReadError = (iRead < 0);
         m_pCache->EndOfInput();
 
         if (!m_bStop && m_seekEvent.Wait() && !m_bStop)
         {
           m_pCache->ClearEndOfInput();
+          m_bReadError = false;
           m_seekEvent.Set(); // hack so that later we realize seek is needed
         }
         else
@@ -467,6 +472,7 @@ void CFileCache::Process()
       {
         CLog::Log(LOGERROR, "CFileCache::{} - <{}> error writing to cache", __FUNCTION__,
                   m_sourcePath);
+        m_bReadError = true;
         m_bStop = true;
         break;
       }
@@ -536,6 +542,8 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 {
   std::unique_lock lock(m_sync);
+  if (uiBufSize == 0)
+    return 0;
   if (!m_pCache)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> sanity failed. no cache strategy!", __FUNCTION__,
@@ -587,6 +595,29 @@ retry:
     if (!m_sourcePositionValid)
     {
       SetLastError(m_seekError != 0 ? m_seekError : EIO);
+      return -1;
+    }
+    // Some cache strategies (e.g. CCircularCache) return 0 both at end of input and
+    // when WaitForData timed out with no data. Only a real end of input is EOF.
+    if (!m_pCache->IsEndOfInput())
+    {
+      CLog::Log(LOGWARNING, "CFileCache::{} - <{}> timeout waiting for data", __FUNCTION__,
+                m_sourcePath);
+      return -1;
+    }
+    // The writer may have appended its final bytes and marked end of input after
+    // WaitForData returned 0; drain them before reporting EOF.
+    iRc = m_pCache->ReadFromCache((char*)lpBuf, uiBufSize);
+    if (iRc > 0)
+    {
+      m_readPos += iRc;
+      return (int)iRc;
+    }
+    if (iRc < 0)
+      return -1;
+    if (m_bReadError)
+    {
+      SetLastError(EIO);
       return -1;
     }
     return 0;
