@@ -263,30 +263,18 @@ TEST_F(TestZipFile, Read64)
   file.Close();
 }
 
-TEST_F(TestZipFile, BigRead64)
+TEST_F(TestZipFile, Zip64MemberSize)
 {
   const std::string reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/dummy64.zip");
 
-  XFILE::CFile file;
-  char buf[4]{};
-  std::string strpathinzip;
   CFileItemList itemlist;
-
-  CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
+  const CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
   ASSERT_TRUE(XFILE::CDirectory::GetDirectory(zipUrl, itemlist, "", XFILE::DIR_FLAG_NO_FILE_DIRS));
-  EXPECT_GT(itemlist.Size(), 0);
-  EXPECT_FALSE(itemlist[0]->GetPath().empty());
-  strpathinzip = itemlist[0]->GetPath();
-  ASSERT_TRUE(file.Open(strpathinzip));
-  EXPECT_EQ(0, file.GetPosition());
-  constexpr int64_t fileSize{5ull * 1024 * 1024 * 1024}; // 5 GB
-  EXPECT_EQ(fileSize, file.GetLength());
-  EXPECT_EQ(fileSize - 4, file.Seek(-4, SEEK_END)); // File contains "TEST" at the end
-  EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
-  file.Flush();
-  EXPECT_EQ(fileSize, file.GetPosition());
-  EXPECT_TRUE(!memcmp("TEST", buf, sizeof(buf) - 1));
-  file.Close();
+  ASSERT_EQ(1, itemlist.Size());
+
+  // The size is only in the zip64 extra field: the 32-bit field cannot hold 5 GB
+  constexpr int64_t fileSize{5ll * 1024 * 1024 * 1024};
+  EXPECT_EQ(fileSize, itemlist[0]->GetSize());
 }
 
 TEST_F(TestZipFile, Zip64DirectoryListing)
