@@ -176,6 +176,8 @@ constexpr auto iec958CodecMap = make_map<CAEStreamInfo::DataType, spa_audio_iec9
     {CAEStreamInfo::STREAM_TYPE_DTS_1024, SPA_AUDIO_IEC958_CODEC_DTS},
     {CAEStreamInfo::STREAM_TYPE_DTS_2048, SPA_AUDIO_IEC958_CODEC_DTS},
     {CAEStreamInfo::STREAM_TYPE_DTSHD_CORE, SPA_AUDIO_IEC958_CODEC_DTS},
+    // DTS-HD HRA is packed as a 2 channel stream, PipeWire expects 8 channels for DTS-HD
+    {CAEStreamInfo::STREAM_TYPE_DTSHD, SPA_AUDIO_IEC958_CODEC_DTS},
 
     {CAEStreamInfo::STREAM_TYPE_AC3, SPA_AUDIO_IEC958_CODEC_AC3},
 
@@ -183,7 +185,6 @@ constexpr auto iec958CodecMap = make_map<CAEStreamInfo::DataType, spa_audio_iec9
 
     {CAEStreamInfo::STREAM_TYPE_TRUEHD, SPA_AUDIO_IEC958_CODEC_TRUEHD},
 
-    {CAEStreamInfo::STREAM_TYPE_DTSHD, SPA_AUDIO_IEC958_CODEC_DTSHD},
     {CAEStreamInfo::STREAM_TYPE_DTSHD_MA, SPA_AUDIO_IEC958_CODEC_DTSHD},
 });
 
