@@ -44,7 +44,8 @@ void CActiveAEFilter::Init(AVSampleFormat fmt, int sampleRate, uint64_t channelL
   m_channelLayout = channelLayout;
   m_tempo = 1.0;
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
+  m_frameTempo = 1.0f;
 }
 
 bool CActiveAEFilter::SetTempo(float tempo)
@@ -66,7 +67,22 @@ bool CActiveAEFilter::SetTempo(float tempo)
   }
 
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
+  m_frameTempo = m_tempo;
+  return true;
+}
+
+bool CActiveAEFilter::ChangeTempo(float tempo)
+{
+  if (!IsActive() || m_tempo == 1.0f || tempo == 1.0f)
+    return false;
+
+  const std::string arg = StringUtils::Format("{:f}", tempo);
+  if (avfilter_graph_send_command(m_pFilterGraph, "atempo", "tempo", arg.c_str(), nullptr, 0, 0) <
+      0)
+    return false;
+
+  m_tempo = tempo;
   return true;
 }
 
@@ -183,7 +199,7 @@ void CActiveAEFilter::CloseFilter()
     swr_free(&m_pConvertCtx);
 
   m_SamplesIn = 0;
-  m_SamplesOut = 0;
+  m_samplesConsumed = 0.0;
 
   m_ptsInitialized = false;
 }
@@ -288,7 +304,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       return -1;
     }
 
-    m_SamplesOut = outFrame->pts;
+    m_frameTempo = m_tempo;
 
     if (m_needConvert)
     {
@@ -326,6 +342,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       memcpy(dst_buffer[i], m_pOutFrame->extended_data[i] + bytesOffset, bytes);
     }
     m_sampleOffset += samples;
+    m_samplesConsumed += samples * static_cast<double>(m_frameTempo);
 
     if (m_sampleOffset >= m_pOutFrame->nb_samples)
     {
@@ -337,6 +354,11 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
   }
 
   return 0;
+}
+
+float CActiveAEFilter::GetOutputTempo() const
+{
+  return m_frameTempo;
 }
 
 bool CActiveAEFilter::IsEof() const
@@ -356,10 +378,5 @@ bool CActiveAEFilter::IsActive() const
 
 int CActiveAEFilter::GetBufferedSamples() const
 {
-  int ret = m_SamplesIn - (m_SamplesOut * m_tempo);
-  if (m_hasData)
-  {
-    ret += (m_pOutFrame->nb_samples - m_sampleOffset);
-  }
-  return ret;
+  return static_cast<int>(static_cast<double>(m_SamplesIn) - m_samplesConsumed);
 }

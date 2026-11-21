@@ -26,6 +26,24 @@ public:
   void Init(AVSampleFormat fmt, int sampleRate, uint64_t channelLayout);
   int ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, int src_bufsize);
   bool SetTempo(float tempo);
+  /*!
+   * \brief Change the tempo of the running filter, keeping what it has buffered.
+   *
+   * FFmpeg keeps the output frame it is filling across the change, and the part of it produced
+   * at the old tempo is counted at the new one. Each change shifts the buffered samples by at
+   * most one output frame times the change of tempo, and the shifts add up until the filter is
+   * re-created.
+   *
+   * \param tempo the new tempo
+   * \return false if the tempo can't be changed in place and the filter has to be re-created
+   *         with SetTempo, true otherwise
+   */
+  bool ChangeTempo(float tempo);
+  /*!
+   * \brief The tempo the samples ProcessFilter returned last were produced at. It differs from
+   *        the tempo set while the filter drains for a new one.
+   */
+  float GetOutputTempo() const;
   bool NeedData() const;
   bool IsEof() const;
   bool IsActive() const;
@@ -55,7 +73,10 @@ protected:
   bool m_ptsInitialized;
   int m_sampleOffset;
   int64_t m_SamplesIn;
-  int64_t m_SamplesOut;
+  // Input samples covered by the output returned so far, each frame at its own tempo
+  double m_samplesConsumed{0.0};
+  // Tempo the current output frame was produced at
+  float m_frameTempo{1.0f};
 };
 
 }
