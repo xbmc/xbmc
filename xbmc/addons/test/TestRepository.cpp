@@ -68,8 +68,12 @@ long PlainHttpWarnings(const std::vector<AddonInfoPtr>& repositories)
 
 TEST(TestRepository, AProblemWithARepositoryIsLoggedOncePerVersion)
 {
-  const auto version1{PlainHttpRepository("1.0.0")};
-  const auto version2{PlainHttpRepository("2.0.0")};
+  // The versions already logged are remembered for the life of the process, so a repeated run
+  // needs versions of its own
+  static int run{0};
+  ++run;
+  const auto version1{PlainHttpRepository("1.0." + std::to_string(run))};
+  const auto version2{PlainHttpRepository("2.0." + std::to_string(run))};
 
   EXPECT_EQ(2, PlainHttpWarnings({version1, version1, version2, version2}));
   EXPECT_EQ(0, PlainHttpWarnings({version1, version2}));
