@@ -390,6 +390,15 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return Open(hints, options);
   }
 
+  if (!pConfig && m_pCodecContext->pix_fmt != AV_PIX_FMT_NONE &&
+      !IsSupportedSwFormat(m_pCodecContext->pix_fmt))
+  {
+    CLog::LogF(LOGINFO, "decoder {} outputs unsupported pixel format {}", pCodec->name,
+               av_get_pix_fmt_name(m_pCodecContext->pix_fmt));
+    avcodec_free_context(&m_pCodecContext);
+    return false;
+  }
+
   UpdateProcessInfo(m_pCodecContext, m_pCodecContext->pix_fmt);
   m_processInfo.SetVideoDeintMethod("none");
   m_processInfo.SetVideoDAR(hints.aspect);
