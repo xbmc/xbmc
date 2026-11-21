@@ -22,6 +22,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -45,6 +46,9 @@ const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
 const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
 const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
 const std::string SETTING_GAMES_REPLACE_LABELS = "gamesgeneral.replacelabels";
+const std::string SETTING_GAMES_ONE_VERSION = "gamesgeneral.oneversion";
+const std::string SETTING_GAMES_REGION = "gamesgeneral.region";
+const std::string SETTING_GAMES_SECOND_REGION = "gamesgeneral.secondregion";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
@@ -139,6 +143,23 @@ bool CGameSettings::AutosaveEnabled()
 bool CGameSettings::ReplaceLabels()
 {
   return m_settings->GetBool(SETTING_GAMES_REPLACE_LABELS);
+}
+
+bool CGameSettings::OneVersionPerGame()
+{
+  return m_settings->GetBool(SETTING_GAMES_ONE_VERSION);
+}
+
+std::string CGameSettings::Region()
+{
+  const std::string region = m_settings->GetString(SETTING_GAMES_REGION);
+  return region == "auto" ? g_langInfo.GetRegionCodeAlpha2() : region;
+}
+
+std::string CGameSettings::SecondRegion()
+{
+  const std::string region = m_settings->GetString(SETTING_GAMES_SECOND_REGION);
+  return region == "none" ? "" : region;
 }
 
 bool CGameSettings::RewindEnabled()
