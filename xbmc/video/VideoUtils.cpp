@@ -463,4 +463,21 @@ std::string FindEditionInName(const std::string& name, const std::vector<std::st
   }
   return match;
 }
+
+bool FlagMainTitleToSave(CFileItem& item, const std::string& pathBeforePick)
+{
+  // An item already stored as a playlist keeps it, as the user may have chosen it
+  if (URIUtils::IsBlurayPath(pathBeforePick) || !URIUtils::IsBlurayPath(item.GetDynPath()) ||
+      !item.HasVideoInfoTag())
+    return false;
+
+  // Only a movie or episode in the library has a record to store as the playlist
+  const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+  if ((tag->m_type != MediaTypeMovie && tag->m_type != MediaTypeEpisode) || tag->m_iDbId <= 0 ||
+      tag->m_iFileId <= 0)
+    return false;
+
+  item.SetProperty("new_playlist_path", true);
+  return true;
+}
 } // namespace KODI::VIDEO::UTILS
