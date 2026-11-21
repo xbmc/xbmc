@@ -29,4 +29,15 @@
       </group>
     </category>
   </section>
+  <section id="interface">
+    <category id="other">
+      <group id="2">
+        <setting id="lookandfeel.androidhomescreen" type="boolean" label="40867" help="40868">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
