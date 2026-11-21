@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "guilib/ImageColor.h"
+
+#include <optional>
 #include <string>
 
 //! \brief CICP color metadata (H.273 code points) to embed in an encoded image,
@@ -71,6 +74,17 @@ public:
           signaling override this.
    */
   virtual void SetColorMetadata(const ImageColorMetadata& color) {}
+
+  /*!
+   \brief Set what Decode() does with the picture's ICC profile
+   */
+  virtual void SetColorMode(ImageColorMode mode) {}
+
+  /*!
+   \brief After a KEEP_GAMUT Decode(), the matrix from the decoded pixels' linear RGB to linear
+   BT.2020, or none when they are sRGB
+   */
+  virtual std::optional<ImageColorMatrix> GetColorMatrix() const { return {}; }
 
   unsigned int Width() const              { return m_width; }
   unsigned int Height() const             { return m_height; }
