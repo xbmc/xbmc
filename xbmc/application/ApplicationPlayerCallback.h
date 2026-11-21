@@ -38,3 +38,27 @@ public:
   void RequestVideoSettings(const CFileItem& fileItem) override;
   void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
 };
+
+namespace KODI::APPLICATION
+{
+/*!
+ \brief Update the bookmark of a disc stack part closed by the player for the whole stack.
+ \param bookmark The player's bookmark, relative to the part
+ \param file The part closed
+ \param stackHelper The stack being played
+ \return false if nothing has been played yet, true otherwise
+ */
+bool UpdateDiscStackBookmark(CBookmark& bookmark,
+                             const CFileItem& file,
+                             const std::shared_ptr<CApplicationStackHelper>& stackHelper);
+
+/*!
+ \brief Check if a file is part of a disc stack with parts that have no time yet, so the stack's
+ total time doesn't cover the whole stack.
+ \param file The part
+ \param stackHelper The stack being played
+ \return true if the stack is partly timed, false otherwise
+ */
+bool IsPartlyTimedDiscStack(const CFileItem& file,
+                            const std::shared_ptr<CApplicationStackHelper>& stackHelper);
+} // namespace KODI::APPLICATION
