@@ -492,6 +492,22 @@ TEST_F(TestVideoDatabase, ToStoredPathAddsTheTrailingSeparator)
   EXPECT_EQ("smb://server/movies/", CVideoDatabase::ToStoredPath("smb://server/movies/"));
 }
 
+TEST_F(TestVideoDatabase, GetPathsIncludesNullMovieContentButHonorsExclusions)
+{
+  for (const std::string folder : {"null", "empty", "excluded", "noupdate"})
+    ASSERT_GT(AddMovie("/movies/" + folder + "/film.mkv"), 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery("UPDATE path SET strContent=NULL"));
+  ASSERT_TRUE(m_db.ExecuteQuery("UPDATE path SET strContent='' WHERE strPath='/movies/empty/'"));
+  ASSERT_TRUE(
+      m_db.ExecuteQuery("UPDATE path SET strContent='None' WHERE strPath='/movies/excluded/'"));
+  ASSERT_TRUE(m_db.ExecuteQuery("UPDATE path SET noUpdate=1 WHERE strPath='/movies/noupdate/'"));
+
+  std::set<std::string, std::less<>> paths;
+  ASSERT_TRUE(m_db.GetPaths(paths));
+  EXPECT_EQ((std::set<std::string, std::less<>>{"/movies/null/", "/movies/empty/"}), paths);
+}
+
 TEST_F(TestVideoDatabase, GetPathsForCleaningMatchesADirectoryGivenWithoutItsSeparator)
 {
   const int idSource{m_db.AddPath("smb://server/movies/")};
