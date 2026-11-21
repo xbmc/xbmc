@@ -150,6 +150,39 @@ bool CAddonMgr::Init()
 
   FindAddons();
 
+  // Incompatible add-ons are disabled during startup; say why on every start
+  std::vector<AddonInfoPtr> incompatible;
+  GetIncompatibleAddonInfos(incompatible, true);
+  for (const auto& addon : incompatible)
+  {
+    for (const auto& dependency : addon->GetDependencies())
+    {
+      if (dependency.optional || !(StringUtils::StartsWith(dependency.id, "xbmc.") ||
+                                   StringUtils::StartsWith(dependency.id, "kodi.")))
+      {
+        continue;
+      }
+
+      const AddonInfoPtr provided = GetAddonInfo(dependency.id, AddonType::UNKNOWN);
+      if (!provided)
+      {
+        CLog::Log(LOGWARNING,
+                  "ADDON: {} v{} is incompatible: it requires {} {}, which this Kodi does not "
+                  "provide",
+                  addon->ID(), addon->Version().asString(), dependency.id,
+                  dependency.version.asString());
+      }
+      else if (!provided->MeetsVersion(dependency.versionMin, dependency.version))
+      {
+        CLog::Log(LOGWARNING,
+                  "ADDON: {} v{} is incompatible: it requires {} {}, this Kodi provides {} to {}",
+                  addon->ID(), addon->Version().asString(), dependency.id,
+                  dependency.version.asString(), provided->MinVersion().asString(),
+                  provided->Version().asString());
+      }
+    }
+  }
+
   //Ensure required add-ons are installed and enabled
   for (const auto& id : m_systemAddons)
   {
