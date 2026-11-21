@@ -12,7 +12,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "media/MediaType.h"
 #include "music/tags/MusicInfoTag.h"
 #include "platform/Filesystem.h"
@@ -1224,7 +1224,7 @@ protected:
   void SetUp() override
   {
     ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   }
 
   void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }

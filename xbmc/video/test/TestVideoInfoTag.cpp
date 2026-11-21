@@ -8,7 +8,7 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "language/LanguageTag.h"
 #include "language/i18n/LanguageTable.h"
 #include "settings/Settings.h"
@@ -502,7 +502,7 @@ protected:
   {
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).ToString();
+    m_languageOriginal = KODI::LANGUAGE::CLanguage::GetInstance();
     m_languageDetailsOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS);
   }
@@ -511,7 +511,7 @@ protected:
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
-    g_langInfo.SetAudioLanguage(m_audioLanguageOriginal);
+    KODI::LANGUAGE::CLanguage::GetInstance() = m_languageOriginal;
     DescribeStream(m_languageDetailsOriginal);
   }
 
@@ -525,7 +525,7 @@ protected:
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, language);
-    g_langInfo.SetAudioLanguage(language);
+    KODI::LANGUAGE::CLanguage::GetInstance().SetAudio(language);
   }
 
   // A German TrueHD 7.1 track that outranks an English AC3 5.1 one on quality alone
@@ -569,7 +569,7 @@ protected:
   }
 
   std::string m_settingOriginal;
-  std::string m_audioLanguageOriginal;
+  KODI::LANGUAGE::CLanguage m_languageOriginal;
   int m_languageDetailsOriginal{CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER};
 };
 

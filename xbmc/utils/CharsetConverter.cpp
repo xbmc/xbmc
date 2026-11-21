@@ -9,7 +9,7 @@
 #include "CharsetConverter.h"
 
 #include "ServiceBroker.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "log.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -236,9 +236,9 @@ std::string CConverterType::ResolveSpecialCharset(enum SpecialCharset charset)
   case SystemCharset:
     return "";
   case UserCharset:
-    return g_langInfo.GetGuiCharSet();
+    return KODI::LANGUAGE::CLanguage::GetInstance().GuiCharset();
   case SubtitleCharset:
-    return g_langInfo.GetSubtitleCharSet();
+    return KODI::LANGUAGE::CLanguage::GetInstance().SubtitleCharset();
   case NotSpecialCharset:
   default:
     return "UTF-8"; /* dummy value */

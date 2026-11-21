@@ -39,7 +39,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDbPaths.h"
@@ -8372,7 +8372,7 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField) con
     WHEN strArtist LIKE 'an ' OR strArtist LIKE 'an.' strArtist LIKE 'an_' ESCAPE '_'
     THEN SUBSTR(strArtist, 4)
   */
-  const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
+  const auto& sortTokens = KODI::LANGUAGE::CLanguage::GetInstance().SortTokens();
   std::string sortclause;
   size_t tokenlength = 0;
   std::string strWhen;

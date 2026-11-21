@@ -1,4 +1,5 @@
 set(SOURCES TestBcp47.cpp
+            TestCollation.cpp
             TestBcp47Formatter.cpp
             TestBcp47Parser.cpp
             TestIso3166_1.cpp

@@ -11,7 +11,6 @@
 #include "language/i18n/LanguageTable.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/XBMCTinyXML.h"
 
 #include <map>
@@ -147,8 +146,6 @@ TEST_F(LanguageTableTest, AdvancedSettingsDeclaresItsLanguageCodes)
   EXPECT_EQ(CLanguageTag::Parse("es-419").ToEnglishName(), "Spanish - Latin America");
   EXPECT_TRUE(CLanguageTag::TryParse("zzz").has_value());
   EXPECT_EQ(CLanguageTag::Parse("High Valyrian").ToString(), "zzz");
-
-  CLangCodeExpander::Clear();
 }
 
 TEST_F(LanguageTableTest, AnAddonNamesALanguageOnlyWhereNothingElseDoes)

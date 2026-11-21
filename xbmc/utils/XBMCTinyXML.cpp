@@ -10,7 +10,7 @@
 
 #include "RegExp.h"
 #include "filesystem/File.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"
@@ -170,7 +170,7 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
   }
 
   // fallback: try user GUI charset
-  if (TryParse(data, g_langInfo.GetGuiCharSet()))
+  if (TryParse(data, KODI::LANGUAGE::CLanguage::GetInstance().GuiCharset()))
   {
     if (!m_SuggestedCharset.empty())
       CLog::Log(LOGWARNING,

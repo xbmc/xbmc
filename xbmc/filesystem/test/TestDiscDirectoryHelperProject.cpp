@@ -14,7 +14,7 @@
 #include "filesystem/IPlaylistHints.h"
 #include "filesystem/bluray/BlurayPlaylistHints.h"
 #include "filesystem/bluray/ProjectParser.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "language/LanguageTag.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -1055,7 +1055,7 @@ protected:
   void SetUp() override
   {
     ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   }
 
   void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }
