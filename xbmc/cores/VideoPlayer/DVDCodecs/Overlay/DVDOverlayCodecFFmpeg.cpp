@@ -8,9 +8,7 @@
 
 #include "DVDOverlayCodecFFmpeg.h"
 
-#include "DVDOverlayCodecFFmpegUtils.h"
 #include "DVDOverlayImage.h"
-#include "DVDOverlayStereoUtils.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
@@ -22,35 +20,192 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cstddef>
+#include <cstdlib>
+#include <string_view>
 #include <utility>
-
-using namespace KODI::VIDEO::SUBTITLES;
 
 namespace
 {
+enum class BitmapStereoLayout
+{
+  MONO,
+  LEFT_RIGHT,
+  TOP_BOTTOM,
+};
+
+struct Bounds
+{
+  int x1{0};
+  int y1{0};
+  int x2{0};
+  int y2{0};
+
+  bool IsEmpty() const { return x1 >= x2 || y1 >= y2; }
+  int Width() const { return x2 - x1; }
+  int Height() const { return y2 - y1; }
+};
+
+BitmapStereoLayout GetBitmapStereoLayout(std::string_view stereoMode)
+{
+  if (stereoMode == "left_right" || stereoMode == "right_left")
+    return BitmapStereoLayout::LEFT_RIGHT;
+  if (stereoMode == "top_bottom" || stereoMode == "bottom_top")
+    return BitmapStereoLayout::TOP_BOTTOM;
+  return BitmapStereoLayout::MONO;
+}
+
+uint32_t GetPixel(const CDVDOverlayImage& bitmap, int x, int y)
+{
+  const auto index = bitmap.pixels[(y - bitmap.y) * bitmap.linesize + x - bitmap.x];
+  const uint32_t color = bitmap.palette[index];
+  return ((color >> PIXEL_ASHIFT) & 0xff) != 0 ? color : 0;
+}
+
+Bounds GetVisibleBounds(const CDVDOverlayImage& bitmap, const Bounds& region)
+{
+  const int x1 = std::max(bitmap.x, region.x1);
+  const int y1 = std::max(bitmap.y, region.y1);
+  const int x2 = std::min(bitmap.x + bitmap.width, region.x2);
+  const int y2 = std::min(bitmap.y + bitmap.height, region.y2);
+  if (x1 >= x2 || y1 >= y2)
+    return {};
+
+  Bounds visible{x2, y2, x1, y1};
+  for (int y = y1; y < y2; ++y)
+  {
+    for (int x = x1; x < x2; ++x)
+    {
+      if (GetPixel(bitmap, x, y) == 0)
+        continue;
+
+      visible.x1 = std::min(visible.x1, x);
+      visible.y1 = std::min(visible.y1, y);
+      visible.x2 = std::max(visible.x2, x + 1);
+      visible.y2 = std::max(visible.y2, y + 1);
+    }
+  }
+  return visible;
+}
+
+bool HaveCompatiblePositions(const Bounds& first,
+                             const Bounds& second,
+                             const Bounds& firstRegion,
+                             const Bounds& secondRegion)
+{
+  const int firstX = first.x1 - firstRegion.x1;
+  const int firstY = first.y1 - firstRegion.y1;
+  const int secondX = second.x1 - secondRegion.x1;
+  const int secondY = second.y1 - secondRegion.y1;
+  const int maxHorizontalShift = std::max(2, firstRegion.Width() / 8);
+  const int maxVerticalShift = std::max(2, firstRegion.Height() / 100);
+
+  return std::abs(firstX - secondX) <= maxHorizontalShift &&
+         std::abs(firstY - secondY) <= maxVerticalShift;
+}
+
+bool IsStereoBitmap(const CDVDOverlayImage& bitmap, BitmapStereoLayout layout)
+{
+  if (bitmap.linesize < bitmap.width || bitmap.width <= 0 || bitmap.height <= 0 ||
+      bitmap.source_width <= 0 || bitmap.source_height <= 0 || bitmap.palette.empty())
+    return false;
+
+  Bounds first;
+  Bounds second;
+  if (layout == BitmapStereoLayout::LEFT_RIGHT)
+  {
+    if (bitmap.source_width % 2 != 0)
+      return false;
+
+    const int split = bitmap.source_width / 2;
+    if (bitmap.x >= split || bitmap.x + bitmap.width <= split)
+      return false;
+
+    first = {0, 0, split, bitmap.source_height};
+    second = {split, 0, bitmap.source_width, bitmap.source_height};
+  }
+  else if (layout == BitmapStereoLayout::TOP_BOTTOM)
+  {
+    if (bitmap.source_height % 2 != 0)
+      return false;
+
+    const int split = bitmap.source_height / 2;
+    if (bitmap.y >= split || bitmap.y + bitmap.height <= split)
+      return false;
+
+    first = {0, 0, bitmap.source_width, split};
+    second = {0, split, bitmap.source_width, bitmap.source_height};
+  }
+  else
+    return false;
+
+  const Bounds firstRegion = first;
+  const Bounds secondRegion = second;
+  first = GetVisibleBounds(bitmap, firstRegion);
+  second = GetVisibleBounds(bitmap, secondRegion);
+  if (first.IsEmpty() || second.IsEmpty() || first.Width() != second.Width() ||
+      first.Height() != second.Height() ||
+      !HaveCompatiblePositions(first, second, firstRegion, secondRegion))
+    return false;
+
+  std::size_t comparedPixels = 0;
+  std::size_t mismatchedPixels = 0;
+  for (int y = 0; y < first.Height(); ++y)
+  {
+    for (int x = 0; x < first.Width(); ++x)
+    {
+      const uint32_t firstPixel = GetPixel(bitmap, first.x1 + x, first.y1 + y);
+      const uint32_t secondPixel = GetPixel(bitmap, second.x1 + x, second.y1 + y);
+      if (firstPixel == 0 && secondPixel == 0)
+        continue;
+
+      ++comparedPixels;
+      if (firstPixel != secondPixel)
+        ++mismatchedPixels;
+    }
+  }
+
+  return comparedPixels > 0 && mismatchedPixels * 100 <= comparedPixels;
+}
+
 std::shared_ptr<CDVDOverlayImage> CropStereoView(const CDVDOverlayImage& source,
                                                  BitmapStereoLayout layout,
                                                  DVDOverlayStereoView view)
 {
-  BitmapSubtitle bitmap;
-  bitmap.x = source.x;
-  bitmap.y = source.y;
-  bitmap.width = source.width;
-  bitmap.height = source.height;
-  bitmap.sourceWidth = source.source_width;
-  bitmap.sourceHeight = source.source_height;
+  int regionX{0};
+  int regionY{0};
+  int regionWidth{source.source_width};
+  int regionHeight{source.source_height};
 
-  const BitmapStereoCrop crop = GetStereoCrop(bitmap, layout, view == DVDOverlayStereoView::RIGHT);
-  if (crop.IsEmpty())
+  if (layout == BitmapStereoLayout::LEFT_RIGHT && source.source_width % 2 == 0)
+  {
+    regionWidth /= 2;
+    if (view == DVDOverlayStereoView::RIGHT)
+      regionX = regionWidth;
+  }
+  else if (layout == BitmapStereoLayout::TOP_BOTTOM && source.source_height % 2 == 0)
+  {
+    regionHeight /= 2;
+    if (view == DVDOverlayStereoView::RIGHT)
+      regionY = regionHeight;
+  }
+  else
     return nullptr;
 
-  auto cropped = std::make_shared<CDVDOverlayImage>(source, crop.packedX, crop.packedY, crop.width,
-                                                    crop.height);
-  cropped->x = crop.x;
-  cropped->y = crop.y;
-  cropped->source_width = crop.sourceWidth;
-  cropped->source_height = crop.sourceHeight;
+  const int cropX = std::max(source.x, regionX);
+  const int cropY = std::max(source.y, regionY);
+  const int cropRight = std::min(source.x + source.width, regionX + regionWidth);
+  const int cropBottom = std::min(source.y + source.height, regionY + regionHeight);
+  if (cropX >= cropRight || cropY >= cropBottom)
+    return nullptr;
+
+  auto cropped = std::make_shared<CDVDOverlayImage>(source, cropX, cropY, cropRight - cropX,
+                                                    cropBottom - cropY);
+  cropped->x = cropX - regionX;
+  cropped->y = cropY - regionY;
+  cropped->source_width = regionWidth;
+  cropped->source_height = regionHeight;
   cropped->m_stereoView = view;
   return cropped;
 }
@@ -327,51 +482,28 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
     for (int i = 0; i < rect.nb_colors; i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
-    // CProcessInfo would be the natural owner of the source stereo layout, but it is not
-    // accessible from an overlay codec. DataCacheCore provides the video player's thread-safe
-    // copy instead.
     const BitmapStereoLayout layout =
         GetBitmapStereoLayout(CServiceBroker::GetDataCacheCore().GetVideoStereoMode());
     const RenderStereoMode renderMode =
         CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
-    if (IsStereoscopicOutputMode(renderMode) && layout != BitmapStereoLayout::MONO &&
-        !overlay->palette.empty())
+    if (renderMode != RenderStereoMode::OFF && renderMode != RenderStereoMode::HARDWAREBASED &&
+        layout != BitmapStereoLayout::MONO && IsStereoBitmap(*overlay, layout))
     {
-      BitmapSubtitle bitmap;
-      bitmap.pixels = overlay->pixels.data();
-      bitmap.stride = overlay->linesize;
-      bitmap.x = overlay->x;
-      bitmap.y = overlay->y;
-      bitmap.width = overlay->width;
-      bitmap.height = overlay->height;
-      bitmap.sourceWidth = overlay->source_width;
-      bitmap.sourceHeight = overlay->source_height;
-      for (std::size_t i = 0; i < overlay->palette.size() && i < bitmap.palette.size(); ++i)
+      auto left = CropStereoView(*overlay, layout, DVDOverlayStereoView::LEFT);
+      auto right = CropStereoView(*overlay, layout, DVDOverlayStereoView::RIGHT);
+      if (left && right)
       {
-        const uint32_t color = overlay->palette[i];
-        if (((color >> PIXEL_ASHIFT) & 0xff) != 0)
-          bitmap.palette[i] = color;
-      }
-
-      if (IsStereoBitmap(bitmap, layout))
-      {
-        auto left = CropStereoView(*overlay, layout, DVDOverlayStereoView::LEFT);
-        auto right = CropStereoView(*overlay, layout, DVDOverlayStereoView::RIGHT);
-        if (left && right)
+        if (!m_loggedStereoSplit)
         {
-          if (!m_loggedStereoSplit)
-          {
-            m_loggedStereoSplit = true;
-            CLog::Log(LOGDEBUG, "{} - splitting {} packed stereoscopic subtitle", __FUNCTION__,
-                      layout == BitmapStereoLayout::LEFT_RIGHT ? "side-by-side" : "top-and-bottom");
-          }
-          m_pendingOverlay = std::move(right);
-          m_SubtitleIndex++;
-          return left;
+          m_loggedStereoSplit = true;
+          CLog::Log(LOGDEBUG, "{} - splitting {} packed stereoscopic subtitle", __FUNCTION__,
+                    layout == BitmapStereoLayout::LEFT_RIGHT ? "side-by-side" : "top-and-bottom");
         }
+        m_pendingOverlay = std::move(right);
+        m_SubtitleIndex++;
+        return left;
       }
     }
-
     m_SubtitleIndex++;
 
     return overlay;
