@@ -58,16 +58,17 @@ std::string FindTrailer(const CFileItem& item,
                         KODI::REGEXP::RegExpCache* cache /* = nullptr */)
 {
   std::string strFile2;
-  std::string strFile = item.GetPath();
+  // A library item's path is videodb://; the file it points to is the dynamic path
+  std::string strFile = item.GetDynPath();
   if (item.IsStack())
   {
     std::string strPath;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
+    URIUtils::GetParentPath(item.GetDynPath(), strPath);
     XFILE::CStackDirectory dir;
     std::string strPath2;
     strPath2 = dir.GetStackTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
-    CFileItem sitem(dir.GetFirstStackedFile(item.GetPath()), false);
+    CFileItem sitem(dir.GetFirstStackedFile(item.GetDynPath()), false);
     std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(sitem), "-trailer"));
     strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
@@ -76,7 +77,7 @@ std::string FindTrailer(const CFileItem& item,
     std::string strPath = URIUtils::GetDirectory(strFile);
     std::string strParent;
     URIUtils::GetParentPath(strPath, strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(item.GetPath()));
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
   }
 
   if (URIUtils::IsBlurayPath(strFile))
