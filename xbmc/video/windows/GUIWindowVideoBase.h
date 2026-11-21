@@ -144,10 +144,14 @@ protected:
   bool m_restartThumbLoader{false}; //!< stopped for playback, restarted if the window stays active
   KODI::MESSAGING::ThreadMessageCallback m_restartThumbLoaderCallback{
       [](void* window) { static_cast<CGUIWindowVideoBase*>(window)->RestartThumbLoader(); }, this};
+  KODI::MESSAGING::ThreadMessageCallback m_thumbLoaderDoneCallback{
+      [](void* window) { static_cast<CGUIWindowVideoBase*>(window)->RestartThumbLoaderIfIdle(); },
+      this};
   bool m_stackingAvailable;
 
 private:
   void RestartThumbLoader();
+  void RestartThumbLoaderIfIdle();
 
   enum class ShowInfoResult
   {

@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <utility>
 
 CBackgroundInfoLoader::CBackgroundInfoLoader() = default;
 
@@ -50,6 +51,14 @@ void CBackgroundInfoLoader::Run()
   }
 
   Reset();
+
+  std::function<void()> whenDone;
+  {
+    std::unique_lock lock(m_lock);
+    whenDone = std::exchange(m_whenDone, nullptr);
+  }
+  if (whenDone)
+    whenDone();
 }
 
 void CBackgroundInfoLoader::RunStages()
@@ -220,6 +229,10 @@ void CBackgroundInfoLoader::StopAsync()
 
 void CBackgroundInfoLoader::StopThread()
 {
+  {
+    std::unique_lock lock(m_lock);
+    m_whenDone = nullptr;
+  }
   StopAsync();
 
   if (m_thread)
@@ -228,6 +241,17 @@ void CBackgroundInfoLoader::StopThread()
     m_thread.reset();
   }
   Reset();
+}
+
+bool CBackgroundInfoLoader::CallWhenDone(std::function<void()> function)
+{
+  std::unique_lock lock(m_lock);
+  // Run() clears m_bIsLoading before it takes the function under the lock
+  if (!m_bIsLoading)
+    return false;
+
+  m_whenDone = std::move(function);
+  return true;
 }
 
 CBackgroundInfoLoader::ItemState CBackgroundInfoLoader::BeginItem(const CFileItem* item,
