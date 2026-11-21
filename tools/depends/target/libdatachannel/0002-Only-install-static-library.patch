@@ -1,0 +1,34 @@
+From 5a33000bdf3d9c65f87775dda16f22cf1d023af0 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Mon, 1 Jul 2024 19:26:00 -0700
+Subject: [PATCH 2/2] Only install static library
+
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 58dc26eb..7105dbf0 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -273,7 +273,7 @@ if(APPLE)
+ 		SOVERSION ${PROJECT_VERSION_MAJOR})
+ endif()
+ 
+-add_library(datachannel-static STATIC EXCLUDE_FROM_ALL
++add_library(datachannel-static STATIC
+ 	${LIBDATACHANNEL_SOURCES}
+ 	${LIBDATACHANNEL_HEADERS}
+ 	${LIBDATACHANNEL_IMPL_SOURCES}
+@@ -509,7 +509,7 @@ if(WARNINGS_AS_ERRORS)
+ 	endif()
+ endif()
+ 
+-install(TARGETS datachannel EXPORT LibDataChannelTargets
++install(TARGETS datachannel-static EXPORT LibDataChannelTargets
+ 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+ 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+-- 
+2.49.0
+
