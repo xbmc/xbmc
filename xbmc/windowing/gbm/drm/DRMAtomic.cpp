@@ -36,6 +36,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   // referencing an invalid id and the kernel rejects with EINVAL.
   CDRMPropertyBlob modeBlob;
 
+  m_commitFellBack = false;
+
   if (m_old_crtc != nullptr)
   {
     if (m_old_crtc->GetId() != m_crtc->GetId())
@@ -141,6 +143,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
                "request",
                strerror(errno));
 
+    m_commitFellBack = true;
+
     auto oldRequest = m_atomicRequestQueue.front().get();
     CDRMAtomicRequest::LogAtomicDiff(m_req, oldRequest);
     m_req = oldRequest;
@@ -181,6 +185,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
 {
+  m_commitFellBack = false;
+
   struct drm_fb* drm_fb = nullptr;
   uint32_t flags = 0;
 
