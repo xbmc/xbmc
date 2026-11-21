@@ -9,10 +9,13 @@
 #pragma once
 
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 
 #include <memory>
+#include <set>
+#include <string>
 
 class CVideoBufferPoolDMA;
 class CVideoBufferPoolDRMPRIMEFFmpeg;
@@ -30,7 +33,9 @@ public:
   bool AddData(const DemuxPacket& packet) override;
   void Reset() override;
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  void Reopen() override;
   const char* GetName() override { return m_name.c_str(); }
+  unsigned GetConvergeCount() override { return m_pictureDecoded ? 0 : m_packetsSinceOpen; }
   unsigned GetAllowedReferences() override { return 5; }
   void SetCodecControl(int flags) override;
 
@@ -44,6 +49,14 @@ protected:
   std::string m_name;
   int m_codecControlFlags = 0;
   CDVDStreamInfo m_hints;
+  CDVDCodecOptions m_options;
+  std::set<std::string> m_skipDecoders;
+  bool m_hwDecoder = false;
+  bool m_hwFormatOffered = false;
+  bool m_hwFormatFailed = false;
+  bool m_noSupportedFormat = false;
+  unsigned m_packetsSinceOpen = 0;
+  bool m_pictureDecoded = false;
   double m_DAR = 1.0;
   AVCodecContext* m_pCodecContext = nullptr;
   AVFrame* m_pFrame = nullptr;
