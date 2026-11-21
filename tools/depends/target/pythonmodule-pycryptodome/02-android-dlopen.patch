@@ -1,26 +1,6 @@
 --- a/lib/Crypto/Util/_raw_api.py
 +++ b/lib/Crypto/Util/_raw_api.py
-@@ -183,11 +183,14 @@ except ImportError:
-             import platform
-             cached_architecture[:] = platform.architecture()
-         bits, linkage = cached_architecture
--        if "." not in name and not linkage.startswith("Win"):
--            full_name = find_library(name)
--            if full_name is None:
--                raise OSError("Cannot load library '%s'" % name)
--            name = full_name
-+        try:
-+            if "." not in name and not linkage.startswith("Win"):
-+                full_name = find_library(name)
-+                if full_name is None:
-+                    raise OSError("Cannot load library '%s'" % name)
-+                name = full_name
-+        except IOError:
-+            raise OSError("Cannot load library '%s'" % name)
-         return CDLL(name)
- 
-     def get_c_string(c_string):
-@@ -288,20 +291,10 @@ def load_pycryptodome_raw_lib(name, cdecl):
+@@ -498,20 +498,11 @@
      @cdecl, the C function declarations.
      """
  
@@ -38,10 +18,11 @@
 -        except OSError as exp:
 -            attempts.append("Cannot load '%s': %s" % (filename, str(exp)))
 -    raise OSError("Cannot load native module '%s': %s" % (name, ", ".join(attempts)))
++    filename = "lib" + name.replace(".", "_") + ".so"
 +    try:
-+        return load_lib("lib" + name.replace(".", "_") + ".so", cdecl)
++        return load_lib(filename, cdecl)
 +    except OSError as exp:
-+        raise OSError("Cannot load '%s': %s" % ("lib" + name.replace(".", "_") + ".so"))
++        raise OSError("Cannot load '%s': %s" % (filename, str(exp)))
  
  
- def is_buffer(x):
+ def is_buffer(x: Any) -> bool:
