@@ -123,8 +123,15 @@ TEST_F(TestSystemInfo, GetOsName)
 #endif // TARGET_DARWIN
 }
 
-TEST_F(TestSystemInfo, DISABLED_GetOsVersion)
+TEST_F(TestSystemInfo, GetOsVersion)
 {
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release
+  if (g_sysinfo.GetOsVersion().empty())
+  {
+    GTEST_SKIP() << "this distribution states no version";
+  }
+#endif
   EXPECT_FALSE(g_sysinfo.GetOsVersion().empty()) << "'GetOsVersion()' must not return empty string";
   EXPECT_STRNE("0.0.0", g_sysinfo.GetOsVersion().c_str()) << "'GetOsVersion()' must not return '0.0.0'";
   EXPECT_STRNE("0.0", g_sysinfo.GetOsVersion().c_str()) << "'GetOsVersion()' must not return '0.0'";
