@@ -9,10 +9,10 @@
 #include "SmartPlayList.h"
 
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
-#include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -28,6 +28,7 @@
 #include "utils/StringValidation.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -1246,18 +1247,19 @@ CSmartPlaylist::CSmartPlaylist()
 
 bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 {
-  if (readNameFromPath(url) == nullptr)
+  CXBMCTinyXML2 xmlDoc;
+  if (readNameFromPath(url, xmlDoc) == nullptr)
     return false;
 
   return !m_playlistName.empty();
 }
 
-const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
+const tinyxml2::XMLNode* CSmartPlaylist::readName(const tinyxml2::XMLNode* root)
 {
   if (root == nullptr)
     return nullptr;
 
-  const TiXmlElement *rootElem = root->ToElement();
+  const tinyxml2::XMLElement* rootElem = root->ToElement();
   if (rootElem == nullptr)
     return nullptr;
 
@@ -1283,19 +1285,15 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
+const tinyxml2::XMLNode* CSmartPlaylist::readNameFromPath(const CURL& url, CXBMCTinyXML2& xmlDoc)
 {
-  CFileStream file;
-  if (!file.Open(url))
+  if (!xmlDoc.LoadFile(url.Get()) && !xmlDoc.Error())
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist {} (failed to read file)", url.GetRedacted());
     return nullptr;
   }
 
-  m_xmlDoc.Clear();
-  file >> m_xmlDoc;
-
-  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+  const tinyxml2::XMLNode* root = readName(xmlDoc.RootElement());
   if (m_playlistName.empty())
   {
     m_playlistName = CUtil::GetTitleFromPath(url.Get());
@@ -1306,7 +1304,8 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
+const tinyxml2::XMLNode* CSmartPlaylist::readNameFromXml(const std::string& xml,
+                                                         CXBMCTinyXML2& xmlDoc)
 {
   if (xml.empty())
   {
@@ -1314,20 +1313,19 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
     return nullptr;
   }
 
-  m_xmlDoc.Clear();
-  if (!m_xmlDoc.Parse(xml))
+  if (!xmlDoc.Parse(xml, ""))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: {})",
-              m_xmlDoc.ErrorDesc());
+              xmlDoc.ErrorStr());
     return nullptr;
   }
 
-  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+  const tinyxml2::XMLNode* root = readName(xmlDoc.RootElement());
 
   return root;
 }
 
-bool CSmartPlaylist::load(const TiXmlNode *root)
+bool CSmartPlaylist::load(const tinyxml2::XMLNode* root)
 {
   if (root == nullptr)
     return false;
@@ -1337,13 +1335,15 @@ bool CSmartPlaylist::load(const TiXmlNode *root)
 
 bool CSmartPlaylist::Load(const CURL &url)
 {
-  return load(readNameFromPath(url));
+  CXBMCTinyXML2 xmlDoc;
+  return load(readNameFromPath(url, xmlDoc));
 }
 
 bool CSmartPlaylist::Load(const std::string &path)
 {
   const CURL pathToUrl(path);
-  return load(readNameFromPath(pathToUrl));
+  CXBMCTinyXML2 xmlDoc;
+  return load(readNameFromPath(pathToUrl, xmlDoc));
 }
 
 bool CSmartPlaylist::Load(const CVariant &obj)
@@ -1409,10 +1409,11 @@ bool CSmartPlaylist::Load(const CVariant &obj)
 
 bool CSmartPlaylist::LoadFromXml(const std::string &xml)
 {
-  return load(readNameFromXml(xml));
+  CXBMCTinyXML2 xmlDoc;
+  return load(readNameFromXml(xml, xmlDoc));
 }
 
-bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encoding)
+bool CSmartPlaylist::LoadFromXML(const tinyxml2::XMLNode* root, const std::string& encoding)
 {
   if (!root)
     return false;
@@ -1424,20 +1425,20 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
                                   : CDatabaseQueryRuleCombination::Type::COMBINATION_OR);
 
   // now the rules
-  const TiXmlNode *ruleNode = root->FirstChild("rule");
+  const tinyxml2::XMLElement* ruleNode = root->FirstChildElement("rule");
   while (ruleNode)
   {
     const auto rule{std::make_shared<CSmartPlaylistRule>()};
     if (rule->Load(ruleNode, encoding))
       m_ruleCombination.AddRule(rule);
 
-    ruleNode = ruleNode->NextSibling("rule");
+    ruleNode = ruleNode->NextSiblingElement("rule");
   }
 
-  const TiXmlElement *groupElement = root->FirstChildElement("group");
+  const tinyxml2::XMLElement* groupElement = root->FirstChildElement("group");
   if (groupElement != nullptr && groupElement->FirstChild() != nullptr)
   {
-    m_group = groupElement->FirstChild()->ValueStr();
+    m_group = groupElement->FirstChild()->Value();
     const char* mixed = groupElement->Attribute("mixed");
     m_groupMixed = mixed != nullptr && StringUtils::EqualsNoCase(mixed, "true");
   }
@@ -1448,7 +1449,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
 
   // and order
   // format is <order direction="ascending">field</order>
-  const TiXmlElement *order = root->FirstChildElement("order");
+  const tinyxml2::XMLElement* order = root->FirstChildElement("order");
   if (order && order->FirstChild())
   {
     const char *direction = order->Attribute("direction");
@@ -1483,13 +1484,12 @@ bool CSmartPlaylist::LoadFromJson(const std::string &json)
 
 bool CSmartPlaylist::Save(const std::string &path) const
 {
-  CXBMCTinyXML doc;
-  TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-  doc.InsertEndChild(decl);
+  CXBMCTinyXML2 doc;
+  doc.InsertEndChild(doc.NewDeclaration(R"(xml version="1.0" encoding="UTF-8" standalone="yes")"));
 
-  TiXmlElement xmlRootElement("smartplaylist");
-  xmlRootElement.SetAttribute("type",m_playlistType.c_str());
-  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
+  tinyxml2::XMLElement* xmlRootElement = doc.NewElement("smartplaylist");
+  xmlRootElement->SetAttribute("type", m_playlistType.c_str());
+  tinyxml2::XMLNode* pRoot = doc.InsertEndChild(xmlRootElement);
   if (!pRoot)
     return false;
 
@@ -1508,11 +1508,10 @@ bool CSmartPlaylist::Save(const std::string &path) const
   // add <group> tag if necessary
   if (!m_group.empty())
   {
-    TiXmlElement nodeGroup("group");
+    tinyxml2::XMLElement* nodeGroup = doc.NewElement("group");
     if (m_groupMixed)
-      nodeGroup.SetAttribute("mixed", "true");
-    TiXmlText group(m_group.c_str());
-    nodeGroup.InsertEndChild(group);
+      nodeGroup->SetAttribute("mixed", "true");
+    nodeGroup->InsertEndChild(doc.NewText(m_group.c_str()));
     pRoot->InsertEndChild(nodeGroup);
   }
 
@@ -1523,13 +1522,13 @@ bool CSmartPlaylist::Save(const std::string &path) const
   // add <order> tag
   if (m_orderField != SortBy::NONE)
   {
-    TiXmlText order(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str());
-    TiXmlElement nodeOrder("order");
-    nodeOrder.SetAttribute("direction",
-                           m_orderDirection == SortOrder::DESCENDING ? "descending" : "ascending");
+    tinyxml2::XMLElement* nodeOrder = doc.NewElement("order");
+    nodeOrder->SetAttribute("direction",
+                            m_orderDirection == SortOrder::DESCENDING ? "descending" : "ascending");
     if (m_orderAttributes & SortAttributeIgnoreFolders)
-      nodeOrder.SetAttribute("ignorefolders", "true");
-    nodeOrder.InsertEndChild(order);
+      nodeOrder->SetAttribute("ignorefolders", "true");
+    nodeOrder->InsertEndChild(
+        doc.NewText(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str()));
     pRoot->InsertEndChild(nodeOrder);
   }
 
