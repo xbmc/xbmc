@@ -111,6 +111,27 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        // See if idFile of library item needs updating
+        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
+
+        const bool updateNeeded{
+            [&item, &tag]
+            {
+              if (!tag || tag->m_iFileId < 0)
+                return false; // No tag or file to update
+              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
+                return false; // No video db item to update
+              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
+                  tag->m_strFileNameAndPath != item.GetDynPath())
+                return true; // Bluray path to update
+              if (item.GetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH).asBoolean(false))
+                return true; // Bluray playlist chosen by the user, or main title of a disc
+              if (item.GetProperty(ITEM::PROPERTY::NEW_STACK_PATH).asBoolean(false))
+                return true; // Stack path to update
+              return false;
+            }()};
+
         bool updateListing = false;
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
@@ -167,7 +188,9 @@ void CSaveFileState::DoWork(CFileItem& item,
               item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
           }
 
-          if (!item.HasVideoInfoTag() ||
+          // The item's resume point is that of the file it was played from. A file it moves to
+          // below has none of its own yet, and the old file may be deleted with its resume point.
+          if (!item.HasVideoInfoTag() || updateNeeded ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
             videodatabase.BeginTransaction();
@@ -231,27 +254,6 @@ void CSaveFileState::DoWork(CFileItem& item,
             }
           }
         }
-
-        // See if idFile of library item needs updating
-        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
-
-        const bool updateNeeded{
-            [&item, &tag]
-            {
-              if (!tag || tag->m_iFileId < 0)
-                return false; // No tag or file to update
-              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
-                return false; // No video db item to update
-              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
-                  tag->m_strFileNameAndPath != item.GetDynPath())
-                return true; // Bluray path to update
-              if (item.GetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH).asBoolean(false))
-                return true; // Bluray playlist chosen by the user, or main title of a disc
-              if (item.GetProperty(ITEM::PROPERTY::NEW_STACK_PATH).asBoolean(false))
-                return true; // Stack path to update
-              return false;
-            }()};
 
         // An asset played from its own row (eg. an extra) is identified by its file
         MEDIA::TYPE mediaType{tag ? tag->GetMediaType() : MEDIA::TYPE::NONE};
