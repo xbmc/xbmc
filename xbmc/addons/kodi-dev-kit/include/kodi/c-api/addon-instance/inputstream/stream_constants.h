@@ -49,8 +49,10 @@
 
 /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
 /// @brief "true" to let the audio of a realtime stream be passed through to
-/// the audio device. Kodi otherwise decodes the audio of a realtime stream, to
-/// be able to resample it. Any other value keeps that.
+/// the audio device. Kodi otherwise decodes it so that it can resample it to
+/// follow the source's clock. Passed-through audio cannot be resampled, so the
+/// add-on keeps its delivery in step with playback itself, for example by
+/// dropping or repeating whole frames. Any other value keeps decoding.
 #define STREAM_PROPERTY_REALTIMEAUDIOPASSTHROUGH "realtimeaudiopassthrough"
 
 /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
