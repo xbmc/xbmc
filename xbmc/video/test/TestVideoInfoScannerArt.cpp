@@ -618,6 +618,7 @@ TEST_F(TestVideoInfoScannerArt, AnExtraOfAnIsoHasOnlyItsOwnArt)
   EXPECT_FALSE(extra.HasArt("fanart"));
 }
 
+#ifdef HAVE_LIBBLURAY
 // A bonus disc in the extras folder that an export records as several extras is shared by them, so
 // each has only the art named for its playlist, and none of that beside the disc, named after it
 TEST_F(TestVideoInfoScannerArt, AnExtraOfSeveralOnABonusDiscHasNoneOfTheDiscsArt)
@@ -637,6 +638,7 @@ TEST_F(TestVideoInfoScannerArt, AnExtraOfSeveralOnABonusDiscHasNoneOfTheDiscsArt
   EXPECT_EQ("", ExtraArt(2, "poster"));
   EXPECT_EQ("", ExtraArt(2, "fanart"));
 }
+#endif
 
 // The only extra an export records on a bonus disc has the art named after the disc, as the export
 // names it so
@@ -650,6 +652,7 @@ TEST_F(TestVideoInfoScannerArt, TheOnlyExtraOnABonusDiscHasTheDiscsArt)
   EXPECT_EQ(poster, ExtraArt(1, "poster"));
 }
 
+#ifdef HAVE_LIBBLURAY
 // A movie whose disc holds an extra but no other version is exported with the plain art a scan
 // reads, and the extra with art named for its playlist, so each has its own art again when the
 // library is scanned anew from the export
@@ -716,6 +719,7 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
   EXPECT_EQ(moviePoster, MovieArt("poster"));
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
 }
+#endif
 
 // The art in a set's information folder follows the artwork level, as a movie's does: none at the
 // NONE level...
