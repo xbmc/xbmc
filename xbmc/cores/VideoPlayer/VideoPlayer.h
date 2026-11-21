@@ -441,6 +441,7 @@ protected:
   void Process() override;
   void VideoParamsChange() override;
   void GetDebugInfo(DEBUG_INFO_PLAYER& info) override;
+  void GetDebugFrames(DEBUG_INFO_FRAMES& frames) override;
   void UpdateClockSync(bool enabled) override;
   void UpdateRenderInfo(CRenderInfo &info) override;
   void UpdateRenderBuffers(int queued, int discard, int free) override;

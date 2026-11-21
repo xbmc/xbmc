@@ -125,6 +125,7 @@ protected:
   SInfo            m_info;
 
   bool m_displayReset = false;
+  bool m_collectPacketSizes{false};
   unsigned int m_disconAdjustTimeMs = 50; // maximum sync-off before adjusting
   int m_disconAdjustCounter = 0;
 };
