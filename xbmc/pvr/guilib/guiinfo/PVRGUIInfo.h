@@ -48,6 +48,9 @@ public:
   void Start();
   void Stop();
 
+  std::optional<int64_t> GetTimeshiftSeekTime(
+      double percentage, const std::shared_ptr<const CPVRChannel>& channel) const;
+
   /*!
    * @brief Propagate event on system sleep
    */
