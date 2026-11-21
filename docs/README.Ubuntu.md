@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Debian/Ubuntu build guide
-This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64, 18.04 (Bionic) and 20.04 (Focal). Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide covers Ubuntu 24.04 (Noble) and 26.04 (Resolute). Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
@@ -10,8 +10,7 @@ Several other distributions have **[specific build guides](README.md)** and a ge
 2. **[Get the source code](#2-get-the-source-code)**
 3. **[Install the required packages](#3-install-the-required-packages)**  
   3.1. **[Get build dependencies automagically](#31-get-build-dependencies-automagically)**  
-  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**   
-  3.3. **[Ubuntu <= 18.04](#33-ubuntu--1804)**
+  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**
 4. **[Build Kodi](#4-build-kodi)**
 5. **[Build a Debian package](#5-build-a-debian-package)**
 
@@ -75,18 +74,12 @@ git clone https://github.com/xbmc/xbmc kodi
 You can install the required packages using one of two methods: automagically or manually. Please use the former whenever possible.
 
 > [!WARNING]  
-> Oldest supported Ubuntu version is 16.04 (Xenial). It is possible to build on older Ubuntu releases but due to outdated packages it will require considerable fiddling. Sorry, you're on your own if you decide to go down that particular rabbit hole.
+> Oldest supported Ubuntu version is 24.04 (Noble). It is possible to build on older Ubuntu releases but due to outdated packages it will require considerable fiddling. Sorry, you're on your own if you decide to go down that particular rabbit hole.
 
 ### 3.1. Get build dependencies automagically
 Add Kodi's *nightly* PPA to grab dependencies:
 ```
 sudo add-apt-repository -s ppa:team-xbmc/xbmc-nightly
-```
-
-If you're using Ubuntu 16.04, *build-depends* PPA is also required:
-```
-sudo add-apt-repository ppa:team-xbmc/xbmc-ppa-build-depends
-sudo apt update
 ```
 
 Super-duper magic command to get the build dependencies:
@@ -100,7 +93,6 @@ sudo apt build-dep kodi
 If at a later point you decide you do not want Kodi's PPAs on your system, removing them is as easy as:
 ```
 sudo add-apt-repository -r ppa:team-xbmc/xbmc-nightly
-sudo add-apt-repository -r ppa:team-xbmc/xbmc-ppa-build-depends
 ```
 
 > [!NOTE]  
@@ -130,7 +122,7 @@ Install build dependencies manually:
 sudo apt install autoconf automake autopoint autotools-dev cmake \
   curl debhelper default-jre doxygen gawk gcc gdc gettext gperf \
   libasound2-dev libass-dev libavahi-client-dev libavahi-common-dev \
-  libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev \
+  libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev libcdio++-dev \
   libcrossguid-dev libcurl4-openssl-dev libcwiid-dev libdbus-1-dev \
   libdrm-dev libegl1-mesa-dev libenca-dev libexiv2-dev libflac-dev \
   libfmt-dev libfontconfig-dev libfreetype6-dev libfribidi-dev \
@@ -151,22 +143,12 @@ sudo apt install autoconf automake autopoint autotools-dev cmake \
 > [!WARNING]  
 > Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
-If you're using Ubuntu 16.04, you also need to install:
-```
-sudo apt install libcec4-dev libfmt3-dev liblircclient-dev
-```
-
-If you're using Ubuntu 18.04 and later, you also need to install:
+You also need to install:
 ```
 sudo apt install libcec-dev libfmt-dev liblirc-dev
 ```
 
-Flatbuffers (Ubuntu < 20.04, from PPA repository):
-```
-sudo apt install flatbuffers-dev
-```
-
-Flatbuffers (Ubuntu >= 20.04):
+Flatbuffers:
 ```
 sudo apt install libflatbuffers-dev
 ```
@@ -178,7 +160,7 @@ sudo apt install libglew-dev libwayland-dev libxkbcommon-dev waylandpp-dev wayla
 
 Similarly, building for GBM also requires some extra packages:
 ```
-sudo apt install libgbm-dev libinput-dev libxkbcommon-dev
+sudo apt install libgbm-dev libinput-dev libxkbcommon-dev libdisplay-info-dev
 ```
 
 > [!NOTE]  
@@ -190,28 +172,6 @@ sudo apt install doxygen libcap-dev libsndio-dev libmariadbd-dev
 ```
 
 **[back to top](#table-of-contents)**
-
-### 3.3 Ubuntu <= 18.04
-Ubuntu 18.04 and lower ship an outdated [Meson](https://mesonbuild.com/) and [nasm](https://nasm.us/) package. 
-In order to compile Kodi with AV1 support, you have to manually update both Meson and nasm.
-
-> This is a requirement by the [dav1d](https://code.videolan.org/videolan/dav1d) AV1 decoder used in ffmpeg.
-
-#### Meson
-```
-pip3 install --user meson
-```
-
-Make sure `~/.local/bin` is in your PATH.
-
-Verify your Meson version by running `meson -v`. The version displayed should be >= 0.47.0.
-
-#### nasm (x86_64 / amd64)
-```
-wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/n/nasm/nasm_2.14-1_amd64.deb && sudo apt install ./nasm_2.14-1_amd64.deb
-```
-
-Verify your nasm version by running `nasm -v`. The version displayed should be >= 2.14.
 
 ## 4. Build Kodi
 See the general **[Linux build guide](README.Linux.md)** for reference.
