@@ -273,6 +273,16 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
     return defaultFmt;
   }
 
+  // FFmpeg asks again on every SPS change, even if the decoder could carry on
+  if (ctx->HasHardware())
+  {
+    for (const AVPixelFormat* cur = fmt; *cur != AV_PIX_FMT_NONE; cur++)
+    {
+      if (ctx->m_pHardware->Reuse(avctx, *cur))
+        return *cur;
+    }
+  }
+
   // hardware decoder de-selected, restore standard ffmpeg
   if (ctx->HasHardware())
   {
