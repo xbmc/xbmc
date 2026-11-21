@@ -169,6 +169,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         AddRecentlyAddedJobs(updateRA);
       else
         m_updateRA |= updateRA;
+
+      // Home's own reload after a library announcement stops here. Passed on, it would have every
+      // container on Home free its artwork at once, and the widgets reload on the announcement
+      // themselves.
+      if (message.GetSenderId() == GetID())
+        return true;
     }
     break;
 
