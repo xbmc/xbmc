@@ -16,6 +16,7 @@
 
 #include "URL.h"
 #include "filesystem/IFile.h"
+#include "powermanagement/PowerState.h"
 #include "threads/CriticalSection.h"
 
 #include <cerrno>
@@ -31,7 +32,7 @@
 struct _SMBCCTX;
 typedef _SMBCCTX SMBCCTX;
 
-class CSMB : public CCriticalSection
+class CSMB : public CCriticalSection, public CPowerState
 {
 public:
   CSMB();
