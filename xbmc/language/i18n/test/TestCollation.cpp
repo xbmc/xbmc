@@ -34,7 +34,7 @@ constexpr wchar_t E_ACUTE_LOWER = 0x00E9;
 TEST(TestI18nCollation, NordicCollationWeight)
 {
   // Norwegian/Danish alphabet order: ... x y z ae oe aa
-  for (const std::string& code : {"nor", "nob", "nno", "dan"})
+  for (const char* code : {"nor", "nob", "nno", "dan"})
   {
     const CLanguageTag lang{CLanguageTag::Parse(code)};
     const wchar_t ae = NordicCollationWeight(lang, AE_LOWER);
@@ -55,7 +55,7 @@ TEST(TestI18nCollation, NordicCollationWeight)
   }
 
   // Swedish/Finnish alphabet order: ... x y z aa a-umlaut o-umlaut
-  for (const std::string& code : {"swe", "fin"})
+  for (const char* code : {"swe", "fin"})
   {
     const CLanguageTag lang{CLanguageTag::Parse(code)};
     const wchar_t aa = NordicCollationWeight(lang, AA_LOWER);
