@@ -128,6 +128,8 @@ void CSaveFileState::DoWork(CFileItem& item,
             }()};
 
         bool updateListing = false;
+        // Whether a resume point was written, so that the item can move to the file below
+        bool resumePointWritten{true};
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
         {
@@ -189,8 +191,11 @@ void CSaveFileState::DoWork(CFileItem& item,
             if (bookmark.timeInSeconds <= 0.0)
               success = videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
+            {
               success = videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark,
                                                         CBookmark::RESUME);
+              resumePointWritten = success;
+            }
             if (success)
               videodatabase.CommitTransaction();
             else
@@ -242,7 +247,14 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
 
         int replacedFileId{-1};
-        if (updateNeeded)
+        if (updateNeeded && !resumePointWritten)
+        {
+          // Moving could delete the old file, and with it the only resume point left
+          CLog::LogF(LOGWARNING,
+                     "{} {} stays on file {}, as its resume point could not be saved to {}",
+                     tag->m_type, tag->m_iDbId, tag->m_iFileId, redactPath);
+        }
+        else if (updateNeeded)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
