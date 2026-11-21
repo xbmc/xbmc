@@ -1233,7 +1233,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     // A packet dropped for a/v sync has no frames and never enters the loop above. Query the
     // sink anyway, otherwise the engine is told the sink holds no audio at all and the next
     // sync error measurements are off by the whole sink delay.
-    if (!m_needIecPack && totalFrames == 0)
+    if (totalFrames == 0)
       m_sink->GetDelay(status);
     m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
   }
