@@ -80,10 +80,12 @@ enum ADDON_ACTION
   /// @brief <b>`19 `</b>: Toggle quick-access zoom modes. Can b used in videoFullScreen.zml window id=2005
   ADDON_ACTION_ASPECT_RATIO = 19,
 
-  /// @brief <b>`20 `</b>: Seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005
+  /// @brief <b>`20 `</b>: Seek forward during video playback. While paused,
+  /// advance one frame. Can be used in videoFullScreen.xml window id=2005
   ADDON_ACTION_STEP_FORWARD = 20,
 
-  /// @brief <b>`21 `</b>: Seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005
+  /// @brief <b>`21 `</b>: Seek backward during video playback. While paused,
+  /// step backward one frame. Can be used in videoFullScreen.xml window id=2005
   ADDON_ACTION_STEP_BACK = 21,
 
   /// @brief <b>`22 `</b>: Seek +10% in the movie. Can b used in videoFullScreen.xml window id=2005
@@ -243,7 +245,8 @@ enum ADDON_ACTION
   /// @brief <b>`71 `</b>: Resolution select.
   ADDON_ACTION_PLAYER_RESOLUTION_SELECT = 71,
 
-  /// @brief <b>`76 `</b>: Jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
+  /// @brief <b>`76 `</b>: Jumps a few seconds back during video playback. While
+  /// paused, steps backward one frame. Can be used in videoFullScreen.xml window id=2005
   ADDON_ACTION_SMALL_STEP_BACK = 76,
 
   /// @brief <b>`77 `</b>: FF in current file played. global action, can be used anywhere
