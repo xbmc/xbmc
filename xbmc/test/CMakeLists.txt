@@ -12,7 +12,7 @@ set(SOURCES TestAutoSwitch.cpp
             TestPlayListPlayer.cpp
             TestTextureCache.cpp
             TestTextureCacheJob.cpp
-            TestURL.cpp
+            TestURLParsing.cpp
             TestUtil.cpp
             TestUtils.cpp)
 

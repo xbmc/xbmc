@@ -266,14 +266,15 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url,
     if (url.HasEncodedHostname())
       strHostName = CURL::Encode(strHostName);
 
+    if (strHostName.find(':') != strHostName.rfind(':'))
+    {
+      strHostName = '[' + strHostName + ']';
+    }
+    strURL += strHostName;
     if (url.HasPort())
     {
-      if (strHostName.find(':') != strHostName.rfind(':'))
-        strHostName = '[' + strHostName + ']';
-      strURL += strHostName + StringUtils::Format(":{}", url.GetPort());
+      strURL += StringUtils::Format(":{}", url.GetPort());
     }
-    else
-      strURL += strHostName;
 
     strURL += "/";
   }
