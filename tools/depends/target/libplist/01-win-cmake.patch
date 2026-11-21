@@ -1,0 +1,178 @@
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,141 @@
++cmake_minimum_required(VERSION 3.15)
++
++project(libplist VERSION 2.8.1 LANGUAGES C CXX)
++
++if(MSVC)
++  set(CMAKE_DEBUG_POSTFIX "d")
++endif()
++
++add_library(libcnary STATIC
++  libcnary/include/node.h
++  libcnary/include/node_list.h
++  libcnary/include/object.h
++  libcnary/node.c
++  libcnary/node_list.c
++)
++
++target_include_directories(libcnary
++  PRIVATE
++  $<BUILD_INTERFACE:libcnary/;libcnary/include>
++  PUBLIC
++  $<INSTALL_INTERFACE:libcnary/include>
++  INTERFACE
++  $<INSTALL_INTERFACE:libcnary/include>
++)
++
++add_library(libplist
++  include/plist/Array.h
++  include/plist/Boolean.h
++  include/plist/Data.h
++  include/plist/Date.h
++  include/plist/Dictionary.h
++  include/plist/Integer.h
++  include/plist/Key.h
++  include/plist/Node.h
++  include/plist/plist.h
++  include/plist/plist++.h
++  include/plist/Real.h
++  include/plist/String.h
++  include/plist/Structure.h
++  include/plist/Uid.h
++  src/Array.cpp
++  src/base64.c
++  src/base64.h
++  src/Boolean.cpp
++  src/bplist.c
++  src/bytearray.c
++  src/bytearray.h
++  src/common.c
++  src/common.h
++  src/Data.cpp
++  src/Date.cpp
++  src/Dictionary.cpp
++  src/hashtable.c
++  src/hashtable.h
++  src/Integer.cpp
++  src/jplist.c
++  src/jsmn.c
++  src/jsmn.h
++  src/Key.cpp
++  src/Node.cpp
++  src/oplist.c
++  src/out-default.c
++  src/out-limd.c
++  src/out-plutil.c
++  src/plist.c
++  src/plist.h
++  src/ptrarray.c
++  src/ptrarray.h
++  src/Real.cpp
++  src/strbuf.h
++  src/String.cpp
++  src/Structure.cpp
++  src/time64_limits.h
++  src/time64.c
++  src/time64.h
++  src/Uid.cpp
++  src/xplist.c
++)
++
++target_include_directories(
++  libplist PRIVATE
++  $<BUILD_INTERFACE:include/;src/;libcnary/include/>
++  INTERFACE
++  $<INSTALL_INTERFACE:include>
++)
++
++target_compile_definitions(libplist PRIVATE
++  _CRT_SECURE_NO_WARNINGS
++  PACKAGE_VERSION="${CMAKE_PROJECT_VERSION}"
++)
++
++if(NOT BUILD_SHARED_LIBS)
++  target_compile_definitions(libplist PRIVATE LIBPLIST_STATIC)
++endif()
++
++target_compile_options(libplist PRIVATE /MP /sdl-)
++
++target_link_libraries(libplist PRIVATE libcnary)
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/libplist-config-version.cmake
++  VERSION ${CMAKE_PROJECT_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS libplist EXPORT libplist
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib
++)
++
++install(DIRECTORY
++  include/plist
++  DESTINATION include
++)
++
++install(EXPORT libplist
++  FILE
++    libplist.cmake
++  NAMESPACE
++    libplist::
++  DESTINATION
++    lib/cmake/libplist
++)
++
++install(
++  FILES
++    cmake/libplist-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/libplist-config-version.cmake
++  DESTINATION
++    lib/cmake/libplist
++)
++
++if(BUILD_SHARED_LIBS)
++  install(FILES
++    $<TARGET_PDB_FILE:libplist>
++    DESTINATION lib
++    OPTIONAL
++  )
++endif()
+--- /dev/null
++++ b/cmake/libplist-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/libplist.cmake)
+--- a/src/Data.cpp
++++ b/src/Data.cpp
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <cstdlib>
++#include "plist.h"
+ #include <plist/Data.h>
+ 
+ namespace PList
+--- a/src/Date.cpp
++++ b/src/Date.cpp
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <cstdlib>
++#include "plist.h"
+ #include <plist/Date.h>
+ 
+ namespace PList
+--- a/src/Real.cpp
++++ b/src/Real.cpp
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <cstdlib>
++#include "plist.h"
+ #include <plist/Real.h>
+ 
+ namespace PList
