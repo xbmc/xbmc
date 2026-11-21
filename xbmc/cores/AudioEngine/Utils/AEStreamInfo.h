@@ -59,6 +59,7 @@ public:
 
   void SetCoreOnly(bool value) { m_coreOnly = value; }
   void SetDTSHDMA(bool value) { m_dtsHDMA = value; }
+  void SetTrueHDOnly(bool value) { m_trueHdOnly = value; }
   unsigned int IsValid() const { return m_hasSync; }
   unsigned int GetSampleRate() const { return m_info.m_sampleRate; }
   unsigned int GetChannels() const { return m_info.m_channels; }
@@ -81,6 +82,7 @@ private:
 
   CAEStreamInfo m_info;
   bool m_coreOnly = false;
+  bool m_trueHdOnly = false; /* stream is TrueHD for this parser's lifetime */
   unsigned int m_needBytes = 0;
   ParseFunc m_syncFunc;
   bool m_hasSync = false;

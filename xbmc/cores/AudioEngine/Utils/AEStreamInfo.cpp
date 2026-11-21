@@ -251,26 +251,29 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
 
   while (size > 8)
   {
-    // if it could be DTS
-    unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
-    if (header == DTS_PREAMBLE_14LE || header == DTS_PREAMBLE_14BE || header == DTS_PREAMBLE_16LE ||
-        header == DTS_PREAMBLE_16BE)
+    if (!m_trueHdOnly)
     {
-      unsigned int skip = SyncDTS(data, size);
-      if (m_hasSync || m_needBytes)
-        return skipped + skip;
-      else
-        possible = skipped;
-    }
+      // if it could be DTS
+      unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
+      if (header == DTS_PREAMBLE_14LE || header == DTS_PREAMBLE_14BE ||
+          header == DTS_PREAMBLE_16LE || header == DTS_PREAMBLE_16BE)
+      {
+        unsigned int skip = SyncDTS(data, size);
+        if (m_hasSync || m_needBytes)
+          return skipped + skip;
+        else
+          possible = skipped;
+      }
 
-    // if it could be AC3
-    if (data[0] == 0x0b && data[1] == 0x77)
-    {
-      unsigned int skip = SyncAC3(data, size);
-      if (m_hasSync || m_needBytes)
-        return skipped + skip;
-      else
-        possible = skipped;
+      // if it could be AC3
+      if (data[0] == 0x0b && data[1] == 0x77)
+      {
+        unsigned int skip = SyncAC3(data, size);
+        if (m_hasSync || m_needBytes)
+          return skipped + skip;
+        else
+          possible = skipped;
+      }
     }
 
     // if it could be TrueHD
