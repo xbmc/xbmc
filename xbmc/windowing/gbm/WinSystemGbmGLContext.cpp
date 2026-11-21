@@ -108,6 +108,9 @@ bool CWinSystemGbmGLContext::SetFullScreen(bool fullScreen,
     CreateNewWindow("", fullScreen, res);
   }
 
+  CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);
+  CRenderSystemGL::ClearBuffers(KODI::UTILS::COLOR::BLACK);
+
   if (!m_eglContext.TrySwapBuffers())
   {
     CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
@@ -115,7 +118,6 @@ bool CWinSystemGbmGLContext::SetFullScreen(bool fullScreen,
   }
 
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
-  CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);
 
   return true;
 }
