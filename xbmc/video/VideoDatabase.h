@@ -1132,7 +1132,6 @@ public:
 
   std::string GetSetByNameLike(const std::string& nameLike) const;
 
-  std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
   int GetVideoVersionByTitle(const std::string& title, VideoAssetType itemType) const;
   void GetVideoVersions(VideoDbContentType itemType,
