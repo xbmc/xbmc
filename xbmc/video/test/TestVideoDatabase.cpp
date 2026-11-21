@@ -48,6 +48,7 @@
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <filesystem>
 #include <iterator>
@@ -2164,6 +2165,38 @@ TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
   EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
 }
 
+// A clean stopped, as with the scan it is part of, removes nothing and ends its transaction
+TEST_F(TestVideoDatabaseClean, AStoppedCleanRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{File(Folder(movies, "Film (2010)"), "Film (2010).mkv")};
+  const int idMovie{AddMovie(gone)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_EQ(idMovie, m_db.GetMovieId(gone));
+}
+
+TEST_F(TestVideoDatabaseClean, AStoppedCleanOfALibraryWithoutFilesRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{Folder(movies, "Film (2010)")};
+  ASSERT_TRUE(m_db.SetPathHash(gone, "hash"));
+  ASSERT_TRUE(XFILE::CDirectory::Remove(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_GE(m_db.GetPathId(gone), 0);
+}
+
 // Writes made later on the connection would otherwise never be committed
 TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
 {
@@ -2216,26 +2249,6 @@ TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
   std::string hash;
   ASSERT_TRUE(m_db.GetPathHash(folder, hash));
   EXPECT_EQ("hash", hash);
-}
-
-// The extras of a disc are its playlists, so the folder holding the disc is known by them. An
-// archive below the folder is not one of its folders, nor is the folder of another movie.
-TEST_F(TestVideoDatabase, GetKnownFoldersTakesADiscsPlaylistsAsTheFolderHoldingIt)
-{
-  ASSERT_GT(m_db.AddPath("/movies/Film/Extras/"), 0);
-  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Film/Bonus Disc/BONUS.iso", 1)),
-            0);
-  ASSERT_GT(m_db.AddFile(ArchivePath("zip", "/movies/Film/Extras.zip", "Trailer.mkv")), 0);
-  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Other/Bonus Disc/BONUS.iso", 1)),
-            0);
-
-  const std::vector<std::string> folders{
-      KODI::VIDEO::CVideoInfoScannerExtras::GetKnownFolders(m_db, "/movies/Film/")};
-
-  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Extras/"), folders.end());
-  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Bonus Disc/"), folders.end());
-  for (const std::string& folder : folders)
-    EXPECT_TRUE(folder.starts_with("/movies/Film/")) << folder;
 }
 
 // An actor is the one of that name, whatever its case, and _ and % in a name are no wildcards
@@ -2324,7 +2337,7 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(path);
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CFile::Delete(path));
   const int idFile{m_db.AddFile(path)};
@@ -2335,6 +2348,27 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   EXPECT_EQ(modified.GetAsDBDateTime(),
             m_db.GetSingleValue(
                 m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)));
+}
+
+// A scan reads the movies of a folder at once, and finds the same movie for each file as it would
+// one at a time
+TEST_F(TestVideoDatabase, TheMoviesOfAFolderAreThoseOfItsFiles)
+{
+  const int first{AddMovie("/movies/First.mkv")};
+  const int second{AddMovie("/movies/Second.mkv")};
+  const int other{AddMovie("/other/Third.mkv")};
+  ASSERT_GT(first, 0);
+  ASSERT_GT(second, 0);
+  ASSERT_GT(other, 0);
+
+  const CVideoDatabase::FolderMovies movies{m_db.GetFolderMovies("/movies/")};
+
+  EXPECT_EQ(2U, movies.byFile.size());
+  EXPECT_EQ(first, m_db.GetMovieId("/movies/First.mkv", movies));
+  EXPECT_EQ(second, m_db.GetMovieId("/movies/Second.mkv", movies));
+  // A file of another folder, or one not in the library, is looked up on its own
+  EXPECT_EQ(other, m_db.GetMovieId("/other/Third.mkv", movies));
+  EXPECT_EQ(-1, m_db.GetMovieId("/movies/New.mkv", movies));
 }
 
 // A new show's folder is dated before the show is added too
@@ -2356,7 +2390,7 @@ TEST_F(TestVideoDatabase, AShowsFolderDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(folder);
+  m_db.PrepareDateAdded(folder, CVideoDatabase::ReadDateAdded(folder));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
   CVideoInfoTag show;
@@ -2680,33 +2714,22 @@ TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
 
   KODI::VIDEO::CVideoInfoScannerArt art;
   KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, true));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root));
   EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetType, VideoAssetType::EXTRA);
-  std::string previousHash;
-  EXPECT_TRUE(m_db.GetPathHash(folder, previousHash));
-  EXPECT_FALSE(previousHash.empty());
 
   const int renamed{
       m_db.AddVideoVersionType("Renamed", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA)};
   m_db.SetVideoVersion(m_db.GetVideoVersionInfo(first).m_idFile, renamed);
 
+  // A video added is, and one already there keeps what it was made
   const std::string second{URIUtils::AddFileToFolder(folder, "Second.mkv")};
   EXPECT_GT(addVideo(second), 0);
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root));
   EXPECT_EQ(m_db.GetVideoVersionInfo(second).m_assetType, VideoAssetType::EXTRA);
   EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetTypeId, renamed);
-  std::string hash;
-  EXPECT_TRUE(m_db.GetPathHash(folder, hash));
-  EXPECT_NE(hash, previousHash);
-
-  EXPECT_FALSE(scanner.AddVideoExtrasBesideDisc(root, false));
   CFileItemList extras;
   m_db.GetVideoVersions(VideoDbContentType::MOVIES, idMovie, extras, VideoAssetType::EXTRA);
   EXPECT_EQ(extras.Size(), 2);
-
-  // A deleted video is reported too, so that the scanner's clean removes it
-  EXPECT_TRUE(XFILE::CFile::Delete(second));
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
 
   EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
 }
@@ -2747,9 +2770,9 @@ TEST_F(TestVideoDatabase, AVersionInAnExtrasFolderStaysAVersion)
   XFILE::CDirectory::RemoveRecursive(root);
 }
 
-// A refresh adds the extras of a movie's extras folders, which a scan passes by where the folder
-// hasn't changed since it was last added, as in a library scanned before they were recognised.
-// Those of a movie on several discs are beside the discs' folders.
+// A refresh adds the extras of a movie's extras folders, whether or not they have changed since they
+// were last added, as in a library scanned before they were recognised. Those of a movie on several
+// discs are beside the discs' folders.
 TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
 {
   const std::string root{CSpecialProtocol::TranslatePath("special://temp/RefreshedExtras/")};
@@ -2784,19 +2807,8 @@ TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
   ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
                                  VideoAssetType::VERSION, version));
 
-  // The folder's hash is that of its extras, as the scanner stores it
-  CFileItemList extras;
-  KODI::VIDEO::UTILS::EnumerateVideoExtras(folder, [&extras](const std::shared_ptr<CFileItem>& item)
-                                           { extras.Add(item); });
-  extras.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-  std::string hash;
-  KODI::VIDEO::UTILS::GetPathHash(extras, hash);
-  m_db.SetPathHash(folder, hash);
-
   KODI::VIDEO::CVideoInfoScannerArt art;
   KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
-  scanner.AddVideoExtrasBesideDisc(root, true);
-  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
 
   // Without folder names a movie has no extras folders
   scanner.AddMovieExtras(idMovie, false);

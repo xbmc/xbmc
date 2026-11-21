@@ -48,8 +48,29 @@ int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int m
   return 1;  // success
 }
 
+namespace
+{
+thread_local CVideoInfoDownloader::CKeptErrors* keptErrors{nullptr};
+} // namespace
+
+CVideoInfoDownloader::CKeptErrors::CKeptErrors() : m_previous(keptErrors)
+{
+  keptErrors = this;
+}
+
+CVideoInfoDownloader::CKeptErrors::~CKeptErrors()
+{
+  keptErrors = m_previous;
+}
+
 void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
 {
+  if (keptErrors)
+  {
+    keptErrors->m_errors.push_back(sce);
+    return;
+  }
+
   if (!sce.Title().empty())
     HELPERS::ShowOKDialogText(CVariant{ sce.Title() }, CVariant{ sce.Message() });
 }
@@ -94,7 +115,7 @@ void CVideoInfoDownloader::Process()
   }
   else if (m_state == GET_EPISODE_LIST)
   {
-    m_result = GetEpisodeList(m_url, m_episode);
+    m_result = GetEpisodeList(m_url, m_episode, nullptr, m_seasons);
     if (!m_result)
       CLog::Log(LOGERROR, "{}: Error getting episode list from {}", __FUNCTION__,
                 m_url.GetFirstThumbUrl());
@@ -226,11 +247,13 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
 
 bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
                                           VIDEO::EPISODELIST& movieDetails,
-                                          CGUIDialogProgress* pProgress /* = NULL */)
+                                          CGUIDialogProgress* pProgress /* = NULL */,
+                                          const std::set<int>& seasons /* = {} */)
 {
   //CLog::Log(LOGDEBUG,"CVideoInfoDownloader::GetDetails({})", url.m_strURL);
   m_url = url;
   m_episode = movieDetails;
+  m_seasons = seasons;
 
   // fill in the defaults
   movieDetails.clear();
@@ -257,7 +280,12 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     return result;
   }
   else  // unthreaded
-    return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
+    return !(movieDetails = m_info->GetEpisodeList(*m_http, url, seasons)).empty();
+}
+
+void CVideoInfoDownloader::Cancel()
+{
+  m_http->RequestCancel();
 }
 
 void CVideoInfoDownloader::CloseThread()

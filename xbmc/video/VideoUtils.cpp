@@ -16,7 +16,6 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "interfaces/AnnouncementManager.h"
 #include "media/MediaType.h"
@@ -218,20 +217,20 @@ std::string GetOpticalMediaPath(const CFileItem& item)
   return std::string{};
 }
 
-void EnumerateVideoExtras(const std::string& folder,
+bool EnumerateVideoExtras(const std::string& folder,
                           const std::function<void(const std::shared_ptr<CFileItem>&)>& callback)
 {
   if (const std::string disc{GetOpticalMediaPath(CFileItem{folder, true})}; !disc.empty())
   {
     callback(std::make_shared<CFileItem>(disc, false));
-    return;
+    return true;
   }
 
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(
           folder, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           XFILE::DIR_FLAG_DEFAULTS))
-    return;
+    return false;
 
   for (const auto& item : items)
   {
@@ -239,36 +238,13 @@ void EnumerateVideoExtras(const std::string& folder,
       callback(item);
   }
 
+  bool listed{true};
   for (const auto& item : items)
   {
     if (item->IsFolder() && !CInfoScanner::HasNoMedia(item->GetPath()))
-      EnumerateVideoExtras(item->GetPath(), callback);
+      listed = EnumerateVideoExtras(item->GetPath(), callback) && listed;
   }
-}
-
-std::string GetFastHash(const std::string& directory, const std::vector<std::string>& excludes)
-{
-  struct __stat64 buffer;
-  if (XFILE::CFile::Stat(directory, &buffer) == 0)
-  {
-    int64_t time = buffer.st_mtime;
-    if (!time)
-      time = buffer.st_ctime;
-    if (time)
-      return GetFastHash(excludes, time);
-  }
-  return "";
-}
-
-std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time)
-{
-  KODI::UTILITY::CDigest digest{KODI::UTILITY::CDigest::Type::MD5};
-
-  if (!excludes.empty())
-    digest.Update(StringUtils::Join(excludes, "|"));
-
-  digest.Update((unsigned char*)&time, sizeof(time));
-  return digest.Finalize();
+  return listed;
 }
 
 int GetPathHash(const CFileItemList& items, std::string& hash)

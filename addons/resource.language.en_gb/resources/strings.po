@@ -13704,15 +13704,15 @@ msgid "Sort by: ID"
 msgstr ""
 
 msgctxt "#20317"
-msgid "Scanning movies using {0:s}"
+msgid "Scanning movies in {1:s} using {0:s}"
 msgstr ""
 
 msgctxt "#20318"
-msgid "Scanning music videos using {0:s}"
+msgid "Scanning music videos in {1:s} using {0:s}"
 msgstr ""
 
 msgctxt "#20319"
-msgid "Scanning TV shows using {0:s}"
+msgid "Scanning TV shows in {1:s} using {0:s}"
 msgstr ""
 
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp

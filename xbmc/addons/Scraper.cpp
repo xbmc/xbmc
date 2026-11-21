@@ -47,7 +47,9 @@
 
 #include <algorithm>
 #include <array>
+#include <mutex>
 #include <sstream>
+#include <utility>
 
 #include <fstrcmp.h>
 
@@ -181,6 +183,7 @@ bool CScraper::Supports(ContentType content) const
 
 bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 {
+  std::unique_lock lock(m_callSection);
   m_pathContent = content;
   if (!LoadSettings(false, false))
     return false;
@@ -195,6 +198,7 @@ bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 
 std::string CScraper::GetPathSettings()
 {
+  std::unique_lock lock(m_callSection);
   if (!LoadSettings(false, true))
     return "";
 
@@ -209,6 +213,7 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache() const
 {
+  std::unique_lock lock(m_callSection);
   std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
@@ -349,6 +354,7 @@ std::string CScraper::InternalRun(const std::string& function,
 
 std::string CScraper::GetPathSettingsAsJSON()
 {
+  std::unique_lock lock(m_callSection);
   static const std::string EmptyPathSettings = "{}";
 
   if (!LoadSettings(false, true))
@@ -364,6 +370,7 @@ std::string CScraper::GetPathSettingsAsJSON()
 
 bool CScraper::Load()
 {
+  std::unique_lock lock(m_callSection);
   if (m_fLoaded || m_isPython)
     return true;
 
@@ -409,6 +416,31 @@ bool CScraper::Load()
   return m_fLoaded = result;
 }
 
+std::unique_lock<CCriticalSection> CScraper::LockCall() const
+{
+  if (m_isPython)
+    return {};
+  return std::unique_lock(m_callSection);
+}
+
+CScraper::CLookingUp::CLookingUp(CScraper& scraper, std::string key)
+  : m_scraper(scraper),
+    m_key(std::move(key))
+{
+  std::unique_lock lock(m_scraper.m_resultsLock);
+  m_scraper.m_resultsChanged.wait(lock, [this] { return !m_scraper.m_lookingUp.contains(m_key); });
+  m_scraper.m_lookingUp.insert(m_key);
+}
+
+CScraper::CLookingUp::~CLookingUp()
+{
+  {
+    std::unique_lock lock(m_scraper.m_resultsLock);
+    m_scraper.m_lookingUp.erase(m_key);
+  }
+  m_scraper.m_resultsChanged.notify_all();
+}
+
 bool CScraper::IsInUse() const
 {
   if (Supports(ContentType::ALBUMS) || Supports(ContentType::ARTISTS))
@@ -428,6 +460,7 @@ bool CScraper::IsInUse() const
 
 bool CScraper::IsNoop()
 {
+  std::unique_lock lock(m_callSection);
   if (!Load())
     throw CScraperError();
 
@@ -438,6 +471,7 @@ bool CScraper::IsNoop()
 // and may populate strId, or throws CScraperError on error
 CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 {
+  const auto call = LockCall();
   CScraperUrl scurlRet;
 
   if (IsNoop())
@@ -525,6 +559,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
 CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 {
+  const auto call = LockCall();
   CScraperUrl scurlRet;
 
   if (m_isPython)
@@ -960,15 +995,21 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::IHttpClient& fcurl,
                                              int movieYear,
                                              bool fFirst)
 {
+  const auto call = LockCall();
   // The title is cleaned below, so the arguments as given identify the search
   const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
-  if (const auto it = m_findCache.find(key); it != m_findCache.end())
-    return it->second;
+  const CLookingUp lookingUp{*this, "find" + key};
+  {
+    std::unique_lock lock(m_resultsLock);
+    if (const auto it = m_findCache.find(key); it != m_findCache.end())
+      return it->second;
+  }
 
   auto result = FindMovieUncached(fcurl, movieTitle, movieYear, fFirst);
 
   if (!result.empty())
   {
+    std::unique_lock lock(m_resultsLock);
     if (m_findCache.size() >= MAX_CACHED_RESULTS)
       m_findCache.clear();
     m_findCache.emplace(key, result);
@@ -1143,6 +1184,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
                                                  const std::string& sAlbum,
                                                  const std::string& sArtist)
 {
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
              sArtist, sAlbum, Name(), Path(), Content(), Version().asString());
@@ -1248,6 +1290,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
 std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
                                                    const std::string& sArtist)
 {
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              sArtist, Name(), Path(), Content(), Version().asString());
@@ -1334,8 +1377,11 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
 }
 
 // fetch list of episodes from URL (from video database)
-VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl,
+                                            const CScraperUrl& scurl,
+                                            const std::set<int>& seasons /* = {} */)
 {
+  const auto call = LockCall();
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
     return vcep;
@@ -1345,10 +1391,19 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CSc
 
   if (m_isPython)
   {
+    // complete=1 asks for each episode's details with the list, which a scraper that doesn't know
+    // the parameter ignores
     std::stringstream str;
     str << "plugin://" << ID()
         << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
-        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+        << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON()) << "&complete=1";
+    if (!seasons.empty())
+    {
+      std::vector<std::string> numbers;
+      std::ranges::transform(seasons, std::back_inserter(numbers),
+                             [](int season) { return std::to_string(season); });
+      str << "&seasons=" << CURL::Encode(StringUtils::Join(numbers, ","));
+    }
 
     CFileItemList items;
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
@@ -1367,6 +1422,10 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CSc
       surl.m_type = CScraperUrl::UrlType::General;
       surl.m_url = items[i]->GetURL().Get();
       ep.cScraperUrl.AppendUrl(surl);
+      // An item the scraper marks complete holds the episode's details, taken in place of a
+      // getepisodedetails call
+      if (items[i]->GetProperty("video.complete").asBoolean())
+        ep.item = items[i];
       vcep.push_back(ep);
     }
 
@@ -1438,20 +1497,26 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
 {
+  const auto call = LockCall();
   // The id as well as the url, since an xml scraper is given both and two search results can
   // carry the same url under different ids
   const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
                         SerialiseUniqueIDs(uniqueIDs)};
-  if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+  const CLookingUp lookingUp{*this, "details" + key};
   {
-    // A copy - the caller goes on to fill in where this came from and what art it ended up with
-    video = *it->second;
-    return true;
+    std::unique_lock lock(m_resultsLock);
+    if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+    {
+      // A copy - the caller goes on to fill in where this came from and what art it ended up with
+      video = *it->second;
+      return true;
+    }
   }
 
   if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
     return false;
 
+  std::unique_lock lock(m_resultsLock);
   if (m_detailsCache.size() >= MAX_CACHED_RESULTS)
     m_detailsCache.clear();
   m_detailsCache.emplace(key, std::make_shared<const CVideoInfoTag>(video));
@@ -1518,6 +1583,7 @@ bool CScraper::GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
@@ -1550,6 +1616,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
                                 const std::string& sSearch,
                                 CArtist& artist)
 {
+  const auto call = LockCall();
   if (!scurl.HasUrls())
     return false;
 
@@ -1587,6 +1654,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
 
 bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
 {
+  const auto call = LockCall();
   if (!details.HasUniqueID())
     return false;
 
@@ -1595,8 +1663,13 @@ bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
              details.GetUniqueID(), Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
-    return PythonDetails(ID(), "id", details.GetUniqueID(),
-      "getartwork", GetPathSettingsAsJSON(), details);
+  {
+    // The unique ids too, with their types: the default can be another site's id, such as the
+    // TVDB id an nfo file made the default, which the scraper would take for one of its own
+    const auto& ids = details.GetUniqueIDs();
+    return PythonDetails(ID(), "id", details.GetUniqueID(), "getartwork", GetPathSettingsAsJSON(),
+                         UniqueIDs(ids.begin(), ids.end()), details);
+  }
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;

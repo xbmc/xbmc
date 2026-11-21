@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/Scraper.h"
@@ -22,10 +24,16 @@
 #include "music/infoscanner/MusicAlbumInfo.h"
 #include "music/infoscanner/MusicArtistInfo.h"
 #include "utils/ContentNames.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
+#include <algorithm>
 #include <chrono>
+#include <condition_variable>
+#include <future>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -72,21 +80,40 @@ constexpr const char* PYTHON_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UT
   </requires>
   <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
   <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
     <platform>all</platform>
   </extension>
 </addon>)";
 
-//! The searches made of the scraper: whether they fail, and the threads they ran on
+//! How the scraper's searches end: finding one movie, by the title searched for, finding nothing,
+//! or failing
+enum class SearchEnd
+{
+  FINDS_THE_TITLE,
+  FINDS_NOTHING,
+  FAILS,
+};
+
+//! What the runs of the scraper share: how many have started, how many run at once, whether they
+//! may finish, and the threads they ran on; how the searches end; and the options each run was
+//! given
 struct SSearches
 {
   std::mutex lock;
-  bool fail{false};
+  std::condition_variable changed;
+  int started{0};
+  int running{0};
+  int most{0};
+  bool finish{false};
   std::vector<int> threads;
+  SearchEnd searchEnd{SearchEnd::FINDS_THE_TITLE};
+  std::vector<std::string> options;
 };
 
 /*!
- \brief Stands in for the python interpreter running a scraper: a search finds nothing, or fails,
- ending its listing as unsuccessful
+ \brief Stands in for the python interpreter running a scraper: a search for a title finds one
+ movie, by that title, once the search may finish, unless searches are to find nothing or to fail,
+ ending their listing as unsuccessful. An artwork request reads a movie called 'Details'.
  */
 class CSearchingInvoker : public ILanguageInvoker
 {
@@ -103,16 +130,43 @@ protected:
     setState(InvokerStateRunning);
     // As a plugin is run: its url, handle and options
     const int handle{std::stoi(arguments[1])};
-    bool fail{false};
+    const CURL options{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + arguments[2]};
+    const std::string title{options.GetOption("title")};
+    const std::string action{options.GetOption("action")};
+    SearchEnd searchEnd{SearchEnd::FINDS_THE_TITLE};
     {
       std::unique_lock lock(m_searches.lock);
-      fail = m_searches.fail;
-      m_searches.threads.push_back(GetId());
+      ++m_searches.started;
+      m_searches.most = std::max(m_searches.most, ++m_searches.running);
+      if (std::ranges::find(m_searches.threads, GetId()) == m_searches.threads.end())
+        m_searches.threads.push_back(GetId());
+      m_searches.options.push_back(arguments[2]);
+      searchEnd = m_searches.searchEnd;
+      m_searches.changed.notify_all();
+      m_searches.changed.wait_for(lock, TIMEOUT, [this] { return m_searches.finish; });
     }
 
-    XFILE::CPluginDirectory::EndOfDirectory(handle, !fail, false, false);
+    if (action == "getartwork")
+    {
+      CFileItem movie{"Details"};
+      movie.GetVideoInfoTag()->SetTitle("Details");
+      XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &movie);
+    }
+    else
+    {
+      if (searchEnd == SearchEnd::FINDS_THE_TITLE)
+      {
+        CFileItem movie{"http://movies.invalid/" + title, false};
+        movie.SetLabel(title);
+        XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
+      }
+      XFILE::CPluginDirectory::EndOfDirectory(handle, searchEnd != SearchEnd::FAILS, false, false);
+    }
 
+    std::unique_lock lock(m_searches.lock);
     setState(InvokerStateScriptDone);
+    --m_searches.running;
+    m_searches.changed.notify_all();
     return true;
   }
 
@@ -181,6 +235,9 @@ protected:
     if (!m_registered)
       return;
 
+    Finish();
+    // The threads kept to run the scraper again go once another script is run
+    static_cast<void>(Scripts().GetReusablePluginHandle("another.py"));
     for (const int id : Threads())
       EXPECT_TRUE(Eventually([id] { return !Scripts().IsRunning(id); }));
     Scripts().UnregisterLanguageInvocationHandler(&m_handler);
@@ -199,11 +256,42 @@ protected:
            file.Write(content.data(), content.size()) == static_cast<ssize_t>(content.size());
   }
 
-  //! Makes the searches made of the scraper fail, or not
-  void SearchesFail(bool fail)
+  //! Searches for \p title on a thread of its own, waited for however the test ends
+  std::future<void> Search(const std::string& title, std::vector<CScraperUrl>& found)
+  {
+    return std::async(std::launch::async,
+                      [this, title, &found]
+                      {
+                        const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
+                        found = m_scraper->FindMovie(*http, title, 2000, true);
+                      });
+  }
+
+  template<typename Condition>
+  bool WaitForSearches(Condition condition)
   {
     std::unique_lock lock(m_handler.m_searches.lock);
-    m_handler.m_searches.fail = fail;
+    return m_handler.m_searches.changed.wait_for(lock, TIMEOUT, [this, &condition]
+                                                 { return condition(m_handler.m_searches); });
+  }
+
+  void Finish()
+  {
+    {
+      std::unique_lock lock(m_handler.m_searches.lock);
+      m_handler.m_searches.finish = true;
+    }
+    m_handler.m_searches.changed.notify_all();
+  }
+
+  //! Makes the searches made of the scraper end so, as soon as they start
+  void SearchesEnd(SearchEnd end)
+  {
+    {
+      std::unique_lock lock(m_handler.m_searches.lock);
+      m_handler.m_searches.searchEnd = end;
+    }
+    Finish();
   }
 
   std::vector<int> Threads()
@@ -212,16 +300,88 @@ protected:
     return m_handler.m_searches.threads;
   }
 
+  //! The options each run of the scraper was given, as a plugin's url gives them
+  std::vector<CURL> Options()
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    std::vector<CURL> options;
+    for (const std::string& option : m_handler.m_searches.options)
+      options.emplace_back("plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + option);
+    return options;
+  }
+
   CSearchingHandler m_handler;
   bool m_registered{false};
   std::string m_folder;
   ScraperPtr m_scraper;
 };
 
+TEST_F(TestPythonScraper, ItsCallsRunAlongsideEachOther)
+{
+  std::vector<std::vector<CScraperUrl>> found(3);
+  std::vector<std::future<void>> searches;
+  for (const std::string title : {"Alpha", "Beta", "Gamma"})
+    searches.push_back(Search(title, found[searches.size()]));
+
+  const bool atOnce{
+      WaitForSearches([](const SSearches& searches) { return searches.running == 3; })};
+  Finish();
+  for (std::future<void>& search : searches)
+    search.wait();
+
+  EXPECT_TRUE(atOnce);
+  ASSERT_EQ(1u, found[0].size());
+  EXPECT_EQ("Alpha", found[0][0].GetTitle());
+  ASSERT_EQ(1u, found[2].size());
+  EXPECT_EQ("Gamma", found[2][0].GetTitle());
+}
+
+TEST_F(TestPythonScraper, ASearchAlreadyBeingMadeIsWaitedForRatherThanMadeAgain)
+{
+  std::vector<CScraperUrl> first;
+  std::vector<CScraperUrl> second;
+  std::future<void> searching{Search("Alpha", first)};
+  ASSERT_TRUE(WaitForSearches([](const SSearches& searches) { return searches.running == 1; }));
+  std::future<void> again{Search("Alpha", second)};
+  // Time for the second to start a search of its own, if it were going to
+  std::this_thread::sleep_for(100ms);
+  Finish();
+  searching.wait();
+  again.wait();
+
+  std::unique_lock lock(m_handler.m_searches.lock);
+  EXPECT_EQ(1, m_handler.m_searches.started);
+  ASSERT_EQ(1u, second.size());
+  EXPECT_EQ("Alpha", second[0].GetTitle());
+}
+
+TEST_F(TestPythonScraper, ItsInterpretersAreKeptForItsLaterCalls)
+{
+  std::vector<std::vector<CScraperUrl>> found(2);
+  std::vector<std::future<void>> searches;
+  for (const std::string title : {"Alpha", "Beta"})
+    searches.push_back(Search(title, found[searches.size()]));
+  ASSERT_TRUE(WaitForSearches([](const SSearches& searches) { return searches.running == 2; }));
+  Finish();
+  for (std::future<void>& search : searches)
+    search.wait();
+  ASSERT_TRUE(WaitForSearches([](const SSearches& searches) { return searches.running == 0; }));
+
+  searches.clear();
+  for (const std::string title : {"Gamma", "Delta"})
+    searches.push_back(Search(title, found[searches.size()]));
+  for (std::future<void>& search : searches)
+    search.wait();
+
+  std::unique_lock lock(m_handler.m_searches.lock);
+  EXPECT_EQ(4, m_handler.m_searches.started);
+  EXPECT_EQ(2u, m_handler.m_searches.threads.size());
+}
+
 TEST_F(TestPythonScraper, ASearchThatFailsIsAnError)
 {
   // Aborted and without a title, as an xml scraper's failed search is: a scan counts a failure
-  SearchesFail(true);
+  SearchesEnd(SearchEnd::FAILS);
   const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   try
   {
@@ -237,6 +397,7 @@ TEST_F(TestPythonScraper, ASearchThatFailsIsAnError)
 
 TEST_F(TestPythonScraper, ASearchThatFindsNothingIsNoError)
 {
+  SearchesEnd(SearchEnd::FINDS_NOTHING);
   const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   std::vector<CScraperUrl> found;
   EXPECT_NO_THROW(found = m_scraper->FindMovie(*http, "A search that finds nothing", 2001, true));
@@ -246,7 +407,7 @@ TEST_F(TestPythonScraper, ASearchThatFindsNothingIsNoError)
 TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
 {
   // The music scanner doesn't catch a scraper's error
-  SearchesFail(true);
+  SearchesEnd(SearchEnd::FAILS);
   const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> albums;
   EXPECT_NO_THROW(albums = m_scraper->FindAlbum(*http, "Album", "Artist"));
@@ -254,4 +415,24 @@ TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> artists;
   EXPECT_NO_THROW(artists = m_scraper->FindArtist(*http, "Artist"));
   EXPECT_TRUE(artists.empty());
+}
+
+TEST_F(TestPythonScraper, AnArtworkRequestIsGivenTheUniqueIDs)
+{
+  // An nfo file can make another site's id the default, which the scraper can't tell from its own
+  CVideoInfoTag show;
+  show.SetUniqueID("381020", "tvdb", true);
+  show.SetUniqueID("112162", "tmdb");
+  Finish();
+  const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
+  EXPECT_TRUE(m_scraper->GetArtwork(*http, show));
+
+  const std::vector<CURL> requests{Options()};
+  ASSERT_EQ(1u, requests.size());
+  EXPECT_EQ("getartwork", requests[0].GetOption("action"));
+  EXPECT_EQ("381020", requests[0].GetOption("id"));
+  CVariant ids;
+  ASSERT_TRUE(CJSONVariantParser::Parse(requests[0].GetOption("uniqueIDs"), ids));
+  EXPECT_EQ("112162", ids["tmdb"].asString());
+  EXPECT_EQ("381020", ids["tvdb"].asString());
 }

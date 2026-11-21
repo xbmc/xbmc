@@ -14,7 +14,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Scraper.h"
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
@@ -35,6 +34,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerLookups.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
@@ -110,19 +110,6 @@ bool GetExportedAsset(CVideoDatabase& db,
   return loader && loader->Load(tag, false) == CInfoScanner::InfoType::FULL && IsExportedAsset(tag);
 }
 
-//! The hash of the extras in a folder and in the folders below it, rather than of the folder's time
-//! or listing, as a file added or removed in a folder below changes neither
-std::string HashVideoExtras(const std::string& folder)
-{
-  CFileItemList items;
-  UTILS::EnumerateVideoExtras(folder, [&items](const std::shared_ptr<CFileItem>& item)
-                              { items.Add(item); });
-  items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-  std::string hash;
-  UTILS::GetPathHash(items, hash);
-  return hash;
-}
-
 //! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
 bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
 {
@@ -147,13 +134,13 @@ CVideoInfoScannerExtras::CVideoInfoScannerExtras(CVideoDatabase& database,
 {
 }
 
-void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
+bool CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
 {
   // No need to check for .nomedia in the current directory, the caller already checked and this
   // function would not have been called if it existed.
 
   // Add video extras to library
-  UTILS::EnumerateVideoExtras(
+  return UTILS::EnumerateVideoExtras(
       path,
       [this, dbId, path](const std::shared_ptr<CFileItem>& item)
       {
@@ -233,7 +220,7 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
           if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                   CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
           {
-            CDVDFileInfo::GetFileStreamDetails(item.get());
+            CScanProbe::GetFileStreamDetails(item.get());
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
                       CURL::GetRedacted(item->GetPath()));
           }
@@ -305,54 +292,23 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
   }
 }
 
-bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder,
-                                                       bool discChanged,
-                                                       bool rescan /* = false */)
+bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder)
 {
-  // A new extras folder changes the disc's folder, so is found by listing it. A file added to an
-  // extras folder changes only that, so those already known are each looked at.
-  bool added{false};
-  std::vector<std::string> folders;
-  if (discChanged)
-  {
-    CFileItemList items;
-    if (!CDirectory::GetDirectory(discFolder, items, "/", DIR_FLAG_DEFAULTS))
-      return false;
-    for (const auto& item : items)
-    {
-      if (IsVideoExtrasFolder(*item))
-        folders.emplace_back(item->GetPath());
-    }
-  }
-  else
-  {
-    std::string base{discFolder};
-    URIUtils::AddSlashAtEnd(base);
-    for (const std::string& path : GetKnownFolders(m_database, base))
-    {
-      // An extras folder whose extras are all in folders below it has no row of its own, so each
-      // row is taken back to the folder below the disc's
-      if (path.size() <= base.size())
-        continue;
-      std::string folder{path.substr(0, path.find_first_of("/\\", base.size()))};
-      URIUtils::AddSlashAtEnd(folder);
-      if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(folder)) &&
-          std::ranges::find(folders, folder) == folders.end())
-        folders.emplace_back(folder);
-    }
-  }
+  CFileItemList items;
+  if (!CDirectory::GetDirectory(discFolder, items, "/", DIR_FLAG_DEFAULTS))
+    return false;
 
-  for (const std::string& folder : folders)
+  bool added{false};
+  for (const auto& item : items)
   {
+    if (!IsVideoExtrasFolder(*item))
+      continue;
+    const std::string& folder{item->GetPath()};
+
     // Leave a folder with content set on it (a source root) alone
     SScanSettings settings;
     bool foundDirectly{false};
     if (m_database.GetScraperForPath(folder, settings, foundDirectly) && foundDirectly)
-      continue;
-
-    const std::string hash{HashVideoExtras(folder)};
-    if (std::string dbHash; !rescan && !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
-                            StringUtils::EqualsNoCase(hash, dbHash))
       continue;
 
     if (CInfoScanner::HasNoMedia(folder))
@@ -370,41 +326,8 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
     added = true;
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
               CURL::GetRedacted(folder));
-
-    // A refresh leaves the hash to the next scan, so that its clean looks at the folder
-    if (!hash.empty() && !rescan)
-      m_database.SetPathHash(folder, hash);
   }
   return added;
-}
-
-void CVideoInfoScannerExtras::SetVideoExtrasHash(const std::string& folder)
-{
-  if (const std::string hash{HashVideoExtras(folder)}; !hash.empty())
-    m_database.SetPathHash(folder, hash);
-}
-
-std::vector<std::string> CVideoInfoScannerExtras::GetKnownFolders(CVideoDatabase& db,
-                                                                  const std::string& folder)
-{
-  std::string base{folder};
-  URIUtils::AddSlashAtEnd(base);
-  std::vector<std::pair<int, std::string>> paths;
-  db.GetSubPaths(base, paths, false);
-
-  std::vector<std::string> folders;
-  for (const auto& [idPath, path] : paths)
-  {
-    std::string known{path};
-    if (URIUtils::IsBlurayPath(path))
-    {
-      known = URIUtils::GetDiscBasePath(path);
-      URIUtils::AddSlashAtEnd(known);
-    }
-    if (known.starts_with(base))
-      folders.emplace_back(known);
-  }
-  return folders;
 }
 
 void CVideoInfoScannerExtras::AddMovieExtras(int dbId, bool useFolderNames)
@@ -465,7 +388,7 @@ void CVideoInfoScannerExtras::AddMovieExtras(int dbId, bool useFolderNames)
   if (useFolderNames)
   {
     for (const std::string& folder : folders)
-      AddVideoExtrasBesideDisc(folder, true, true);
+      AddVideoExtrasBesideDisc(folder);
   }
   m_rereadDiscs = false;
 }

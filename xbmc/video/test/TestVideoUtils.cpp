@@ -460,6 +460,27 @@ void CreateFiles(const std::string& root, const std::vector<std::string>& files)
 }
 } // namespace
 
+TEST(TestVideoUtils, EnumerateVideoExtrasSaysWhetherItCouldListTheFolder)
+{
+  std::error_code ec;
+  std::string root{fs::create_temp_directory(ec)};
+  ASSERT_FALSE(ec);
+  URIUtils::AddSlashAtEnd(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(URIUtils::AddFileToFolder(root, "Empty")));
+
+  const auto listed{
+      [&root](const std::string& folder)
+      {
+        return VIDEO::UTILS::EnumerateVideoExtras(URIUtils::AddFileToFolder(root, folder),
+                                                  [](const std::shared_ptr<CFileItem>&) {});
+      }};
+  // An empty folder holds no extras; one that isn't there, as on a source gone, can't be listed
+  EXPECT_TRUE(listed("Empty/"));
+  EXPECT_FALSE(listed("Gone/"));
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
+
 TEST(TestVideoUtils, EnumerateVideoExtrasTakesADiscAsOneVideo)
 {
   std::error_code ec;
