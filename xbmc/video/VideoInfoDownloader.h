@@ -11,6 +11,7 @@
 #include "Episode.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
+#include "threads/Event.h"
 #include "threads/Thread.h"
 
 #include <atomic>
@@ -84,6 +85,7 @@ protected:
   std::atomic<LOOKUP_STATE> m_state{DO_NOTHING};
   std::atomic<int> m_found{0};
   std::atomic<bool> m_result{false};
+  CEvent m_doneEvent;
   ADDON::ScraperPtr   m_info;
 
   // threaded stuff

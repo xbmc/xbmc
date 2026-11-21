@@ -68,6 +68,7 @@ void CVideoInfoDownloader::Process()
       CLog::Log(LOGERROR, "{}: Error looking up item {} ({})", __FUNCTION__, m_movieTitle,
                 m_movieYear);
     m_state = DO_NOTHING;
+    m_doneEvent.Set();
     return;
   }
 
@@ -101,6 +102,7 @@ void CVideoInfoDownloader::Process()
   }
   m_found = 1;
   m_state = DO_NOTHING;
+  m_doneEvent.Set();
 }
 
 int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear,
@@ -117,6 +119,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
     m_found = 0;
     if (IsRunning())
       StopThread();
+    m_doneEvent.Reset();
     Create();
     while (m_state != DO_NOTHING)
     {
@@ -126,7 +129,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
         CloseThread();
         return 0;
       }
-      CThread::Sleep(1ms);
+      m_doneEvent.Wait(10ms);
     }
     // transfer to our movielist
     m_movieList.swap(movieList);
@@ -168,6 +171,7 @@ bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueID
     m_found = 0;
     if (IsRunning())
       StopThread();
+    m_doneEvent.Reset();
     Create();
     while (!m_found)
     {
@@ -177,7 +181,7 @@ bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueID
         CloseThread();
         return false;
       }
-      CThread::Sleep(1ms);
+      m_doneEvent.Wait(10ms);
     }
     movieDetails = m_movieDetails;
     bool result = m_result;
@@ -204,6 +208,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
     m_found = 0;
     if (IsRunning())
       StopThread();
+    m_doneEvent.Reset();
     Create();
     while (!m_found)
     {
@@ -213,7 +218,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
         CloseThread();
         return false;
       }
-      CThread::Sleep(1ms);
+      m_doneEvent.Wait(10ms);
     }
     movieDetails = m_movieDetails;
     bool result = m_result;
@@ -240,6 +245,7 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     m_found = 0;
     if (IsRunning())
       StopThread();
+    m_doneEvent.Reset();
     Create();
     while (!m_found)
     {
@@ -249,7 +255,7 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
         CloseThread();
         return false;
       }
-      CThread::Sleep(1ms);
+      m_doneEvent.Wait(10ms);
     }
     movieDetails = m_episode;
     bool result = m_result;
