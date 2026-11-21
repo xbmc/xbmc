@@ -86,6 +86,24 @@ bool CGuiCompositeShaderGLES::OnEnabled()
   return true;
 }
 
+void CGuiCompositeShaderGLES::SetSdrPeak(float peak)
+{
+  if (peak == m_sdrPeak)
+    return;
+
+  if (m_lutTFTexId)
+  {
+    const GLuint texture = CreateLUTTexture(GeneratePQLUT(peak));
+    if (!texture)
+      return;
+
+    glDeleteTextures(1, &m_lutTFTexId);
+    m_lutTFTexId = texture;
+  }
+
+  m_sdrPeak = peak;
+}
+
 GLuint CGuiCompositeShaderGLES::CreateLUTTexture(const std::vector<float>& data)
 {
   while (glGetError() != GL_NO_ERROR)

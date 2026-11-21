@@ -18,7 +18,7 @@ CGuiCompositeGLES::CGuiCompositeGLES() = default;
 
 CGuiCompositeGLES::~CGuiCompositeGLES() = default;
 
-bool CGuiCompositeGLES::Enable(int colorTransfer, bool limitedRange)
+bool CGuiCompositeGLES::Enable(int colorTransfer, bool limitedRange, float sdrPeak)
 {
   m_guiCompositing = (colorTransfer != 0);
 
@@ -30,6 +30,7 @@ bool CGuiCompositeGLES::Enable(int colorTransfer, bool limitedRange)
       if (limitedRange)
         defines += "#define KODI_LIMITED_RANGE 1\n";
       m_compositeShader = std::make_unique<CGuiCompositeShaderGLES>(defines);
+      m_compositeShader->SetSdrPeak(sdrPeak);
       if (!m_compositeShader->CompileAndLink())
       {
         CLog::Log(LOGERROR, "CGuiCompositeGLES: failed to compile GUI composite shader");
@@ -63,6 +64,12 @@ void CGuiCompositeGLES::Disable()
   m_guiFboAttachDepth = false;
   m_compositeShader.reset();
   m_guiCompositing = false;
+}
+
+void CGuiCompositeGLES::SetSdrPeak(float peak)
+{
+  if (m_compositeShader)
+    m_compositeShader->SetSdrPeak(peak);
 }
 
 bool CGuiCompositeGLES::Prepare(int width, int height, bool attachDepth)

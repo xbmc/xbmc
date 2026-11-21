@@ -240,6 +240,8 @@ public:
    * true if the role transition was applied.
    */
   virtual bool SetVideoOutput(const VideoPicture* videoPicture) { return false; }
+  // Revalidate window restrictions while an HDR game is running.
+  virtual bool IsHDRGameOutputValid() const { return true; }
 
   /*!
    * \brief Set colorimetry (BT.709, BT.2020, etc). Passing nullptr as the
