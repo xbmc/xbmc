@@ -376,7 +376,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
   m_codecControlFlags = 0;
   m_hints = hints;
-  m_indexInputBuffer = -1;
   m_dtsShift = DVD_NOPTS_VALUE;
   m_useDTSforPTS = false;
 
@@ -991,6 +990,9 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
   if (m_codec)
   {
+    // clear associated callback
+    m_codec->setCallback(jni::jhobject(nullptr));
+    xbmc_jnienv()->ExceptionClear();
     m_codec->stop();
     xbmc_jnienv()->ExceptionClear();
     m_codec->release();
@@ -1019,14 +1021,6 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 
   double pts(packet.pts), dts(packet.dts);
 
-  if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,
-              "CDVDVideoCodecAndroidMediaCodec::AddData dts:{:0.2f} pts:{:0.2f} sz:{} "
-              "indexBuffer:{} current state ({})",
-              dts, pts, packet.iSize, m_indexInputBuffer, m_state);
-  else if (m_state != MEDIACODEC_STATE_RUNNING)
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData current state ({})", m_state);
-
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
@@ -1041,11 +1035,31 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 
   if (pData && iSize)
   {
-    if (m_indexInputBuffer >= 0)
+    int indexInputBuffer{-1};
+    {
+      std::lock_guard<std::mutex> lock(m_queueMutex);
+      if (!m_inputBuffers.empty())
+      {
+        indexInputBuffer = m_inputBuffers.front();
+        m_inputBuffers.pop_front();
+      }
+    }
+
+    if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG,
+                "CDVDVideoCodecAndroidMediaCodec::AddData dts:{:0.2f} pts:{:0.2f} sz:{} "
+                "indexBuffer:{} current state ({})",
+                dts, pts, packet.iSize, indexInputBuffer, m_state);
+    else if (m_state != MEDIACODEC_STATE_RUNNING)
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData current state ({})", m_state);
+
+    if (indexInputBuffer >= 0)
     {
       if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
       {
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state ({})", m_state);
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        m_inputBuffers.push_front(indexInputBuffer);
         return false;
       }
 
@@ -1069,6 +1083,8 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         if (m_state == MEDIACODEC_STATE_FLUSHED && !m_bitstream->CanStartDecode())
         {
           CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::AddData: waiting for keyframe (bitstream)");
+          std::lock_guard<std::mutex> lock(m_queueMutex);
+          m_inputBuffers.push_front(indexInputBuffer);
           return true;
         }
 
@@ -1079,7 +1095,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       if (m_state == MEDIACODEC_STATE_FLUSHED)
         m_state = MEDIACODEC_STATE_RUNNING;
 
-      CJNIByteBuffer buffer = m_codec->getInputBuffer(m_indexInputBuffer);
+      CJNIByteBuffer buffer = m_codec->getInputBuffer(indexInputBuffer);
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionDescribe();
@@ -1172,10 +1188,10 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       int offset = 0;
 
       if (!cryptoInfo)
-        m_codec->queueInputBuffer(m_indexInputBuffer, offset, iSize, presentationTimeUs, flags);
+        m_codec->queueInputBuffer(indexInputBuffer, offset, iSize, presentationTimeUs, flags);
       else
       {
-        m_codec->queueSecureInputBuffer(m_indexInputBuffer, offset, *cryptoInfo, presentationTimeUs,
+        m_codec->queueSecureInputBuffer(indexInputBuffer, offset, *cryptoInfo, presentationTimeUs,
                                         flags);
         delete cryptoInfo, cryptoInfo = nullptr;
       }
@@ -1185,7 +1201,6 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         xbmc_jnienv()->ExceptionClear();
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData error");
       }
-      m_indexInputBuffer = -1;
     }
     else
       return false;
@@ -1203,6 +1218,21 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     // now we can flush the actual MediaCodec object
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state ({})", m_state);
     {
+      {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        // preserve unapplied format change
+        for (auto it = m_outputBuffers.rbegin(); it != m_outputBuffers.rend(); ++it)
+        {
+          if (it->format.has_value())
+          {
+            m_pendingOutputFormat = std::move(it->format);
+            break;
+          }
+        }
+        m_inputBuffers.clear();
+        m_outputBuffers.clear();
+      }
+
       // No output buffer may be released between flush() and its invalidation
       std::unique_lock lock(m_videoBufferPool->GetCriticalSection());
 
@@ -1216,10 +1246,33 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
       // flush() hands all output buffers back to MediaCodec, their indices are invalid now
       m_videoBufferPool->InvalidateMediaCodecBuffers();
+
+      {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        // preserve unapplied format change
+        for (auto it = m_outputBuffers.rbegin(); it != m_outputBuffers.rend(); ++it)
+        {
+          if (it->format.has_value())
+          {
+            m_pendingOutputFormat = std::move(it->format);
+            break;
+          }
+        }
+        m_inputBuffers.clear();
+        m_outputBuffers.clear();
+
+        // draining the queues twice might not be enough
+        // Android 14+ permits outstanding output callbacks after flush
+        // TODO: discard callbacks from previous execution
+      }
     }
 
     if (m_state == MEDIACODEC_STATE_ERROR)
     {
+      {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        m_pendingOutputFormat.reset();
+      }
       m_codec->stop();
       if (xbmc_jnienv()->ExceptionCheck())
       {
@@ -1230,17 +1283,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
       ConfigureMediaCodec();
     }
     else
-    {
-      CJNIMediaFormat mediaFormat = m_codec->getOutputFormat();
-      if (xbmc_jnienv()->ExceptionCheck())
-      {
-        xbmc_jnienv()->ExceptionDescribe();
-        xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset: getOutputFormat failed");
-      }
-      else
-        InjectExtraData(mediaFormat);
-    }
+      m_codec->start();
 
     m_state = MEDIACODEC_STATE_FLUSHED;
 
@@ -1248,7 +1291,6 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     m_videobuffer.pts = DVD_NOPTS_VALUE;
 
     m_dtsShift = DVD_NOPTS_VALUE;
-    m_indexInputBuffer = -1;
 
     if (m_bitstream)
       m_bitstream->ResetStartDecode();
@@ -1313,22 +1355,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
 
   if ((m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) == 0)
   {
-    // try to fetch an input buffer
-    if (m_indexInputBuffer < 0)
-    {
-      m_indexInputBuffer =
-          m_codec->dequeueInputBuffer((m_codecControlFlags & DVD_CODEC_CTRL_DROP) ? 0 : 5000);
-      if (xbmc_jnienv()->ExceptionCheck())
-      {
-        xbmc_jnienv()->ExceptionDescribe();
-        xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR,
-                  "CDVDVideoCodecAndroidMediaCodec::GetPicture dequeueInputBuffer failed");
-        m_indexInputBuffer = -1;
-      }
-    }
-
-    if (m_indexInputBuffer >= 0)
+    std::lock_guard<std::mutex> lock(m_queueMutex);
+    if (!m_inputBuffers.empty())
     {
       CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_BUFFER");
       return VC_BUFFER;
@@ -1380,22 +1408,31 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       m_videoBufferPool->ReleaseMediaCodecBuffers();
     }
 
-    if (m_indexInputBuffer < 0)
+    int indexInputBuffer{-1};
     {
-      m_indexInputBuffer = m_codec->dequeueInputBuffer(100000);
-      if (xbmc_jnienv()->ExceptionCheck())
+      std::unique_lock<std::mutex> lock(m_queueMutex);
+
+      if (m_inputBuffers.empty())
       {
-        xbmc_jnienv()->ExceptionDescribe();
-        xbmc_jnienv()->ExceptionClear();
-        CLog::LogF(LOGERROR, "dequeueInputBuffer failed");
+        m_queueCond.wait_for(lock, std::chrono::milliseconds(100),
+                             [this]
+                             {
+                               return !m_inputBuffers.empty() ||
+                                      m_state == MEDIACODEC_STATE_ERROR ||
+                                      m_state == MEDIACODEC_STATE_STOPPED;
+                             });
+      }
+
+      if (!m_inputBuffers.empty() && m_state == MEDIACODEC_STATE_RUNNING)
+      {
+        indexInputBuffer = m_inputBuffers.front();
+        m_inputBuffers.pop_front();
       }
     }
 
-    xbmc_jnienv()->ExceptionClear();
-
-    if (m_indexInputBuffer >= 0)
+    if (indexInputBuffer >= 0)
     {
-      m_codec->queueInputBuffer(m_indexInputBuffer, 0, 0, 0,
+      m_codec->queueInputBuffer(indexInputBuffer, 0, 0, 0,
                                 CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM);
       if (xbmc_jnienv()->ExceptionCheck())
       {
@@ -1405,12 +1442,11 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       }
       else
       {
-        m_indexInputBuffer = -1;
         CLog::LogF(LOGDEBUG, "BUFFER_FLAG_END_OF_STREAM send");
       }
     }
     else
-      CLog::LogF(LOGWARNING, "invalid index: {}", m_indexInputBuffer);
+      CLog::LogF(LOGWARNING, "invalid index: {}", indexInputBuffer);
   }
 }
 
@@ -1597,6 +1633,9 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   else
       InitSurfaceTexture();
 
+  // async mode
+  m_codec->setCallback(this->CJNIXBMCMediaCodecCallback::get_raw());
+
   // configure and start the codec.
   // use the MediaFormat that we have setup.
   // use a null MediaCrypto, our content is not encrypted.
@@ -1638,21 +1677,42 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     timeout_us = 0;
 
-  CJNIMediaCodecBufferInfo bufferInfo;
+  ssize_t index{-1};
+  int64_t pts{AV_NOPTS_VALUE};
+  int flags{0};
 
-  ssize_t index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
-  if (xbmc_jnienv()->ExceptionCheck())
+  std::unique_lock<std::mutex> lock(m_queueMutex);
+
+  if (m_outputBuffers.empty() && timeout_us > 0)
   {
-    xbmc_jnienv()->ExceptionDescribe();
-    xbmc_jnienv()->ExceptionClear();
-    CLog::Log(LOGERROR,
-              "CDVDVideoCodecAndroidMediaCodec:GetOutputPicture dequeueOutputBuffer failed");
+    m_queueCond.wait_for(lock, std::chrono::microseconds(timeout_us), [this]
+                         { return !m_outputBuffers.empty() || m_state == MEDIACODEC_STATE_ERROR; });
+  }
+
+  if (m_state == MEDIACODEC_STATE_ERROR)
     return -2;
+
+  if (!m_outputBuffers.empty())
+  {
+    auto item = std::move(m_outputBuffers.front());
+    m_outputBuffers.pop_front();
+
+    if (item.format.has_value())
+    {
+      // output format changes
+      ConfigureOutputFormat(*item.format);
+      InjectExtraData(*item.format);
+      return 0;
+    }
+
+    // output buffer info
+    index = item.index;
+    pts = item.pts;
+    flags = item.flags;
   }
 
   if (index >= 0)
   {
-    int64_t pts = bufferInfo.presentationTimeUs();
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     if (pts != AV_NOPTS_VALUE)
@@ -1663,6 +1723,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         m_OutputDuration += pts - m_lastPTS;
       m_lastPTS = pts;
     }
+
+    lock.unlock();
 
     if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
     {
@@ -1678,7 +1740,6 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       return -2;
     }
 
-    int flags = bufferInfo.flags();
     if (flags & CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM)
     {
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_END_OF_STREAM");
@@ -1702,31 +1763,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 
     rtn = 1;
   }
-  else if (index == CJNIMediaCodec::INFO_OUTPUT_FORMAT_CHANGED)
-  {
-    CJNIMediaFormat mediaformat = m_codec->getOutputFormat();
-    if (xbmc_jnienv()->ExceptionCheck())
-    {
-      xbmc_jnienv()->ExceptionDescribe();
-      xbmc_jnienv()->ExceptionClear();
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(INFO_OUTPUT_FORMAT_CHANGED) ExceptionCheck: getOutputBuffers");
-    }
-    else
-      ConfigureOutputFormat(mediaformat);
-  }
-  else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER ||
-           index == CJNIMediaCodec::INFO_OUTPUT_BUFFERS_CHANGED)
-  {
-    // ignore
-    rtn = 0;
-  }
   else
-  {
-    // we should never get here
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture unknown index({})",
-              index);
-    rtn = -2;
-  }
+    rtn = 0;
 
   return rtn;
 }
@@ -1933,5 +1971,52 @@ void CDVDVideoCodecAndroidMediaCodec::surfaceDestroyed(CJNISurfaceHolder holder)
       m_jnivideosurface.release();
     m_codec->stop();
     xbmc_jnienv()->ExceptionClear();
+
+    std::lock_guard<std::mutex> lock(m_queueMutex);
+    m_inputBuffers.clear();
+    m_outputBuffers.clear();
+    m_queueCond.notify_all();
   }
+}
+
+void CDVDVideoCodecAndroidMediaCodec::onInputBufferAvailable(CJNIMediaCodec codec, int index)
+{
+  std::lock_guard<std::mutex> lock(m_queueMutex);
+  m_inputBuffers.push_back(index);
+  m_queueCond.notify_all();
+}
+
+void CDVDVideoCodecAndroidMediaCodec::onOutputBufferAvailable(CJNIMediaCodec codec,
+                                                              int index,
+                                                              CJNIMediaCodecBufferInfo info)
+{
+  std::lock_guard<std::mutex> lock(m_queueMutex);
+  // re-inject pending output format
+  if (m_pendingOutputFormat.has_value())
+  {
+    OutputBuffer fmtInfo;
+    fmtInfo.format = std::move(m_pendingOutputFormat);
+    m_pendingOutputFormat.reset();
+    m_outputBuffers.push_back(std::move(fmtInfo));
+  }
+  m_outputBuffers.push_back({index, info.presentationTimeUs(), info.flags(), std::nullopt});
+  m_queueCond.notify_all();
+};
+
+void CDVDVideoCodecAndroidMediaCodec::onOutputFormatChanged(CJNIMediaCodec codec,
+                                                            CJNIMediaFormat format)
+{
+  std::lock_guard<std::mutex> lock(m_queueMutex);
+  m_pendingOutputFormat.reset();
+  OutputBuffer info;
+  info.format = std::move(format);
+  m_outputBuffers.push_back(std::move(info));
+  m_queueCond.notify_all();
+}
+
+void CDVDVideoCodecAndroidMediaCodec::onError(CJNIMediaCodec codec)
+{
+  std::lock_guard<std::mutex> lock(m_queueMutex);
+  m_state = MEDIACODEC_STATE_ERROR;
+  m_queueCond.notify_all();
 }
