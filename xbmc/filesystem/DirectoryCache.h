@@ -13,7 +13,6 @@
 
 #include <functional>
 #include <memory>
-#include <set>
 #include <unordered_map>
 
 class CURL;
@@ -56,8 +55,6 @@ namespace XFILE
     void PrintStats() const;
 #endif
   private:
-    void InitCache(const std::set<std::string>& dirs);
-    void ClearCache(std::set<std::string>& dirs);
     void CheckIfFull();
 
     struct StringHash
