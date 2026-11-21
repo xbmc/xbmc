@@ -11,6 +11,10 @@
 #include <cstdlib>
 #include <fstream>
 
+#if defined(__GLIBC__)
+#include <malloc.h>
+#endif
+
 namespace KODI
 {
 namespace MEMORY
@@ -79,5 +83,11 @@ void GetMemoryStatus(MemoryStatus* buffer)
       available > 0 ? available * 1024 : (free + cached + reclaimable + buffers) * 1024;
 }
 
+void TrimHeap()
+{
+#if defined(__GLIBC__)
+  malloc_trim(0);
+#endif
+}
 }
 }

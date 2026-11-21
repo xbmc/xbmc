@@ -48,5 +48,9 @@ void GetMemoryStatus(MemoryStatus* buffer)
   buffer->availPhys = (heapMax > heapUsed) ? (heapMax - heapUsed) : 0;
 }
 
+void TrimHeap()
+{
+}
+
 } // namespace MEMORY
 } // namespace KODI

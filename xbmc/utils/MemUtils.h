@@ -26,5 +26,8 @@ struct MemoryStatus
 void* AlignedMalloc(size_t s, size_t alignTo);
 void AlignedFree(void* p);
 void GetMemoryStatus(MemoryStatus* buffer);
+
+// Return the memory the allocator keeps after it's freed to the system, where it can
+void TrimHeap();
 }
 }
