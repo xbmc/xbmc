@@ -37,3 +37,15 @@
  
  static inline uint16_t Swap_(uint16_t value) {
      return
+@@ -2197,8 +2199,11 @@
+         }
+ 
+         uint64_t execs(0);
++#ifndef LDID_NOPLIST
++        // A main binary's entitlements need the DER blob, which needs libplist.
+         if (mach_header.Swap(mach_header->filetype) == MH_EXECUTE)
+             execs |= kSecCodeExecSegMainBinary;
++#endif
+ 
+         if (!baton.entitlements_.empty()) {
+             std::stringbuf data;
