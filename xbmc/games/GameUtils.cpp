@@ -27,6 +27,8 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
 #include "games/database/GameDatabase.h"
 #include "games/dialogs/GUIDialogSelectGameClient.h"
@@ -617,6 +619,6 @@ void CGameUtils::NotifyBlockedByHardcore(uint32_t featureStringId)
   // "Hardcore mode", "{0:s} is not available". The mode heads the toast so the
   // longest feature name still fits the notification's fixed width.
   CGUIDialogKaiToast::QueueNotification(
-      CGUIDialogKaiToast::Info, strings.Get(35700),
+      CServiceBroker::GetGameServices().GameSettings().GetRAUserPicUrl(), strings.Get(35700),
       StringUtils::Format(strings.Get(35305), strings.Get(featureStringId)), TOAST_DISPLAY_TIME_MS);
 }
