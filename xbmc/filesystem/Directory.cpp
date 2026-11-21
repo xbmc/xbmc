@@ -155,9 +155,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const std::
 
 bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHints &hints)
 {
-  CURL realURL = URIUtils::SubstitutePath(url);
-  std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
-  return CDirectory::GetDirectory(url, pDirectory, items, hints);
+  return CDirectory::GetDirectoryInternal(url, nullptr, items, hints);
 }
 
 bool CDirectory::GetDirectory(const CURL& url,
@@ -165,11 +163,20 @@ bool CDirectory::GetDirectory(const CURL& url,
                               CFileItemList& items,
                               const CHints& hints)
 {
+  if (!pDirectory)
+    return false;
+
+  return GetDirectoryInternal(url, pDirectory, items, hints);
+}
+
+bool CDirectory::GetDirectoryInternal(const CURL& url,
+                                      std::shared_ptr<IDirectory> pDirectory,
+                                      CFileItemList& items,
+                                      const CHints& hints)
+{
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    if (!pDirectory)
-      return false;
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(realURL, items,
@@ -181,6 +188,12 @@ bool CDirectory::GetDirectory(const CURL& url,
       // and (re)fetch the folder
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
         g_directoryCache.ClearDirectory(realURL);
+
+      if (!pDirectory)
+        pDirectory.reset(CDirectoryFactory::Create(realURL));
+
+      if (!pDirectory)
+        return false;
 
       pDirectory->SetFlags(hints.flags);
       items.SetURL(url);
@@ -255,31 +268,38 @@ bool CDirectory::GetDirectory(const CURL& url,
     }
 
     // now filter for allowed files
-    if (!pDirectory->AllowAll())
+    //! @todo find a way to filter cached items and no pDirectory provided without instantiating
+    //! a new IDirectory, to save the costly creation for some directory types (ex. rar)
+    //! For now avoid the creation for an empty mask, since IsAllowed always returns true for an empty mask.
+    if (!hints.mask.empty())
     {
-      pDirectory->SetMask(hints.mask);
-      for (int i = 0; i < items.Size(); ++i)
+      if (!pDirectory)
       {
-        CFileItemPtr item = items[i];
-        if (!item->IsFolder() && !pDirectory->IsAllowed(item->GetURL()))
+        pDirectory.reset(CDirectoryFactory::Create(realURL));
+
+        if (!pDirectory)
         {
-          items.Remove(i);
-          i--; // don't confuse loop
+          items.Clear();
+          return false;
         }
+      }
+
+      if (!pDirectory->AllowAll())
+      {
+        pDirectory->SetMask(hints.mask);
+        erase_if(items, [&pDirectory](const CFileItemPtr& item)
+                 { return !item->IsFolder() && !pDirectory->IsAllowed(item->GetURL()); });
       }
     }
+
     // filter hidden files
     //! @todo we shouldn't be checking the gui setting here, callers should use getHidden instead
-    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN) && !(hints.flags & DIR_FLAG_GET_HIDDEN))
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_FILELISTS_SHOWHIDDEN) &&
+        !(hints.flags & DIR_FLAG_GET_HIDDEN))
     {
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        if (items[i]->GetProperty("file:hidden").asBoolean())
-        {
-          items.Remove(i);
-          i--; // don't confuse loop
-        }
-      }
+      erase_if(items, [](const CFileItemPtr& item)
+               { return item->GetProperty("file::hidden").asBoolean(); });
     }
 
     //  Should any of the files we read be treated as a directory?
