@@ -35,7 +35,7 @@ bool CInputOperations::handleScreenSaver()
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
   appPower->ResetScreenSaver();
-  return appPower->WakeUpScreenSaverAndDPMS();
+  return appPower->WakeUpOnInput();
 }
 
 JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /* = true */, bool waitResult /* = false */)

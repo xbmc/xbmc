@@ -114,27 +114,41 @@ bool CApplicationPowerHandling::ToggleDPMS(bool manual)
 
 bool CApplicationPowerHandling::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
 {
+  return WakeUp(bPowerOffKeyPressed, false);
+}
+
+bool CApplicationPowerHandling::WakeUpOnInput(bool powerOffKeyPressed /* = false */)
+{
+  const bool wakeManualDPMS = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_POWERMANAGEMENT_WAKEMANUALDPMS);
+
+  return WakeUp(powerOffKeyPressed, wakeManualDPMS);
+}
+
+bool CApplicationPowerHandling::WakeUp(bool powerOffKeyPressed, bool wakeManualDPMS)
+{
   bool result = false;
 
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
-    if (m_dpmsIsManual)
+    if (m_dpmsIsManual && !wakeManualDPMS)
       return false;
+
     //! @todo if screensaver lock is specified but screensaver is not active
     //! (DPMS came first), activate screensaver now.
-    ToggleDPMS(false);
+    ToggleDPMS(m_dpmsIsManual);
     ResetScreenSaverTimer();
-    result = !m_screensaverActive || WakeUpScreenSaver(bPowerOffKeyPressed);
+    result = !m_screensaverActive || WakeUpScreenSaver(powerOffKeyPressed);
   }
   else if (m_screensaverActive)
-    result = WakeUpScreenSaver(bPowerOffKeyPressed);
+    result = WakeUpScreenSaver(powerOffKeyPressed);
 
   if (result)
   {
     // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
-    data["shuttingdown"] = bPowerOffKeyPressed;
+    data["shuttingdown"] = powerOffKeyPressed;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI,
                                                        "OnScreensaverDeactivated", data);
   }
