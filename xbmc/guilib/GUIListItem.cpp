@@ -15,6 +15,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <mutex>
 #include <utility>
 
 bool CGUIListItem::CaseInsensitiveCompare::operator()(const std::string_view& s1,
@@ -87,29 +88,42 @@ const std::wstring& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetArt(const std::string& type, std::string_view url)
 {
-  const auto i = m_art.find(type);
-  if (i == m_art.end() || i->second != url)
+  bool changed{false};
   {
-    m_art[type] = url;
-    SetInvalid();
+    std::unique_lock lock(m_artSection);
+    const auto i = m_art.find(type);
+    if (i == m_art.end() || i->second != url)
+    {
+      m_art[type] = url;
+      changed = true;
+    }
   }
+  if (changed)
+    SetInvalid();
 }
 
 void CGUIListItem::SetArt(const KODI::ART::Artwork& art)
 {
-  m_art = art;
+  {
+    std::unique_lock lock(m_artSection);
+    m_art = art;
+  }
   SetInvalid();
 }
 
 void CGUIListItem::SetArtFallback(const std::string& from, std::string_view to)
 {
+  std::unique_lock lock(m_artSection);
   m_artFallbacks[from] = to;
 }
 
 void CGUIListItem::ClearArt()
 {
-  m_art.clear();
-  m_artFallbacks.clear();
+  {
+    std::unique_lock lock(m_artSection);
+    m_art.clear();
+    m_artFallbacks.clear();
+  }
   SetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED, false);
 }
 
@@ -121,6 +135,8 @@ void CGUIListItem::AppendArt(const KODI::ART::Artwork& art, const std::string& p
 
 std::string CGUIListItem::GetArt(const std::string &type) const
 {
+  std::unique_lock lock(m_artSection);
+
   auto i = m_art.find(type);
   if (i != m_art.end())
     return i->second;
@@ -135,8 +151,9 @@ std::string CGUIListItem::GetArt(const std::string &type) const
   return "";
 }
 
-const KODI::ART::Artwork& CGUIListItem::GetArt() const
+KODI::ART::Artwork CGUIListItem::GetArt() const
 {
+  std::unique_lock lock(m_artSection);
   return m_art;
 }
 
@@ -203,8 +220,18 @@ CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
-  m_art = item.m_art;
-  m_artFallbacks = item.m_artFallbacks;
+  {
+    KODI::ART::Artwork art;
+    KODI::ART::Artwork artFallbacks;
+    {
+      std::unique_lock lock(item.m_artSection);
+      art = item.m_art;
+      artFallbacks = item.m_artFallbacks;
+    }
+    std::unique_lock lock(m_artSection);
+    m_art = std::move(art);
+    m_artFallbacks = std::move(artFallbacks);
+  }
   m_currentItem = item.m_currentItem;
   SetInvalid();
   return *this;
@@ -226,17 +253,20 @@ void CGUIListItem::Archive(CArchive &ar)
       ar << name;
       ar << value;
     }
-    ar << static_cast<int>(m_art.size());
-    for (const auto& [type, url] : m_art)
     {
-      ar << type;
-      ar << url;
-    }
-    ar << static_cast<int>(m_artFallbacks.size());
-    for (const auto& [type, url] : m_artFallbacks)
-    {
-      ar << type;
-      ar << url;
+      std::unique_lock lock(m_artSection);
+      ar << static_cast<int>(m_art.size());
+      for (const auto& [type, url] : m_art)
+      {
+        ar << type;
+        ar << url;
+      }
+      ar << static_cast<int>(m_artFallbacks.size());
+      for (const auto& [type, url] : m_artFallbacks)
+      {
+        ar << type;
+        ar << url;
+      }
     }
     ar << m_currentItem;
   }
@@ -263,22 +293,25 @@ void CGUIListItem::Archive(CArchive &ar)
       SetProperty(key, value);
     }
     ar >> mapSize;
-    for (int i = 0; i < mapSize; i++)
     {
-      std::string key;
-      std::string value;
-      ar >> key;
-      ar >> value;
-      m_art.try_emplace(key, value);
-    }
-    ar >> mapSize;
-    for (int i = 0; i < mapSize; i++)
-    {
-      std::string key;
-      std::string value;
-      ar >> key;
-      ar >> value;
-      m_artFallbacks.try_emplace(key, value);
+      std::unique_lock lock(m_artSection);
+      for (int i = 0; i < mapSize; i++)
+      {
+        std::string key;
+        std::string value;
+        ar >> key;
+        ar >> value;
+        m_art.try_emplace(key, value);
+      }
+      ar >> mapSize;
+      for (int i = 0; i < mapSize; i++)
+      {
+        std::string key;
+        std::string value;
+        ar >> key;
+        ar >> value;
+        m_artFallbacks.try_emplace(key, value);
+      }
     }
     ar >> m_currentItem;
     SetInvalid();
@@ -295,8 +328,11 @@ void CGUIListItem::Serialize(CVariant& value) const
   for (const auto& [propname, propvalue] : m_mapProperties)
     value["properties"][propname] = propvalue;
 
-  for (const auto& [type, url] : m_art)
-    value["art"][type] = url;
+  {
+    std::unique_lock lock(m_artSection);
+    for (const auto& [type, url] : m_art)
+      value["art"][type] = url;
+  }
 
   value["current"] = m_currentItem;
 }

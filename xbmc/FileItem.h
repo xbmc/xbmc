@@ -17,6 +17,7 @@
 #include "URL.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -246,14 +247,11 @@ public:
   bool SortsOnBottom() const { return m_specialSort == SortSpecial::BOTTOM; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
 
-  inline bool HasMusicInfoTag() const { return m_musicInfoTag != nullptr; }
+  bool HasMusicInfoTag() const;
 
   MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
 
-  inline const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const
-  {
-    return m_musicInfoTag;
-  }
+  const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const;
 
   bool HasVideoInfoTag() const;
 
@@ -366,24 +364,18 @@ public:
    */
   void SetEndOffset(const int64_t offset) { m_lEndOffset = offset; }
 
-  inline bool HasPictureInfoTag() const { return m_pictureInfoTag != nullptr; }
+  bool HasPictureInfoTag() const;
 
-  inline const CPictureInfoTag* GetPictureInfoTag() const
-  {
-    return m_pictureInfoTag;
-  }
+  const CPictureInfoTag* GetPictureInfoTag() const;
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
   inline std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
 
-  inline bool HasGameInfoTag() const { return m_gameInfoTag != nullptr; }
+  bool HasGameInfoTag() const;
 
   KODI::GAME::CGameInfoTag* GetGameInfoTag();
 
-  inline const KODI::GAME::CGameInfoTag* GetGameInfoTag() const
-  {
-    return m_gameInfoTag;
-  }
+  const KODI::GAME::CGameInfoTag* GetGameInfoTag() const;
 
   CPictureInfoTag* GetPictureInfoTag();
 
@@ -615,6 +607,10 @@ private:
   std::string m_mimetype;
   std::string m_extrainfo;
   bool m_doContentLookup{true};
+  //! Guards the info tag pointers, which loader threads create while
+  //! the GUI thread reads them
+  mutable CCriticalSection m_infoTagSection;
+
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag{nullptr};
   CVideoInfoTag* m_videoInfoTag{nullptr};
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
