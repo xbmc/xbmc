@@ -173,7 +173,7 @@ index 374bd5c151..0436370443 100755
  swresample_suggest="libm libsoxr stdatomic"
  swscale_deps="avutil"
 @@ -7992,7 +7997,7 @@ void (^block)(void);
- EOF
+ check_disable_warning_headers -Wno-unused-variable
  
  # add some linker flags
 -check_ldflags -Wl,-rpath-link=:libswresample:libswscale:libavfilter:libavdevice:libavformat:libavcodec:libavutil

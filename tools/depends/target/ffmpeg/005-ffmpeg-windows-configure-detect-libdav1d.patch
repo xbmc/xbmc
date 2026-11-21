@@ -8,13 +8,13 @@ Subject: [PATCH] ffmpeg: windows: configure: detect libdav1d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index 4b0ddd9b11..189a8d0b60 100755
+index f5e1fbb71b..d611507760 100755
 --- a/configure
 +++ b/configure
-@@ -7339,7 +7339,7 @@ enabled libbluray         && require_pkg_config libbluray libbluray libbluray/bl
- enabled libbs2b           && require_pkg_config libbs2b libbs2b bs2b.h bs2b_open
+@@ -7239,7 +7239,7 @@ enabled libbs2b           && require_pkg_config libbs2b libbs2b bs2b.h bs2b_open
  enabled libcaca           && require_pkg_config libcaca caca caca.h caca_create_canvas
  enabled libcodec2         && require libcodec2 codec2/codec2.h codec2_create -lcodec2
+ enabled libcurl           && check_pkg_config libcurl "libcurl >= 7.88.0" curl/curl.h curl_easy_init
 -enabled libdav1d          && require_pkg_config libdav1d "dav1d >= 1.0.0" "dav1d/dav1d.h" dav1d_version
 +enabled libdav1d          && require libdav1d dav1d/dav1d.h dav1d_version -llibdav1d
  enabled libdavs2          && require_pkg_config libdavs2 "davs2 >= 1.6.0" davs2.h davs2_decoder_open

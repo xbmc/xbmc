@@ -318,6 +318,17 @@ void ConvertToSRGB(
   cmsDoTransformLineStride(transform.get(), pixels, pixels, width, height, stride, stride, 0, 0);
 }
 #endif
+
+const AVStream* GetGroupStream(const AVStreamGroup* group, unsigned int idx)
+{
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(63, 10, 100)
+  if (idx >= group->nb_entries || group->entries[idx]->type != AV_STREAM_GROUP_ENTRY_STREAM)
+    return nullptr;
+  return group->entries[idx]->stream;
+#else
+  return idx < group->nb_streams ? group->streams[idx] : nullptr;
+#endif
+}
 } // namespace
 
 Frame::Frame(const Frame& src) :
@@ -765,10 +776,9 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
   // FFmpeg 7.x gives a tile's number here, not its stream's, so a tile used twice runs past them
   for (unsigned int i = 0; i < grid->nb_tiles; ++i)
   {
-    if (grid->offsets[i].idx >= m_tileGrid->nb_streams)
+    if (!GetGroupStream(m_tileGrid, grid->offsets[i].idx))
     {
-      CLog::LogF(LOGERROR, "Tile {} refers to stream {} of {}", i, grid->offsets[i].idx,
-                 m_tileGrid->nb_streams);
+      CLog::LogF(LOGERROR, "Tile {} refers to missing stream {}", i, grid->offsets[i].idx);
       return nullptr;
     }
   }
@@ -785,7 +795,7 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
     // a tile may be placed more than once
     for (unsigned int i = 0; !failed && i < grid->nb_tiles; ++i)
     {
-      const AVStream* stream = m_tileGrid->streams[grid->offsets[i].idx];
+      const AVStream* stream = GetGroupStream(m_tileGrid, grid->offsets[i].idx);
       if (stream->index != pkt->stream_index)
         continue;
 
@@ -827,9 +837,17 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
   }
 
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(61, 9, 100)
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(63, 10, 100)
+  const AVPacketSideData* gridSideData{m_tileGrid->coded_side_data};
+  const int gridSideDataCount{m_tileGrid->nb_coded_side_data};
+#else
+  const AVPacketSideData* gridSideData{grid->coded_side_data};
+  const int gridSideDataCount{grid->nb_coded_side_data};
+#endif
+
   // irot/imir of a grid apply to the grid, not its tiles
-  const AVPacketSideData* sideData{av_packet_side_data_get(
-      grid->coded_side_data, grid->nb_coded_side_data, AV_PKT_DATA_DISPLAYMATRIX)};
+  const AVPacketSideData* sideData{
+      av_packet_side_data_get(gridSideData, gridSideDataCount, AV_PKT_DATA_DISPLAYMATRIX)};
   AVFrameSideData* matrix{
       sideData ? av_frame_new_side_data(canvas, AV_FRAME_DATA_DISPLAYMATRIX, sideData->size)
                : nullptr};
@@ -837,8 +855,8 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
     std::memcpy(matrix->data, sideData->data, sideData->size);
 
   // the grid's own ICC profile describes the picture, so it wins over the tiles'
-  const AVPacketSideData* gridProfile{av_packet_side_data_get(
-      grid->coded_side_data, grid->nb_coded_side_data, AV_PKT_DATA_ICC_PROFILE)};
+  const AVPacketSideData* gridProfile{
+      av_packet_side_data_get(gridSideData, gridSideDataCount, AV_PKT_DATA_ICC_PROFILE)};
   if (gridProfile)
   {
     av_frame_remove_side_data(canvas, AV_FRAME_DATA_ICC_PROFILE);
