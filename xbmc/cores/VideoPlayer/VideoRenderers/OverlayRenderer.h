@@ -269,5 +269,8 @@ namespace OVERLAY {
     // Whether last frame had libass output. detect_change cannot report an
     // overlay that is no longer added at all, e.g. once subtitles are hidden.
     bool m_prevHadLibassImages{false};
+    // The image/SPU overlays of the last prepared frame. A disc menu can drop some of its
+    // images and keep the others, which adds no new overlay.
+    std::vector<const CDVDOverlay*> m_prevImageSpu;
   };
 }
