@@ -216,12 +216,6 @@ bool CWinSystemAndroidGLESContext::CreateSurface()
   return true;
 }
 
-bool CWinSystemAndroidGLESContext::IsHDRDisplay()
-{
-  return m_hasHDRConfig && (m_hasEGL_BT2020_PQ_Colorspace_Extension || m_hasEGL_ST2086_Extension) &&
-         CWinSystemAndroid::IsHDRDisplay();
-}
-
 bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 {
   if (!CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
