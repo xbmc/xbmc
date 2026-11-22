@@ -12,7 +12,7 @@ mergeable:
           regex: "^v|Infrastructure"
           message: "At least version label must be set"
         must_exclude:
-          regex: "^(Don't merge|On hold|No Jenkins|RFC|WIP)$"
+          regex: "^(Don't merge|On hold|Jenkins: Ignore|RFC|WIP)$"
       - do: title
         must_exclude:
           regex: '\[(RFC|WIP)\]'
