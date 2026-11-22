@@ -33,6 +33,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cstring>
 #include <memory>
 #include <mutex>
@@ -553,7 +554,12 @@ void CReversiblePlayback::FrameEvent()
       if (m_runaheadHeld)
         RunHeldFrame();
       else
+      {
+        const auto start = std::chrono::steady_clock::now();
         runaheadState = RunaheadFrame(runaheadFrames);
+        if (runaheadState != nullptr)
+          CheckRunaheadSpeed(std::chrono::steady_clock::now() - start);
+      }
       if (m_restoreFailed)
         return;
     }
@@ -576,10 +582,13 @@ unsigned int CReversiblePlayback::PrepareRunahead()
     m_runaheadStatus = RunaheadStatus::Ready;
     m_runaheadRestoreChecked = false;
     m_runaheadHeld = false;
+    m_runaheadCost = {};
+    m_runaheadCostFrames = 0;
   }
 
   const unsigned int frames = m_runaheadFrames;
-  if (frames == 0 || m_runaheadStatus == RunaheadStatus::Failed || m_gameLoop.GetSpeed() != 1.0)
+  if (frames == 0 || m_runaheadStatus == RunaheadStatus::Failed ||
+      m_runaheadStatus == RunaheadStatus::TooSlow || m_gameLoop.GetSpeed() != 1.0)
   {
     if (frames == 0 && !m_runaheadState.empty())
       m_runaheadState = {};
@@ -726,6 +735,39 @@ const uint8_t* CReversiblePlayback::RunaheadFrame(unsigned int frames)
   }
 
   return m_runaheadState.data();
+}
+
+void CReversiblePlayback::CheckRunaheadSpeed(std::chrono::steady_clock::duration cost)
+{
+  // Frames are held to the frame rate they ran at
+  const double frameRate = m_gameClient->GetFrameRate();
+  if (frameRate != m_runaheadCostFrameRate)
+  {
+    m_runaheadCost = {};
+    m_runaheadCostFrames = 0;
+    m_runaheadCostFrameRate = frameRate;
+  }
+
+  m_runaheadCost += cost;
+  ++m_runaheadCostFrames;
+  if (m_runaheadCost < std::chrono::seconds(1))
+    return;
+
+  const double averageMs =
+      std::chrono::duration<double, std::milli>(m_runaheadCost).count() / m_runaheadCostFrames;
+  m_runaheadCost = {};
+  m_runaheadCostFrames = 0;
+
+  // A client that can't run the frames ahead in the time a frame lasts runs the
+  // game below full speed, which is worse than the lag run-ahead removes
+  if (frameRate <= 0.0 || averageMs <= 1000.0 / frameRate)
+    return;
+
+  m_runaheadStatus = RunaheadStatus::TooSlow;
+  CLog::Log(LOGINFO,
+            "RetroPlayer[SAVE]: Run-ahead held off: {} takes {:.1f} ms a frame with it, more than "
+            "the {:.1f} ms a frame lasts",
+            m_gameClient->ID(), averageMs, 1000.0 / frameRate);
 }
 
 void CReversiblePlayback::RunHeldFrame()
