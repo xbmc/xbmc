@@ -107,6 +107,15 @@ TEST_F(TestGUIFontTTF, MissingSymbolUsesFallback)
   EXPECT_EQ(glyphs[0].m_fontFace, FontFace::Symbols);
 }
 
+TEST_F(TestGUIFontTTF, MissingLetterUsesTextFallback)
+{
+  // Arabic letter alef, which Noto Sans has no glyph for
+  const auto glyphs = m_font->GetHarfBuzzShapedGlyphs(vecText{0x0627});
+  ASSERT_EQ(glyphs.size(), 1u);
+  EXPECT_NE(glyphs[0].m_glyphInfo.codepoint, 0u);
+  EXPECT_EQ(glyphs[0].m_fontFace, FontFace::Text);
+}
+
 TEST_F(TestGUIFontTTF, SymbolInCaptionKeepsTextClusters)
 {
   const std::u32string caption = U"8 Badges [👁️121/251] [◓145/251] [🅰26/26]";
@@ -183,17 +192,17 @@ TEST_F(TestGUIFontTTF, CacheSeparatesEqualGlyphIndicesFromDifferentFaces)
   const auto glyphs = m_font->GetHarfBuzzShapedGlyphs(vecText{SYMBOL});
   ASSERT_EQ(glyphs.size(), 1u);
   const FT_UInt glyphIndex = glyphs[0].m_glyphInfo.codepoint;
-  const std::array faces{FontFace::Primary, FontFace::Symbols, FontFace::Emoji};
-  std::array<character_t, 3> keys{};
+  const std::array faces{FontFace::Primary, FontFace::Symbols, FontFace::Emoji, FontFace::Text};
+  std::array<character_t, 4> keys{};
   for (size_t i = 0; i < faces.size(); ++i)
   {
     const auto* character = m_font->GetCharacter(SYMBOL, glyphIndex, faces[i]);
     ASSERT_NE(character, nullptr);
     keys[i] = character->m_glyphAndStyle;
   }
-  EXPECT_NE(keys[0], keys[1]);
-  EXPECT_NE(keys[0], keys[2]);
-  EXPECT_NE(keys[1], keys[2]);
+  for (size_t i = 0; i < keys.size(); ++i)
+    for (size_t j = i + 1; j < keys.size(); ++j)
+      EXPECT_NE(keys[i], keys[j]);
   for (size_t i = 0; i < faces.size(); ++i)
   {
     const auto* character = m_font->GetCharacter(SYMBOL, glyphIndex, faces[i]);
