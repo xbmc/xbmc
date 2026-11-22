@@ -30,6 +30,10 @@ int WaylandToXbmcButton(std::uint32_t button)
       return XBMC_BUTTON_MIDDLE;
     case BTN_RIGHT:
       return XBMC_BUTTON_RIGHT;
+    case BTN_SIDE:
+      return XBMC_BUTTON_X1;
+    case BTN_EXTRA:
+      return XBMC_BUTTON_X2;
     default:
       return -1;
   }
