@@ -228,6 +228,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_duration_written = 0;
   m_headPos = 0;
   m_stuckCounter = 0;
+  m_stuckIndicator = false;
   m_headPosOld = 0;
   m_timestampPos = 0;
   m_sink_sampleRate = 0;
@@ -628,6 +629,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_hw_delay = 0.0;
   m_pause_ms = 0.0;
   m_stuckCounter = 0;
+  m_stuckIndicator = false;
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
@@ -659,14 +661,20 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // clear lower 32 bit values, e.g. 0x0001 FFFF FFFF -> 0x0001 0000 0000
   // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
   m_headPos = (m_headPos & UINT64_UPPER_BYTES) | (uint64_t)head_pos;
-  // check if sink is stuck
+  // check if sink is stuck. This workaround assumes a
+  // 1:1 Relationship between AddPacket and GetDelay
+  // Don't report false stucks when nothing was added
   if (m_headPos == m_headPosOld)
-    m_stuckCounter++;
+  {
+    if (m_stuckIndicator)
+      m_stuckCounter++;
+  }
   else
   {
     m_stuckCounter = 0;
     m_headPosOld = m_headPos;
   }
+  m_stuckIndicator = false;
 
   double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
 
@@ -895,6 +903,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 
     if (m_superviseAudioDelay)
     {
+      // a Packet was added that should move the sink
+      m_stuckIndicator = true;
       if (m_stuckCounter * stime_ms > max_stuck_delay_ms)
       {
         CLog::Log(LOGERROR, "Sink got stuck with {:f} ms - ask AE for reopening",
@@ -1119,6 +1129,7 @@ void CAESinkAUDIOTRACK::Flush()
   m_timestampPos = 0;
   m_timestampValid = false;
   m_stuckCounter = 0;
+  m_stuckIndicator = false;
   m_pause_ms = 0.0;
   m_delay = 0.0;
   m_hw_delay = 0.0;
@@ -1144,6 +1155,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_duration_written = 0;
   m_headPos = 0;
   m_stuckCounter = 0;
+  m_stuckIndicator = false;
   m_timestampPos = 0;
   m_timestampValid = false;
   m_linearmovingaverage.clear();
