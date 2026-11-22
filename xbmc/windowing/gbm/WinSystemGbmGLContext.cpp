@@ -211,10 +211,13 @@ bool CWinSystemGbmGLContext::CreateContext()
 
 bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
 {
+  // A skipped GUI walk shows the GUI as composited for the old transfer
+  if (colorTransfer != m_guiColorTransfer)
+  {
+    if (CGUIComponent* gui = CServiceBroker::GetGUI())
+      gui->GetWindowManager().MarkDirty();
+  }
   m_guiColorTransfer = colorTransfer;
-  // TODO: add CreateLUTs(colorTransfer) support to GL composite shader to match
-  // GLES (WinSystemGbmGLESContext). Currently GL only handles PQ via pow shader;
-  // HLG and LUT-based PQ are not yet implemented.
   m_guiCompositing = (colorTransfer != 0);
 
   if (m_guiCompositing)
@@ -231,7 +234,15 @@ bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
         CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to compile GUI composite shader");
         m_compositeShader.reset();
         m_guiCompositing = false;
+        return false;
       }
+    }
+
+    if (!m_compositeShader->SetColorTransfer(colorTransfer))
+    {
+      m_compositeShader.reset();
+      m_guiCompositing = false;
+      return false;
     }
   }
   else
