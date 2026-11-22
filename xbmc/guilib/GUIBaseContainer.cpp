@@ -257,25 +257,29 @@ void CGUIBaseContainer::ProcessItem(float posX,
 
   if (m_bInvalidated)
     item->SetInvalid();
+
+  const auto processLayout = [&](CGUIListItemLayout& layout, CGUIListItemLayout* other)
+  {
+    if (other && other->IsShown())
+    {
+      // the layouts don't mark the switch between them as dirty, and the regions of the layout
+      // shown now are from its last use, possibly at another position
+      dirtyregions.emplace_back(other->GetRenderRegion());
+      other->SetShown(false);
+      CDirtyRegionList outdatedRegions;
+      layout.Process(item.get(), m_parentID, currentTime, outdatedRegions);
+      dirtyregions.emplace_back(layout.GetRenderRegion());
+    }
+    else
+      layout.Process(item.get(), m_parentID, currentTime, dirtyregions);
+    layout.SetShown(true);
+  };
+
   if (focused)
   {
     if (!item->GetFocusedLayout())
     {
       item->SetFocusedLayout(std::make_unique<CGUIListItemLayout>(*m_focusedLayout, this));
-    }
-    if (item != m_lastItem)
-    {
-      // the layouts don't mark the switch between them as dirty
-      const auto addLayoutRegions = [&dirtyregions](CGUIListItem& listItem)
-      {
-        if (listItem.GetLayout())
-          dirtyregions.emplace_back(listItem.GetLayout()->GetRenderRegion());
-        if (listItem.GetFocusedLayout())
-          dirtyregions.emplace_back(listItem.GetFocusedLayout()->GetRenderRegion());
-      };
-      addLayoutRegions(*item);
-      if (m_lastItem)
-        addLayoutRegions(*m_lastItem);
     }
     if (item->GetFocusedLayout())
     {
@@ -291,7 +295,7 @@ void CGUIBaseContainer::ProcessItem(float posX,
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
+      processLayout(*item->GetFocusedLayout(), item->GetLayout());
     }
     m_lastItem = item;
   }
@@ -304,10 +308,22 @@ void CGUIBaseContainer::ProcessItem(float posX,
       auto layout = std::make_unique<CGUIListItemLayout>(*m_layout, this);
       item->SetLayout(std::move(layout));
     }
-    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
+    // the focused layout is shown until its unfocus animation ended
+    const auto unfocusing = [&item] {
+      return item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS);
+    };
+    if (unfocusing())
       item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
     if (item->GetLayout())
-      item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
+    {
+      if (unfocusing())
+      {
+        CDirtyRegionList hiddenRegions;
+        item->GetLayout()->Process(item.get(), m_parentID, currentTime, hiddenRegions);
+      }
+      else
+        processLayout(*item->GetLayout(), item->GetFocusedLayout());
+    }
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();

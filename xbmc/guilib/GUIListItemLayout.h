@@ -31,6 +31,8 @@ public:
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
   const CRect& GetRenderRegion() const { return m_group.GetRenderRegion(); }
+  bool IsShown() const { return m_shown; }
+  void SetShown(bool shown) { m_shown = shown; }
   unsigned int GetFocusedItem() const;
   void SetFocusedItem(unsigned int focus);
   bool IsAnimating(ANIMATION_TYPE animType);
@@ -66,6 +68,7 @@ protected:
   float m_width{0};
   float m_height{0};
   bool m_focused{false};
+  bool m_shown{false};
   std::atomic_bool m_invalidated{true};
   CGUIControl* m_sizeChangeOwner{nullptr};
 
