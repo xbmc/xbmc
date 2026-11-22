@@ -21,7 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"
@@ -233,7 +233,7 @@ protected:
   void SetUp() override
   {
     ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-        g_langInfo.GetLanguagePath(), LANGUAGE_DEFAULT));
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), LANGUAGE_DEFAULT));
   }
 
   void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }

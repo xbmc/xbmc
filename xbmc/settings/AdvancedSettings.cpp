@@ -12,7 +12,7 @@
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "language/i18n/LanguageTable.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
@@ -23,7 +23,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileUtils.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -35,6 +34,7 @@
 #include <climits>
 #include <regex>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace ADDON;
@@ -70,6 +70,30 @@ void LoadLanguageCodes(const TiXmlElement* element)
   }
 
   KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Declare(languages);
+}
+
+/*!
+ * \brief Take the words a <sorttokens> block asks a sort to step over.
+ * \param[in] element The block, or nullptr when the file has none.
+ * \param[out] tokens The words, each stored once per separator it may be followed by.
+ */
+void LoadSortTokens(const TiXmlNode* element, KODI::LANGUAGE::CLanguage::Tokens& tokens)
+{
+  if (element == nullptr || element->NoChildren())
+    return;
+
+  for (const TiXmlElement* token = element->FirstChildElement("token"); token != nullptr;
+       token = token->NextSiblingElement())
+  {
+    if (token->FirstChild() == nullptr)
+      continue;
+
+    const char* separators = token->Attribute("separators");
+    KODI::LANGUAGE::CLanguage::AddSortToken(
+        tokens, token->FirstChild()->ValueStr(),
+        separators != nullptr ? std::string_view{separators}
+                              : KODI::LANGUAGE::CLanguage::DEFAULT_SORT_TOKEN_SEPARATORS);
+  }
 }
 
 bool ValidateVideoStackRegex(const CRegExp& regex)
@@ -1163,12 +1187,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pExts)
     GetCustomExtensions(pExts, m_discStubExtensions);
 
-  m_vecTokens.clear();
-  CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"), m_vecTokens);
+  KODI::LANGUAGE::CLanguage::Tokens sortTokens;
+  LoadSortTokens(pRootElement->FirstChild("sorttokens"), sortTokens);
+  KODI::LANGUAGE::CLanguage::GetInstance().DeclareSortTokens(std::move(sortTokens));
 
   std::string tmp;
 
-  CLangCodeExpander::LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
   LoadLanguageCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // trailer matching regexps

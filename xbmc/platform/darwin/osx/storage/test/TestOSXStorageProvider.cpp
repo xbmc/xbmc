@@ -7,7 +7,7 @@
  */
 
 #include "ServiceBroker.h"
-#include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 
@@ -30,7 +30,7 @@ protected:
     ASSERT_NE(nullptr, home);
     m_home = home;
     ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
     COSXStorageProvider provider;
     provider.GetLocalDrives(m_drives);
   }

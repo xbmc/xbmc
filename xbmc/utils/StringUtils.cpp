@@ -33,6 +33,9 @@
 #include "StringUtils.h"
 #include "XBDateTime.h"
 #include "language/LangInfo.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
+#include "language/i18n/Collation.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
@@ -980,55 +983,6 @@ static const uint16_t* const planemap[256] = {
 };
 // clang-format on
 
-wchar_t StringUtils::GetNordicCollationWeight(std::string_view languageCode,
-                                              wchar_t codepoint) noexcept
-{
-  if (languageCode == "nor" || languageCode == "nob" || languageCode == "nno" ||
-      languageCode == "dan")
-  {
-    // Norwegian/Danish alphabet order: ... x y z æ ø å
-    // ä sorts with æ and ö sorts with ø, so imported Swedish/Finnish names keep their
-    // Nordic end-of-alphabet position instead of folding to a/o
-    switch (codepoint)
-    {
-      case 0x00C6:
-      case 0x00E6: // Æ / æ
-      case 0x00C4:
-      case 0x00E4: // Ä / ä
-        return L'z' + 1;
-      case 0x00D8:
-      case 0x00F8: // Ø / ø
-      case 0x00D6:
-      case 0x00F6: // Ö / ö
-        return L'z' + 2;
-      case 0x00C5:
-      case 0x00E5: // Å / å
-        return L'z' + 3;
-      default:
-        return 0;
-    }
-  }
-  if (languageCode == "swe" || languageCode == "fin")
-  {
-    // Swedish/Finnish alphabet order: ... x y z å ä ö
-    switch (codepoint)
-    {
-      case 0x00C5:
-      case 0x00E5: // Å / å
-        return L'z' + 1;
-      case 0x00C4:
-      case 0x00E4: // Ä / ä
-        return L'z' + 2;
-      case 0x00D6:
-      case 0x00F6: // Ö / ö
-        return L'z' + 3;
-      default:
-        return 0;
-    }
-  }
-  return 0;
-}
-
 namespace
 {
 // True when the accent-folding fallback is in use to mirror the utf8_general_ci ordering
@@ -1051,7 +1005,7 @@ static bool CollationMirrorsMySql()
 static wchar_t GetCollationWeight(const wchar_t& r)
 {
   // Nordic languages order some accented vowels as distinct letters at the end of their
-  // alphabet rather than as accented variants of a/o (see StringUtils::GetNordicCollationWeight).
+  // alphabet rather than as accented variants of a/o (see I18N::NordicCollationWeight).
   // Apply that override, when applicable, ahead of the generic accent-folding table below.
   //
   //! @todo: This is a temporary workaround for the lack of language-specific collation facets
@@ -1060,8 +1014,8 @@ static wchar_t GetCollationWeight(const wchar_t& r)
   //! longer needed.
   if (!CollationMirrorsMySql())
   {
-    const wchar_t nordicWeight = StringUtils::GetNordicCollationWeight(
-        g_langInfo.GetLanguageAs(CLangCodeExpander::ISO_639_2, false), r);
+    const wchar_t nordicWeight = KODI::LANGUAGE::I18N::NordicCollationWeight(
+        KODI::LANGUAGE::CLanguage::GetInstance().UI(), r);
     if (nordicWeight != 0)
       return nordicWeight;
   }

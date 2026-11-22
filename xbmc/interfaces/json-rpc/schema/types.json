@@ -4958,7 +4958,7 @@
       "language": {
         "type": "string",
         "minLength": 1,
-        "description": "Current language code and region e.g. en_GB"
+        "description": "The interface language as a BCP 47 language tag e.g. en-GB"
       }
     }
   },

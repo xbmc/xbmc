@@ -1,4 +1,5 @@
 set(SOURCES TestLangInfo.cpp
+            TestLanguage.cpp
             TestLanguageTag.cpp
             TestTerritory.cpp)
 

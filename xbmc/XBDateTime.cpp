@@ -1283,8 +1283,8 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
   GetAsSystemTime(dateTime);
 
   // Prefetch meridiem symbol
-  const std::string& strMeridiem = CLangInfo::MeridiemSymbolToString(
-      dateTime.hour > 11 ? MeridiemSymbol::PM : MeridiemSymbol::AM);
+  const std::string& strMeridiem = KODI::LANGUAGE::CLangInfo::MeridiemSymbolToString(
+      dateTime.hour > 11 ? KODI::LANGUAGE::MeridiemSymbol::PM : KODI::LANGUAGE::MeridiemSymbol::AM);
 
   size_t length = strFormat.size();
   for (size_t i=0; i < length; ++i)

@@ -1,4 +1,5 @@
 set(SOURCES Bcp47.cpp
+            Collation.cpp
             Bcp47Formatter.cpp
             Bcp47Parser.cpp
             Iso3166_1.cpp
@@ -7,6 +8,7 @@ set(SOURCES Bcp47.cpp
             ListFormatter.cpp)
 
 set(HEADERS Bcp47.h
+            Collation.h
             Bcp47Common.h
             Bcp47Formatter.h
             Bcp47Parser.h

@@ -33,14 +33,14 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
 #include "jobs/Job.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/ItemProperties.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -374,25 +374,44 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   if (g_application.CurrentFileItem().IsStack())
     url.SetOption("stack", "1");
 
-  std::string preferredLanguage = settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
+  // Passed to the subtitle service addon as a url option: it must stay unlocalized, and must name
+  // the language alone, as addons match on names such as "English", never on qualified names such
+  // as "English (Australia)"
+  const KODI::LANGUAGE::CLanguagePreference& preference{
+      KODI::LANGUAGE::CLanguage::GetInstance().SubtitlePreference()};
+  std::string preferredLanguage;
 
-  if (StringUtils::EqualsNoCase(preferredLanguage, KODI::LANGINFO::subLanguageOriginal))
+  switch (preference.GetKind())
   {
-    AudioStreamInfo info;
+    case KODI::LANGUAGE::CLanguagePreference::Kind::Language:
+      preferredLanguage = preference.GetLanguage().ToEnglishLanguageName();
+      break;
 
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    appPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
+    case KODI::LANGUAGE::CLanguagePreference::Kind::FollowUI:
+      preferredLanguage = KODI::LANGUAGE::CLanguage::GetInstance().UI().ToEnglishLanguageName();
+      break;
 
-    // Passed to the subtitle service addon as a url option: it must stay unlocalized, and must
-    // name the language alone, as addons match on names such as "English", never on qualified
-    // names such as "English (Australia)"
-    preferredLanguage = info.language.ToEnglishLanguageName();
-    if (preferredLanguage.empty())
-      preferredLanguage = "Unknown";
+    case KODI::LANGUAGE::CLanguagePreference::Kind::Original:
+    {
+      AudioStreamInfo info;
+
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      appPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
+
+      preferredLanguage = info.language.ToEnglishLanguageName();
+      if (preferredLanguage.empty())
+        preferredLanguage = "Unknown";
+      break;
+    }
+
+    case KODI::LANGUAGE::CLanguagePreference::Kind::Off:
+    case KODI::LANGUAGE::CLanguagePreference::Kind::ForcedOnly:
+    case KODI::LANGUAGE::CLanguagePreference::Kind::MediaDefault:
+      // Answered by a stream flag, or by wanting no subtitles at all. There is no language for a
+      // service to search on, and the setting's own text is not one.
+      break;
   }
-  else if (StringUtils::EqualsNoCase(preferredLanguage, KODI::LANGINFO::subLanguageDefault))
-    preferredLanguage = g_langInfo.GetEnglishLanguageName();
 
   url.SetOption("preferredlanguage", preferredLanguage);
 
@@ -609,10 +628,11 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   if (strDestPath.empty())
     strDestPath = strDownloadPath;
 
-  // Extract the language and appropriate extension
-  std::string strSubLang;
-  CLangCodeExpander::ConvertToISO6391(language, strSubLang);
-  const std::string langSuffix{strSubLang.empty() ? "" : "." + strSubLang};
+  // The suffix Kodi's own external subtitle scan reads back, and that scan tokenizes a filename
+  // on " .-" - a hyphen separates there, so a tag naming a region cannot survive the round
+  // trip: movie.pt-BR.srt would be read as Breton. A bare ISO 639-1 code is what fits.
+  const std::string subLang{KODI::LANGUAGE::CLanguageTag::Parse(language).AsIso6391()};
+  const std::string langSuffix{subLang.empty() ? "" : "." + subLang};
 
   // Iterate over all items to transfer
   for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)

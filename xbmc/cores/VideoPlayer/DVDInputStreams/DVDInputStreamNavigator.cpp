@@ -11,7 +11,7 @@
 #include "../DVDDemuxSPU.h"
 #include "ServiceBroker.h"
 #include "filesystem/IFileTypes.h"
-#include "language/LangInfo.h"
+#include "language/Language.h"
 #if defined(TARGET_WINDOWS_STORE)
 #include "filesystem/SpecialProtocol.h"
 #endif
@@ -213,17 +213,18 @@ bool CDVDInputStreamNavigator::Open()
 
   // get default language settings
   char language_menu[3];
-  strncpy(language_menu, g_langInfo.GetDVDMenuLanguage().AsIso6391().c_str(),
+  strncpy(language_menu, KODI::LANGUAGE::CLanguage::GetInstance().UI().AsIso6391().c_str(),
           sizeof(language_menu) - 1);
   language_menu[2] = '\0';
 
   char language_audio[3];
-  strncpy(language_audio, g_langInfo.GetDVDAudioLanguage().AsIso6391().c_str(),
+  strncpy(language_audio, KODI::LANGUAGE::CLanguage::GetInstance().Audio().AsIso6391().c_str(),
           sizeof(language_audio) - 1);
   language_audio[2] = '\0';
 
   char language_subtitle[3];
-  strncpy(language_subtitle, g_langInfo.GetDVDSubtitleLanguage().AsIso6391().c_str(),
+  strncpy(language_subtitle,
+          KODI::LANGUAGE::CLanguage::GetInstance().Subtitle().AsIso6391().c_str(),
           sizeof(language_subtitle) - 1);
   language_subtitle[2] = '\0';
 

@@ -19,6 +19,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "input/keyboard/KeyboardLayoutManager.h"
 #include "language/LangInfo.h"
+#include "language/LanguageLoader.h"
 #include "network/WakeOnAccess.h"
 #include "network/upnp/UPnPSettings.h"
 
@@ -373,6 +374,8 @@ void CSettings::InitializeDefaults()
 
 void CSettings::InitializeOptionFillers()
 {
+  using KODI::LANGUAGE::CLangInfo;
+
   // register setting option fillers
 #ifdef HAS_OPTICAL_DRIVE
   GetSettingsManager()->RegisterSettingOptionsFiller(
@@ -384,7 +387,6 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(
       "subtitlesfonts", SUBTITLES::CSubtitlesSettings::SettingOptionsSubtitleFontsFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);
 
@@ -432,10 +434,15 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("cmsgammamodes", CDisplaySettings::SettingOptionsCmsGammaModesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("videoseeksteps", CSeekHandler::SettingOptionsSeekStepsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("startupwindows", ADDON::CSkinInfo::SettingOptionsStartupWindowsFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamlanguages", CLangInfo::SettingOptionsAudioStreamLanguagesFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("subtitlestreamlanguages", CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("subtitledownloadlanguages", CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("iso6391languages", CLangInfo::SettingOptionsISO6391LanguagesFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "audiostreamlanguages",
+      KODI::LANGUAGE::CLanguageLoader::SettingOptionsAudioStreamLanguagesFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "subtitlestreamlanguages",
+      KODI::LANGUAGE::CLanguageLoader::SettingOptionsSubtitleStreamLanguagesFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "subtitledownloadlanguages",
+      KODI::LANGUAGE::CLanguageLoader::SettingOptionsSubtitleDownloadlanguagesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
@@ -472,7 +479,6 @@ void CSettings::UninitializeOptionFillers()
   GetSettingsManager()->UnregisterSettingOptionsFiller("fontheights");
   GetSettingsManager()->UnregisterSettingOptionsFiller("fonts");
   GetSettingsManager()->UnregisterSettingOptionsFiller("subtitlesfonts");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("languagenames");
   GetSettingsManager()->UnregisterSettingOptionsFiller("refreshchangedelays");
   GetSettingsManager()->UnregisterSettingOptionsFiller("refreshrates");
   GetSettingsManager()->UnregisterSettingOptionsFiller("regions");
@@ -499,7 +505,6 @@ void CSettings::UninitializeOptionFillers()
   GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamlanguages");
   GetSettingsManager()->UnregisterSettingOptionsFiller("subtitlestreamlanguages");
   GetSettingsManager()->UnregisterSettingOptionsFiller("subtitledownloadlanguages");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("iso6391languages");
   GetSettingsManager()->UnregisterSettingOptionsFiller("skincolors");
   GetSettingsManager()->UnregisterSettingOptionsFiller("skinfonts");
   GetSettingsManager()->UnregisterSettingOptionsFiller("skinthemes");
@@ -619,13 +624,17 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&g_charsetConverter, {CSettings::SETTING_SUBTITLES_CHARSET,
                                                                CSettings::SETTING_LOCALE_CHARSET});
 
+  GetSettingsManager()->RegisterCallback(&KODI::LANGUAGE::CLanguageLoader::GetInstance(),
+                                         {CSettings::SETTING_LOCALE_LANGUAGE,
+                                          CSettings::SETTING_LOCALE_AUDIOLANGUAGE,
+                                          CSettings::SETTING_LOCALE_SUBTITLELANGUAGE});
+
   GetSettingsManager()->RegisterCallback(
       &g_langInfo,
-      {CSettings::SETTING_LOCALE_AUDIOLANGUAGE, CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,
-       CSettings::SETTING_LOCALE_LANGUAGE, CSettings::SETTING_LOCALE_COUNTRY,
-       CSettings::SETTING_LOCALE_SHORTDATEFORMAT, CSettings::SETTING_LOCALE_LONGDATEFORMAT,
-       CSettings::SETTING_LOCALE_TIMEFORMAT, CSettings::SETTING_LOCALE_USE24HOURCLOCK,
-       CSettings::SETTING_LOCALE_TEMPERATUREUNIT, CSettings::SETTING_LOCALE_SPEEDUNIT});
+      {CSettings::SETTING_LOCALE_COUNTRY, CSettings::SETTING_LOCALE_SHORTDATEFORMAT,
+       CSettings::SETTING_LOCALE_LONGDATEFORMAT, CSettings::SETTING_LOCALE_TIMEFORMAT,
+       CSettings::SETTING_LOCALE_USE24HOURCLOCK, CSettings::SETTING_LOCALE_TEMPERATUREUNIT,
+       CSettings::SETTING_LOCALE_SPEEDUNIT});
 
   GetSettingsManager()->RegisterCallback(&g_passwordManager,
                                          {CSettings::SETTING_MASTERLOCK_LOCKCODE});
@@ -661,6 +670,7 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
+  GetSettingsManager()->UnregisterCallback(&KODI::LANGUAGE::CLanguageLoader::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "language/LangInfo.h"
 #include "media/MediaSection.h"
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
@@ -319,8 +318,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_parseBlurayProjectFile{true};
     bool m_bNoRemoteArtWithLocalScraper{false};
     bool m_ignoreFolderNamesInArchives{true};
-
-    CLangInfo::Tokens m_vecTokens;
 
     int m_iEpgUpdateCheckInterval;  // seconds
     int m_iEpgCleanupInterval;      // seconds

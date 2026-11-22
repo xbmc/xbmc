@@ -10,9 +10,9 @@
 
 #include "AddonString.h"
 #include "Tuple.h"
-
-#include "utils/LangCodeExpander.h"
+#include "language/LanguageTag.h"
 #include "swighelper.h"
+
 #include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -338,7 +338,8 @@ namespace XBMCAddon
     ///
     getLanguage(...);
 #else
-    String getLanguage(int format = CLangCodeExpander::ENGLISH_NAME, bool region = false);
+    String getLanguage(int format = KODI::LANGUAGE::CLanguageTag::ENGLISH_NAME,
+                       bool region = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
