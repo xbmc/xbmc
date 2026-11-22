@@ -116,9 +116,13 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_format = AV_PIX_FMT_NONE;
 
   std::tie(m_useDithering, m_ditherDepth) = CServiceBroker::GetWinSystem()->GetDitherSettings();
-  // TODO: GL does not support Auto dithering yet; treat as 8-bit (previous default)
+  // As on GLES, an SDR display is taken to show 8 bits whatever the framebuffer depth
   if (m_ditherDepth == 0)
-    m_ditherDepth = 8;
+  {
+    m_ditherDepth = CServiceBroker::GetWinSystem()->IsHDRDisplay()
+                        ? CServiceBroker::GetWinSystem()->GetOutputBitDepth()
+                        : 8;
+  }
 
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
