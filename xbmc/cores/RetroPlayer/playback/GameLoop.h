@@ -124,6 +124,8 @@ private:
   CEvent m_sleepEvent;
   CDisplayPacing::Clock::time_point m_lastPacedTake{};
   CDisplayPacing::Clock::duration m_frameCost{};
+  //! When a frame last didn't fit in the time it's shown for
+  CDisplayPacing::Clock::time_point m_lastSlowFrame{};
   PacingState m_pacingState{PacingState::UNKNOWN};
   std::atomic<bool> m_quiesceRequested{false};
   CEvent m_quiescedEvent{true};
