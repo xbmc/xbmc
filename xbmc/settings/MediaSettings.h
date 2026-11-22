@@ -16,6 +16,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <vector>
@@ -146,7 +147,7 @@ private:
   bool m_videoPlaylistShuffle{false};
 
   bool m_mediaStartWindowed{false};
-  int m_additionalSubtitleDirectoryChecked{0};
+  std::atomic<int> m_additionalSubtitleDirectoryChecked{0};
 
   int m_musicNeedsUpdate{
       0}; ///< if a database update means an update is required (set to the version number of the db)

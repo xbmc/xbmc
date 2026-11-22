@@ -1483,13 +1483,17 @@ public:
   int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
 
   /*!
-   \brief Work out the date a file, or a show's folder, is added to the library with, where nothing
-   gives it one, before the transaction it is added in, so that the file system isn't asked while the
-   database is held
+   \brief Give a file, or a show's folder, the date it is added to the library with where nothing
+   gives it one, read (ReadDateAdded()) before the transaction it is added in, so that the file
+   system isn't asked while the database is held
    \param fileAndPath the file or folder, as it is added
    */
-  void PrepareDateAdded(const std::string& fileAndPath);
+  void PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded);
   void ForgetPreparedDatesAdded();
+
+  //! \brief The date a file is added with where nothing gives it one, read from the file system;
+  //! invalid where it is added with the time it is written
+  static CDateTime ReadDateAdded(const std::string& fileAndPath);
 
   std::string GetMovieTitle(int idMovie);
 

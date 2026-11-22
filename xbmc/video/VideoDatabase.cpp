@@ -14261,9 +14261,9 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, MEDIA::TYPE mediaT
   return false;
 }
 
-void CVideoDatabase::PrepareDateAdded(const std::string& fileAndPath)
+void CVideoDatabase::PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded)
 {
-  m_preparedDatesAdded.insert_or_assign(fileAndPath, GetDateAdded(fileAndPath));
+  m_preparedDatesAdded.insert_or_assign(fileAndPath, dateAdded);
 }
 
 void CVideoDatabase::ForgetPreparedDatesAdded()
@@ -14271,11 +14271,20 @@ void CVideoDatabase::ForgetPreparedDatesAdded()
   m_preparedDatesAdded.clear();
 }
 
+CDateTime CVideoDatabase::ReadDateAdded(const std::string& fileAndPath)
+{
+  const int setting{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded};
+  if (URIUtils::IsPlugin(fileAndPath) || (setting != 1 && setting != 2))
+    return {};
+  return CFileUtils::GetModificationDate(fileAndPath, setting == 2);
+}
+
 CDateTime CVideoDatabase::DateAddedOf(const std::string& path, const CDateTime& dateAdded) const
 {
   if (const auto prepared{m_preparedDatesAdded.find(path)};
       !dateAdded.IsValid() && prepared != m_preparedDatesAdded.end())
-    return prepared->second;
+    return prepared->second.IsValid() ? prepared->second : CDateTime::GetCurrentDateTime();
   return GetDateAdded(path, dateAdded);
 }
 

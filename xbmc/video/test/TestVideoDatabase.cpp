@@ -56,6 +56,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -2683,7 +2684,7 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(path);
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CFile::Delete(path));
   const int idFile{m_db.AddFile(path)};
@@ -2693,6 +2694,24 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   EXPECT_EQ(modified.GetAsDBDateTime(),
             m_db.GetSingleValue(
                 m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)));
+}
+
+// A file dated with the time it is added is dated when it is written, not when its date was read,
+// which a look-up does ahead of the write
+TEST_F(TestVideoDatabase, AFileDatedWhenAddedIsDatedWhenItIsWritten)
+{
+  const CDateAddedPolicy dateAdded{0}; // the time it is added
+  const std::string path{"/movies/Film.mkv"};
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
+  std::this_thread::sleep_for(std::chrono::milliseconds{1100});
+  const std::string written{CDateTime::GetCurrentDateTime().GetAsDBDateTime()};
+  const int idFile{m_db.AddFile(path)};
+  m_db.ForgetPreparedDatesAdded();
+
+  ASSERT_GT(idFile, 0);
+  EXPECT_GE(
+      m_db.GetSingleValue(m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)),
+      written);
 }
 
 // A scan reads the movies of a folder at once, and finds the same movie for each file as it would
@@ -2726,7 +2745,7 @@ TEST_F(TestVideoDatabase, AShowsFolderDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(folder);
+  m_db.PrepareDateAdded(folder, CVideoDatabase::ReadDateAdded(folder));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(m_root));
   const int idShow{AddTvShow("Show", {folder})};

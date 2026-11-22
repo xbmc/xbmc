@@ -39,6 +39,7 @@
 #include "test/TestUtils.h"
 #include "utils/Artwork.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -55,6 +56,7 @@
 #include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <chrono>
+#include <condition_variable>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -326,6 +328,8 @@ public:
     m_ignoreVideoExtras = ignoreVideoExtras;
     m_bClean = clean;
   }
+
+  using CVideoInfoScanner::CanLookUpMovieAlongside;
 
   using CVideoInfoScanner::FolderTime;
   using CVideoInfoScanner::ScannedSubfolders;
@@ -774,6 +778,13 @@ protected:
     Details(title, "<error/>");
   }
 
+  //! The title is found, with details titling it "<title> from the scraper"
+  static void FoundFromTheScraper(const std::string& title)
+  {
+    Found(title);
+    Details(title, "<details><title>" + title + " from the scraper</title></details>");
+  }
+
   bool IsExtraOf(const std::string& path, int idMovie)
   {
     const VideoAssetInfo asset{m_db.GetVideoVersionInfo(path)};
@@ -1019,6 +1030,28 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromItsNfo)
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film (2010)", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// A measurement of a file's picture that read nothing is stored with its movie too, so that the
+// file isn't measured again
+TEST_F(TestVideoInfoScanner, AMeasurementOfAMoviesPictureThatReadNothingIsStored)
+{
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const bool measure{settings->GetBool(CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY)};
+  const bool onScan{settings->GetBool(CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN)};
+  settings->SetBool(CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY, true);
+  settings->SetBool(CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN, true);
+  const std::string movie{FolderMovie(Folder(m_root, "Film (2010)"), "Film (2010).mkv")};
+
+  Scan();
+  settings->SetBool(CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY, measure);
+  settings->SetBool(CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN, onScan);
+
+  const int idFile{m_db.GetFileId(CFileItem{movie, false})};
+  ASSERT_GT(idFile, 0);
+  const auto record{m_db.GetStoredContentGeometry(idFile)};
+  ASSERT_TRUE(record.has_value());
+  EXPECT_FALSE(record->HasReading());
 }
 
 TEST_F(TestVideoInfoScanner, AMovieAddedToAScannedFolderIsFound)
@@ -1665,6 +1698,84 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film from the scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// The movies of a folder are looked up alongside each other, and each is added with its own
+// details, one whose search failed among them
+TEST_F(TestVideoInfoScanner, TheMoviesOfAFolderAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  std::vector<std::string> movies;
+  constexpr int count{8};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    if (movie == 4)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    movies.emplace_back(File(m_root, name + ".mkv"));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(movies[movie - 1])};
+    if (movie == 4)
+    {
+      EXPECT_EQ(-1, idMovie);
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
+  EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+TEST_F(TestVideoInfoScanner, ADiscIsLookedUpAlongsideOtherMovies)
+{
+  const TestScanner scanner{m_settings};
+
+  EXPECT_TRUE(
+      scanner.CanLookUpMovieAlongside(CFileItem{DvdRip(Folder(m_root, "Film (2010)")), false}));
+  EXPECT_TRUE(scanner.CanLookUpMovieAlongside(
+      CFileItem{URIUtils::AddFileToFolder(m_root, "Other (2011).iso"), false}));
+}
+
+TEST_F(TestVideoInfoScanner, TheDiscsOfFoldersBesideEachOtherAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  std::vector<std::string> folders;
+  std::vector<std::string> discs;
+  constexpr int count{4};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    if (movie == 2)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    discs.emplace_back(DvdRip(folders.back()));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(discs[movie - 1])};
+    if (movie == 2)
+    {
+      EXPECT_EQ(-1, idMovie);
+      EXPECT_FALSE(Record(folders[movie - 1]).starts_with("2|"));
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
 }
 
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
@@ -2691,6 +2802,17 @@ TEST_F(TestVideoInfoScannerTvShows, AFileOfTwoEpisodesIsTwoEpisodes)
   EXPECT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(DISTINCT idFile) FROM episode"));
 }
 
+// A file named with the same episode twice lists it twice, and it is added once
+TEST_F(TestVideoInfoScannerTvShows, ARepeatedEpisodeNumberIsAddedOnlyOnce)
+{
+  const std::string episode{Episode(Folder(Show("Show"), "Season 1"), "Show S01E01E01.mkv")};
+
+  Scan();
+
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+  EXPECT_EQ(1, CountEpisodes());
+}
+
 // The file is probed for its first episode only; the second has the same streams, and its subtitles
 // are still looked for
 TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAFileHaveItsStreamsAndSubtitles)
@@ -2943,6 +3065,39 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
   EXPECT_EQ(2, CountEpisodes());
 }
 
+// The episodes of a show are looked up alongside each other, and each is added with its own details
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAShowAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><episodeguide>guide</episodeguide></tvshow>");
+  const std::string season{Folder(show, "Season 1")};
+  std::string guide{"<episodeguide>"};
+  std::vector<std::string> files;
+  constexpr int episodes{8};
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    const std::string name{"episode" + std::to_string(episode)};
+    guide += "<episode><title>" + name + "</title><url>" + name + "</url><epnum>" +
+             std::to_string(episode) + "</epnum><season>1</season></episode>";
+    Page(name, "<details><title>Title " + std::to_string(episode) + "</title></details>");
+    files.emplace_back(File(season, "Show S01E0" + std::to_string(episode) + ".mkv"));
+  }
+  Page("guide", guide + "</episodeguide>");
+
+  Scan();
+
+  ASSERT_EQ(episodes, CountEpisodes());
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(files[episode - 1], tag,
+                                    m_db.GetEpisodeId(files[episode - 1], episode, 1)));
+    EXPECT_EQ("Title " + std::to_string(episode), tag.m_strTitle);
+  }
+}
+
 // A show's episodes are looked up in the episode guide stored when it was added, which only the
 // scraper that added it understands
 TEST_F(TestVideoInfoScannerTvShows, AnExistingShowKeepsItsScraperWhenItsNfoNamesAnother)
@@ -2973,4 +3128,244 @@ TEST_F(TestVideoInfoScannerTvShows, AnExistingShowKeepsItsScraperWhenItsNfoNames
 
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+}
+
+namespace
+{
+constexpr const char* PYTHON_SCRAPER_ID = "metadata.test.videoinfoscanner.python";
+
+constexpr const char* PYTHON_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python" name="Test python scraper" version="1.0.0"
+       provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+//! What the runs of the python scraper share: how many have started, the threads they ran on, and
+//! whether they may end
+struct SPythonRuns
+{
+  std::mutex lock;
+  std::condition_variable changed;
+  int started{0};
+  std::vector<int> threads;
+  bool end{false};
+  //! The options each run was given, as "?action=find&title=..."
+  std::vector<std::string> calls;
+  //! How a run answers once it may end, with its handle and its call's options; else it finds
+  //! nothing
+  std::function<void(int, const CURL&)> answer;
+};
+
+/*!
+ \brief Stands in for the python interpreter running a scraper whose every call waits on a server
+ that doesn't answer, as a blocking socket read does: the call ends, finding nothing, only once the
+ test lets it
+ */
+class CBlockingInvoker : public ILanguageInvoker
+{
+public:
+  CBlockingInvoker(ILanguageInvocationHandler* handler, SPythonRuns& runs)
+    : ILanguageInvoker(handler),
+      m_runs(runs)
+  {
+  }
+
+protected:
+  bool execute(const std::string& script, const std::vector<std::string>& arguments) override
+  {
+    setState(InvokerStateRunning);
+    // As a plugin is run: its url, handle and options
+    const int handle{std::stoi(arguments[1])};
+    const std::string options{arguments.size() > 2 ? arguments[2] : std::string{}};
+    std::function<void(int, const CURL&)> answer;
+    {
+      std::unique_lock lock(m_runs.lock);
+      ++m_runs.started;
+      m_runs.calls.push_back(options);
+      if (std::ranges::find(m_runs.threads, GetId()) == m_runs.threads.end())
+        m_runs.threads.push_back(GetId());
+      m_runs.changed.notify_all();
+      m_runs.changed.wait_for(lock, std::chrono::seconds{30}, [this] { return m_runs.end; });
+      answer = m_runs.answer;
+    }
+    if (answer)
+      answer(handle, CURL{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + options});
+    else
+      XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    setState(InvokerStateScriptDone);
+    return true;
+  }
+
+  bool stop(bool abort) override { return true; }
+
+private:
+  SPythonRuns& m_runs;
+};
+
+class CBlockingHandler : public ILanguageInvocationHandler
+{
+public:
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override
+  {
+    return std::make_shared<CBlockingInvoker>(this, m_runs);
+  }
+
+  SPythonRuns m_runs;
+};
+
+//! A movie source looked up with a python scraper, whose scripts a stand-in runs
+class TestVideoInfoScannerPython : public TestVideoInfoScanner
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScanner::SetUp();
+    // Python itself isn't run by the tests, so its scripts can be run by the stand-in
+    if (Scripts().HasLanguageInvoker("scraper.py"))
+      GTEST_SKIP() << "python scripts are run by python";
+    Scripts().RegisterLanguageInvocationHandler(&m_handler, ".py");
+    m_registered = true;
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    static_cast<void>(XFILE::CDirectory::Create(addons));
+    m_pythonScraper = Folder(addons, PYTHON_SCRAPER_ID);
+    File(m_pythonScraper, "addon.xml", PYTHON_SCRAPER_ADDON);
+    File(m_pythonScraper, "scraper.py");
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(PYTHON_SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
+                                                        ADDON::CAddonVersion{"1.0.0"}));
+    ASSERT_TRUE(m_db.ExecuteQuery(
+        m_db.PrepareSQL("UPDATE path SET strScraper='%s', strSettings='' WHERE idPath=%i",
+                        PYTHON_SCRAPER_ID, m_db.GetPathId(m_root))));
+  }
+
+  void TearDown() override
+  {
+    if (m_registered)
+    {
+      LetRunsEnd();
+      // The threads kept to run the scraper again go once another script is run
+      static_cast<void>(Scripts().GetReusablePluginHandle("another.py"));
+      std::vector<int> threads;
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        threads = m_handler.m_runs.threads;
+      }
+      const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+      for (const int id : threads)
+      {
+        while (Scripts().IsRunning(id) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        EXPECT_FALSE(Scripts().IsRunning(id));
+      }
+      Scripts().UnregisterLanguageInvocationHandler(&m_handler);
+      CServiceBroker::GetAddonMgr().UnloadAddon(PYTHON_SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_pythonScraper);
+    }
+    TestVideoInfoScanner::TearDown();
+  }
+
+  static CScriptInvocationManager& Scripts() { return CScriptInvocationManager::GetInstance(); }
+
+  bool RunsStarted(int count)
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    return m_handler.m_runs.changed.wait_for(lock, std::chrono::seconds{5}, [this, count]
+                                             { return m_handler.m_runs.started >= count; });
+  }
+
+  void LetRunsEnd()
+  {
+    {
+      std::unique_lock lock(m_handler.m_runs.lock);
+      m_handler.m_runs.end = true;
+    }
+    m_handler.m_runs.changed.notify_all();
+  }
+
+  CBlockingHandler m_handler;
+  bool m_registered{false};
+  std::string m_pythonScraper;
+};
+} // namespace
+
+// A scan reads the settings of a folder's scraper as it lists the folder, while a look-up's call to
+// the scraper runs: reading them doesn't wait for the call to end
+TEST_F(TestVideoInfoScannerPython, AScrapersSettingsAreReadWhileItMakesACall)
+{
+  ADDON::AddonPtr addon;
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(PYTHON_SCRAPER_ID, addon,
+                                                     ADDON::OnlyEnabled::CHOICE_YES));
+  const ADDON::ScraperPtr scraper{std::dynamic_pointer_cast<ADDON::CScraper>(addon)};
+  ASSERT_TRUE(scraper);
+  std::future<void> search{std::async(std::launch::async, [&scraper]
+                                      { static_cast<void>(scraper->FindMovie("Alpha", 2001)); })};
+  const bool searching{RunsStarted(1)};
+  std::future<std::string> settings{
+      std::async(std::launch::async, [&scraper] { return scraper->GetPathSettings(); })};
+
+  // Long enough for the settings to be read, were they not waiting for the search
+  const bool read{settings.wait_for(std::chrono::seconds{2}) == std::future_status::ready};
+  LetRunsEnd();
+  search.wait();
+  settings.wait();
+
+  EXPECT_TRUE(searching);
+  EXPECT_TRUE(read);
+}
+
+// A scraper makes one call at a time: a second waits for the first to end
+TEST_F(TestVideoInfoScannerPython, AScraperMakesOneCallAtATime)
+{
+  ADDON::AddonPtr addon;
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(PYTHON_SCRAPER_ID, addon,
+                                                     ADDON::OnlyEnabled::CHOICE_YES));
+  const ADDON::ScraperPtr scraper{std::dynamic_pointer_cast<ADDON::CScraper>(addon)};
+  ASSERT_TRUE(scraper);
+  const auto search{[&scraper](const std::string& title)
+                    {
+                      return std::async(std::launch::async, [&scraper, title]
+                                        { static_cast<void>(scraper->FindMovie(title, 2001)); });
+                    }};
+  std::future<void> first{search("Alpha")};
+  const bool searching{RunsStarted(1)};
+  std::future<void> second{search("Beta")};
+  const bool overlapped{RunsStarted(2)};
+  LetRunsEnd();
+  first.wait();
+  second.wait();
+
+  EXPECT_TRUE(searching);
+  EXPECT_FALSE(overlapped);
+}
+
+TEST_F(TestVideoInfoScannerPython, AMovieIsLookedUpByTheIdentifierInItsFolderName)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET useFolderNames=1 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  File(Folder(m_root, "Film (2010) {tmdb=603}"), "movie.mkv");
+  LetRunsEnd();
+  // An identifier names one of the metadata sources the scan knows
+  auto& sources{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoScannerMetadataSources};
+  const auto previous{sources};
+  sources = {"tmdb", "imdb"};
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+  sources = previous;
+
+  std::unique_lock lock(m_handler.m_runs.lock);
+  EXPECT_TRUE(std::ranges::any_of(m_handler.m_runs.calls,
+                                  [](const std::string& call)
+                                  {
+                                    return call.find("action=getdetails") != std::string::npos &&
+                                           call.find("603") != std::string::npos;
+                                  }));
 }

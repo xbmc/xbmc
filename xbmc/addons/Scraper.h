@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/Addon.h"
+#include "threads/CriticalSection.h"
 #include "utils/ScraperUrl.h"
 #include "video/Episode.h"
 
@@ -168,8 +169,7 @@ private:
 
    Lifetime is this instance.
    Repeats come from versions, discs and folders of the same title, which are scraped close together.
-   Not synchronised, matching the rest of CScraper: a scraper shared between threads needs the
-   caller to provide that.
+   Guarded by m_callSection, as a scan shares a scraper between its look-up threads.
    */
   static constexpr size_t MAX_CACHED_RESULTS{50};
   std::unordered_map<std::string, std::vector<CScraperUrl>, StringHash, std::equal_to<>>
@@ -179,6 +179,12 @@ private:
 
   bool m_requiressettings = false;
   ContentType m_pathContent = ContentType::NONE;
+
+  //! A scraper is called by one thread at a time, as its caches are its own.
+  mutable CCriticalSection m_callSection;
+  //! Held briefly while the scraper's settings are read or set, so that they can be read while a
+  //! call holds m_callSection. Taken inside m_callSection, never the other way round.
+  mutable CCriticalSection m_stateSection;
 };
 
 } // namespace ADDON

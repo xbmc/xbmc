@@ -163,6 +163,8 @@ private:
   //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
   //! Mutable, as the art is found by the const methods that gather it
   mutable std::vector<ArtToCache> m_deferredArt;
+  //! Art is gathered from several look-up threads
+  mutable std::mutex m_deferredArtLock;
 
   //! The thumbs of an actors folder by name, and the hashes its listing gave them by path
   struct ActorThumbs
