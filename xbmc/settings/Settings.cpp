@@ -631,10 +631,10 @@ void CSettings::InitializeISettingCallbacks()
 
   GetSettingsManager()->RegisterCallback(
       &g_langInfo,
-      {CSettings::SETTING_LOCALE_COUNTRY,
-       CSettings::SETTING_LOCALE_SHORTDATEFORMAT, CSettings::SETTING_LOCALE_LONGDATEFORMAT,
-       CSettings::SETTING_LOCALE_TIMEFORMAT, CSettings::SETTING_LOCALE_USE24HOURCLOCK,
-       CSettings::SETTING_LOCALE_TEMPERATUREUNIT, CSettings::SETTING_LOCALE_SPEEDUNIT});
+      {CSettings::SETTING_LOCALE_COUNTRY, CSettings::SETTING_LOCALE_SHORTDATEFORMAT,
+       CSettings::SETTING_LOCALE_LONGDATEFORMAT, CSettings::SETTING_LOCALE_TIMEFORMAT,
+       CSettings::SETTING_LOCALE_USE24HOURCLOCK, CSettings::SETTING_LOCALE_TEMPERATUREUNIT,
+       CSettings::SETTING_LOCALE_SPEEDUNIT});
 
   GetSettingsManager()->RegisterCallback(&g_passwordManager,
                                          {CSettings::SETTING_MASTERLOCK_LOCKCODE});

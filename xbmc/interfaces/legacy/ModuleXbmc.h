@@ -12,6 +12,7 @@
 #include "Tuple.h"
 #include "language/LanguageTag.h"
 #include "swighelper.h"
+
 #include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
