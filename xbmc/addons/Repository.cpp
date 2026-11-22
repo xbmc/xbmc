@@ -30,6 +30,8 @@
 
 #include <algorithm>
 #include <iterator>
+#include <mutex>
+#include <set>
 #include <tuple>
 #include <utility>
 
@@ -39,6 +41,18 @@ using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 using KODI::UTILITY::TypedDigest;
 
+namespace
+{
+//! A repository is built each time add-ons are listed, so its configuration is reported only the
+//! first time each version of it is built
+bool IsFirstBuild(const std::string& id, const CAddonVersion& version)
+{
+  static std::mutex mutex;
+  static std::set<std::pair<std::string, std::string>> built;
+  std::scoped_lock lock(mutex);
+  return built.emplace(id, version.asString()).second;
+}
+} // unnamed namespace
 
 CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon) const
 {
@@ -109,12 +123,24 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, Addo
   if (addonver)
     version = addonver->Version();
 
+  const bool firstBuild{IsFirstBuild(ID(), Version())};
+
   for (const auto& [_, addonExtensions] : Type(AddonType::REPOSITORY)->GetElements("dir"))
   {
     RepositoryDirInfo dir = ParseDirConfiguration(addonExtensions);
+    if (firstBuild && dir.hashType == CDigest::Type::MD5)
+    {
+      CLog::LogF(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and "
+                             "will only guard against unintentional data corruption");
+    }
     if ((dir.minversion.empty() || version >= dir.minversion) &&
         (dir.maxversion.empty() || version <= dir.maxversion))
       m_dirs.emplace_back(std::move(dir));
+  }
+
+  if (!firstBuild)
+  {
+    return;
   }
 
   // old (dharma compatible) way of defining the addon repository structure, is no longer supported
@@ -324,11 +350,6 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
   if (!hashStr.empty() && hashStr != "false")
   {
     dir.hashType = CDigest::TypeFromString(hashStr);
-    if (dir.hashType == CDigest::Type::MD5)
-    {
-      CLog::LogF(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and "
-                             "will only guard against unintentional data corruption");
-    }
   }
 
   dir.minversion = CAddonVersion{configuration.GetValue("@minversion").asString()};
