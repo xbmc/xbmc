@@ -25,10 +25,8 @@ void CMusicArtistInfo::SetArtist(const CArtist& artist)
   m_bLoaded = true;
 }
 
-bool CMusicArtistInfo::Load(XFILE::IHttpClient& http,
-                            const ADDON::ScraperPtr& scraper,
-                            const std::string& strSearch)
+bool CMusicArtistInfo::Load(const ADDON::ScraperPtr& scraper)
 {
-  return m_bLoaded = scraper->GetArtistDetails(http, m_artistURL, strSearch, m_artist);
+  return m_bLoaded = scraper->GetArtistDetails(m_artistURL, m_artist);
 }
 

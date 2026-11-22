@@ -48,7 +48,6 @@ set(SOURCES TestAlarmClock.cpp
             TestRegExp.cpp
             TestRingBuffer.cpp
             TestRssReader.cpp
-            TestScraperParser.cpp
             TestScraperUrl.cpp
             TestScreenshot.cpp
             TestSet.cpp

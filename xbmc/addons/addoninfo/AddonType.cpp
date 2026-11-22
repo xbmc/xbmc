@@ -18,7 +18,6 @@ using namespace ADDON;
 namespace
 {
 constexpr CSet dependencyTypes{
-    AddonType::SCRAPER_LIBRARY,
     AddonType::SCRIPT_LIBRARY,
     AddonType::SCRIPT_MODULE,
 };

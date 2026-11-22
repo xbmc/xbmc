@@ -106,9 +106,19 @@ bool CAddonSystemSettings::GetActive(AddonType type, AddonPtr& addon) const
   auto it = activeSettings.find(type);
   if (it != activeSettings.end())
   {
-    auto settingValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(it->second);
-    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type,
-                                                  OnlyEnabled::CHOICE_YES);
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const CAddonMgr& addons = CServiceBroker::GetAddonMgr();
+    const std::string settingValue = settings->GetString(it->second);
+    if (addons.GetAddon(settingValue, addon, type, OnlyEnabled::CHOICE_YES))
+      return true;
+
+    // An add-on that is no longer installed at all, as one Kodi no longer comes with, gives way to
+    // the setting's default
+    if (settingValue.empty() || addons.IsAddonInstalled(settingValue))
+      return false;
+    const auto setting =
+        std::dynamic_pointer_cast<const CSettingString>(settings->GetSetting(it->second));
+    return setting && addons.GetAddon(setting->GetDefault(), addon, type, OnlyEnabled::CHOICE_YES);
   }
   return false;
 }

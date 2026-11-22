@@ -39,9 +39,9 @@ void CMusicAlbumInfo::SetAlbum(CAlbum& album)
   m_bLoaded = true;
 }
 
-bool CMusicAlbumInfo::Load(XFILE::IHttpClient& http, const ADDON::ScraperPtr& scraper)
+bool CMusicAlbumInfo::Load(const ADDON::ScraperPtr& scraper)
 {
-  bool fSuccess = scraper->GetAlbumDetails(http, m_albumURL, m_album);
+  bool fSuccess = scraper->GetAlbumDetails(m_albumURL, m_album);
   if (fSuccess && m_strTitle2.empty())
     m_strTitle2 = m_album.strAlbum;
   SetLoaded(fSuccess);

@@ -786,13 +786,10 @@ namespace XBMCAddon
                                            const std::string& art_type,
                                            const std::string& preview,
                                            const std::string& referrer,
-                                           const std::string& cache,
-                                           bool post,
-                                           bool isgz,
                                            int season)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-      addAvailableArtworkRaw(infoTag, url, art_type, preview, referrer, cache, post, isgz, season);
+      addAvailableArtworkRaw(infoTag, url, art_type, preview, referrer, season);
     }
 
     void InfoTagVideo::setAvailableFanart(const std::vector<Properties>& images)
@@ -1126,13 +1123,9 @@ namespace XBMCAddon
                                               const std::string& art_type,
                                               const std::string& preview,
                                               const std::string& referrer,
-                                              const std::string& cache,
-                                              bool post,
-                                              bool isgz,
                                               int season)
     {
-      infoTag->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post, isgz,
-                                            season);
+      infoTag->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, season);
     }
 
     void InfoTagVideo::setAvailableFanartRaw(CVideoInfoTag* infoTag,

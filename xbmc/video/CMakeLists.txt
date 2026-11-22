@@ -26,7 +26,6 @@ set(SOURCES Bookmark.cpp
             VideoEmbeddedImageFileLoader.cpp
             VideoFileItemClassify.cpp
             VideoGeneratedImageFileLoader.cpp
-            VideoInfoDownloader.cpp
             VideoInfoScanner.cpp
             VideoInfoScannerArt.cpp
             VideoInfoScannerExtras.cpp
@@ -70,7 +69,6 @@ set(HEADERS Bookmark.h
             VideoEmbeddedImageFileLoader.h
             VideoFileItemClassify.h
             VideoGeneratedImageFileLoader.h
-            VideoInfoDownloader.h
             VideoInfoScanner.h
             VideoInfoScannerArt.h
             VideoInfoScannerExtras.h

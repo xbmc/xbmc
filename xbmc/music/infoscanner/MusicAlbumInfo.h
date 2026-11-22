@@ -12,11 +12,6 @@
 #include "music/Album.h"
 #include "utils/ScraperUrl.h"
 
-namespace XFILE
-{
-class IHttpClient;
-}
-
 namespace MUSIC_GRABBER
 {
 class CMusicAlbumInfo
@@ -38,7 +33,7 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetRelevance(float relevance) { m_relevance = relevance; }
 
-  bool Load(XFILE::IHttpClient& http, const ADDON::ScraperPtr& scraper);
+  bool Load(const ADDON::ScraperPtr& scraper);
 
 protected:
   bool m_bLoaded = false;

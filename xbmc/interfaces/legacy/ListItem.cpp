@@ -820,9 +820,6 @@ namespace XBMCAddon
                                        const std::string& art_type,
                                        const std::string& preview,
                                        const std::string& referrer,
-                                       const std::string& cache,
-                                       bool post,
-                                       bool isgz,
                                        int season)
     {
       CLog::Log(LOGWARNING, "ListItem.addAvailableArtwork() is deprecated and might be removed in "
@@ -830,7 +827,7 @@ namespace XBMCAddon
 
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       xbmc::InfoTagVideo::addAvailableArtworkRaw(GetVideoInfoTag(), url, art_type, preview,
-                                                 referrer, cache, post, isgz, season);
+                                                 referrer, season);
     }
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)

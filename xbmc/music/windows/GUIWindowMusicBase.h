@@ -16,7 +16,6 @@
 #include "music/MusicDatabase.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
-#include "music/infoscanner/MusicInfoScraper.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <vector>

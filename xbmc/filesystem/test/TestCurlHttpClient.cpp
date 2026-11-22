@@ -42,7 +42,6 @@ protected:
 
 TEST_F(TestCurlHttpClient, GetPropertyOnIdleClientReturnsEmpty)
 {
-  // CScraperUrl::Get() relies on this path to sniff the response mime type.
   EXPECT_EQ(m_client.GetProperty(FileProperty::MIME_TYPE), "");
   EXPECT_EQ(m_client.GetProperty(FileProperty::CONTENT_TYPE), "");
   EXPECT_EQ(m_client.GetProperty(FileProperty::CONTENT_CHARSET), "");
@@ -52,7 +51,6 @@ TEST_F(TestCurlHttpClient, GetPropertyOnIdleClientReturnsEmpty)
 
 TEST_F(TestCurlHttpClient, CancelAndResetLeaveIdleClientUsable)
 {
-  // CVideoInfoDownloader recycles its client through this Cancel()/Reset() pair.
   m_client.Cancel();
   m_client.Reset();
 

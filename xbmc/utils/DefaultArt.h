@@ -30,7 +30,6 @@ inline constexpr char ADDON_GAME[] = "DefaultAddonGame.png";
 inline constexpr char ADDON_HELPER[] = "DefaultAddonHelper.png";
 inline constexpr char ADDON_IMAGES[] = "DefaultAddonImages.png";
 inline constexpr char ADDON_IMAGE_DECODER[] = "DefaultAddonImageDecoder.png";
-inline constexpr char ADDON_INFO_LIBRARY[] = "DefaultAddonInfoLibrary.png";
 inline constexpr char ADDON_INFO_PROVIDER[] = "DefaultAddonInfoProvider.png";
 inline constexpr char ADDON_INPUTSTREAM[] = "DefaultAddonInputstream.png";
 inline constexpr char ADDON_LANGUAGE[] = "DefaultAddonLanguage.png";

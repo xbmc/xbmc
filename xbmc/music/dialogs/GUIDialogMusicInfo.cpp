@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
+#include "addons/Scraper.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"

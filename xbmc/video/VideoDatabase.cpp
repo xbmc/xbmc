@@ -12783,10 +12783,12 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         AddonPtr addon;
         std::string id;
         XMLUtils::GetString(pathElem, "scraperpath", id);
+        ScraperPtr scraper;
         if (CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::OnlyEnabled::CHOICE_YES))
+          scraper = std::dynamic_pointer_cast<CScraper>(addon);
+        if (scraper)
         {
           SScanSettings settings;
-          ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
           // FIXME: scraper settings are not exported?
           scraper->SetPathSettings(TranslateContent(content), "");
           XMLUtils::GetInt(pathElem, "scanrecursive", settings.recurse);

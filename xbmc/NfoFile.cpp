@@ -18,7 +18,6 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
-#include "video/VideoInfoDownloader.h"
 
 #include <cstdint>
 #include <memory>
@@ -239,23 +238,13 @@ CInfoScanner::InfoType CNfoFile::SearchNfoForScraperUrls(CInfoScanner::InfoType 
                      addonType == AddonType::SCRAPER_MUSICVIDEOS};
   for (const auto& scraper : isVideo ? std::vector<ScraperPtr>{info} : GetScrapers(addonType, info))
   {
-    if (scraper->IsNoop())
+    if (scraper->IsLocalInformationOnly())
     {
       m_scurl = CScraperUrl();
       break;
     }
 
-    scraper->ClearCache();
-    try
-    {
-      m_scurl = scraper->NfoUrl(m_doc);
-    }
-    catch (const CScraperError& sce)
-    {
-      CVideoInfoDownloader::ShowErrorDialog(sce);
-      if (!sce.FAborted())
-        return ERROR_NFO;
-    }
+    m_scurl = scraper->NfoUrl(m_doc);
 
     if (m_scurl.HasUrls())
       return (parseResult == FULL || parseResult == OVERRIDE) ? COMBINED : URL;
@@ -314,6 +303,8 @@ std::vector<ScraperPtr> GetScrapers(AddonType type, const ScraperPtr& selectedSc
   for (auto& addon : addons)
   {
     ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
+    if (!scraper)
+      continue;
 
     // skip if scraper requires settings and there's nothing set yet
     if (scraper->RequiresSettings() && !scraper->HasUserSettings())
