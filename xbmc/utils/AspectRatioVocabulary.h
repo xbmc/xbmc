@@ -78,6 +78,12 @@ public:
   //! \brief Resolve() for a caller that wants only the ratio, answering identically.
   static std::optional<float> ResolveRatio(float ratio, AspectRatioUse use, float towardRatio);
 
+  //! \brief ResolveRatio() within \p tolerance rather than the tolerance in force.
+  static std::optional<float> ResolveRatio(float ratio,
+                                           AspectRatioUse use,
+                                           float towardRatio,
+                                           float tolerance);
+
   //! \brief The label Kodi reports for \p ratio, or empty when \p ratio is not a ratio.
   static std::string Label(float ratio);
 

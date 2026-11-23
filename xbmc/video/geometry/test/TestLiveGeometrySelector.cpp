@@ -374,4 +374,54 @@ TEST_F(TestLiveGeometrySelector, UnconfiguredFeedsNothing)
   EXPECT_FALSE(fresh.Feed(Reading(CODED)).has_value());
 }
 
+// An ATSC subchannel sends a 4:3 frame holding a letterboxed picture, flagged 16:9.
+const CRectInt SD_FRAME{0, 0, 704, 480};
+constexpr float SD_WIDE_PAR = (16.0f / 9.0f) / (704.0f / 480.0f);
+const CRectInt SD_LETTERBOX_READ{0, 54, 704, 430}; //!< 2.27 as flagged, 1.70 as 4:3
+
+TEST_F(TestLiveGeometrySelector, PictureOfNoRatioInAMisflaggedSdFrameReadsItAsTheOtherShape)
+{
+  CLiveGeometrySelector sd;
+  sd.Configure(SD_FRAME, SD_WIDE_PAR, 1.78f);
+
+  const auto out = sd.Feed(Reading(SD_LETTERBOX_READ));
+  ASSERT_TRUE(out.has_value());
+  EXPECT_EQ((CRectInt{0, 60, 704, 420}), out->rect);
+  EXPECT_FLOAT_EQ(0.75f, out->frameCorrection);
+}
+
+TEST_F(TestLiveGeometrySelector, SdPictureOfARealRatioKeepsTheFlag)
+{
+  CLiveGeometrySelector sd;
+  sd.Configure(SD_FRAME, SD_WIDE_PAR, 1.78f);
+
+  const auto out = sd.Feed(Reading(SD_FRAME));
+  ASSERT_TRUE(out.has_value());
+  EXPECT_EQ(SD_FRAME, out->rect);
+  EXPECT_FLOAT_EQ(1.0f, out->frameCorrection);
+}
+
+TEST_F(TestLiveGeometrySelector, HdPictureOfNoRatioIsStillRefused)
+{
+  // 1920x846 is the same 2.27, but only an SD frame is read as the other shape.
+  CLiveGeometrySelector hd;
+  hd.Configure({0, 0, 1920, 1080}, 1.0f, 1.78f);
+
+  EXPECT_FALSE(hd.Feed(Reading({0, 117, 1920, 963})).has_value());
+  EXPECT_FALSE(hd.HasPublished());
+}
+
+TEST_F(TestLiveGeometrySelector, PixelRatioTheUserSetIsWhatAReadingIsJudgedThrough)
+{
+  // With the pixel ratio set to 0.78 the frame is no SD shape, so it is not read as the
+  // other one; the picture is 1.77 through that ratio and resolves to 16:9.
+  CLiveGeometrySelector sd;
+  sd.Configure(SD_FRAME, SD_WIDE_PAR * 0.78f, 1.78f);
+
+  const auto out = sd.Feed(Reading(SD_LETTERBOX_READ));
+  ASSERT_TRUE(out.has_value());
+  EXPECT_EQ((CRectInt{0, 53, 704, 427}), out->rect);
+  EXPECT_FLOAT_EQ(1.0f, out->frameCorrection);
+}
+
 } // namespace

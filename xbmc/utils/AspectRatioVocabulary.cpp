@@ -178,7 +178,8 @@ const AspectRatioEntry* NearestIn(const Vocabulary& vocabulary, float ratio, Asp
 const AspectRatioEntry* ResolveIn(const Vocabulary& vocabulary,
                                   float ratio,
                                   AspectRatioUse use,
-                                  float towardRatio)
+                                  float towardRatio,
+                                  float tolerance)
 {
   if (!IsRatio(ratio))
     return nullptr;
@@ -200,7 +201,7 @@ const AspectRatioEntry* ResolveIn(const Vocabulary& vocabulary,
       continue;
 
     const float offset = std::fabs(wanted - held.logRatio);
-    if (offset > vocabulary.tolerance)
+    if (offset > tolerance)
       continue;
 
     const float pull =
@@ -351,7 +352,7 @@ std::optional<AspectRatioEntry> CAspectRatioVocabulary::Resolve(float ratio,
 {
   std::unique_lock lock(StoreLock());
 
-  const AspectRatioEntry* chosen = ResolveIn(Store(), ratio, use, towardRatio);
+  const AspectRatioEntry* chosen = ResolveIn(Store(), ratio, use, towardRatio, Store().tolerance);
   if (!chosen)
     return std::nullopt;
 
@@ -362,9 +363,17 @@ std::optional<float> CAspectRatioVocabulary::ResolveRatio(float ratio,
                                                           AspectRatioUse use,
                                                           float towardRatio)
 {
+  return ResolveRatio(ratio, use, towardRatio, Tolerance());
+}
+
+std::optional<float> CAspectRatioVocabulary::ResolveRatio(float ratio,
+                                                          AspectRatioUse use,
+                                                          float towardRatio,
+                                                          float tolerance)
+{
   std::unique_lock lock(StoreLock());
 
-  const AspectRatioEntry* chosen = ResolveIn(Store(), ratio, use, towardRatio);
+  const AspectRatioEntry* chosen = ResolveIn(Store(), ratio, use, towardRatio, tolerance);
   if (!chosen)
     return std::nullopt;
 

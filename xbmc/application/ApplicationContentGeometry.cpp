@@ -172,7 +172,10 @@ void CApplicationContentGeometry::RefreshOsdPlacement()
                        std::memory_order_relaxed);
 }
 
-void CApplicationContentGeometry::SetLive(const CRectInt& rect, bool varies)
+void CApplicationContentGeometry::SetLive(const CRectInt& rect,
+                                          bool varies,
+                                          float frameCorrection,
+                                          float pixelRatio)
 {
   {
     std::unique_lock lock(m_section);
@@ -183,6 +186,8 @@ void CApplicationContentGeometry::SetLive(const CRectInt& rect, bool varies)
         varies || (m_inputs.cached.HasRecord() && m_inputs.cached.record.Varies());
     m_inputs.live.hasReading = true;
     m_inputs.hasLive = true;
+    m_inputs.liveFrameCorrection = frameCorrection;
+    m_inputs.livePixelRatio = pixelRatio;
   }
 
   Refresh();
@@ -194,6 +199,8 @@ void CApplicationContentGeometry::ClearLive()
     std::unique_lock lock(m_section);
     m_inputs.live = {};
     m_inputs.hasLive = false;
+    m_inputs.liveFrameCorrection = 1.0f;
+    m_inputs.livePixelRatio = 1.0f;
   }
 
   Refresh();

@@ -22,6 +22,21 @@ using namespace KODI::UTILS;
 namespace KODI::VIDEO::GEOMETRY
 {
 
+namespace
+{
+
+//! \brief The tallest frame read as SD, which is where a broadcast flags the wrong shape.
+constexpr int SD_MAX_HEIGHT = 576;
+
+//! \brief How close a frame has to be to 16:9 or 4:3 to count as that SD shape, in log space.
+constexpr float SD_SHAPE_TOLERANCE = 0.01f;
+
+//! \brief How far a picture read as the other SD shape may be from an entry, in log space.
+//! Wider than the vocabulary's own: a misflagged channel's letterbox is rarely exact.
+constexpr float OTHER_SHAPE_TOLERANCE = 0.05f;
+
+} // unnamed namespace
+
 CLiveGeometrySelector::CLiveGeometrySelector(const LiveSelectorParams& params) : m_params(params)
 {
 }
@@ -33,7 +48,19 @@ void CLiveGeometrySelector::Configure(const CRectInt& coded, float par, float at
   m_configured = !coded.IsEmpty();
   m_atRestAspect = atRestAspect;
 
+  m_otherShape = 0.0f;
+  if (m_configured && coded.Height() <= SD_MAX_HEIGHT)
+  {
+    const float shown =
+        static_cast<float>(coded.Width()) * m_par / static_cast<float>(coded.Height());
+    if (CAspectRatioVocabulary::Distance(shown, 16.0f / 9.0f) <= SD_SHAPE_TOLERANCE)
+      m_otherShape = 0.75f;
+    else if (CAspectRatioVocabulary::Distance(shown, 4.0f / 3.0f) <= SD_SHAPE_TOLERANCE)
+      m_otherShape = 4.0f / 3.0f;
+  }
+
   m_published.reset();
+  m_publishedCorrection = 1.0f;
   m_run.reset();
   m_shapes.clear();
   m_resync = false;
@@ -76,38 +103,46 @@ bool CLiveGeometrySelector::GainsPicture(const CRectInt& rect) const
          rect.y2 - base.y2 > floor;
 }
 
-std::optional<CRectInt> CLiveGeometrySelector::Snap(const CRectInt& rect)
+std::optional<CLiveGeometrySelector::Snapped> CLiveGeometrySelector::Snap(const CRectInt& rect)
 {
   // Judged on the display ratio.
   const float ratio = static_cast<float>(rect.Width()) * m_par / static_cast<float>(rect.Height());
 
   // The ratio alone: nothing here reads a label or a name.
-  const std::optional<float> resolved =
-      CAspectRatioVocabulary::ResolveRatio(ratio, AspectRatioUse::Detect, m_atRestAspect);
-  if (!resolved)
+  if (const std::optional<float> resolved =
+          CAspectRatioVocabulary::ResolveRatio(ratio, AspectRatioUse::Detect, m_atRestAspect))
+    return Snapped{Fit(*resolved, m_par), 1.0f};
+
+  // A picture of no real ratio in an SD frame is the frame flagged with the wrong shape when,
+  // read as the other one, it is near a real ratio.
+  if (m_otherShape > 0.0f)
   {
-    // No real ratio is this shape, so it is a detector failure rather than a discovery.
-    ++m_implausible;
-    return std::nullopt;
+    if (const std::optional<float> resolved = CAspectRatioVocabulary::ResolveRatio(
+            ratio * m_otherShape, AspectRatioUse::Detect, m_atRestAspect, OTHER_SHAPE_TOLERANCE))
+      return Snapped{Fit(*resolved, m_par * m_otherShape), m_otherShape};
   }
 
-  return Fit(*resolved);
+  // No real ratio is this shape, so it is a detector failure rather than a discovery.
+  ++m_implausible;
+  return std::nullopt;
 }
 
-CRectInt CLiveGeometrySelector::Fit(float displayRatio) const
+CRectInt CLiveGeometrySelector::Fit(float displayRatio, float par) const
 {
   // The rectangle is expressed in coded pixels, so the ratio to fit is the display ratio
   // taken back through the pixel aspect.
-  const CRect fitted = FitAspect(displayRatio / m_par, CRect{m_coded});
+  const CRect fitted = FitAspect(displayRatio / par, CRect{m_coded});
 
   return CRectInt{
       static_cast<int>(std::lround(fitted.x1)), static_cast<int>(std::lround(fitted.y1)),
       static_cast<int>(std::lround(fitted.x2)), static_cast<int>(std::lround(fitted.y2))};
 }
 
-LiveGeometryReading CLiveGeometrySelector::Publish(const CRectInt& rect)
+LiveGeometryReading CLiveGeometrySelector::Publish(const Snapped& snapped)
 {
+  const CRectInt& rect = snapped.rect;
   m_published = rect;
+  m_publishedCorrection = snapped.frameCorrection;
   m_resync = false;
   m_run.reset();
 
@@ -117,7 +152,7 @@ LiveGeometryReading CLiveGeometrySelector::Publish(const CRectInt& rect)
   if (known == m_shapes.end())
     m_shapes.push_back(rect);
 
-  return {rect, m_shapes.size() > 1};
+  return {rect, m_shapes.size() > 1, snapped.frameCorrection};
 }
 
 std::optional<LiveGeometryReading> CLiveGeometrySelector::Feed(const DetectionResult& sample)
@@ -138,22 +173,25 @@ std::optional<LiveGeometryReading> CLiveGeometrySelector::Feed(const DetectionRe
     return std::nullopt;
   }
 
-  const std::optional<CRectInt> candidate = Snap(sample.rect);
+  const std::optional<Snapped> candidate = Snap(sample.rect);
   if (!candidate)
     return std::nullopt;
 
   // Widening counts only when the reading itself widens.
-  if (m_published && GainsPicture(*candidate) && !GainsPicture(sample.rect))
+  if (m_published && GainsPicture(candidate->rect) && !GainsPicture(sample.rect))
   {
     ++m_inset;
     return std::nullopt;
   }
 
+  const bool alreadyServed = m_published && SameEdges(candidate->rect, *m_published) &&
+                             candidate->frameCorrection == m_publishedCorrection;
+
   if (m_resync)
   {
     m_resync = false;
     m_run.reset();
-    if (m_published && SameEdges(*candidate, *m_published))
+    if (alreadyServed)
       return std::nullopt;
     return Publish(*candidate);
   }
@@ -162,18 +200,18 @@ std::optional<LiveGeometryReading> CLiveGeometrySelector::Feed(const DetectionRe
   if (!m_published)
     return Publish(*candidate);
 
-  if (SameEdges(*candidate, *m_published))
+  if (alreadyServed)
   {
     m_run.reset();
     return std::nullopt;
   }
 
-  if (LosesPicture(*candidate))
+  if (LosesPicture(candidate->rect))
   {
-    if (m_run && SameEdges(m_run->rect, *candidate))
+    if (m_run && SameEdges(m_run->rect, candidate->rect))
       ++m_run->frames;
     else
-      m_run = Run{*candidate, 1};
+      m_run = Run{candidate->rect, 1};
 
     if (m_run->frames < m_params.narrowFrames)
       return std::nullopt;
@@ -189,8 +227,9 @@ std::string CLiveGeometrySelector::Describe() const
 
   std::string state;
   if (m_published)
-    state = StringUtils::Format("{}x{} at {},{}", m_published->Width(), m_published->Height(),
-                                m_published->x1, m_published->y1);
+    state = StringUtils::Format("{}x{} at {},{}{}", m_published->Width(), m_published->Height(),
+                                m_published->x1, m_published->y1,
+                                m_publishedCorrection != 1.0f ? " in the other SD shape" : "");
   else
     state = "no reading yet";
 

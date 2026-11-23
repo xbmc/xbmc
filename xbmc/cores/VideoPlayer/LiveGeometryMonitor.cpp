@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoFileGeometry.h"
+#include "settings/DisplaySettings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -65,6 +66,7 @@ void CLiveGeometryMonitor::Withdraw()
   m_selector.Configure({}, 1.0f);
   m_codedWidth = 0;
   m_codedHeight = 0;
+  m_configuredPixelRatio = 0.0f;
 }
 
 void CLiveGeometryMonitor::OnStreamOpened()
@@ -94,6 +96,7 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
     m_settingsReadMs = now;
     m_settings = LiveGeometryFromSettings();
     m_declaredAspect = m_processInfo.GetVideoSettings().m_declaredAspect;
+    m_pixelRatio = CDisplaySettings::GetInstance().GetPixelRatio();
     m_selector.SetParams(m_settings.selector);
   }
 
@@ -125,19 +128,22 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
           : 0.0f;
 
   if (picture.iWidth != m_codedWidth || picture.iHeight != m_codedHeight ||
-      picture.stereoMode != m_stereoMode || displayAspect != m_displayAspect)
+      picture.stereoMode != m_stereoMode || displayAspect != m_displayAspect ||
+      m_pixelRatio != m_configuredPixelRatio)
   {
     Withdraw();
 
     const StreamGeometry stream =
         MeasuredStreamGeometry(picture.stereoMode, picture.iWidth, picture.iHeight, displayAspect);
 
-    m_selector.Configure(stream.coded, PixelAspectRatio(stream),
+    // Judged through the pixel ratio the user set, as the picture is shown through it.
+    m_selector.Configure(stream.coded, PixelAspectRatio(stream) * m_pixelRatio,
                          ContentGeometryAtRestFromSettings());
     m_codedWidth = picture.iWidth;
     m_codedHeight = picture.iHeight;
     m_stereoMode = picture.stereoMode;
     m_displayAspect = displayAspect;
+    m_configuredPixelRatio = m_pixelRatio;
   }
 
   FrameRef frame;
@@ -173,7 +179,10 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
     CLog::LogF(LOGDEBUG, "live content geometry now {}x{} at {},{}{}", served->rect.Width(),
                served->rect.Height(), served->rect.x1, served->rect.y1,
                served->varies ? " (varies)" : "");
-    Post({.rect = served->rect, .varies = served->varies});
+    Post({.rect = served->rect,
+          .varies = served->varies,
+          .frameCorrection = served->frameCorrection,
+          .pixelRatio = m_configuredPixelRatio});
   }
 
   return InForce();
