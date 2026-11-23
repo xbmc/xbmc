@@ -163,7 +163,6 @@ static bool IsUserInstalled(const AddonPtr& addon)
   return !CAddonType::IsDependencyType(addon->MainType());
 }
 
-//! Adds the folder for a category of add-ons, with the icon of \p iconType
 static void AddCategory(const CURL& path,
                         const std::string& label,
                         const std::string& fileName,
@@ -181,7 +180,6 @@ static void AddCategory(const CURL& path,
   items.Add(item);
 }
 
-//! Adds the folder for the add-ons of \p type
 static void AddTypeCategory(const CURL& path, AddonType type, CFileItemList& items)
 {
   AddCategory(path, CAddonInfo::TranslateType(type, true), CAddonInfo::TranslateType(type, false),
