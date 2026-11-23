@@ -61,6 +61,8 @@ public:
   bool GetVideoInterlaced();
   void AddVideoFrameSize(uint32_t size, char type, double time);
   void AddAudioPacketSize(uint32_t size, double time);
+  //! Forget the audio packet sizes, e.g. after a seek, so replayed packets aren't counted twice
+  void ResetAudioPacketSizes();
   void GetVideoFrameSizes(DEBUG_INFO_FRAMES& info);
   //! True while the debug renderer polls the frame sizes, i.e. the graph is shown
   bool IsVideoFrameGraphShown();

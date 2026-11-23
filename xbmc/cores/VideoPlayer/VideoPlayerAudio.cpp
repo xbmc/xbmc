@@ -115,6 +115,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
   m_pAudioCodec = std::move(codec);
 
   m_processInfo.ResetAudioCodecInfo();
+  m_processInfo.ResetAudioPacketSizes();
 
   const auto& advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   m_collectPacketSizes =
@@ -348,6 +349,7 @@ void CVideoPlayerAudio::Process()
       m_audioClock = 0;
       audioframe.nb_frames = 0;
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+      m_processInfo.ResetAudioPacketSizes();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -366,6 +368,7 @@ void CVideoPlayerAudio::Process()
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
+      m_processInfo.ResetAudioPacketSizes();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {

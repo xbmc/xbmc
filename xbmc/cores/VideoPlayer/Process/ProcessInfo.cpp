@@ -341,6 +341,14 @@ void CProcessInfo::AddAudioPacketSize(uint32_t size, double time)
   m_audioSlotsUsed = true;
 }
 
+void CProcessInfo::ResetAudioPacketSizes()
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  m_audioSlots.fill({});
+  m_audioSlotsUsed = false;
+}
+
 void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
 {
   const float fps = GetVideoFps();
