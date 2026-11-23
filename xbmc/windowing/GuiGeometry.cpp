@@ -69,6 +69,14 @@ CRect ComputeViewWindow(const RESOLUTION_INFO& info, float rasterAspect)
   CRect rect{static_cast<float>(info.Overscan.left), static_cast<float>(info.Overscan.top),
              static_cast<float>(info.Overscan.right), static_cast<float>(info.Overscan.bottom)};
 
+#if defined(TARGET_DARWIN_OSX)
+  // The area macOS reports as inset (the notch) is outside of the window there.
+  rect.x1 += info.guiInsets.left;
+  rect.y1 += info.guiInsets.top;
+  rect.x2 -= info.guiInsets.right;
+  rect.y2 -= info.guiInsets.bottom;
+#endif
+
   if (rasterAspect > 0.0f)
     rect.Intersect(ComputeRasterRect(info, rasterAspect));
   return rect;
