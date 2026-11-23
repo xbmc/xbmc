@@ -335,6 +335,7 @@ function(add_addon_depends addon searchpath)
             endif()
 
             set(DOWNLOAD_DIR ${BUILD_DIR}/download)
+            set(urls ${url})
             if(EXISTS ${dir}/${id}.sha256)
               file(STRINGS ${dir}/${id}.sha256 sha256sum)
               list(GET sha256sum 0 sha256sum)
@@ -342,13 +343,19 @@ function(add_addon_depends addon searchpath)
               if(TARBALL_DIR)
                 set(DOWNLOAD_DIR ${TARBALL_DIR})
               endif()
+              # With a checksum to verify the download, Kodi's mirror is a safe fallback
+              # for when the dependency's own site is unavailable
+              if(KODI_MIRROR AND NOT url MATCHES "^https?://mirrors\\.(kodi\\.tv|xbmc\\.org)/")
+                get_filename_component(archive ${url} NAME)
+                list(APPEND urls ${KODI_MIRROR}/build-deps/sources/${archive})
+              endif()
             else()
               unset(URL_HASH_COMMAND)
               message(AUTHOR_WARNING "${dir}/${id}.sha256 is missing")
             endif()
 
             externalproject_add(${id}
-                                URL ${url}
+                                URL ${urls}
                                 ${URL_HASH_COMMAND}
                                 DOWNLOAD_DIR ${DOWNLOAD_DIR}
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
