@@ -305,6 +305,12 @@ std::string DatabaseUtils::View::NameOf(const Column& column) const
   return std::string{column.name};
 }
 
+std::string_view DatabaseUtils::ViewNameOf(KODI::MEDIA::TYPE mediaType)
+{
+  const View* view = ViewOf(mediaType);
+  return view ? view->name : std::string_view{};
+}
+
 const DatabaseUtils::Column* DatabaseUtils::FindColumn(Field field, KODI::MEDIA::TYPE mediaType)
 {
   const View* view = ViewOf(mediaType);

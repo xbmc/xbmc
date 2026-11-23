@@ -36,6 +36,7 @@
 class CFileItem;
 class CFileItemList;
 class CStreamDetails;
+class CVideoDbUrl;
 class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
@@ -1012,8 +1013,16 @@ public:
   bool GetSetsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool ignoreSingleMovieSets = false);
   bool GetTvShowsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
   bool GetSeasonsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription());
-  bool GetEpisodesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
-  bool GetMusicVideosByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, bool checkLocks = true, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
+  bool GetEpisodesByWhere(const std::string& strBaseDir,
+                          const Filter& filter,
+                          CFileItemList& items,
+                          const SortDescription& sortDescription = SortDescription(),
+                          int getDetails = VideoDbDetailsNone);
+  bool GetMusicVideosByWhere(const std::string& baseDir,
+                             const Filter& filter,
+                             CFileItemList& items,
+                             const SortDescription& sortDescription = SortDescription(),
+                             int getDetails = VideoDbDetailsNone);
 
   // retrieve sorted and limited items
   bool GetSortedVideos(KODI::MEDIA::TYPE mediaType, const std::string& strBaseDir,
@@ -1345,6 +1354,28 @@ protected:
                               const std::vector<std::string>& values);
 
   void AddCast(int mediaId, KODI::MEDIA::TYPE mediaType, const std::vector<SActorInfo> &cast);
+
+  //! \brief Builds the item of a listing's row and adds it, unless the profile may not list it
+  //! \return the item's tag, for the details the list loads once; nullptr for no item
+  using ListRow = std::function<CVideoInfoTag*(
+      const dbiplus::sql_record* record, int details, CFileItemList& items)>;
+  //! \brief Makes a listing's row builder, once the listing's url is known
+  using ListRows = std::function<ListRow(const CVideoDbUrl& videoUrl)>;
+
+  /*!
+   * \brief List the movies, TV shows, episodes or music videos a videodb url and a filter select,
+   * sorted and limited, each row built by the type's \p rows
+   */
+  bool ListVideos(KODI::MEDIA::TYPE type,
+                  const std::string& baseDir,
+                  const Filter& filter,
+                  CFileItemList& items,
+                  const SortDescription& sortDescription,
+                  int getDetails,
+                  const ListRows& rows);
+
+  //! \brief Whether the profile may list an item at \p path
+  bool IsUnlocked(const std::string& path) const;
 
   CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);

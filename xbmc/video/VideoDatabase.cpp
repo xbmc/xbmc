@@ -5634,7 +5634,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
     if (getDetails & VideoDbDetailsStream)
       GetStreamDetails(details);
 
-    if (getDetails & VideoDbDetailsAll)
+    if (getDetails & VideoDbDetailsCast)
     {
       GetCast(details.m_iDbId, MEDIA::TYPE::MUSIC_VIDEO, details.m_cast);
     }
@@ -5784,6 +5784,8 @@ void CVideoDatabase::GetDetailsForList(const std::vector<CVideoInfoTag*>& tags,
     available &= ~(VideoDbDetailsTag | VideoDbDetailsShowLink);
   else if (media_type == MEDIA::TYPE::TV_SHOW)
     available &= ~(VideoDbDetailsShowLink | VideoDbDetailsStream);
+  else if (media_type == MEDIA::TYPE::MUSIC_VIDEO)
+    available &= ~(VideoDbDetailsRating | VideoDbDetailsShowLink);
   const int wanted{getDetails & available};
 
   if (!(getDetails & LIST_DETAILS) || tags.empty() || !m_pDB || !m_pDS2)
@@ -8523,9 +8525,9 @@ bool CVideoDatabase::GetSortedVideos(MEDIA::TYPE mediaType, const std::string& s
   else if (mediaType == MEDIA::TYPE::TV_SHOW)
     success = GetTvShowsByWhere(strBaseDir, filter, items, sorting);
   else if (mediaType == MEDIA::TYPE::EPISODE)
-    success = GetEpisodesByWhere(strBaseDir, filter, items, true, sorting);
+    success = GetEpisodesByWhere(strBaseDir, filter, items, sorting);
   else if (mediaType == MEDIA::TYPE::MUSIC_VIDEO)
-    success = GetMusicVideosByWhere(strBaseDir, filter, items, true, sorting);
+    success = GetMusicVideosByWhere(strBaseDir, filter, items, sorting);
   else
     return false;
 
@@ -8583,10 +8585,10 @@ bool CVideoDatabase::GetItems(const std::string& strBaseDir,
   }
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::MUSICVIDEOS) &&
            mediaType == VideoDbContentType::MUSICVIDEOS)
-    return GetMusicVideosByWhere(strBaseDir, filter, items, true, sortDescription);
+    return GetMusicVideosByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::EPISODES) &&
            mediaType == VideoDbContentType::EPISODES)
-    return GetEpisodesByWhere(strBaseDir, filter, items, true, sortDescription);
+    return GetEpisodesByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::SEASONS) &&
            mediaType == VideoDbContentType::TVSHOWS)
     return GetSeasonsNav(strBaseDir, items);
@@ -8689,7 +8691,21 @@ bool CVideoDatabase::GetMoviesBySet(const std::string& baseDir, CFileItemList& i
   return GetMoviesByWhere(videoUrl.ToString(), filter, items, SortDescription(), VideoDbDetailsAll);
 }
 
-bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
+bool CVideoDatabase::IsUnlocked(const std::string& path) const
+{
+  return m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
+         g_passwordManager.bMasterUser ||
+         g_passwordManager.IsDatabasePathUnlocked(
+             path, CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO));
+}
+
+bool CVideoDatabase::ListVideos(MEDIA::TYPE type,
+                                const std::string& baseDir,
+                                const Filter& filter,
+                                CFileItemList& items,
+                                const SortDescription& sortDescription,
+                                int getDetails,
+                                const ListRows& rows)
 {
   try
   {
@@ -8698,27 +8714,14 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     if (nullptr == m_pDS)
       return false;
 
-    // parse the base path to get additional filters
-    CVideoDbUrl videoUrl;
-    Filter extFilter = filter;
-    SortDescription sorting = sortDescription;
-    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter, sorting))
-      return false;
-
-    const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
-
-    // navigation = from videoversions node
-    const bool videoVersionNav{options.contains("videoversionid")};
-    // navigation = list of assets of the movie
-    const bool assetsNav{options.contains("assetType")};
-    const bool flattenVersions{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS)};
-
     int total = -1;
 
-    std::string strSQL = "select %s from movie_view ";
+    std::string strSQL{"SELECT %s FROM " + std::string{DatabaseUtils::ViewNameOf(type)} + " "};
+    CVideoDbUrl videoUrl;
     std::string strSQLExtra;
-    if (!CDatabase::BuildSQL(strSQLExtra, extFilter, strSQLExtra))
+    Filter extFilter = filter;
+    SortDescription sorting = sortDescription;
+    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
 
     // Apply the limiting directly here if there's no special sorting but limiting
@@ -8732,6 +8735,9 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
 
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
 
+    // Made before the query, as making it can ask the database
+    const ListRow row{rows(videoUrl)};
+
     int iRowsFound = RunQuery(strSQL);
 
     // store the total value of items as a property
@@ -8744,89 +8750,21 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
 
     DatabaseResults results;
     results.reserve(iRowsFound);
-
-    if (!SortUtils::SortFromDataset(sortDescription, MEDIA::TYPE::MOVIE, *m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, type, *m_pDS, results))
       return false;
 
     // get data from returned rows
     items.Reserve(results.size());
     std::vector<CVideoInfoTag*> listTags;
     listTags.reserve(results.size());
-    const query_data &data = m_pDS->get_result_set().records;
-    for (const auto &i : results)
+    const query_data& data = m_pDS->get_result_set().records;
+    for (const auto& i : results)
     {
       const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
-      const dbiplus::sql_record* const record = data.at(targetRow);
-
-      CVideoInfoTag movie = GetDetailsForMovie(record, getDetails & ~LIST_DETAILS);
-      if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
-          g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(
-              movie.m_strPath, CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)))
-      {
-        const auto item{std::make_shared<CFileItem>(movie)};
-
-        std::string path;
-        CVideoDbUrl itemUrl{videoUrl};
-        if (videoVersionNav)
-        {
-          itemUrl.AppendPath(std::to_string(movie.m_iDbId));
-        }
-        else if (assetsNav)
-        {
-          // Display the name of the movie for a collection of movie assets rather than "Assets"
-          if (!items.HasProperty(ITEM::PROPERTY::CUSTOM_TITLE))
-            items.SetProperty(ITEM::PROPERTY::CUSTOM_TITLE, movie.GetTitle());
-
-          if (movie.IsDefaultVideoVersion())
-            item->Select(true);
-
-          itemUrl.AppendPath(std::to_string(movie.m_iFileId));
-
-          // Adjust item fields
-          // Use asset name as label instead of the movie name
-          item->SetLabel(movie.GetAssetInfo().GetTitle());
-        }
-        else
-        {
-          itemUrl.AppendPath(std::to_string(movie.m_iDbId));
-
-          if (flattenVersions && movie.HasVideoVersions())
-          {
-            static std::string versionPath{
-                std::to_string(static_cast<int>(VideoAssetType::VERSION)) + "/"};
-            itemUrl.AppendPath(versionPath);
-            itemUrl.AppendPath(std::to_string(movie.m_iFileId));
-            // for recognition by IsVideoAssetFile()
-            //! @todo figure out a more efficient and robust way
-            itemUrl.AddOption("assetType", static_cast<int>(VideoAssetType::VERSION));
-            //! @todo reset hasvideoversions/hasvideoextras or not? have to let the implementation
-            //! mature to decide.
-            //item->GetVideoInfoTag()->SetHasVideoVersions(false);
-            //item->GetVideoInfoTag()->SetHasVideoExtras(false);
-          }
-          else if (!flattenVersions && (movie.HasVideoVersions() || movie.HasVideoExtras()))
-          {
-            // Turn a movie with versions or extras into a folder item that navigates to a list of
-            // the versions and a virtual Extras folder (special assetType -2 value).
-            static std::string hybridFolderPath{
-                std::to_string(static_cast<int>(VideoAssetType::VERSIONSANDEXTRASFOLDER)) + "/"};
-            item->SetProperty(ITEM::PROPERTY::IS_HYBRID_FOLDER, true);
-            item->SetFolder(true);
-            itemUrl.AppendPath(hybridFolderPath);
-          }
-        }
-
-        item->SetPath(itemUrl.ToString());
-        item->SetDynPath(std::move(movie.m_strFileNameAndPath));
-
-        item->SetOverlayImage(movie.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
-                                                       : CGUIListItem::ICON_OVERLAY_UNWATCHED);
-        items.Add(item);
-        listTags.push_back(item->GetVideoInfoTag());
-      }
+      if (CVideoInfoTag * tag{row(data.at(targetRow), getDetails & ~LIST_DETAILS, items)})
+        listTags.push_back(tag);
     }
-    GetDetailsForList(listTags, MEDIA::TYPE::MOVIE, getDetails);
+    GetDetailsForList(listTags, type, getDetails);
 
     // cleanup
     m_pDS->close();
@@ -8834,9 +8772,101 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "failed");
+    CLog::LogF(LOGERROR, "({}) failed", type);
   }
   return false;
+}
+
+bool CVideoDatabase::GetMoviesByWhere(
+    const std::string& strBaseDir,
+    const Filter& filter,
+    CFileItemList& items,
+    const SortDescription& sortDescription /* = SortDescription() */,
+    int getDetails /* = VideoDbDetailsNone */)
+{
+  const ListRows rows{
+      [this](const CVideoDbUrl& videoUrl) -> ListRow
+      {
+        const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
+
+        // navigation = from videoversions node
+        const bool videoVersionNav{options.contains("videoversionid")};
+        // navigation = list of assets of the movie
+        const bool assetsNav{options.contains("assetType")};
+        const bool flattenVersions{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS)};
+
+        return [this, videoUrl, videoVersionNav, assetsNav,
+                flattenVersions](const dbiplus::sql_record* record, int details,
+                                 CFileItemList& items) -> CVideoInfoTag*
+        {
+          CVideoInfoTag movie = GetDetailsForMovie(record, details);
+          if (!IsUnlocked(movie.m_strPath))
+            return nullptr;
+
+          const auto item{std::make_shared<CFileItem>(movie)};
+
+          CVideoDbUrl itemUrl{videoUrl};
+          if (videoVersionNav)
+          {
+            itemUrl.AppendPath(std::to_string(movie.m_iDbId));
+          }
+          else if (assetsNav)
+          {
+            // Display the name of the movie for a collection of movie assets rather than "Assets"
+            if (!items.HasProperty(ITEM::PROPERTY::CUSTOM_TITLE))
+              items.SetProperty(ITEM::PROPERTY::CUSTOM_TITLE, movie.GetTitle());
+
+            if (movie.IsDefaultVideoVersion())
+              item->Select(true);
+
+            itemUrl.AppendPath(std::to_string(movie.m_iFileId));
+
+            // Adjust item fields
+            // Use asset name as label instead of the movie name
+            item->SetLabel(movie.GetAssetInfo().GetTitle());
+          }
+          else
+          {
+            itemUrl.AppendPath(std::to_string(movie.m_iDbId));
+
+            if (flattenVersions && movie.HasVideoVersions())
+            {
+              static std::string versionPath{
+                  std::to_string(static_cast<int>(VideoAssetType::VERSION)) + "/"};
+              itemUrl.AppendPath(versionPath);
+              itemUrl.AppendPath(std::to_string(movie.m_iFileId));
+              // for recognition by IsVideoAssetFile()
+              //! @todo figure out a more efficient and robust way
+              itemUrl.AddOption("assetType", static_cast<int>(VideoAssetType::VERSION));
+              //! @todo reset hasvideoversions/hasvideoextras or not? have to let the implementation
+              //! mature to decide.
+              //item->GetVideoInfoTag()->SetHasVideoVersions(false);
+              //item->GetVideoInfoTag()->SetHasVideoExtras(false);
+            }
+            else if (!flattenVersions && (movie.HasVideoVersions() || movie.HasVideoExtras()))
+            {
+              // Turn a movie with versions or extras into a folder item that navigates to a list of
+              // the versions and a virtual Extras folder (special assetType -2 value).
+              static std::string hybridFolderPath{
+                  std::to_string(static_cast<int>(VideoAssetType::VERSIONSANDEXTRASFOLDER)) + "/"};
+              item->SetProperty(ITEM::PROPERTY::IS_HYBRID_FOLDER, true);
+              item->SetFolder(true);
+              itemUrl.AppendPath(hybridFolderPath);
+            }
+          }
+
+          item->SetPath(itemUrl.ToString());
+          item->SetDynPath(std::move(movie.m_strFileNameAndPath));
+
+          item->SetOverlayImage(movie.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                         : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+          items.Add(item);
+          return item->GetVideoInfoTag();
+        };
+      }};
+  return ListVideos(MEDIA::TYPE::MOVIE, strBaseDir, filter, items, sortDescription, getDetails,
+                    rows);
 }
 
 bool CVideoDatabase::GetTvShowsNav(const std::string& strBaseDir, CFileItemList& items,
@@ -8868,92 +8898,34 @@ bool CVideoDatabase::GetTvShowsNav(const std::string& strBaseDir, CFileItemList&
 
 bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS)
-      return false;
+  const ListRows rows{[this](const CVideoDbUrl& videoUrl) -> ListRow
+                      {
+                        return [this, videoUrl](const dbiplus::sql_record* record, int details,
+                                                CFileItemList& items) -> CVideoInfoTag*
+                        {
+                          auto pItem = std::make_shared<CFileItem>();
+                          CVideoInfoTag movie = GetDetailsForTvShow(record, details, pItem.get());
+                          if (!IsUnlocked(movie.m_strPath))
+                            return nullptr;
 
-    int total = -1;
+                          pItem->SetFromVideoInfoTag(movie);
 
-    std::string strSQL = "SELECT %s FROM tvshow_view ";
-    CVideoDbUrl videoUrl;
-    std::string strSQLExtra;
-    Filter extFilter = filter;
-    SortDescription sorting = sortDescription;
-    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
-      return false;
+                          CVideoDbUrl itemUrl = videoUrl;
+                          std::string path = StringUtils::Format("{}/", record->at(0).get_asInt());
+                          itemUrl.AppendPath(path);
+                          pItem->SetPath(itemUrl.ToString());
 
-    // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() && sorting.sortBy == SortBy::NONE &&
-        (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
-         (sorting.limitStart == 0 && sorting.limitEnd == 0)))
-    {
-      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
-    }
-
-    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
-
-    int iRowsFound = RunQuery(strSQL);
-
-    // store the total value of items as a property
-    if (total < iRowsFound)
-      total = iRowsFound;
-    items.SetProperty("total", total);
-
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
-
-    DatabaseResults results;
-    results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sorting, MEDIA::TYPE::TV_SHOW, *m_pDS, results))
-      return false;
-
-    // get data from returned rows
-    items.Reserve(results.size());
-    std::vector<CVideoInfoTag*> listTags;
-    listTags.reserve(results.size());
-    const query_data &data = m_pDS->get_result_set().records;
-    for (const auto &i : results)
-    {
-      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
-      const dbiplus::sql_record* const record = data.at(targetRow);
-
-      auto pItem = std::make_shared<CFileItem>();
-      CVideoInfoTag movie = GetDetailsForTvShow(record, getDetails & ~LIST_DETAILS, pItem.get());
-      if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
-          g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(
-              movie.m_strPath, CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)))
-      {
-        pItem->SetFromVideoInfoTag(movie);
-
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = StringUtils::Format("{}/", record->at(0).get_asInt());
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-
-        pItem->SetOverlayImage((pItem->GetVideoInfoTag()->GetPlayCount() > 0) &&
-                                       (pItem->GetVideoInfoTag()->m_iEpisode > 0)
-                                   ? CGUIListItem::ICON_OVERLAY_WATCHED
-                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
-        listTags.push_back(pItem->GetVideoInfoTag());
-        items.Add(std::move(pItem));
-      }
-    }
-    GetDetailsForList(listTags, MEDIA::TYPE::TV_SHOW, getDetails);
-
-    // cleanup
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "failed");
-  }
-  return false;
+                          pItem->SetOverlayImage((pItem->GetVideoInfoTag()->GetPlayCount() > 0) &&
+                                                         (pItem->GetVideoInfoTag()->m_iEpisode > 0)
+                                                     ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                     : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+                          CVideoInfoTag* tag{pItem->GetVideoInfoTag()};
+                          items.Add(std::move(pItem));
+                          return tag;
+                        };
+                      }};
+  return ListVideos(MEDIA::TYPE::TV_SHOW, strBaseDir, filter, items, sortDescription, getDetails,
+                    rows);
 }
 
 bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
@@ -8982,7 +8954,7 @@ bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList
     videoUrl.AddOption("directorid", idDirector);
 
   Filter filter;
-  bool ret = GetEpisodesByWhere(videoUrl.ToString(), filter, items, false, sortDescription, getDetails);
+  bool ret = GetEpisodesByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 
   if (idSeason == -1 && idShow != -1)
   { // add any linked movies
@@ -8999,105 +8971,51 @@ bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList
   return ret;
 }
 
-bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath /* = true */, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
+bool CVideoDatabase::GetEpisodesByWhere(
+    const std::string& strBaseDir,
+    const Filter& filter,
+    CFileItemList& items,
+    const SortDescription& sortDescription /* = SortDescription() */,
+    int getDetails /* = VideoDbDetailsNone */)
 {
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS)
-      return false;
-
-    int total = -1;
-
-    std::string strSQL = "select %s from episode_view ";
-    CVideoDbUrl videoUrl;
-    std::string strSQLExtra;
-    Filter extFilter = filter;
-    SortDescription sorting = sortDescription;
-    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
-      return false;
-
-    // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() && sorting.sortBy == SortBy::NONE &&
-        (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
-         (sorting.limitStart == 0 && sorting.limitEnd == 0)))
-    {
-      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
-    }
-
-    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
-
-    int iRowsFound = RunQuery(strSQL);
-
-    // store the total value of items as a property
-    if (total < iRowsFound)
-      total = iRowsFound;
-    items.SetProperty("total", total);
-
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
-
-    DatabaseResults results;
-    results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sorting, MEDIA::TYPE::EPISODE, *m_pDS, results))
-      return false;
-
-    // get data from returned rows
-    items.Reserve(results.size());
-    CLabelFormatter formatter("%H. %T", "");
-    std::vector<CVideoInfoTag*> listTags;
-    listTags.reserve(results.size());
-
-    const query_data &data = m_pDS->get_result_set().records;
-    for (const auto &i : results)
-    {
-      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
-      const dbiplus::sql_record* const record = data.at(targetRow);
-
-      CVideoInfoTag episode = GetDetailsForEpisode(record, getDetails & ~LIST_DETAILS);
-      if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
-          g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(
-              episode.m_strPath,
-              CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)))
+  const ListRows rows{
+      [this](const CVideoDbUrl& videoUrl) -> ListRow
       {
-        auto pItem = std::make_shared<CFileItem>(episode);
-        formatter.FormatLabel(pItem.get());
+        const auto formatter{std::make_shared<CLabelFormatter>("%H. %T", "")};
+        return [this, videoUrl, formatter](const dbiplus::sql_record* record, int details,
+                                           CFileItemList& items) -> CVideoInfoTag*
+        {
+          CVideoInfoTag episode = GetDetailsForEpisode(record, details);
+          if (!IsUnlocked(episode.m_strPath))
+            return nullptr;
 
-        int idEpisode = record->at(0).get_asInt();
+          auto pItem = std::make_shared<CFileItem>(episode);
+          formatter->FormatLabel(pItem.get());
 
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path;
-        if (appendFullShowPath && videoUrl.GetItemType() != MEDIA::CONTENT::EPISODES)
-          path = StringUtils::Format("{}/{}/{}",
-                                     record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(),
-                                     episode.m_iSeason, idEpisode);
-        else
-          path = std::to_string(idEpisode);
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-        pItem->SetDynPath(std::move(episode.m_strFileNameAndPath));
+          int idEpisode = record->at(0).get_asInt();
 
-        pItem->SetOverlayImage(episode.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
-                                                          : CGUIListItem::ICON_OVERLAY_UNWATCHED);
-        pItem->SetDateTime(episode.m_firstAired);
-        listTags.push_back(pItem->GetVideoInfoTag());
-        items.Add(std::move(pItem));
-      }
-    }
-    GetDetailsForList(listTags, MEDIA::TYPE::EPISODE, getDetails);
+          CVideoDbUrl itemUrl = videoUrl;
+          std::string path;
+          if (videoUrl.GetItemType() != MEDIA::CONTENT::EPISODES)
+            path = StringUtils::Format("{}/{}/{}",
+                                       record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(),
+                                       episode.m_iSeason, idEpisode);
+          else
+            path = std::to_string(idEpisode);
+          itemUrl.AppendPath(path);
+          pItem->SetPath(itemUrl.ToString());
+          pItem->SetDynPath(std::move(episode.m_strFileNameAndPath));
 
-    // cleanup
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "failed");
-  }
-  return false;
+          pItem->SetOverlayImage(episode.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                            : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+          pItem->SetDateTime(episode.m_firstAired);
+          CVideoInfoTag* tag{pItem->GetVideoInfoTag()};
+          items.Add(std::move(pItem));
+          return tag;
+        };
+      }};
+  return ListVideos(MEDIA::TYPE::EPISODE, strBaseDir, filter, items, sortDescription, getDetails,
+                    rows);
 }
 
 bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum, int idTag /* = -1 */, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
@@ -9122,7 +9040,7 @@ bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemL
     videoUrl.AddOption("albumid", idAlbum);
 
   Filter filter;
-  return GetMusicVideosByWhere(videoUrl.ToString(), filter, items, true, sortDescription, getDetails);
+  return GetMusicVideosByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
@@ -9138,7 +9056,7 @@ bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, 
   Filter filter;
   filter.order = "dateAdded desc, idEpisode desc";
   filter.limit = PrepareSQL("%u", limit ? limit : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryRecentlyAddedItems);
-  return GetEpisodesByWhere(strBaseDir, filter, items, false, SortDescription(), getDetails);
+  return GetEpisodesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
@@ -9146,7 +9064,7 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDi
   Filter filter;
   filter.order = "dateAdded desc, idMVideo desc";
   filter.limit = PrepareSQL("%u", limit ? limit : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryRecentlyAddedItems);
-  return GetMusicVideosByWhere(strBaseDir, filter, items, true, SortDescription(), getDetails);
+  return GetMusicVideosByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
 
 bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir,
@@ -10009,109 +9927,58 @@ void CVideoDatabase::GetMusicVideosByAlbum(const std::string& strSearch, CFileIt
   }
 }
 
-bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, bool checkLocks /*= true*/, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
+bool CVideoDatabase::GetMusicVideosByWhere(
+    const std::string& baseDir,
+    const Filter& filter,
+    CFileItemList& items,
+    const SortDescription& sortDescription /* = SortDescription() */,
+    int getDetails /* = VideoDbDetailsNone */)
 {
-  try
-  {
-
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS)
-      return false;
-
-    int total = -1;
-
-    std::string strSQL = "select %s from musicvideo_view ";
-    CVideoDbUrl videoUrl;
-    if (!videoUrl.FromString(baseDir))
-      return false;
-
-    std::string strSQLExtra;
-    const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
-    std::string strArtist;
-    int idArtist = -1;
-    // If we have an artistid then get the artist name and use that to fix up the path displayed in
-    // the GUI (musicvideos/artist-name instead of musicvideos/artistid)
-    auto option = options.find("artistid");
-    if (option != options.end())
-    {
-      idArtist = static_cast<int>(option->second.asInteger());
-      strArtist = GetSingleValue(
-                      PrepareSQL("SELECT name FROM actor where actor_id = '%i'", idArtist), *m_pDS)
-                      .c_str();
-    }
-    Filter extFilter = filter;
-    SortDescription sorting = sortDescription;
-    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
-      return false;
-
-    // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() && sorting.sortBy == SortBy::NONE &&
-        (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
-         (sorting.limitStart == 0 && sorting.limitEnd == 0)))
-    {
-      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
-    }
-
-    strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
-
-    int iRowsFound = RunQuery(strSQL);
-
-    // store the total value of items as a property
-    if (total < iRowsFound)
-      total = iRowsFound;
-    items.SetProperty("total", total);
-
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
-
-    DatabaseResults results;
-    results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sorting, MEDIA::TYPE::MUSIC_VIDEO, *m_pDS, results))
-      return false;
-
-    // get data from returned rows
-    items.Reserve(results.size());
-    // get songs from returned subtable
-    const query_data &data = m_pDS->get_result_set().records;
-    for (const auto &i : results)
-    {
-      const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
-      const dbiplus::sql_record* const record = data.at(targetRow);
-
-      CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record, getDetails);
-      if (!checkLocks || m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
-          g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(
-              musicvideo.m_strPath,
-              CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)))
+  const ListRows rows{
+      [this](const CVideoDbUrl& videoUrl) -> ListRow
       {
-        auto item = std::make_shared<CFileItem>(musicvideo);
+        const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
+        std::string strArtist;
+        // If we have an artistid then get the artist name and use that to fix up the path displayed
+        // in the GUI (musicvideos/artist-name instead of musicvideos/artistid)
+        auto option = options.find("artistid");
+        if (option != options.end())
+        {
+          const int idArtist{static_cast<int>(option->second.asInteger())};
+          strArtist =
+              GetSingleValue(PrepareSQL("SELECT name FROM actor where actor_id = '%i'", idArtist),
+                             *m_pDS)
+                  .c_str();
+        }
 
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = std::to_string(record->at(0).get_asInt());
-        itemUrl.AppendPath(path);
-        item->SetPath(itemUrl.ToString());
-        item->SetDynPath(std::move(musicvideo.m_strFileNameAndPath));
+        return [this, videoUrl, strArtist](const dbiplus::sql_record* record, int details,
+                                           CFileItemList& items) -> CVideoInfoTag*
+        {
+          if (!strArtist.empty() && !items.HasProperty(ITEM::PROPERTY::CUSTOM_TITLE))
+            items.SetProperty(ITEM::PROPERTY::CUSTOM_TITLE, strArtist);
 
-        item->SetOverlayImage(musicvideo.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
-                                                            : CGUIListItem::ICON_OVERLAY_UNWATCHED);
-        items.Add(std::move(item));
-      }
-    }
+          CVideoInfoTag musicvideo = GetDetailsForMusicVideo(record, details);
+          if (!IsUnlocked(musicvideo.m_strPath))
+            return nullptr;
 
-    // cleanup
-    m_pDS->close();
-    if (!strArtist.empty())
-      items.SetProperty(ITEM::PROPERTY::CUSTOM_TITLE, strArtist);
-    return true;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "failed");
-  }
-  return false;
+          auto item = std::make_shared<CFileItem>(musicvideo);
+
+          CVideoDbUrl itemUrl = videoUrl;
+          std::string path = std::to_string(record->at(0).get_asInt());
+          itemUrl.AppendPath(path);
+          item->SetPath(itemUrl.ToString());
+          item->SetDynPath(std::move(musicvideo.m_strFileNameAndPath));
+
+          item->SetOverlayImage(musicvideo.GetPlayCount() > 0
+                                    ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                    : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+          CVideoInfoTag* tag{item->GetVideoInfoTag()};
+          items.Add(std::move(item));
+          return tag;
+        };
+      }};
+  return ListVideos(MEDIA::TYPE::MUSIC_VIDEO, baseDir, filter, items, sortDescription, getDetails,
+                    rows);
 }
 
 unsigned int CVideoDatabase::GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int,int> > &songIDs)
@@ -13265,8 +13132,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string& content,
   else if (content == MEDIA::CONTENT::EPISODES)
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID));
-    GetEpisodesByWhere(VIDEO::DB_PATH::TVSHOW_TITLES, filter, items, true, SortDescription(),
-                       getDetails);
+    GetEpisodesByWhere(VIDEO::DB_PATH::TVSHOW_TITLES, filter, items, SortDescription(), getDetails);
   }
   else if (content == MEDIA::CONTENT::TVSHOWS)
   {
@@ -13276,7 +13142,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string& content,
   else if (content == MEDIA::CONTENT::MUSICVIDEOS)
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID));
-    GetMusicVideosByWhere(VIDEO::DB_PATH::MUSICVIDEO_TITLES, filter, items, true, SortDescription(),
+    GetMusicVideosByWhere(VIDEO::DB_PATH::MUSICVIDEO_TITLES, filter, items, SortDescription(),
                           getDetails);
   }
   for (const auto& item : items)

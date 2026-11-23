@@ -1264,8 +1264,9 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     if (allVideoItems || searchClass.Find("object.item.videoItem.videoBroadcast") >= 0)
     {
-      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(),
-                                       items, true, SortDescription(), requiredVideoDbDetails))
+      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
+                                       CDatabase::Filter(), items, SortDescription(),
+                                       requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
@@ -1281,7 +1282,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     if (allVideoItems || searchClass.Find("object.item.videoItem.musicVideoClip") >= 0)
     {
       if (!database.GetMusicVideosByWhere(std::string{VIDEO::DB_PATH::MUSICVIDEO_TITLES} + "?local",
-                                          CDatabase::Filter(), items, true, SortDescription(),
+                                          CDatabase::Filter(), items, SortDescription(),
                                           requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");

@@ -110,7 +110,7 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
   const CDatabase::Filter musicvideoFilter{"idFile IN (SELECT idFile FROM files WHERE idPath IN (" +
                                            pathIdList + "))"};
   CFileItemList musicvideos;
-  db.GetMusicVideosByWhere("videodb://musicvideos/titles/", musicvideoFilter, musicvideos, true,
+  db.GetMusicVideosByWhere("videodb://musicvideos/titles/", musicvideoFilter, musicvideos,
                            SortDescription(), VideoDbDetailsAll);
 
   // tvshows are refreshed including their episodes
