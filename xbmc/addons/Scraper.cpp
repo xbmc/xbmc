@@ -36,8 +36,8 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 
 #include <algorithm>
 #include <array>
@@ -227,8 +227,7 @@ bool CScraper::IsInUse() const
   }
   else
   { // video scraper
-    CVideoDatabase db;
-    if (db.Open() && db.ScraperInUse(ID()))
+    if (VIDEO::LIBRARY::ScraperInUse(ID()))
       return true;
   }
   return false;

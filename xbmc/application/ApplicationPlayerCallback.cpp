@@ -42,6 +42,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoUtils.h"
 #include "video/geometry/ContentGeometryRecord.h"
 
@@ -598,17 +599,12 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
 void CApplicationPlayerCallback::StoreVideoSettings(const CFileItem& fileItem,
                                                     const CVideoSettings& vs)
 {
-  CVideoDatabase dbs;
-  if (dbs.Open())
+  if (vs != CMediaSettings::GetInstance().GetDefaultVideoSettings())
   {
-    if (vs != CMediaSettings::GetInstance().GetDefaultVideoSettings())
-    {
-      dbs.SetVideoSettings(fileItem, vs);
-    }
-    else
-    {
-      dbs.EraseVideoSettings(fileItem);
-    }
-    dbs.Close();
+    VIDEO::LIBRARY::SetVideoSettings(fileItem, vs);
+  }
+  else
+  {
+    VIDEO::LIBRARY::EraseVideoSettings(fileItem);
   }
 }

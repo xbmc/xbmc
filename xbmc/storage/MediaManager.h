@@ -143,6 +143,9 @@ public:
   std::string GetDiskUniqueId(const std::string& devicePath="");
   bool HasMediaBlurayPlaylist(const std::string& devicePath = "");
 
+  //! \brief The playlist last played from a Blu-ray, by the id GetDiskUniqueId gives. Empty if none.
+  std::string GetRemovableBlurayPlaylist(const std::string& discId) const;
+
   /*! \brief Reset flag for removable bluray playlist status
    * This is needed as HasMediaBlurayPlaylist() is called every screen refresh when
    * the disc node is highlighted.

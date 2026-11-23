@@ -28,6 +28,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
 
@@ -495,12 +496,8 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const CVariant& parameterObject, CVarian
   }
   strPath += "/genres/";
 
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return InternalError;
-
   CFileItemList items;
-  if (!videodatabase.GetGenresNav(strPath, items, idContent))
+  if (!KODI::VIDEO::LIBRARY::GetGenresNav(strPath, items, idContent))
     return InternalError;
 
   /* need to set strTitle in each item*/
@@ -536,12 +533,8 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const CVariant& parameterObject, CVariant&
   }
   strPath += "/tags/";
 
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return InternalError;
-
   CFileItemList items;
-  if (!videodatabase.GetTagsNav(strPath, items, idContent))
+  if (!KODI::VIDEO::LIBRARY::GetTagsNav(strPath, items, idContent))
     return InternalError;
 
   /* need to set strTitle in each item*/

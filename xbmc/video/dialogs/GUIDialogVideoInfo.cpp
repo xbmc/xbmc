@@ -64,6 +64,7 @@
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
@@ -146,12 +147,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20377}, CVariant{20378}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
           {
             m_bRefreshAll = true;
-            CVideoDatabase db;
-            if (db.Open())
-            {
-              db.SetPathHash(m_movieItem->GetVideoInfoTag()->m_strPath,"");
-              db.Close();
-            }
+            VIDEO::LIBRARY::SetPathHash(m_movieItem->GetVideoInfoTag()->m_strPath, "");
           }
           else
             m_bRefreshAll = false;
@@ -358,14 +354,16 @@ void CGUIDialogVideoInfo::SaveUserrating()
   if (m_startUserrating == m_movieItem->GetVideoInfoTag()->m_iUserRating)
     return;
 
-  CVideoDatabase db;
-  if (db.Open())
+  if (VIDEO::LIBRARY::WithDatabase(
+          [this](CVideoDatabase& db)
+          {
+            db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId,
+                                  m_movieItem->GetVideoInfoTag()->m_iUserRating,
+                                  m_movieItem->GetVideoInfoTag()->GetMediaType());
+            return true;
+          }))
   {
     m_hasUpdatedUserrating = true;
-    db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId,
-                          m_movieItem->GetVideoInfoTag()->m_iUserRating,
-                          m_movieItem->GetVideoInfoTag()->GetMediaType());
-    db.Close();
     m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
   }
 }
@@ -387,10 +385,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   if (VIDEO::IsVideoAssetFile(*item) &&
       item->GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
   {
-    CVideoDatabase database;
     KODI::ART::Artwork art;
-    if (database.Open() &&
-        database.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, MEDIA::TYPE::MOVIE, art))
+    if (VIDEO::LIBRARY::GetArtForItem(item->GetVideoInfoTag()->m_iDbId, MEDIA::TYPE::MOVIE, art))
     {
       for (const auto& [artType, url] : art)
       {
@@ -448,11 +444,9 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   }
   else if (type == MEDIA::TYPE::VIDEO_COLLECTION)
   {
-    CVideoDatabase database;
-    database.Open();
-    database.GetMoviesNav(m_movieItem->GetPath(), *m_castList, -1, -1, -1, -1, -1, -1,
-                          m_movieItem->GetVideoInfoTag()->m_set.GetID(), -1, SortDescription(),
-                          VideoDbDetailsAll);
+    VIDEO::LIBRARY::GetMoviesNav(m_movieItem->GetPath(), *m_castList, -1, -1, -1, -1, -1, -1,
+                                 m_movieItem->GetVideoInfoTag()->m_set.GetID(), -1,
+                                 SortDescription(), VideoDbDetailsAll);
     m_castList->Sort(SortBy::SORT_TITLE, SortOrder::DESCENDING);
     CVideoThumbLoader loader;
     for (auto& item : *m_castList)
@@ -1619,10 +1613,6 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   if (setItem == nullptr || !setItem->HasVideoInfoTag())
     return false;
 
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-    return false;
-
   std::string baseDir =
       StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_SETS, setItem->GetVideoInfoTag()->m_iDbId);
 
@@ -1631,8 +1621,8 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
     return false;
 
   CFileItemList listItems;
-  if (!videodb.GetSortedVideos(MEDIA::TYPE::MOVIE, VIDEO::DB_PATH::MOVIES, SortDescription(),
-                               listItems) ||
+  if (!VIDEO::LIBRARY::GetSortedVideos(MEDIA::TYPE::MOVIE, VIDEO::DB_PATH::MOVIES,
+                                       SortDescription(), listItems) ||
       listItems.Size() <= 0)
     return false;
 
@@ -1796,12 +1786,13 @@ bool CGUIDialogVideoInfo::SetMovieSet(const CFileItem *movieItem, const CFileIte
       selectedSet == nullptr || !selectedSet->HasVideoInfoTag())
     return false;
 
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-    return false;
-
-  videodb.SetMovieSet(movieItem->GetVideoInfoTag()->m_iDbId, selectedSet->GetVideoInfoTag()->m_iDbId);
-  return true;
+  return VIDEO::LIBRARY::WithDatabase(
+      [movieItem, selectedSet](CVideoDatabase& db)
+      {
+        db.SetMovieSet(movieItem->GetVideoInfoTag()->m_iDbId,
+                       selectedSet->GetVideoInfoTag()->m_iDbId);
+        return true;
+      });
 }
 
 bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag /* = -1 */, bool showAll /* = true */)

@@ -49,7 +49,7 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 
 #ifdef HAS_OPTICAL_DRIVE
 #ifndef TARGET_WINDOWS
@@ -1117,6 +1117,11 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   return strID;
 }
 
+std::string CMediaManager::GetRemovableBlurayPlaylist(const std::string& discId) const
+{
+  return KODI::VIDEO::LIBRARY::GetRemovableBlurayPath(discId);
+}
+
 bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
 {
 #ifdef HAVE_LIBBLURAY
@@ -1139,15 +1144,9 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
     if (!GetCdInfo("", true, true))
       return false;
 #endif
-    const std::string blurayPath{GetDiskUniqueId()};
-    CVideoDatabase db;
-    if (db.Open())
-    {
-      const std::string path{db.GetRemovableBlurayPath(blurayPath)};
-      db.Close();
-      m_hasBlurayPlaylist = path.empty() ? HasBlurayPlaylist::NO : HasBlurayPlaylist::YES;
-      return !path.empty();
-    }
+    const std::string path{GetRemovableBlurayPlaylist(GetDiskUniqueId())};
+    m_hasBlurayPlaylist = path.empty() ? HasBlurayPlaylist::NO : HasBlurayPlaylist::YES;
+    return !path.empty();
   }
   m_hasBlurayPlaylist = HasBlurayPlaylist::NO;
 #endif

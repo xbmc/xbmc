@@ -58,6 +58,7 @@
 #include "video/FilenameAttributes.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
@@ -1467,11 +1468,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // Record where each part ends, so that playback does not have to derive the durations again
       // (a resolved bluray:// playlist cannot be demuxed for its duration)
-      if (CVideoDatabase db; db.Open())
-        db.SetStackTimes(stackPath, times);
-      else
-        CLog::LogF(LOGERROR, "Unable to open the video database to store the stack times for {}",
-                   CURL::GetRedacted(stackPath));
+      LIBRARY::SetStackTimes(stackPath, times);
     }
     else
       CLog::LogF(LOGDEBUG,
