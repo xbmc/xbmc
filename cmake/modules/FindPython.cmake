@@ -21,12 +21,23 @@
 #   ${APP_NAME_LC}::Python - The Python library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  # for Depends/Windows builds, set search root dir to libdir path
-  if(KODI_DEPENDSBUILD
-     OR CMAKE_SYSTEM_NAME STREQUAL WINDOWS
-     OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+  # for Depends builds, set search root dir to libdir path
+  if(KODI_DEPENDSBUILD)
     set(Python3_USE_STATIC_LIBS TRUE)
     set(Python3_ROOT_DIR ${libdir})
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Windows OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+    # Always use the prebuilt (patched) dependency, never a host installed Python.
+    # The exact version is required as FindPython3 may not know newer versions.
+    set(Python3_ROOT_DIR ${DEPENDS_PATH})
+    set(Python3_FIND_REGISTRY NEVER)
+    file(GLOB _python_include_dir LIST_DIRECTORIES true ${DEPENDS_PATH}/include/python3.*)
+    if(_python_include_dir)
+      list(GET _python_include_dir 0 _python_include_dir)
+      get_filename_component(_python_include_dir ${_python_include_dir} NAME)
+      string(REPLACE "python" "" VERSION ${_python_include_dir})
+      set(EXACT_VER "EXACT")
+    endif()
+    unset(_python_include_dir)
   endif()
 
   # Provide root dir to search for Python if provided
