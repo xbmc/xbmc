@@ -37,16 +37,12 @@ std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS);
 
-  for (int i = 0; i < imagesInFolder.Size();)
-  {
-    if (!imagesInFolder[i]->IsPicture() || imagesInFolder[i]->IsZIP() ||
-        imagesInFolder[i]->IsRAR() || PLAYLIST::IsPlayList(*imagesInFolder[i]))
-    {
-      imagesInFolder.Remove(i);
-    }
-    else
-      i++;
-  }
+  erase_if(imagesInFolder,
+           [](const std::shared_ptr<CFileItem>& item)
+           {
+             return !item->IsPicture() || item->IsZIP() || item->IsRAR() ||
+                    PLAYLIST::IsPlayList(*item);
+           });
   if (imagesInFolder.IsEmpty())
   {
     return {};
