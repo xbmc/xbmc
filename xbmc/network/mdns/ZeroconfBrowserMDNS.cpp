@@ -84,8 +84,8 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
     }
     if(! (flags & kDNSServiceFlagsMoreComing) )
     {
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
-                                                         CVariant{"zeroconf://"});
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Updated{"zeroconf://"}});
       CLog::Log(
           LOGDEBUG,
           "ZeroconfBrowserMDNS::BrowserCallback sent source update announce for path zeroconf://");

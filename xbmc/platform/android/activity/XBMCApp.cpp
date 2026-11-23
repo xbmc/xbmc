@@ -194,53 +194,42 @@ CXBMCApp::~CXBMCApp()
 {
 }
 
-void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                        const std::string& sender,
-                        const std::string& message,
-                        const CVariant& data)
+void CXBMCApp::OnInputEvent(const ANNOUNCEMENT::InputEvent& event)
 {
-  if (sender != CAnnouncementManager::ANNOUNCEMENT_SENDER)
-    return;
+  CAndroidKey::SetHandleSearchKeys(
+      std::holds_alternative<ANNOUNCEMENT::EVENT::INPUT::Requested>(event));
+}
 
-  if (flag & Input)
+void CXBMCApp::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
+{
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  if (std::holds_alternative<PLAYER::Play>(event) || std::holds_alternative<PLAYER::Resume>(event))
+    OnPlayBackStarted();
+  else if (std::holds_alternative<PLAYER::Pause>(event))
+    OnPlayBackPaused();
+  else if (std::holds_alternative<PLAYER::Stop>(event))
+    OnPlayBackStopped();
+  else if (std::holds_alternative<PLAYER::Seek>(event))
   {
-    if (message == "OnInputRequested")
-      CAndroidKey::SetHandleSearchKeys(true);
-    else if (message == "OnInputFinished")
-      CAndroidKey::SetHandleSearchKeys(false);
+    m_mediaSessionUpdated = false;
+    UpdateSessionState();
   }
-  else if (flag & Player)
+  else if (std::holds_alternative<PLAYER::SpeedChanged>(event))
   {
-    if (message == "OnPlay" || message == "OnResume")
-      OnPlayBackStarted();
-    else if (message == "OnPause")
-      OnPlayBackPaused();
-    else if (message == "OnStop")
-      OnPlayBackStopped();
-    else if (message == "OnSeek")
-    {
-      m_mediaSessionUpdated = false;
-      UpdateSessionState();
-    }
-    else if (message == "OnSpeedChanged")
-    {
-      m_mediaSessionUpdated = false;
-      UpdateSessionState();
-    }
-    else if (message == "OnAVStart")
-    {
-      m_mediaSessionUpdated = false;
-      UpdateSessionState();
-    }
+    m_mediaSessionUpdated = false;
+    UpdateSessionState();
   }
-  else if (flag & Info)
+  else if (std::holds_alternative<PLAYER::AVStart>(event))
   {
-    if (message == "OnChanged")
-    {
-      m_mediaSessionUpdated = false;
-      UpdateSessionMetadata();
-    }
+    m_mediaSessionUpdated = false;
+    UpdateSessionState();
   }
+}
+
+void CXBMCApp::OnInfoEvent(const ANNOUNCEMENT::InfoEvent&)
+{
+  m_mediaSessionUpdated = false;
+  UpdateSessionMetadata();
 }
 
 void CXBMCApp::onStart()

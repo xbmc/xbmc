@@ -20,6 +20,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementV14.h"
 #include "language/LanguageLoader.h"
 #include "playlists/SmartPlayList.h"
 #include "resources/LocalizeStrings.h"
@@ -50,7 +51,6 @@
 #include <algorithm>
 #include <chrono>
 #include <filesystem>
-#include <iterator>
 #include <map>
 #include <memory>
 #include <set>
@@ -1462,25 +1462,36 @@ public:
 
   long CountUpdated(const std::string& type, int id) const { return Count("OnUpdate", type, id); }
 
-  std::vector<CAnnounceData> Files() const
+  //! A Files announcement, as its message and the data JSON-RPC and Python are given
+  struct FileAnnouncement
   {
-    std::vector<CAnnounceData> files;
-    std::ranges::copy_if(m_announcementQueue, std::back_inserter(files),
-                         [](const CAnnounceData& announcement)
-                         { return announcement.flag == ANNOUNCEMENT::Files; });
+    std::string message;
+    CVariant data;
+  };
+
+  std::vector<FileAnnouncement> Files() const
+  {
+    std::vector<FileAnnouncement> files;
+    for (const ANNOUNCEMENT::Announcement& announcement : m_announcementQueue)
+    {
+      if (ANNOUNCEMENT::FlagOf(announcement) == ANNOUNCEMENT::Files)
+        files.push_back({ANNOUNCEMENT::MessageOf(announcement),
+                         ANNOUNCEMENT::V14::NotificationsOf(announcement).at(0).data});
+    }
     return files;
   }
 
 private:
   long Count(const std::string& message, const std::string& type, int id) const
   {
-    return std::ranges::count_if(m_announcementQueue,
-                                 [&message, &type, id](const CAnnounceData& announcement)
-                                 {
-                                   return announcement.message == message &&
-                                          announcement.data["type"].asString() == type &&
-                                          announcement.data["id"].asInteger() == id;
-                                 });
+    return std::ranges::count_if(
+        m_announcementQueue,
+        [&message, &type, id](const ANNOUNCEMENT::Announcement& announcement)
+        {
+          const CVariant data{ANNOUNCEMENT::V14::NotificationsOf(announcement).at(0).data};
+          return ANNOUNCEMENT::MessageOf(announcement) == message &&
+                 data["type"].asString() == type && data["id"].asInteger() == id;
+        });
   }
 };
 } // namespace

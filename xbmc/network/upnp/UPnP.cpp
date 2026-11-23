@@ -170,15 +170,15 @@ public:
   // PLT_MediaBrowser methods
   bool OnMSAdded(PLT_DeviceDataReference& device) override
   {
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnAdded",
-                                                       CVariant{"upnp://"});
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Added{"upnp://"}});
 
     return PLT_SyncMediaBrowser::OnMSAdded(device);
   }
   void OnMSRemoved(PLT_DeviceDataReference& device) override
   {
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnRemoved",
-                                                       CVariant{"upnp://"});
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Removed{"upnp://"}});
 
     PLT_SyncMediaBrowser::OnMSRemoved(device);
   }
@@ -197,8 +197,8 @@ public:
     }
 
     m_logger->debug("notified container update {}", (const char*)path);
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
-                                                       CVariant{path.GetChars()});
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Updated{path.GetChars()}});
   }
 
   bool MarkWatched(const CFileItem& item, const bool watched)

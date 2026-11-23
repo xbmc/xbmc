@@ -23,7 +23,6 @@
 #include <string>
 
 class CFileItemList;
-class CVariant;
 
 class CGUIWindowSlideShow;
 
@@ -103,10 +102,7 @@ public:
   int GetDirection() const override { return m_iDirection; }
 
   // implementation of IAnnouncer
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
 
   bool OnMessage(CGUIMessage& message) override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
@@ -166,7 +162,7 @@ private:
   void AnnouncePlayerStop(const CFileItemPtr& item);
   void AnnouncePlaylistClear();
   void AnnouncePlaylistAdd(const CFileItemPtr& item, int pos);
-  void AnnouncePropertyChanged(const std::string &strProperty, const CVariant &value);
+  void AnnounceShuffled();
 
   int m_iCurrentSlide;
   int m_iNextSlide;

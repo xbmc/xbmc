@@ -21,7 +21,6 @@
 class CFileItem;
 class CFileItemList;
 class CThumbLoader;
-class CVariant;
 class PLT_MediaObject;
 class PLT_HttpRequestContext;
 
@@ -35,10 +34,8 @@ class CUPnPServer : public PLT_MediaConnect,
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
     ~CUPnPServer() override;
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                  const std::string& sender,
-                  const std::string& message,
-                  const CVariant& data) override;
+    void OnVideoLibraryEvent(const ANNOUNCEMENT::VideoLibraryEvent& event) override;
+    void OnAudioLibraryEvent(const ANNOUNCEMENT::AudioLibraryEvent& event) override;
 
     // PLT_MediaServer methods
     NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
@@ -109,6 +106,8 @@ public:
 
 
   private:
+    void OnLibraryEvent(const ANNOUNCEMENT::LibraryEvent& event,
+                        ANNOUNCEMENT::AnnouncementFlag library);
     void OnScanCompleted(int type);
     void UpdateContainer(const std::string& id);
     void PropagateUpdates();

@@ -40,14 +40,11 @@ namespace
 class CFloodAnnouncer : public ANNOUNCEMENT::IAnnouncer
 {
 public:
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override
+  void OnOtherEvent(const ANNOUNCEMENT::OtherEvent& event) override
   {
-    if (message == "flood")
+    if (event.message == "flood")
       m_announced.Set();
-    else if (message == "barrier")
+    else if (event.message == "barrier")
       m_barrierDispatched.Set();
   }
 
@@ -400,7 +397,7 @@ TEST_F(TestTCPServer, APeerThatStopsReadingHoldsUpNoAnnouncement)
   bool floodDispatched = true;
   for (int i = 0; i < 400; ++i)
   {
-    manager->Announce(ANNOUNCEMENT::Other, "test", "flood", data);
+    manager->Announce(ANNOUNCEMENT::OtherEvent{"test", "flood", data});
     // Time delivery after the flood, rather than timing the serialization of all its data.
     if (!m_progress.m_announced.Wait(5s))
     {
@@ -409,11 +406,11 @@ TEST_F(TestTCPServer, APeerThatStopsReadingHoldsUpNoAnnouncement)
     }
   }
   // A later queue entry proves all callbacks for the flood have finished.
-  manager->Announce(ANNOUNCEMENT::Other, "test", "barrier", CVariant{});
+  manager->Announce(ANNOUNCEMENT::OtherEvent{"test", "barrier", CVariant{}});
   const bool barrierDispatched = m_progress.m_barrierDispatched.Wait(5s);
-  manager->Announce(ANNOUNCEMENT::Info, "test", "marker", CVariant{});
+  manager->Announce(ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::ScreensaverActivated{}});
 
-  const bool delivered = ReadUntil(listener, "marker", 5s);
+  const bool delivered = ReadUntil(listener, "GUI.OnScreensaverActivated", 5s);
 
   std::promise<void> stopped;
   auto done = stopped.get_future();

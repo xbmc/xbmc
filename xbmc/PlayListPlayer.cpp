@@ -611,7 +611,8 @@ void CPlayListPlayer::SetShuffle(Id playlistId, bool bYesNo, bool bNotify /* = f
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
   }
 
-  AnnouncePropertyChanged(playlistId, "shuffled", IsShuffled(playlistId));
+  AnnouncePropertyChanged(playlistId,
+                          {TypeFromId(playlistId), IsShuffled(playlistId), std::nullopt});
 }
 
 bool CPlayListPlayer::IsShuffled(Id playlistId) const
@@ -653,20 +654,6 @@ void CPlayListPlayer::SetRepeat(Id playlistId, RepeatState state, bool bNotify /
 
   m_repeatState[playlistId] = state;
 
-  CVariant data;
-  switch (state)
-  {
-    case RepeatState::ONE:
-      data = "one";
-      break;
-    case RepeatState::ALL:
-      data = "all";
-      break;
-    default:
-      data = "off";
-      break;
-  }
-
   // its likely that the playlist changed
   if (CServiceBroker::GetGUI() != nullptr)
   {
@@ -674,7 +661,8 @@ void CPlayListPlayer::SetRepeat(Id playlistId, RepeatState state, bool bNotify /
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
   }
 
-  AnnouncePropertyChanged(playlistId, "repeat", data);
+  AnnouncePropertyChanged(playlistId,
+                          {TypeFromId(playlistId), std::nullopt, RepeatFromState(state)});
 }
 
 RepeatState CPlayListPlayer::GetRepeat(Id playlistId) const
@@ -840,23 +828,19 @@ void CPlayListPlayer::Swap(Id playlistId, int indexItem1, int indexItem2)
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
-void CPlayListPlayer::AnnouncePropertyChanged(Id playlistId,
-                                              const std::string& strProperty,
-                                              const CVariant& value)
+// Temporary: maps the v14 playlist id to the events' playlist, until the playlist rewrite
+// replaces the playlist player.
+void CPlayListPlayer::AnnouncePropertyChanged(
+    Id playlistId, const ANNOUNCEMENT::EVENT::PLAYLIST::PropertiesChanged& changed)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  if (strProperty.empty() || value.isNull() ||
-      (playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
+  if (!changed.playList || (playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
       (playlistId == Id::TYPE_MUSIC && !appPlayer->IsPlayingAudio()))
     return;
 
-  CVariant data;
-  data["player"]["playerid"] = static_cast<int>(playlistId);
-  data["property"][strProperty] = value;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlaylistEvent{changed});
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()

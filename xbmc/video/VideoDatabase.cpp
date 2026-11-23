@@ -7165,14 +7165,14 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
     // We only need to announce changes to video items in the library
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
     {
-      CVariant data;
-      if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
-        data["transaction"] = true;
+      ANNOUNCEMENT::EVENT::LIBRARY::Update update{
+          .item = std::make_shared<CFileItem>(item),
+          .transaction = CVideoLibraryQueue::GetInstance().IsScanningLibrary()};
       // Only provide the "playcount" value if it has actually changed
       if (item.GetVideoInfoTag()->GetPlayCount() != count)
-        data["playcount"] = count;
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                         std::make_shared<CFileItem>(item), data);
+        update.playCount = count;
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::VideoLibraryEvent{std::move(update)});
     }
 
     return lastPlayed;
@@ -10777,8 +10777,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
 
     auto start = std::chrono::steady_clock::now();
     CLog::Log(LOGINFO, "Starting videodatabase cleanup ..");
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                                                       "OnCleanStarted");
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::CleanStarted{}});
 
     if (handle)
     {
@@ -10913,8 +10913,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
             progress->Close();
             m_pDS2->close();
             RollbackTransaction();
-            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                                                               "OnCleanFinished");
+            CServiceBroker::GetAnnouncementManager()->Announce(
+                ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::CleanFinished{}});
             return;
           }
         }
@@ -11511,7 +11511,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
   if (progress)
     progress->Close();
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnCleanFinished");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::CleanFinished{}});
 }
 
 std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
@@ -12571,19 +12572,19 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
       xmlDoc.SaveFile(xmlFile);
     }
-    CVariant data;
+    ANNOUNCEMENT::EVENT::LIBRARY::Export exported;
 
     CLog::LogF(LOGDEBUG, "... Finished");
 
     if (singleFile)
     {
-      data["root"] = exportRoot;
-      data["file"] = xmlFile;
+      exported.root = exportRoot;
+      exported.file = xmlFile;
       if (iFailCount > 0)
-        data["failcount"] = iFailCount;
+        exported.failCount = iFailCount;
     }
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnExport",
-                                                       data);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{std::move(exported)});
   }
   catch (...)
   {
@@ -13206,12 +13207,8 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
 
 void CVideoDatabase::AnnounceRemove(MEDIA::TYPE content, int id, bool scanning /* = false */)
 {
-  CVariant data;
-  data["type"] = NameOf(content);
-  data["id"] = id;
-  if (scanning)
-    data["transaction"] = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRemove", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Remove{content, id, scanning}});
 }
 
 void CVideoDatabase::AnnounceUpdate(MEDIA::TYPE content, int id)
@@ -13221,10 +13218,12 @@ void CVideoDatabase::AnnounceUpdate(MEDIA::TYPE content, int id)
 
 void CVideoDatabase::AnnounceUpdate(const std::string& mediaType, int id)
 {
-  CVariant data;
-  data["type"] = mediaType;
-  data["id"] = id;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate", data);
+  const MEDIA::TYPE type{MEDIA::MediaTypeOf(mediaType)};
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Update{
+          .type = type,
+          .otherType = type == MEDIA::TYPE::NONE ? mediaType : std::string{},
+          .id = id}});
 }
 
 bool CVideoDatabase::GetItemsForPath(const std::string& content,

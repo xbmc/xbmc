@@ -105,10 +105,7 @@ public:
    */
   ~CPVRManager() override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event) override;
 
   /*!
    * @brief Get a PVR component.

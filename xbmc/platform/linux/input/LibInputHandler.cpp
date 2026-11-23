@@ -116,21 +116,15 @@ CLibInputHandler::~CLibInputHandler()
   udev_unref(m_udev);
 }
 
-void CLibInputHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                const std::string& sender,
-                                const std::string& message,
-                                const CVariant& data)
+void CLibInputHandler::OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event)
 {
-  if (flag & (ANNOUNCEMENT::System))
+  if (std::holds_alternative<ANNOUNCEMENT::EVENT::SYSTEM::Sleep>(event))
+    libinput_suspend(m_li);
+  else if (std::holds_alternative<ANNOUNCEMENT::EVENT::SYSTEM::Wake>(event))
   {
-    if (message == "OnSleep")
-      libinput_suspend(m_li);
-    else if (message == "OnWake")
-    {
-      auto ret = libinput_resume(m_li);
-      if (ret < 0)
-        CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to resume monitoring", __FUNCTION__);
-    }
+    auto ret = libinput_resume(m_li);
+    if (ret < 0)
+      CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to resume monitoring", __FUNCTION__);
   }
 }
 

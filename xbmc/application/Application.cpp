@@ -1710,10 +1710,8 @@ bool CApplication::Stop(int exitCode)
   if (CGUIComponent* gui = CServiceBroker::GetGUI();
       gui && gui->GetWindowManager().RemoveThreadMessageByMessageIds(playbackStopped.data()) > 0)
   {
-    CVariant data(CVariant::VariantTypeObject);
-    data["end"] = false;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
-                                                       CurrentFileItemPtr(), data);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+        ANNOUNCEMENT::EVENT::PLAYER::Stop{CurrentFileItemPtr(), false, std::nullopt}});
 #ifdef HAS_PYTHON
     CServiceBroker::GetXBPython().OnPlayBackStopped();
 #endif
@@ -1739,9 +1737,8 @@ bool CApplication::Stop(int exitCode)
   {
     m_frameMoveGuard.unlock();
 
-    CVariant vExitCode(CVariant::VariantTypeObject);
-    vExitCode["exitcode"] = exitCode;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "OnQuit", vExitCode);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::SystemEvent{ANNOUNCEMENT::EVENT::SYSTEM::Quit{exitCode}});
 
     // Abort any active screensaver
     GetComponent<CApplicationPowerHandling>()->WakeUpScreenSaverAndDPMS();

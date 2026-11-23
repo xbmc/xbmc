@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "media/MediaStreams.h"
+
 #include <algorithm>
 #include <cctype>
 #include <optional>
@@ -180,6 +182,36 @@ enum class ExcludeUsedPlaylists : bool
   DONT_EXCLUDE_USED_PLAYLISTS,
   EXCLUDE_USED_PLAYLISTS
 };
+
+// Temporary: names a playlist id as the events do, until the playlist rewrite removes Id and
+// RepeatState.
+constexpr std::optional<Type> TypeFromId(Id id)
+{
+  if (id == Id::TYPE_VIDEO)
+    return Video;
+  if (id == Id::TYPE_MUSIC)
+    return Audio;
+  return std::nullopt;
+}
+
+constexpr MEDIA::Streams StreamsFromId(Id id)
+{
+  return id == Id::TYPE_MUSIC ? MEDIA::Streams::Audio : MEDIA::Streams::Video;
+}
+
+constexpr Repeat RepeatFromState(RepeatState state)
+{
+  switch (state)
+  {
+    case RepeatState::ONE:
+      return Repeat::One;
+    case RepeatState::ALL:
+      return Repeat::All;
+    case RepeatState::NONE:
+      break;
+  }
+  return Repeat::Off;
+}
 
 } // namespace KODI::PLAYLIST
 

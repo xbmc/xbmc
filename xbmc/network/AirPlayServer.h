@@ -22,18 +22,13 @@
 
 #include <sys/socket.h>
 
-class CVariant;
-
 #define AIRPLAY_SERVER_VERSION_STR "101.28"
 
 class CAirPlayServer : public CThread, public ANNOUNCEMENT::IAnnouncer
 {
 public:
   // IAnnouncer IF
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
 
   //AirPlayServer impl.
   static bool StartServer(int port, bool nonlocal);
