@@ -1,15 +1,5 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -324,6 +324,9 @@
- 	*-*-linux*)
- 		ac_sys_system=Linux
- 		;;
-+	*-*-darwin*)
-+		ac_sys_system=Darwin
-+		;;
- 	*-*-cygwin*)
- 		ac_sys_system=Cygwin
- 		;;
 @@ -774,6 +777,8 @@
  	*-*-cygwin*)
  		_host_ident=

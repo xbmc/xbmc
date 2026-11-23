@@ -1,17 +1,17 @@
 --- a/lib/Crypto/Util/_file_system.py
 +++ b/lib/Crypto/Util/_file_system.py
-@@ -28,7 +28,7 @@
- # POSSIBILITY OF SUCH DAMAGE.
- # ===================================================================
+@@ -3,7 +3,7 @@
+ 
+ from __future__ import annotations
  
 -import os
 +import os, sys
  
  
- def pycryptodome_filename(dir_comps, filename):
-@@ -45,10 +45,8 @@ def pycryptodome_filename(dir_comps, filename):
-     if dir_comps[0] != "Cryptodome":
-         raise ValueError("Only available for modules under 'Cryptodome'")
+ def pycryptodome_filename(dir_comps: list[str], filename: str) -> str:
+@@ -20,9 +20,7 @@
+     if dir_comps[0] != "Crypto":
+         raise ValueError("Only available for modules under 'Crypto'")
  
 -    dir_comps = list(dir_comps[1:]) + [filename]
 -
@@ -23,4 +23,3 @@
 +    libStem, _ = os.path.splitext(filename)
 +    pyFramework = f"{'.'.join(dir_comps)}.{libStem}"
 +    return os.path.join(appBundlePath, "Frameworks", f"{pyFramework}.framework", pyFramework)
- 
