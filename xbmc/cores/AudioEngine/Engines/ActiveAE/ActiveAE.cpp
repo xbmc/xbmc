@@ -2130,7 +2130,8 @@ bool CActiveAE::RunStages()
 
   // TrueHD is very jumpy, meaning the frames don't come in equidistantly. They are only smoothed
   // at the end when the IEC packing happens. Therefore adjust earlier.
-  const bool isTrueHDPassthrough{IsTrueHDPassthrough()};
+  const bool isTrueHDPassthrough =
+      (m_mode == MODE_RAW && m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
   if (m_settings.lowLatencyMode)
   {
@@ -2559,12 +2560,6 @@ bool CActiveAE::HasWork()
   }
 
   return false;
-}
-
-bool CActiveAE::IsTrueHDPassthrough() const
-{
-  return m_mode == MODE_RAW &&
-         m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD;
 }
 
 CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
