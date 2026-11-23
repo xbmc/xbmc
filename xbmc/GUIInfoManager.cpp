@@ -7090,6 +7090,24 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     now the language tag itself\, where it was an ISO 639-2 three character code
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.AudioLanguageName`</b>,
+///                  \anchor ListItem_AudioLanguageName
+///                  _string_,
+///     @return The English name of the language at \ref ListItem_AudioLanguage
+///     "ListItem.AudioLanguage" (e.g. English).
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link ListItem_AudioLanguageName `ListItem.AudioLanguageName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.SubtitleLanguageName`</b>,
+///                  \anchor ListItem_SubtitleLanguageName
+///                  _string_,
+///     @return The English name of the language at \ref ListItem_SubtitleLanguage
+///     "ListItem.SubtitleLanguage" (e.g. English).
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link ListItem_SubtitleLanguageName `ListItem.SubtitleLanguageName`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.FirstAudioLanguage`</b>,
 ///                  \anchor ListItem_FirstAudioLanguage
 ///                  _string_,
@@ -8172,7 +8190,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 244> listitem_labels = {{
+constexpr std::array<InfoMap, 246> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -8305,6 +8323,8 @@ constexpr std::array<InfoMap, 244> listitem_labels = {{
     {"audiochannels",                 LISTITEM_AUDIO_CHANNELS},
     {"audiolanguage",                 LISTITEM_AUDIO_LANGUAGE},
     {"subtitlelanguage",              LISTITEM_SUBTITLE_LANGUAGE},
+    {"audiolanguagename",             LISTITEM_AUDIO_LANGUAGE_NAME},
+    {"subtitlelanguagename",          LISTITEM_SUBTITLE_LANGUAGE_NAME},
     {"firstaudiolanguage",          LISTITEM_FIRST_AUDIO_LANGUAGE},
     {"firstsubtitlelanguage",       LISTITEM_FIRST_SUBTITLE_LANGUAGE},
     {"firstaudiocodec",             LISTITEM_FIRST_AUDIO_CODEC},
