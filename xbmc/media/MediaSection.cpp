@@ -8,44 +8,45 @@
 
 #include "MediaSection.h"
 
+#include <algorithm>
+#include <array>
+
 namespace KODI::MEDIA
 {
 
+namespace
+{
+struct SectionName
+{
+  MediaSection section;
+  std::string_view name;
+};
+
+// Each section's own name first; the later rows are aliases the parser also accepts.
+constexpr std::array<SectionName, 8> SECTION_NAMES{{
+    {MediaSection::VIDEO, "video"},
+    {MediaSection::MUSIC, "music"},
+    {MediaSection::PICTURES, "pictures"},
+    {MediaSection::FILES, "files"},
+    {MediaSection::PROGRAMS, "programs"},
+    {MediaSection::GAMES, "games"},
+    {MediaSection::VIDEO, "videos"},
+    {MediaSection::PROGRAMS, "myprograms"},
+}};
+} // unnamed namespace
+
 std::string_view NameOf(MediaSection section)
 {
-  switch (section)
-  {
-    case MediaSection::VIDEO:
-      return "video";
-    case MediaSection::MUSIC:
-      return "music";
-    case MediaSection::PICTURES:
-      return "pictures";
-    case MediaSection::FILES:
-      return "files";
-    case MediaSection::PROGRAMS:
-      return "programs";
-    case MediaSection::GAMES:
-      return "games";
-  }
-  return {};
+  const auto it = std::ranges::find(SECTION_NAMES, section, &SectionName::section);
+  return it == SECTION_NAMES.end() ? std::string_view{} : it->name;
 }
 
 std::optional<MediaSection> MediaSectionFromName(std::string_view name)
 {
-  if (name == "video" || name == "videos")
-    return MediaSection::VIDEO;
-  if (name == "music")
-    return MediaSection::MUSIC;
-  if (name == "pictures")
-    return MediaSection::PICTURES;
-  if (name == "files")
-    return MediaSection::FILES;
-  if (name == "programs" || name == "myprograms")
-    return MediaSection::PROGRAMS;
-  if (name == "games")
-    return MediaSection::GAMES;
-  return std::nullopt;
+  const auto it = std::ranges::find(SECTION_NAMES, name, &SectionName::name);
+  if (it == SECTION_NAMES.end())
+    return std::nullopt;
+  return it->section;
 }
 
 } // namespace KODI::MEDIA
