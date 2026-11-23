@@ -287,6 +287,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             reply.latency = m_sink->GetLatency();
             reply.hasVolume = m_sink->HasVolume();
             reply.fallback = m_extFallback;
+            m_sink->GetDelay(reply.delay);
             m_state = S_TOP_CONFIGURED_IDLE;
             m_extTimeout = 10s;
             m_sinkLatency = (int64_t)(reply.latency * 1000);
@@ -307,12 +308,17 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           return;
 
         case CSinkControlProtocol::FLUSH:
+        {
           ReturnBuffers();
           // Only discards device audio when asked to, as on a stream flush or pause.
           if (m_sink && *reinterpret_cast<const bool*>(msg->data))
             m_sink->Flush();
-          msg->Reply(CSinkControlProtocol::ACC);
+          AEDelayStatus status;
+          if (m_sink)
+            m_sink->GetDelay(status);
+          msg->Reply(CSinkControlProtocol::ACC, &status, sizeof(status));
           return;
+        }
 
         case CSinkControlProtocol::APPFOCUSED:
           m_extAppFocused = *(bool*)msg->data;

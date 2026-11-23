@@ -82,10 +82,10 @@ bool IsPreferredDeviceAvailable(const AESinkDevice& configured, const AESinkDevi
 }
 } // unnamed namespace
 
-void CEngineStats::Reset(unsigned int sampleRate, bool pcm)
+void CEngineStats::Reset(unsigned int sampleRate, bool pcm, const AEDelayStatus& sinkDelay)
 {
   std::unique_lock lock(m_lock);
-  m_sinkDelay.SetDelay(0.0);
+  m_sinkDelay = sinkDelay;
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
   m_suspended = false;
@@ -1322,7 +1322,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     // the stream again.
     for (auto* activeStream : m_streams)
       activeStream->m_sinkFormatChanged = true;
-    m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
+    // The sink reports its delay only once it plays; until then use its delay after opening
+    m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM, m_sinkOpenDelay);
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
 
     if (m_sinkRequestFormat.m_dataFormat != AE_FMT_RAW)
@@ -1739,6 +1740,7 @@ void CActiveAE::FlushEngine(bool discardOutput)
 
   // send message to sink
   Message *reply;
+  AEDelayStatus sinkDelay;
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s,
                                               &discardOutput, sizeof(discardOutput)))
   {
@@ -1748,6 +1750,8 @@ void CActiveAE::FlushEngine(bool discardOutput)
       CLog::Log(LOGERROR, "ActiveAE::{} - returned error on flush", __FUNCTION__);
       m_extError = true;
     }
+    else if (reply->data) // the sink replies with its delay
+      sinkDelay = *reinterpret_cast<const AEDelayStatus*>(reply->data);
     reply->Release();
   }
   else
@@ -1755,7 +1759,9 @@ void CActiveAE::FlushEngine(bool discardOutput)
     CLog::Log(LOGERROR, "ActiveAE::{} - failed to flush", __FUNCTION__);
     m_extError = true;
   }
-  m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
+  // The sink can still hold audio after a flush, e.g. the AudioTrack keeps PCM. Its delay is
+  // reported only once the sink plays again, too late for the clock of a stream starting now.
+  m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM, sinkDelay);
 }
 
 void CActiveAE::ClearDiscardedBuffers()
@@ -2037,6 +2043,7 @@ bool CActiveAE::InitSink()
       {
         m_extErrorRetries = 0;
       }
+      m_sinkOpenDelay = data->delay;
       m_stats.SetSinkCacheTotal(data->cacheTotal);
       m_stats.SetSinkLatency(data->latency);
       m_stats.SetCurrentSinkFormat(m_sinkFormat);
