@@ -265,6 +265,22 @@ TEST_F(TestVideoDatabaseContentGeometry, AFileWithNoRowHasNothingStored)
   EXPECT_TRUE(NeedsContentGeometry(stored, {8'000'000'000, 1'700'000'000}));
 }
 
+TEST_F(TestVideoDatabaseContentGeometry, AListedItemCarriesItsStoredGeometry)
+{
+  const int idMeasured{AddTestFile("listedmeasured.mkv")};
+  const int idUnmeasured{AddTestFile("listedunmeasured.mkv")};
+  ASSERT_TRUE(m_db.SetContentGeometry(idMeasured, MakeRecord()));
+
+  CVideoInfoTag measured;
+  measured.m_iFileId = idMeasured;
+  CVideoInfoTag unmeasured;
+  unmeasured.m_iFileId = idUnmeasured;
+  ASSERT_TRUE(m_db.AddStreamDetailsForList({&measured, &unmeasured}));
+
+  EXPECT_EQ(MakeRecord().aspects, measured.m_contentGeometry.Get().aspects);
+  EXPECT_FALSE(unmeasured.m_contentGeometry.Get().HasReading());
+}
+
 /*!
  * The sweep's work list. Every file comes back whether or not it has been measured, because
  * the criterion that retires a row - the file having changed underneath it - can only be

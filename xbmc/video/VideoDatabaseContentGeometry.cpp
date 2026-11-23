@@ -7,6 +7,7 @@
  */
 
 #include "VideoDatabase.h"
+#include "VideoInfoTag.h"
 #include "dbwrappers/dataset.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -127,6 +128,21 @@ std::optional<ContentGeometryRecord> CVideoDatabase::GetStoredContentGeometry(in
     CLog::LogF(LOGERROR, "failed for file {}", idFile);
   }
   return std::nullopt;
+}
+
+void CVideoDatabase::AddStoredContentGeometryForList(
+    const std::map<int, std::vector<CVideoInfoTag*>>& byFile, const std::string& fileIds)
+{
+  m_pDS2->query(PrepareSQL("SELECT idFile, %s FROM contentgeometry WHERE idFile IN (%s)",
+                           RECORD_COLUMNS, fileIds.c_str()));
+  while (!m_pDS2->eof())
+  {
+    const ContentGeometryRecord record{RecordFromDataset(*m_pDS2)};
+    for (CVideoInfoTag* tag : byFile.at(m_pDS2->fv("idFile").get_asInt()))
+      tag->m_contentGeometry.Set(record);
+    m_pDS2->next();
+  }
+  m_pDS2->close();
 }
 
 std::vector<ContentGeometryCandidate> CVideoDatabase::GetContentGeometryCandidates()
