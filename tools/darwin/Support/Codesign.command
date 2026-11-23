@@ -80,7 +80,7 @@ if ! [ -z "${CODE_SIGN_IDENTITY_FOR_ITEMS}" ]; then
       done
     fi
   fi
-elif [ ! "$MACOS" ]; then
+elif [ ! "$MACOS" ] && [[ "${PLATFORM_NAME}" != *simulator ]]; then
   # Do fake sign - needed for iOS >=5.1 and tvOS >=10.2 jailbroken devices
   # See http://www.saurik.com/id/8
   echo "Doing a fake sign using ldid for jailbroken devices (main kodi binary and all Mach-O files)"
