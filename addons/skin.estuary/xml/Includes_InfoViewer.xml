@@ -146,9 +146,9 @@
 				</include>
 				<include content="InfoViewerButton">
 					<param name="control_id" value="107"/>
-					<param name="label" value="[COLOR button_focus]$LOCALIZE[31602]: [/COLOR]$INFO[ListItem.VideoAspect]"/>
-					<param name="altlabel" value="$LOCALIZE[31602]: $INFO[ListItem.VideoAspect]"/>
-					<param name="visible" value="!String.IsEmpty(ListItem.VideoAspect)"/>
+					<param name="label" value="[COLOR button_focus]$LOCALIZE[31602]: [/COLOR]$VAR[ListItemAspectVar]"/>
+					<param name="altlabel" value="$LOCALIZE[31602]: $VAR[ListItemAspectVar]"/>
+					<param name="visible" value="!String.IsEmpty(ListItem.VideoAspect) | !String.IsEmpty(ListItem.ContentAspect)"/>
 				</include>
 				<control type="label" id="200">
 					<height>50</height>
