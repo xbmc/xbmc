@@ -786,9 +786,12 @@ TEST_F(TestVideoDatabase, ATvShowListedIsAFolderWithItsEpisodeCounts)
 
   // A show is watched once all of its episodes are, which a show without any never is
   MarkPlayed("/shows/Show/Show S01E02.mkv", 1);
-  EXPECT_EQ(Overlay(CGUIListItem::ICON_OVERLAY_WATCHED), listed(idShow)->GetOverlayImage());
-  ASSERT_TRUE(listed(idEmpty));
-  EXPECT_EQ(Overlay(CGUIListItem::ICON_OVERLAY_UNWATCHED), listed(idEmpty)->GetOverlayImage());
+  const auto watchedShow{listed(idShow)};
+  ASSERT_TRUE(watchedShow);
+  EXPECT_EQ(Overlay(CGUIListItem::ICON_OVERLAY_WATCHED), watchedShow->GetOverlayImage());
+  const auto emptyShow{listed(idEmpty)};
+  ASSERT_TRUE(emptyShow);
+  EXPECT_EQ(Overlay(CGUIListItem::ICON_OVERLAY_UNWATCHED), emptyShow->GetOverlayImage());
 }
 
 TEST_F(TestVideoDatabase, AMusicVideosCastIsLoadedOnlyWhenAskedFor)
