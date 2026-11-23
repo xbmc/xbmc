@@ -28,7 +28,8 @@ bool AddBookMarkToFile(const std::string& strFilenameAndPath,
 
 int AddTag(const std::string& tag)
 {
-  return WithDatabase([&](CVideoDatabase& db) { return db.AddTag(tag); });
+  return WithDatabase([&](CVideoDatabase& db) -> std::optional<int> { return db.AddTag(tag); })
+      .value_or(-1);
 }
 
 void DeleteTag(int idTag, VideoDbContentType mediaType)
