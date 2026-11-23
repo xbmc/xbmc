@@ -9,10 +9,13 @@
 #include "ResourcesComponent.h"
 
 #include "LocalizeStrings.h"
+#include "language/LangInfo.h"
 
 #include <memory>
 
-CResourcesComponent::CResourcesComponent() : m_localizeStrings(std::make_unique<CLocalizeStrings>())
+CResourcesComponent::CResourcesComponent()
+  : m_localizeStrings(std::make_unique<CLocalizeStrings>()),
+    m_langInfo(std::make_unique<KODI::LANGUAGE::CLangInfo>())
 {
 }
 
@@ -33,4 +36,9 @@ void CResourcesComponent::Deinit()
 CLocalizeStrings& CResourcesComponent::GetLocalizeStrings()
 {
   return *m_localizeStrings;
+}
+
+KODI::LANGUAGE::CLangInfo& CResourcesComponent::GetLangInfo()
+{
+  return *m_langInfo;
 }

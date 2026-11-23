@@ -201,7 +201,8 @@ namespace XBMCAddon
         case KODI::LANGUAGE::CLanguageTag::ISO_639_2:
           return KODI::LANGUAGE::DescribeLanguage(
               static_cast<KODI::LANGUAGE::CLanguageTag::Notation>(format),
-              KODI::LANGUAGE::CLanguage::GetInstance(), g_langInfo, region);
+              KODI::LANGUAGE::CLanguage::GetInstance(),
+              CServiceBroker::GetResourcesComponent().GetLangInfo(), region);
         default:
           return "";
       }
@@ -407,44 +408,45 @@ namespace XBMCAddon
 
     String getRegion(const char* id)
     {
+      const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
       XBMC_TRACE;
       std::string result;
       CDateTime now = CDateTime::GetCurrentDateTime();
 
       if (StringUtils::CompareNoCase(id, "datelong") == 0)
       {
-        result = now.GetAsLocalizedDate(g_langInfo.GetDateFormat(true),
+        result = now.GetAsLocalizedDate(langInfo.GetDateFormat(true),
                                         CDateTime::ReturnFormat::CHOICE_YES);
       }
       else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
       {
-        result = now.GetAsLocalizedDate(g_langInfo.GetDateFormat(false),
+        result = now.GetAsLocalizedDate(langInfo.GetDateFormat(false),
                                         CDateTime::ReturnFormat::CHOICE_YES);
       }
       else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
       {
-        result = g_langInfo.GetTemperatureUnitString();
+        result = langInfo.GetTemperatureUnitString();
       }
       //TODO - There is a (low) risk that these 'raw' formats could be changed on Windows if they contain a '%-' sequence.
       else if (StringUtils::CompareNoCase(id, "datelongraw") == 0)
       {
-        result = g_langInfo.GetDateFormat(true);
+        result = langInfo.GetDateFormat(true);
       }
       else if (StringUtils::CompareNoCase(id, "dateshortraw") == 0)
       {
-        result = g_langInfo.GetDateFormat(false);
+        result = langInfo.GetDateFormat(false);
       }
       else if (StringUtils::CompareNoCase(id, "timeraw") == 0)
       {
-        result = g_langInfo.GetTimeFormat();
+        result = langInfo.GetTimeFormat();
       }
       else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
       {
-        result = g_langInfo.GetSpeedUnitString();
+        result = langInfo.GetSpeedUnitString();
       }
       else if (StringUtils::CompareNoCase(id, "time") == 0)
       {
-        result = g_langInfo.GetTimeFormat();
+        result = langInfo.GetTimeFormat();
         if (StringUtils::StartsWith(result, "HH"))
         {
           StringUtils::Replace(result, "HH", "%H");
@@ -464,8 +466,8 @@ namespace XBMCAddon
       else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
       {
         result = StringUtils::Format(
-            "{}/{}", g_langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::AM),
-            g_langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::PM));
+            "{}/{}", langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::AM),
+            langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::PM));
       }
 #ifdef TARGET_WINDOWS
       StringUtils::Replace(result, "%-", "%#"); //Convert to Windows format if required.

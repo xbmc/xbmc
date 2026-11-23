@@ -21,6 +21,7 @@
 #include "input/keyboard/KeyboardLayoutManager.h"
 #include "language/LangInfo.h"
 #include "language/Language.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
@@ -107,7 +108,8 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
   }
 
   return strdup(KODI::LANGUAGE::DescribeLanguage(
-                    langFormat, KODI::LANGUAGE::CLanguage::GetInstance(), g_langInfo, region)
+                    langFormat, KODI::LANGUAGE::CLanguage::GetInstance(),
+                    CServiceBroker::GetResourcesComponent().GetLangInfo(), region)
                     .c_str());
 }
 
@@ -188,6 +190,7 @@ void Interface_General::get_md5(void* kodiBase, const char* text, char* md5)
 
 char* Interface_General::get_region(void* kodiBase, const char* id)
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon || !id)
   {
@@ -199,7 +202,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
   std::string result;
   if (StringUtils::CompareNoCase(id, "datelong") == 0)
   {
-    result = g_langInfo.GetDateFormat(true);
+    result = langInfo.GetDateFormat(true);
     StringUtils::Replace(result, "DDDD", "%A");
     StringUtils::Replace(result, "MMMM", "%B");
     StringUtils::Replace(result, "D", "%d");
@@ -207,7 +210,7 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
   }
   else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
   {
-    result = g_langInfo.GetDateFormat(false);
+    result = langInfo.GetDateFormat(false);
     StringUtils::Replace(result, "MM", "%m");
     StringUtils::Replace(result, "DD", "%d");
 #ifdef TARGET_WINDOWS
@@ -220,12 +223,12 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "YYYY", "%Y");
   }
   else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
-    result = g_langInfo.GetTemperatureUnitString();
+    result = langInfo.GetTemperatureUnitString();
   else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
-    result = g_langInfo.GetSpeedUnitString();
+    result = langInfo.GetSpeedUnitString();
   else if (StringUtils::CompareNoCase(id, "time") == 0)
   {
-    result = g_langInfo.GetTimeFormat();
+    result = langInfo.GetTimeFormat();
     StringUtils::Replace(result, "H", "%H");
     StringUtils::Replace(result, "h", "%I");
     StringUtils::Replace(result, "mm", "%M");
@@ -233,9 +236,9 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "xx", "%p");
   }
   else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
-    result = StringUtils::Format("{}/{}",
-                                 g_langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::AM),
-                                 g_langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::PM));
+    result =
+        StringUtils::Format("{}/{}", langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::AM),
+                            langInfo.GetMeridiemSymbol(KODI::LANGUAGE::MeridiemSymbol::PM));
   else
   {
     CLog::LogF(LOGERROR, "Add-on '{}' requests invalid id '{}'", addon->Name(), id);

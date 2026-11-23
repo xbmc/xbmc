@@ -12,6 +12,11 @@
 
 class CLocalizeStrings;
 
+namespace KODI::LANGUAGE
+{
+class CLangInfo;
+}
+
 class CResourcesComponent
 {
 public:
@@ -21,8 +26,10 @@ public:
   void Deinit();
 
   CLocalizeStrings& GetLocalizeStrings();
+  KODI::LANGUAGE::CLangInfo& GetLangInfo();
 
 protected:
   // members are pointers in order to avoid includes
   std::unique_ptr<CLocalizeStrings> m_localizeStrings;
+  std::unique_ptr<KODI::LANGUAGE::CLangInfo> m_langInfo;
 };
