@@ -24,6 +24,7 @@
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/NetworkFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -798,7 +799,8 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
                                        static_cast<int>(CacheBufferMode::ALL)
                                  : false;
 
-  if (item.IsFolder() && (NETWORK::IsStreamedFilesystem(item) || cacheAll))
+  if (item.IsFolder() && !VIDEO::IsVideoDb(item) && !PLAYLIST::IsSmartPlayList(item) &&
+      (NETWORK::IsStreamedFilesystem(item) || cacheAll))
   {
     CFileItemList items; // Dummy list
     CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
