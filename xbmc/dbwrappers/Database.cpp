@@ -355,6 +355,33 @@ int CDatabase::GetSingleValueInt(const std::string& query) const
   return GetSingleValueInt(query, *m_pDS);
 }
 
+bool CDatabase::GetIntValues(const std::string& query, std::vector<int>& values) const
+{
+  values.clear();
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  try
+  {
+    if (!m_pDS->query(query))
+      return false;
+
+    values.reserve(m_pDS->num_rows());
+    while (!m_pDS->eof())
+    {
+      values.push_back(m_pDS->fv(0).get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed on query '{}'", query);
+  }
+  return false;
+}
+
 bool CDatabase::DeleteValues(const std::string& strTable, const Filter& filter /* = Filter() */)
 {
   std::string strQuery;

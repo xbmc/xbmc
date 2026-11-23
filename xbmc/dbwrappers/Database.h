@@ -175,6 +175,13 @@ public:
    */
   int GetSingleValueInt(const std::string& query, dbiplus::Dataset& ds) const;
 
+  /*! \brief Get the integer in the first column of every row a query returns.
+   \param query the query in question.
+   \param values the integers, in the order of the rows.
+   \return false if the query failed.
+   */
+  bool GetIntValues(const std::string& query, std::vector<int>& values) const;
+
   /*!
    * @brief Delete values from a table.
    * @param strTable The table to delete the values from.

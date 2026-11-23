@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,10 +9,9 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
-
-constexpr const char* DATABASEQUERY_RULE_VALUE_SEPARATOR = " / ";
 
 class CDatabase;
 class CVariant;
@@ -22,6 +21,10 @@ namespace tinyxml2
 class XMLNode;
 } // namespace tinyxml2
 
+/*!
+ * \brief A filter rule: a field, an operator and the values to compare with. This is what every
+ * rule shares whatever its fields are; CDatabaseQueryRuleOf adds the fields of one user.
+ */
 class CDatabaseQueryRule
 {
 public:
@@ -55,73 +58,123 @@ public:
     REAL_FIELD,
     NUMERIC_FIELD,
     DATE_FIELD,
-    PLAYLIST_FIELD,
     SECONDS_FIELD,
     BOOLEAN_FIELD,
     TEXTIN_FIELD
   };
 
-  virtual bool Load(const tinyxml2::XMLNode* node, const std::string& encoding = "UTF-8");
-  virtual bool Load(const CVariant& obj);
-  virtual bool Save(tinyxml2::XMLNode* parent) const;
-  virtual bool Save(CVariant& obj) const;
+  bool Load(const tinyxml2::XMLNode* node);
+  bool Load(const CVariant& obj);
+  bool Save(tinyxml2::XMLNode* parent) const;
+  bool Save(CVariant& obj) const;
 
   static std::string GetLocalizedOperator(SearchOperator oper);
   static void GetAvailableOperators(std::vector<std::string>& operatorList);
 
-  std::string GetParameter() const;
-  void SetParameter(const std::string& value);
-  void SetParameter(const std::vector<std::string>& values);
-
-  virtual std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;
-
-  int m_field{0};
   SearchOperator m_operator{SearchOperator::OPERATOR_CONTAINS};
   std::vector<std::string> m_parameter;
 
 protected:
-  virtual std::string GetField(int field, const std::string& type) const = 0;
-  virtual CDatabaseQueryRule::FieldType GetFieldType(int field) const = 0;
-  virtual int TranslateField(const char* field) const = 0;
-  virtual std::string TranslateField(int field) const = 0;
+  virtual void SetFieldName(const char* name) = 0;
+  virtual std::string GetFieldName() const = 0;
+  //! The kind of value the rule's field holds
+  virtual FieldType GetFieldType() const = 0;
+
   std::string ValidateParameter(const std::string& parameter) const;
-  virtual std::string FormatParameter(const std::string& negate,
-                                      const std::string& oper,
-                                      const CDatabase& db,
-                                      const std::string& type) const;
-  virtual std::string FormatWhereClause(const std::string& negate,
-                                        const std::string& oper,
-                                        const std::string& param,
-                                        const CDatabase& db,
-                                        const std::string& type) const;
-  virtual SearchOperator GetOperator(const std::string& type) const { return m_operator; }
-  virtual std::string GetOperatorString(SearchOperator op) const;
-  virtual std::string GetBooleanQuery(const std::string& negate, const std::string& strType) const
-  {
-    return "";
-  }
+  //! \return a value as the comparison \p operatorString makes of it, or nullopt if it is refused
+  virtual std::optional<std::string> FormatParameter(const std::string& operatorString,
+                                                     const std::string& param,
+                                                     const CDatabase& db) const;
+  std::string GetOperatorString(SearchOperator op) const;
+  //! Whether the operator goes into SQL as the NOT of its opposite
+  bool IsNegated(SearchOperator op) const;
+  /*!
+   * \brief Whether the rule asks if its field is true or false, by its operator or by a value of
+   * "true" or "false", instead of comparing the field with values.
+   * \param[in,out] negate turned around when the rule asks for false by a value
+   */
+  bool AsksTruth(SearchOperator op, std::string& negate) const;
+  //! \return the SQL of a between rule on this column, or nullopt if a value cannot go into it
+  std::optional<std::string> FormatBetween(const std::string& column, const CDatabase& db) const;
+  /*!
+   * \brief The SQL comparing a column with one of the rule's values.
+   * \param hasField whether the rule names a field
+   * \param parameter the value as FormatParameter() gave it
+   */
+  std::string FormatComparison(bool hasField,
+                               const std::string& column,
+                               const std::string& negate,
+                               const std::string& param,
+                               const std::string& parameter) const;
 
   static SearchOperator TranslateOperator(const char* oper);
   static std::string TranslateOperator(SearchOperator oper);
 };
 
-class CDatabaseQueryRuleCombination;
-
-using CDatabaseQueryRules = std::vector<std::shared_ptr<CDatabaseQueryRule>>;
-using CDatabaseQueryRuleCombinations = std::vector<std::shared_ptr<CDatabaseQueryRuleCombination>>;
-
-class IDatabaseQueryRuleFactory
+//! \brief The context of a user whose rules need only the database to be put into SQL.
+struct CDatabaseQueryNoContext
 {
-public:
-  virtual ~IDatabaseQueryRuleFactory() = default;
-  virtual CDatabaseQueryRule* CreateRule() const = 0;
-  virtual CDatabaseQueryRuleCombination* CreateCombination() const = 0;
 };
 
+/*!
+ * \brief A filter rule over the fields of one user of the rule engine.
+ * \tparam FIELD the user's fields; its zero value is no field
+ * \tparam CONTEXT what the user's rules need to know to be put into SQL
+ *
+ * The member definitions are in DatabaseQueryImpl.h, for the source file that instantiates the
+ * user's rule.
+ */
+template<typename FIELD, typename CONTEXT>
+class CDatabaseQueryRuleOf : public CDatabaseQueryRule
+{
+public:
+  using Context = CONTEXT;
+
+  //! \return the SQL for the rule, or nullopt if one of its values cannot go into it
+  virtual std::optional<std::string> GetWhereClause(const CDatabase& db,
+                                                    const CONTEXT& context) const;
+
+  //! Whether the rule filters; one that does not is left out of its group's SQL
+  virtual bool IsFilter() const { return true; }
+
+  FIELD m_field{};
+
+protected:
+  //! The column the field is in
+  virtual std::string GetField(FIELD field, const CONTEXT& context) const = 0;
+  virtual FieldType GetFieldType(FIELD field) const = 0;
+  virtual FIELD TranslateField(const char* field) const = 0;
+  virtual std::string TranslateField(FIELD field) const = 0;
+  virtual std::optional<std::string> FormatWhereClause(const std::string& negate,
+                                                       const std::string& oper,
+                                                       const std::string& param,
+                                                       const CDatabase& db,
+                                                       const CONTEXT& context) const;
+  virtual SearchOperator GetOperator(const CONTEXT& context) const { return m_operator; }
+  virtual std::string GetBooleanQuery(const std::string& negate, const CONTEXT& context) const
+  {
+    return "";
+  }
+
+  void SetFieldName(const char* name) final { m_field = TranslateField(name); }
+  std::string GetFieldName() const final { return TranslateField(m_field); }
+  FieldType GetFieldType() const final { return GetFieldType(m_field); }
+};
+
+/*!
+ * \brief Rules and nested groups of rules, all or any of which have to match.
+ * \tparam RULE the user's rule, a CDatabaseQueryRuleOf
+ *
+ * The member definitions are in DatabaseQueryImpl.h, for the source file that instantiates the
+ * user's group.
+ */
+template<typename RULE>
 class CDatabaseQueryRuleCombination
 {
 public:
-  virtual ~CDatabaseQueryRuleCombination() = default;
+  using Context = typename RULE::Context;
+  using Rules = std::vector<std::shared_ptr<RULE>>;
+  using Combinations = std::vector<std::shared_ptr<CDatabaseQueryRuleCombination>>;
 
   enum class Type
   {
@@ -130,32 +183,28 @@ public:
   };
 
   void clear();
-  virtual bool Load(const tinyxml2::XMLNode* node, const std::string& encoding = "UTF-8")
-  {
-    return false;
-  }
-  virtual bool Load(const CVariant& obj, const IDatabaseQueryRuleFactory* factory);
-  virtual bool Save(tinyxml2::XMLNode* parent) const;
-  virtual bool Save(CVariant& obj) const;
+  bool Load(const CVariant& obj);
+  bool Save(tinyxml2::XMLNode* parent) const;
+  bool Save(CVariant& obj) const;
 
-  std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;
+  //! \return the SQL for the group, or nullopt if a value of one of its rules cannot go into it
+  std::optional<std::string> GetWhereClause(const CDatabase& db, const Context& context) const;
   std::string TranslateCombinationType() const;
 
   Type GetType() const { return m_type; }
   void SetType(Type combination) { m_type = combination; }
 
-  const CDatabaseQueryRuleCombinations& GetCombinations() const { return m_combinations; }
+  const Combinations& GetCombinations() const { return m_combinations; }
   bool empty() const { return m_combinations.empty() && m_rules.empty(); }
 
   size_t GetRulesAmount() const { return m_rules.size(); }
-  const CDatabaseQueryRules& GetRules() const { return m_rules; }
-  void AddRule(const std::shared_ptr<CDatabaseQueryRule>& rule);
-  void RemoveRule(const std::shared_ptr<CDatabaseQueryRule>& rule);
+  const Rules& GetRules() const { return m_rules; }
+  void AddRule(const std::shared_ptr<RULE>& rule);
+  void RemoveRule(const std::shared_ptr<RULE>& rule);
   void RemoveRule(int index);
-  void Reserve(size_t amount);
 
 private:
   Type m_type{Type::COMBINATION_AND};
-  CDatabaseQueryRuleCombinations m_combinations;
-  CDatabaseQueryRules m_rules;
+  Combinations m_combinations;
+  Rules m_rules;
 };

@@ -115,6 +115,9 @@ private:
   std::string m_previous;
 };
 
+//! \brief Writes \p text to the file at \p path, replacing whatever it held.
+bool WriteTextFile(const std::string& path, const std::string& text);
+
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
 #define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
 #define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "JSONRPCUtils.h"
-#include "playlists/SmartPlayList.h"
+#include "media/LibraryQuery.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/SortUtils.h"
@@ -476,7 +476,8 @@ namespace JSONRPC
       else
         xspObj["rules"] = filter;
 
-      KODI::PLAYLIST::CSmartPlaylist playlist;
+      // Temporary: v14's filter on the library query; JSON-RPC v15 replaces this helper
+      KODI::MEDIA::CLibraryQuery playlist;
       return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
     }
   };

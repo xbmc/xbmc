@@ -37,13 +37,13 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "media/LibraryQuery.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
-#include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -102,9 +102,6 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
-
-#define PROPERTY_GROUP_BY           "group.by"
-#define PROPERTY_GROUP_MIXED        "group.mixed"
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const std::string &xmlFile)
     : CGUIMediaWindow(id, xmlFile.c_str())
@@ -711,12 +708,12 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     // path.db holds the library path of a smart playlist listing
     const std::string dbPath{VIDEO::IsVideoDb(*m_vecItems)
                                  ? m_vecItems->GetPath()
-                                 : m_vecItems->GetProperty("path.db").asString()};
+                                 : m_vecItems->GetProperty(ITEM::PROPERTY::PATH_DB).asString()};
     if (URIUtils::IsVideoDb(dbPath))
     {
       // a query by id finds the movie even when a limit leaves it out of the listing
       const CURL dbUrl{dbPath};
-      PLAYLIST::CSmartPlaylist xsp;
+      MEDIA::CLibraryQuery xsp;
       const bool hasLimit{dbUrl.HasOption("xsp") && xsp.LoadFromJson(dbUrl.GetOption("xsp")) &&
                           xsp.GetLimit() > 0};
 
@@ -1208,7 +1205,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           PLAYLIST::IsSmartPlayList(*m_vecItems->Get(itemNumber))
               ? m_vecItems->Get(itemNumber)->GetPath()
               : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
-      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist,
+                                                      CGUIDialogSmartPlaylistEditor::Mode::VIDEO))
         Refresh(true); // need to update
       return true;
     }
@@ -1567,13 +1565,19 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 
   std::string group;
   bool mixed = false;
-  if (items.HasProperty(PROPERTY_GROUP_BY))
-    group = items.GetProperty(PROPERTY_GROUP_BY).asString();
-  if (items.HasProperty(PROPERTY_GROUP_MIXED))
-    mixed = items.GetProperty(PROPERTY_GROUP_MIXED).asBoolean();
+  if (items.HasProperty(ITEM::PROPERTY::GROUP_BY))
+  {
+    group = items.GetProperty(ITEM::PROPERTY::GROUP_BY).asString();
+  }
+  if (items.HasProperty(ITEM::PROPERTY::GROUP_MIXED))
+  {
+    mixed = items.GetProperty(ITEM::PROPERTY::GROUP_MIXED).asBoolean();
+  }
 
   // group == "none" completely suppresses any grouping
-  if (!StringUtils::EqualsNoCase(group, "none"))
+  const std::optional<MEDIA::LIBRARY_QUERY::GROUP> groupBy{
+      MEDIA::LIBRARY_QUERY::GroupFromName(group)};
+  if (groupBy != MEDIA::LIBRARY_QUERY::GROUP::NONE)
   {
     CQueryParams params;
     CVideoDatabaseDirectory dir;
@@ -1583,7 +1587,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     if (items.GetContent() == MEDIA::CONTENT::MOVIES && params.GetSetId() <= 0 &&
         params.GetVideoVersionId() < 0 && nodeType == NodeType::TITLE_MOVIES &&
         (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) ||
-         (StringUtils::EqualsNoCase(group, "sets") && mixed)))
+         (groupBy == MEDIA::LIBRARY_QUERY::GROUP::SET && mixed)))
     {
       CFileItemList groupedItems;
       GroupAttribute groupAttributes = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;

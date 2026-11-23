@@ -93,6 +93,7 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#include "media/LibraryQuery.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -117,7 +118,6 @@
 #include "platform/Environment.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
-#include "playlists/SmartPlayList.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
@@ -1882,15 +1882,15 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
     CUtil::GetRecursiveListing(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS);
     if (items.Size())
     {
-      PLAYLIST::CSmartPlaylist smartpl;
+      MEDIA::CLibraryQuery smartpl;
       //get name and type of smartplaylist, this will always succeed as GetDirectory also did this.
       smartpl.OpenAndReadName(item.GetURL());
       PLAYLIST::CPlayList playlist;
       playlist.Add(items);
       PLAYLIST::Id smartplPlaylistId = PLAYLIST::Id::TYPE_VIDEO;
 
-      if (smartpl.GetType() == "songs" || smartpl.GetType() == "albums" ||
-          smartpl.GetType() == "artists")
+      // Temporary: the playlist id from the query's type; the playlist rewrite removes this block
+      if (MEDIA::LIBRARY_QUERY::PlayListOf(smartpl.GetType()) == PLAYLIST::Audio)
         smartplPlaylistId = PLAYLIST::Id::TYPE_MUSIC;
 
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartplPlaylistId);

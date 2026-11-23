@@ -21,7 +21,6 @@
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "language/LanguageLoader.h"
-#include "playlists/SmartPlayList.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -473,25 +472,57 @@ TEST_F(TestVideoDatabase, ATvShowDirectorFoundBySearchListsTheirShows)
   EXPECT_EQ(idShow, shows[0]->GetVideoInfoTag()->m_iDbId);
 }
 
-TEST_F(TestVideoDatabase, ASmartPlaylistGenreRuleFindsAMovieOfThatGenre)
+TEST_F(TestVideoDatabase, ASmartPlaylistRuleFindsTheMoviesItMatches)
 {
-  CVideoInfoTag drama{Tag("/videos/drama.mkv")};
-  drama.SetGenre({"Drama"});
-  const int idMovie{m_db.SetDetailsForMovie(drama, KODI::ART::Artwork{})};
-  ASSERT_GT(idMovie, 0);
-  ASSERT_GT(AddMovie("/videos/other.mkv"), 0);
+  CVideoInfoTag other{Tag("/videos/other.mkv")};
+  other.SetRating(3.0f, 100, "imdb", true);
+  ASSERT_GT(m_db.SetDetailsForMovie(other, KODI::ART::Artwork{}), 0);
 
-  KODI::PLAYLIST::CSmartPlaylistRule rule;
-  rule.m_field = static_cast<int>(Field::GENRE);
-  rule.m_operator = CDatabaseQueryRule::SearchOperator::OPERATOR_EQUALS;
-  rule.m_parameter = {"Drama"};
-  const std::string where{rule.GetWhereClause(m_db, "movies")};
-  EXPECT_NE(std::string::npos, where.find("genre_link.media_type = 'movie'")) << where;
+  struct Match
+  {
+    void (*details)(CVideoInfoTag& movie);
+    std::string rule;
+  };
+  const Match matches[]{
+      {[](CVideoInfoTag& movie) { movie.SetGenre({"Drama"}); },
+       R"({"field":"genre","operator":"is","value":"Drama"})"},
+      {[](CVideoInfoTag& movie) { movie.SetRating(8.0f, 100, "imdb", true); },
+       R"({"field":"rating","operator":"greaterthan","value":"5.5"})"},
+      {[](CVideoInfoTag& movie) { movie.SetRating(8.0f, 100, "imdb", true); },
+       R"({"field":"rating","operator":"between","value":["5","9"]})"},
+  };
+  int row{0};
+  for (const auto& [details, rule] : matches)
+  {
+    CVideoInfoTag matching{Tag("/videos/matching " + std::to_string(++row) + ".mkv")};
+    details(matching);
+    const int idMatching{m_db.SetDetailsForMovie(matching, KODI::ART::Artwork{})};
+    ASSERT_GT(idMatching, 0) << rule;
+
+    CVideoDbUrl url;
+    ASSERT_TRUE(url.FromString("videodb://movies/titles/"));
+    url.AddOption("xsp", R"({"type":"movies","rules":{"and":[)" + rule + "]}}");
+
+    CFileItemList items;
+    ASSERT_TRUE(m_db.GetMoviesByWhere(url.ToString(), CDatabase::Filter(), items)) << rule;
+    ASSERT_EQ(1, items.Size()) << rule;
+    EXPECT_EQ(idMatching, items[0]->GetVideoInfoTag()->m_iDbId) << rule;
+    ASSERT_TRUE(m_db.DeleteMovie(idMatching)) << rule;
+  }
+}
+
+TEST_F(TestVideoDatabase, ANumberRuleWhoseValueIsNotANumberFailsTheListing)
+{
+  ASSERT_GT(AddMovie("/videos/movie.mkv"), 0);
+
+  const std::string rule{R"({"field":"rating","operator":"greaterthan","value":"0 OR 1=1"})"};
+  CVideoDbUrl url;
+  ASSERT_TRUE(url.FromString("videodb://movies/titles/"));
+  url.AddOption("xsp", R"({"type":"movies","rules":{"and":[)" + rule + "]}}");
 
   CFileItemList items;
-  ASSERT_TRUE(m_db.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter{where}, items));
-  ASSERT_EQ(1, items.Size());
-  EXPECT_EQ(idMovie, items[0]->GetVideoInfoTag()->m_iDbId);
+  EXPECT_FALSE(m_db.GetMoviesByWhere(url.ToString(), CDatabase::Filter(), items));
+  EXPECT_TRUE(items.IsEmpty());
 }
 
 TEST_F(TestVideoDatabase, AListItemHasTheDetailsOfTheItemLoadedAlone)

@@ -540,7 +540,8 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           PLAYLIST::IsSmartPlayList(*item)
               ? item->GetPath()
               : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
-      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "music"))
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist,
+                                                      CGUIDialogSmartPlaylistEditor::Mode::MUSIC))
         Refresh(true); // need to update
       return true;
     }

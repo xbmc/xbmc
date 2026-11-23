@@ -19,13 +19,14 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "media/LibraryQuery.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbPaths.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
-#include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
@@ -35,6 +36,8 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+#include <optional>
+#include <string>
 
 using namespace KODI;
 using namespace KODI::MESSAGING;
@@ -50,8 +53,10 @@ CPartyModeManager::CPartyModeManager(void)
 
 bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const std::string& strXspPath /*= ""*/)
 {
+  // Temporary: party mode reads its rules through the library query until the playlist and party
+  // mode rewrite replaces this manager
   // Filter using our PartyMode xml file
-  PLAYLIST::CSmartPlaylist playlist;
+  MEDIA::CLibraryQuery playlist;
   std::string partyModePath;
   bool playlistLoaded;
 
@@ -70,7 +75,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   if (playlistLoaded)
   {
-    m_type = playlist.GetType();
+    m_type = MEDIA::LIBRARY_QUERY::NameOf(playlist.GetType());
     if (context == PartyModeContext::UNKNOWN)
     {
       //get it from the xsp file
@@ -106,11 +111,19 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CMusicDatabase db;
     if (db.Open())
     {
-      std::set<std::string, std::less<>> playlists;
       if (playlistLoaded)
       {
-        playlist.SetType("songs");
-        strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
+        const std::optional<std::string> where{
+            playlist.GetWhereClause(db, MEDIA::TYPE::SONG,
+                                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                        CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))};
+        if (!where)
+        {
+          pDialog->Close();
+          OnError(16033, "Party mode could not read its rules. Aborting.");
+          return false;
+        }
+        strCurrentFilterMusic = *where;
       }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]", strCurrentFilterMusic);
@@ -140,11 +153,17 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CVideoDatabase db;
     if (db.Open())
     {
-      std::set<std::string, std::less<>> playlists;
       if (playlistLoaded)
       {
-        playlist.SetType("musicvideos");
-        strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
+        const std::optional<std::string> where{
+            playlist.GetWhereClause(db, MEDIA::TYPE::MUSIC_VIDEO, false)};
+        if (!where)
+        {
+          pDialog->Close();
+          OnError(16033, "Party mode could not read its rules. Aborting.");
+          return false;
+        }
+        strCurrentFilterVideo = *where;
       }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]", strCurrentFilterVideo);

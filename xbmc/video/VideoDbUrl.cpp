@@ -11,7 +11,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
-#include "playlists/SmartPlayList.h"
+#include "media/LibraryQuery.h"
 #include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -230,11 +230,12 @@ bool CVideoDbUrl::validateOption(const std::string &key, const CVariant &value)
   if (!value.isString())
     return false;
 
-  PLAYLIST::CSmartPlaylist xspFilter;
+  MEDIA::CLibraryQuery xspFilter;
   if (!xspFilter.LoadFromJson(value.asString()))
     return false;
 
-  // check if the filter playlist matches the item type
-  return (xspFilter.GetType() == m_itemType ||
-         (xspFilter.GetType() == CONTENT::MOVIES && m_itemType == CONTENT::SETS));
+  // A filter for movies does not apply to a list of sets, but the path of one carries it to
+  // the movies of each set
+  return xspFilter.AppliesTo(MEDIA::MediaSection::VIDEO, m_itemType, true) ||
+         (xspFilter.GetType() == MEDIA::LIBRARY_QUERY::TYPE::MOVIES && m_itemType == CONTENT::SETS);
 }

@@ -10,6 +10,7 @@
 
 #include "dbwrappers/Database.h"
 #include "dbwrappers/DatabaseQuery.h"
+#include "media/LibraryQueryType.h"
 #include "media/MediaType.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingType.h"
@@ -23,11 +24,11 @@
 
 class CDbUrl;
 class CSetting;
-namespace KODI::PLAYLIST
+namespace KODI::MEDIA
 {
-class CSmartPlaylist;
-class CSmartPlaylistRule;
-} // namespace KODI::PLAYLIST
+class CLibraryQuery;
+class CLibraryQueryRule;
+} // namespace KODI::MEDIA
 struct StringSettingOption;
 
 class CGUIDialogMediaFilter : public CGUIDialogSettingsManualBase
@@ -39,8 +40,7 @@ public:
   // specializations of CGUIControl
   bool OnMessage(CGUIMessage &message) override;
 
-  static void ShowAndEditMediaFilter(const std::string& path,
-                                     KODI::PLAYLIST::CSmartPlaylist& filter);
+  static void ShowAndEditMediaFilter(const std::string& path, KODI::MEDIA::CLibraryQuery& filter);
 
   struct Filter
   {
@@ -52,7 +52,7 @@ public:
     std::string controlFormat;
     CDatabaseQueryRule::SearchOperator ruleOperator;
     std::shared_ptr<CSetting> setting = nullptr;
-    KODI::PLAYLIST::CSmartPlaylistRule* rule = nullptr;
+    KODI::MEDIA::CLibraryQueryRule* rule = nullptr;
     void* data = nullptr;
   };
 
@@ -81,9 +81,8 @@ protected:
   int GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly = false);
   void GetRange(const Filter &filter, int &min, int &interval, int &max);
   void GetRange(const Filter &filter, float &min, float &interval, float &max);
-  bool GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter = CDatabase::Filter());
 
-  KODI::PLAYLIST::CSmartPlaylistRule* AddRule(
+  KODI::MEDIA::CLibraryQueryRule* AddRule(
       Field field,
       CDatabaseQueryRule::SearchOperator ruleOperator =
           CDatabaseQueryRule::SearchOperator::OPERATOR_CONTAINS);
@@ -94,8 +93,9 @@ protected:
                             std::string& current);
 
   std::unique_ptr<CDbUrl> m_dbUrl;
-  std::string m_mediaType;
-  KODI::MEDIA::TYPE m_type{KODI::MEDIA::TYPE::NONE};
-  KODI::PLAYLIST::CSmartPlaylist* m_filter{nullptr};
+  KODI::MEDIA::LIBRARY_QUERY::TYPE m_queryType{KODI::MEDIA::LIBRARY_QUERY::TYPE::SONGS};
+  KODI::MEDIA::LIBRARY_QUERY::Source m_source{KODI::MEDIA::MediaSection::VIDEO,
+                                              KODI::MEDIA::TYPE::NONE};
+  KODI::MEDIA::CLibraryQuery* m_filter{nullptr};
   std::map<std::string, Filter> m_filters;
 };

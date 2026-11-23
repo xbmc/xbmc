@@ -6,6 +6,7 @@ set(SOURCES Database.cpp
 
 set(HEADERS Database.h
             DatabaseQuery.h
+            DatabaseQueryImpl.h
             dataset.h
             qry_dat.h
             sqlitedataset.h)

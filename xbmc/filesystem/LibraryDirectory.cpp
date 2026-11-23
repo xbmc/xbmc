@@ -17,7 +17,7 @@
 #include "URL.h"
 #include "guilib/GUIControlFactory.h" // for label parsing
 #include "guilib/TextureManager.h"
-#include "playlists/SmartPlayList.h"
+#include "media/LibraryQuery.h"
 #include "profiles/ProfileManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/FileUtils.h"
@@ -50,7 +50,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       std::string type = XMLUtils::GetAttribute(node, "type");
       if (type == "filter")
       {
-        PLAYLIST::CSmartPlaylist playlist;
+        MEDIA::CLibraryQuery playlist;
         std::string type, label;
         XMLUtils::GetString(node, "content", type);
         if (type.empty())
@@ -61,13 +61,22 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         if (XMLUtils::GetString(node, "label", label))
           label = CGUIControlFactory::FilterLabel(label);
-        playlist.SetType(type);
+        const std::optional<MEDIA::LIBRARY_QUERY::TYPE> content{
+            MEDIA::LIBRARY_QUERY::TypeFromName(type)};
+        if (!content)
+        {
+          CLog::Log(LOGERROR,
+                    "<content> \"{}\" of the type=\"filter\" node '{}' is not a library type", type,
+                    libNode);
+          return false;
+        }
+        playlist.SetType(*content);
         playlist.SetName(label);
         if (playlist.LoadFromXML(node) &&
             CSmartPlaylistDirectory::GetDirectory(playlist, items))
         {
           items.SetProperty(ITEM::PROPERTY::LIBRARY_FILTER, "true");
-          items.SetPath(items.GetProperty("path.db").asString());
+          items.SetPath(items.GetProperty(ITEM::PROPERTY::PATH_DB).asString());
           return true;
         }
       }

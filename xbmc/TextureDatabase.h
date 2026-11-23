@@ -32,7 +32,7 @@ enum class TextureField
   LAST_LIBRARY_CHECK,
 };
 
-class CTextureRule : public CDatabaseQueryRule
+class CTextureRule : public CDatabaseQueryRuleOf<TextureField, CDatabaseQueryNoContext>
 {
 public:
   CTextureRule() = default;
@@ -41,17 +41,21 @@ public:
   static void GetAvailableFields(std::vector<std::string> &fieldList);
 
 protected:
-  int                 TranslateField(const char *field) const override;
-  std::string         TranslateField(int field) const override;
-  std::string GetField(int field, const std::string&) const override;
-  CDatabaseQueryRule::FieldType GetFieldType(int field) const override;
-  std::string         FormatParameter(const std::string &negate,
-                                              const std::string &oper,
-                                              const CDatabase &db,
-                                              const std::string &type) const override;
+  TextureField TranslateField(const char* field) const override;
+  std::string TranslateField(TextureField field) const override;
+  std::string GetField(TextureField field, const CDatabaseQueryNoContext&) const override;
+  CDatabaseQueryRule::FieldType GetFieldType(TextureField field) const override;
+  std::optional<std::string> FormatParameter(const std::string& operatorString,
+                                             const std::string& param,
+                                             const CDatabase& db) const override;
 };
 
-class CTextureDatabase : public CDatabase, public IDatabaseQueryRuleFactory
+using CTextureRuleGroup = CDatabaseQueryRuleCombination<CTextureRule>;
+
+extern template class CDatabaseQueryRuleOf<TextureField, CDatabaseQueryNoContext>;
+extern template class CDatabaseQueryRuleCombination<CTextureRule>;
+
+class CTextureDatabase : public CDatabase
 {
 public:
   CTextureDatabase();
@@ -116,9 +120,6 @@ public:
    */
   bool SetKeepCachedImages(const std::vector<std::string>& imagesToKeep);
 
-  // rule creation
-  CDatabaseQueryRule *CreateRule() const override;
-  CDatabaseQueryRuleCombination *CreateCombination() const override;
 protected:
   /*! \brief retrieve a hash for the given url
    Computes a hash of the current url to use for lookups in the database

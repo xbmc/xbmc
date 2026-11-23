@@ -52,6 +52,14 @@ inline constexpr char DEVICE_PATH[] = "device_path";
 inline constexpr char HIDE_ADD_REMOVE_FAVOURITE[] = "hide_add_remove_favourite";
 inline constexpr char TIMELINE_INDEX[] = "TimelineIndex";
 
+// Smart playlist listings
+//! The library path the listing was queried from
+inline constexpr char PATH_DB[] = "path.db";
+inline constexpr char SORT_ORDER[] = "sort.order";
+inline constexpr char SORT_ASCENDING[] = "sort.ascending";
+inline constexpr char GROUP_BY[] = "group.by";
+inline constexpr char GROUP_MIXED[] = "group.mixed";
+
 // Music and video
 inline constexpr char ARTIST_MUSICID[] = "artist_musicid";
 inline constexpr char ALBUM_MUSICID[] = "album_musicid";
