@@ -298,6 +298,12 @@ bool CApplication::Create()
   appMessenger->RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
   appMessenger->SetGUIThread(CThread::GetCurrentThreadId());
   appMessenger->SetProcessThread(CThread::GetCurrentThreadId());
+  appMessenger->SetMessageHandledCallback(
+      []
+      {
+        if (CGUIComponent* gui = CServiceBroker::GetGUI())
+          gui->GetInfoManager().PublishCurrentListItem();
+      });
 
   // copy required files
   CUtil::CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
@@ -1400,6 +1406,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     m_pMsgHandling->HandleEvents();
     CServiceBroker::GetInputManager().Process(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), frameTime);
+    // for ListItem labels read from other threads
+    CServiceBroker::GetGUI()->GetInfoManager().PublishCurrentListItem();
 
     if (processGUI && renderGUI)
     {

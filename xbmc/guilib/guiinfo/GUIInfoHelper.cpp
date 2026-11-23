@@ -9,6 +9,7 @@
 #include "GUIInfoHelper.h"
 
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
@@ -16,6 +17,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "interfaces/info/Info.h"
+#include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayList.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -164,6 +167,28 @@ std::shared_ptr<CGUIListItem> GetCurrentListItem(int contextWindow,
                                                  int containerId /* = 0 */,
                                                  int itemOffset /* = 0 */,
                                                  unsigned int itemFlags /* = 0 */)
+{
+  const bool defaultLookup =
+      containerId == 0 && itemOffset == 0 && !(itemFlags & INFOFLAG_LISTITEM_CONTAINER) &&
+      !(itemFlags & INFOFLAG_LISTITEM_ABSOLUTE) && !(itemFlags & INFOFLAG_LISTITEM_POSITION);
+
+  // other threads get the item the GUI thread last published, so they never walk
+  // the windows and lists while the GUI thread changes them
+  if (defaultLookup && contextWindow == INFO::DEFAULT_CONTEXT &&
+      !CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    std::shared_ptr<CGUIListItem> item;
+    if (CServiceBroker::GetGUI()->GetInfoManager().GetPublishedListItem(item))
+      return item;
+  }
+
+  return GetCurrentListItemLive(contextWindow, containerId, itemOffset, itemFlags);
+}
+
+std::shared_ptr<CGUIListItem> GetCurrentListItemLive(int contextWindow,
+                                                     int containerId /* = 0 */,
+                                                     int itemOffset /* = 0 */,
+                                                     unsigned int itemFlags /* = 0 */)
 {
   // Add-ons ask for list items from their own threads, and the window and its
   // controls can change under them unless the GUI is locked

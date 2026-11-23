@@ -59,6 +59,16 @@ public:
   void Clear();
   void ResetCache();
 
+  /*! \brief Keep the item a default ListItem lookup returns now, for other threads to read.
+   Call it on the app thread, or while holding the frame move guard, after a change and
+   before another thread is told about it.
+   */
+  void PublishCurrentListItem();
+  /*! \brief Get the item kept by PublishCurrentListItem(), from any thread.
+   \return false if no item was kept yet
+   */
+  bool GetPublishedListItem(std::shared_ptr<CGUIListItem>& item) const;
+
   // KODI::MESSAGING::IMessageTarget implementation
   int GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -249,6 +259,10 @@ private:
   // Vector of multiple information mapped to a single integer lookup
   std::vector<KODI::GUILIB::GUIINFO::CGUIInfo> m_multiInfo;
   mutable CCriticalSection m_critMultiInfo;
+
+  mutable CCriticalSection m_publishedItemSection;
+  std::shared_ptr<CGUIListItem> m_publishedItem;
+  bool m_listItemPublished = false;
 
   // Current playing stuff
   std::unique_ptr<CFileItem> m_currentFile;
