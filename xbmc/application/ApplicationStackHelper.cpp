@@ -325,12 +325,7 @@ void CApplicationStackHelper::SetNextPartBookmark(const std::string& path)
 
   bookmark.playerState = StringUtils::Format("<nextpart>{}</nextpart>", GetCurrentPartNumber());
 
-  CVideoDatabase db;
-  if (db.Open())
-  {
-    db.AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
-    db.Close();
-  }
+  KODI::VIDEO::LIBRARY::AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
 }
 
 bool CApplicationStackHelper::IsPlayingStack() const
