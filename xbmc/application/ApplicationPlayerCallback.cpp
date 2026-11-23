@@ -196,28 +196,16 @@ void ConvertRelativeStackTimesToAbsolute(
   bookmark.totalTimeInSeconds =
       static_cast<double>(stackHelper->GetStackTotalTime().count()) / 1000.0;
 }
+} // namespace
 
+namespace KODI::APPLICATION
+{
 bool UpdateDiscStackBookmark(CBookmark& bookmark,
                              const CFileItem& file,
                              const std::shared_ptr<CApplicationStackHelper>& stackHelper)
 {
   const std::shared_ptr<CAdvancedSettings> advancedSettings{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
-
-  // Define finished as all parts have been played to end and overall stack has been played to within
-  // videoIgnorePercentAtEnd of the end (if defined)
-  const bool finished{
-      [&]
-      {
-        if (!stackHelper->IsPlayingLastStackPart())
-          return false; // Not finished if not playing last part
-        if (!stackHelper->IsSeekingParts() &&
-            !file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false))
-          return true; // For disc stacks, if not flagged then we have not stopped early (decision made in InputStream unless seeking cross-parts)
-        if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
-          return true; // Within videoIgnorePercentAtEnd of the end so consider watched
-        return false;
-      }()};
 
   const bool currentPartFinished{
       !file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false)};
@@ -246,7 +234,12 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
     }
     else
     {
-      if (finished)
+      if (stackHelper->IsSeekingParts())
+      {
+        // Left for another part rather than ended, so keep the position in this one
+        ConvertRelativeStackTimesToAbsolute(bookmark, file, stackHelper);
+      }
+      else if (allStackPartsPlayed)
       {
         // Finished entire stack
         bookmark.timeInSeconds = -1.0;
@@ -295,6 +288,17 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
   return true;
 }
 
+bool IsPartlyTimedDiscStack(const CFileItem& file,
+                            const std::shared_ptr<CApplicationStackHelper>& stackHelper)
+{
+  // Disc stack parts are only timed once played in order, and the stack total time covers those
+  return stackHelper->GetStack(file) != nullptr && stackHelper->WasPlayingDiscStack() &&
+         stackHelper->GetKnownStackParts() < stackHelper->GetTotalPartNumbers();
+}
+} // namespace KODI::APPLICATION
+
+namespace
+{
 bool IsFinished(double timeInSeconds, double totalTimeInSeconds)
 {
   // If the total time is unknown then we can't determine if finished
@@ -340,7 +344,7 @@ void UpdateStackAndItem(const CFileItem& file,
                    .count()));
 
     // Update bookmark
-    if (!UpdateDiscStackBookmark(bookmark, file, stackHelper))
+    if (!APPLICATION::UpdateDiscStackBookmark(bookmark, file, stackHelper))
       fileItem.GetVideoInfoTag()
           ->m_streamDetails.Reset(); // Don't save streamdetails as nothing played
   }
@@ -353,13 +357,14 @@ void UpdateStackAndItem(const CFileItem& file,
   }
 }
 
-bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
+bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark, bool partlyTimedStack)
 {
   if (bookmark.timeInSeconds < 0.0)
     return true; // Finished
 
-  // A next part bookmark's time isn't progress through the whole stack
-  if (VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
+  // Neither a next part bookmark's time nor a time in a partly timed stack is progress through
+  // the whole stack
+  if (partlyTimedStack || VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
     return false;
 
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
@@ -392,6 +397,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (bookmark.timeInSeconds == 0.0)
     return;
 
+  bool partlyTimedStack{false};
+
   if (VIDEO::IsVideo(fileItem))
   {
 #ifdef HAVE_LIBBLURAY
@@ -407,14 +414,19 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
     // Update the stack
     if (stackHelper->GetStack(file) != nullptr)
+    {
+      partlyTimedStack = APPLICATION::IsPartlyTimedDiscStack(file, stackHelper);
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
+    }
 
     // Time based checks don't apply once finished, or to a next part bookmark (counts parts
     // rather than seconds)
     if (bookmark.timeInSeconds >= 0.0 && !VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
     {
-      if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
-          IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
+      // The end of a partly timed stack isn't known
+      if (!partlyTimedStack &&
+          (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
+           IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds)))
       {
         bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
       }
@@ -437,7 +449,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
           ->GetCurrentProfile()
           .canWriteDatabases())
   {
-    CSaveFileState::DoWork(fileItem, bookmark, UpdatePlayCount(fileItem, bookmark));
+    CSaveFileState::DoWork(fileItem, bookmark,
+                           UpdatePlayCount(fileItem, bookmark, partlyTimedStack));
 
     if (VIDEO::IsVideo(fileItem))
       stackHelper->SetStackFileIds(fileItem.GetVideoInfoTag()->m_iFileId);

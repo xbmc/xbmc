@@ -167,6 +167,15 @@ bool CApplicationStackHelper::ProcessNextPartInBookmark(CFileItem& item, CBookma
 
   if (std::optional<int> nextPart{KODI::VIDEO::UTILS::GetNextPartFromBookmark(bookmark)}; nextPart)
   {
+    // An earlier version could save a part past the last one
+    if (*nextPart < 0 || *nextPart >= m_originalStackItems.Size())
+    {
+      CLog::LogF(LOGWARNING, "Ignoring resume part {} for stack of {} parts", *nextPart,
+                 m_originalStackItems.Size());
+      bookmark = CBookmark{};
+      return false;
+    }
+
     // This updates the FileItem with the next part in the stack
     item = SetStackPartAsCurrent(*nextPart);
     // Resume within the part (time is relative to it) or from its start
