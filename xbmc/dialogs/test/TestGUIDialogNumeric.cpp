@@ -49,3 +49,36 @@ TEST(TestGUIDialogNumeric, TheSecondsCanBeReachedAfterTextInput)
   EXPECT_EQ(42, time.minute);
   EXPECT_EQ(3, time.second);
 }
+
+namespace
+{
+//! The day the dialog settles on once \p blocks of a date have been confirmed.
+unsigned short DayAfterConfirming(unsigned short day,
+                                  unsigned short month,
+                                  unsigned short year,
+                                  int blocks)
+{
+  KODI::TIME::SystemTime date{};
+  date.day = day;
+  date.month = month;
+  date.year = year;
+
+  CGUIDialogNumeric dialog;
+  dialog.SetMode(KODI::DIALOGS::NUMERIC_MODE::DATE, date);
+  for (int i = 0; i < blocks; ++i)
+    dialog.OnAction(CAction(ACTION_NEXT_ITEM));
+  return dialog.GetOutput().day;
+}
+} // namespace
+
+TEST(TestGUIDialogNumeric, ADateIsKeptWithinItsMonth)
+{
+  EXPECT_EQ(30, DayAfterConfirming(31, 4, 2024, 1));
+  EXPECT_EQ(31, DayAfterConfirming(31, 5, 2024, 1));
+  EXPECT_EQ(29, DayAfterConfirming(30, 2, 2023, 1)) << "the year is not known yet";
+  EXPECT_EQ(28, DayAfterConfirming(29, 2, 2023, 2));
+  EXPECT_EQ(29, DayAfterConfirming(29, 2, 2024, 2));
+  EXPECT_EQ(28, DayAfterConfirming(29, 2, 1900, 2));
+  EXPECT_EQ(29, DayAfterConfirming(29, 2, 2000, 2));
+  EXPECT_EQ(31, DayAfterConfirming(31, 13, 2024, 1)) << "a month out of range is left alone";
+}

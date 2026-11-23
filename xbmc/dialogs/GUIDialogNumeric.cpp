@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <algorithm>
+#include <array>
 #include <cassert>
 
 #define CONTROL_HEADING_LABEL  1
@@ -106,48 +108,81 @@ void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_NEXT_ITEM)
-    OnNext();
-  else if (action.GetID() == ACTION_PREV_ITEM)
-    OnPrevious();
-  else if (action.GetID() == ACTION_BACKSPACE)
-    OnBackSpace();
-  else if (action.GetID() == ACTION_ENTER)
-    OnOK();
-  else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
-    OnNumber(action.GetID() - REMOTE_0);
-  else if (action.GetID() >= KEY_VKEY && action.GetID() <= KEY_VKEY_MAX)
+  const int id{action.GetID()};
+  switch (id)
+  {
+    case ACTION_NEXT_ITEM:
+      OnNext();
+      return true;
+    case ACTION_PREV_ITEM:
+      OnPrevious();
+      return true;
+    case ACTION_BACKSPACE:
+      OnBackSpace();
+      return true;
+    case ACTION_ENTER:
+      OnOK();
+      return true;
+    case KEY_UNICODE:
+      switch (const wchar_t c{action.GetUnicode()})
+      {
+        case '\n':
+        case '\r':
+          OnOK();
+          break;
+        case '\b':
+          OnBackSpace();
+          break;
+        case 27: // escape
+          OnCancel();
+          break;
+        case '.':
+          OnNext();
+          break;
+        default:
+          if (c >= '0' && c <= '9')
+            OnNumber(c - '0');
+          break;
+      }
+      return true;
+    default:
+      break;
+  }
+
+  if (id >= REMOTE_0 && id <= REMOTE_9)
+  {
+    OnNumber(id - REMOTE_0);
+    return true;
+  }
+
+  if (id >= KEY_VKEY && id <= KEY_VKEY_MAX)
   {
     // input from the keyboard (vkey, not ascii)
-    uint16_t b = action.GetID() - KEY_VKEY;
-    if (b == XBMCVK_LEFT)
-      OnPrevious();
-    else if (b == XBMCVK_RIGHT)
-      OnNext();
-    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
-      OnOK();
-    else if (b == XBMCVK_BACK)
-      OnBackSpace();
-    else if (b == XBMCVK_ESCAPE)
-      OnCancel();
+    switch (id - KEY_VKEY)
+    {
+      case XBMCVK_LEFT:
+        OnPrevious();
+        break;
+      case XBMCVK_RIGHT:
+        OnNext();
+        break;
+      case XBMCVK_RETURN:
+      case XBMCVK_NUMPADENTER:
+        OnOK();
+        break;
+      case XBMCVK_BACK:
+        OnBackSpace();
+        break;
+      case XBMCVK_ESCAPE:
+        OnCancel();
+        break;
+      default:
+        break;
+    }
+    return true;
   }
-  else if (action.GetID() == KEY_UNICODE)
-  { // input from the keyboard
-    if (action.GetUnicode() == 10 || action.GetUnicode() == 13)
-      OnOK(); // enter
-    else if (action.GetUnicode() == 8)
-      OnBackSpace(); // backspace
-    else if (action.GetUnicode() == 27)
-      OnCancel(); // escape
-    else if (action.GetUnicode() == 46)
-      OnNext(); // '.'
-    else if (action.GetUnicode() >= 48 && action.GetUnicode() < 58)  // number
-      OnNumber(action.GetUnicode() - 48);
-  }
-  else
-    return CGUIDialog::OnAction(action);
 
-  return true;
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogNumeric::OnBack(int actionID)
@@ -179,25 +214,22 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
         OnNumber(iControl - 10);
         return true;
       }
-      else if (iControl == CONTROL_PREVIOUS)
+      switch (iControl)
       {
-        OnPrevious();
-        return true;
-      }
-      else if (iControl == CONTROL_NEXT)
-      {
-        OnNext();
-        return true;
-      }
-      else if (iControl == CONTROL_BACKSPACE)
-      {
-        OnBackSpace();
-        return true;
-      }
-      else if (iControl == CONTROL_ENTER)
-      {
-        OnOK();
-        return true;
+        case CONTROL_PREVIOUS:
+          OnPrevious();
+          return true;
+        case CONTROL_NEXT:
+          OnNext();
+          return true;
+        case CONTROL_BACKSPACE:
+          OnBackSpace();
+          return true;
+        case CONTROL_ENTER:
+          OnOK();
+          return true;
+        default:
+          break;
       }
     }
     break;
@@ -220,76 +252,80 @@ void CGUIDialogNumeric::OnBackSpace()
     --m_block;
     return;
   }
-  if (m_mode == NUMERIC_MODE::NUMBER || m_mode == NUMERIC_MODE::PASSWORD)
-  { // just go back one character
-    if (!m_number.empty())
-      m_number.erase(m_number.length() - 1);
-  }
-  else if (m_mode == NUMERIC_MODE::IP_ADDRESS)
+  switch (m_mode)
   {
-    if (m_ip[m_block])
-      m_ip[m_block] /= 10;
-    else if (m_block)
-    {
-      --m_block;
-      m_dirty = false;
-    }
-  }
-  else if (m_mode == NUMERIC_MODE::TIME)
-  {
-    if (m_block == 0)
-      m_datetime.hour /= 10;
-    else if (m_datetime.minute)
-      m_datetime.minute /= 10;
-    else
-    {
-      m_block = 0;
-      m_dirty = false;
-    }
-  }
-  else if (m_mode == NUMERIC_MODE::TIME_SECONDS)
-  {
-    if (m_block == 0)
-      m_datetime.hour /= 10;
-    else if (m_block == 1)
-    {
-      if (m_datetime.minute)
+    case NUMERIC_MODE::NUMBER:
+    case NUMERIC_MODE::PASSWORD:
+      // just go back one character
+      if (!m_number.empty())
+        m_number.erase(m_number.length() - 1);
+      break;
+
+    case NUMERIC_MODE::IP_ADDRESS:
+      if (m_ip[m_block])
+        m_ip[m_block] /= 10;
+      else if (m_block)
+      {
+        --m_block;
+        m_dirty = false;
+      }
+      break;
+
+    case NUMERIC_MODE::TIME:
+      if (m_block == 0)
+        m_datetime.hour /= 10;
+      else if (m_datetime.minute)
         m_datetime.minute /= 10;
       else
       {
         m_block = 0;
         m_dirty = false;
       }
-    }
-    else if (m_datetime.second)
-      m_datetime.second /= 10;
-    else
-    {
-      m_block = 0;
-      m_dirty = false;
-    }
-  }
-  else if (m_mode == NUMERIC_MODE::DATE)
-  {
-    if (m_block == 0)
-      m_datetime.day /= 10;
-    else if (m_block == 1)
-    {
-      if (m_datetime.month)
-        m_datetime.month /= 10;
+      break;
+
+    case NUMERIC_MODE::TIME_SECONDS:
+      if (m_block == 0)
+        m_datetime.hour /= 10;
+      else if (m_block == 1)
+      {
+        if (m_datetime.minute)
+          m_datetime.minute /= 10;
+        else
+        {
+          m_block = 0;
+          m_dirty = false;
+        }
+      }
+      else if (m_datetime.second)
+        m_datetime.second /= 10;
       else
       {
         m_block = 0;
         m_dirty = false;
       }
-    }
-    else if (m_datetime.year) // m_block == 2
-      m_datetime.year /= 10;
-    else
-    {
-      m_block = 1;
-      m_dirty = false;
-    }
+      break;
+
+    case NUMERIC_MODE::DATE:
+      if (m_block == 0)
+        m_datetime.day /= 10;
+      else if (m_block == 1)
+      {
+        if (m_datetime.month)
+          m_datetime.month /= 10;
+        else
+        {
+          m_block = 0;
+          m_dirty = false;
+        }
+      }
+      else if (m_datetime.year) // m_block == 2
+        m_datetime.year /= 10;
+      else
+      {
+        m_block = 1;
+        m_dirty = false;
+      }
+      break;
   }
 }
 
@@ -317,37 +353,36 @@ void CGUIDialogNumeric::FrameMove()
   std::string strLabel;
   unsigned int start = 0;
   unsigned int end = 0;
-  if (m_mode == NUMERIC_MODE::PASSWORD)
-    strLabel.assign(m_number.length(), '*');
-  else if (m_mode == NUMERIC_MODE::NUMBER)
-    strLabel = m_number;
-  else if (m_mode == NUMERIC_MODE::TIME)
-  { // format up the time
-    strLabel = StringUtils::Format("{:2}:{:02}", m_datetime.hour, m_datetime.minute);
-    start = m_block * 3;
-    end = m_block * 3 + 2;
-  }
-  else if (m_mode == NUMERIC_MODE::TIME_SECONDS)
-  { // format up the time
-    strLabel = StringUtils::Format("{:2}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
-                                   m_datetime.second);
-    start = m_block * 3;
-    end = m_block * 3 + 2;
-  }
-  else if (m_mode == NUMERIC_MODE::DATE)
-  { // format up the date
-    strLabel =
-        StringUtils::Format("{:2}/{:2}/{:4}", m_datetime.day, m_datetime.month, m_datetime.year);
-    start = m_block * 3;
-    end = m_block * 3 + 2;
-    if (m_block == 2)
-      end = m_block * 3 + 4;
-  }
-  else if (m_mode == NUMERIC_MODE::IP_ADDRESS)
-  { // format up the date
-    strLabel = StringUtils::Format("{:3}.{:3}.{:3}.{:3}", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
-    start = m_block * 4;
-    end = m_block * 4 + 3;
+  switch (m_mode)
+  {
+    case NUMERIC_MODE::PASSWORD:
+      strLabel.assign(m_number.length(), '*');
+      break;
+    case NUMERIC_MODE::NUMBER:
+      strLabel = m_number;
+      break;
+    case NUMERIC_MODE::TIME:
+      strLabel = StringUtils::Format("{:2}:{:02}", m_datetime.hour, m_datetime.minute);
+      start = m_block * 3;
+      end = m_block * 3 + 2;
+      break;
+    case NUMERIC_MODE::TIME_SECONDS:
+      strLabel = StringUtils::Format("{:2}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
+                                     m_datetime.second);
+      start = m_block * 3;
+      end = m_block * 3 + 2;
+      break;
+    case NUMERIC_MODE::DATE:
+      strLabel =
+          StringUtils::Format("{:2}/{:2}/{:4}", m_datetime.day, m_datetime.month, m_datetime.year);
+      start = m_block * 3;
+      end = m_block == 2 ? m_block * 3 + 4 : m_block * 3 + 2;
+      break;
+    case NUMERIC_MODE::IP_ADDRESS:
+      strLabel = StringUtils::Format("{:3}.{:3}.{:3}.{:3}", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
+      start = m_block * 4;
+      end = m_block * 4 + 3;
+      break;
   }
   CGUILabelControl *pLabel = dynamic_cast<CGUILabelControl *>(GetControl(CONTROL_INPUT_LABEL));
   if (pLabel)
@@ -694,24 +729,19 @@ void CGUIDialogNumeric::VerifyDate(bool checkYear)
     m_datetime.day = 1;
   if (m_datetime.month == 0)
     m_datetime.month = 1;
-  // check for number of days in the month
-  if (m_datetime.day == 31)
+  // without a year yet, February allows the 29th
+  static constexpr std::array<int, 12> daysInMonth{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  // a month out of range, as an add-on can pass in, is left as it was given
+  if (m_datetime.month > daysInMonth.size())
   {
-    if (m_datetime.month == 4 || m_datetime.month == 6 || m_datetime.month == 9 ||
-        m_datetime.month == 11)
-      m_datetime.day = 30;
+    return;
   }
-  if (m_datetime.month == 2 && m_datetime.day > 28)
-  {
-    m_datetime.day = 29; // max in february.
-    if (checkYear)
-    {
-      // leap years occur when the year is divisible by 4 but not by 100, or the year is divisible by 400
-      // thus they don't occur, if the year has a remainder when divided by 4, or when the year is divisible by 100 but not by 400
-      if ((m_datetime.year % 4) || (!(m_datetime.year % 100) && (m_datetime.year % 400)))
-        m_datetime.day = 28;
-    }
-  }
+  int lastDay = daysInMonth[m_datetime.month - 1];
+  const int year = m_datetime.year;
+  if (m_datetime.month == 2 && checkYear &&
+      !(year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))
+    lastDay = 28;
+  m_datetime.day = static_cast<unsigned short>(std::min<int>(m_datetime.day, lastDay));
 }
 
 void CGUIDialogNumeric::OnOK()
