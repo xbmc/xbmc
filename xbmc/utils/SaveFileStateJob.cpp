@@ -111,7 +111,30 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        // See if idFile of library item needs updating
+        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
+
+        const bool updateNeeded{
+            [&item, &tag]
+            {
+              if (!tag || tag->m_iFileId < 0)
+                return false; // No tag or file to update
+              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
+                return false; // No video db item to update
+              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
+                  tag->m_strFileNameAndPath != item.GetDynPath())
+                return true; // Bluray path to update
+              if (item.GetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH).asBoolean(false))
+                return true; // Bluray playlist chosen by the user, or main title of a disc
+              if (item.GetProperty(ITEM::PROPERTY::NEW_STACK_PATH).asBoolean(false))
+                return true; // Stack path to update
+              return false;
+            }()};
+
         bool updateListing = false;
+        // Whether a resume point was written, so that the item can move to the file below
+        bool resumePointWritten{true};
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
         {
@@ -167,7 +190,9 @@ void CSaveFileState::DoWork(CFileItem& item,
               item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
           }
 
-          if (!item.HasVideoInfoTag() ||
+          // The item's resume point is that of the file it was played from. A file it moves to
+          // below has none of its own yet, and the old file may be deleted with its resume point.
+          if (!item.HasVideoInfoTag() || updateNeeded ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
             videodatabase.BeginTransaction();
@@ -175,8 +200,11 @@ void CSaveFileState::DoWork(CFileItem& item,
             if (bookmark.timeInSeconds <= 0.0)
               success = videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
+            {
               success = videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark,
                                                         CBookmark::RESUME);
+              resumePointWritten = success;
+            }
             if (success)
             {
               videodatabase.CommitTransaction();
@@ -232,27 +260,6 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
-        // See if idFile of library item needs updating
-        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
-
-        const bool updateNeeded{
-            [&item, &tag]
-            {
-              if (!tag || tag->m_iFileId < 0)
-                return false; // No tag or file to update
-              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
-                return false; // No video db item to update
-              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
-                  tag->m_strFileNameAndPath != item.GetDynPath())
-                return true; // Bluray path to update
-              if (item.GetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH).asBoolean(false))
-                return true; // Bluray playlist replaced by user selection
-              if (item.GetProperty(ITEM::PROPERTY::NEW_STACK_PATH).asBoolean(false))
-                return true; // Stack path to update
-              return false;
-            }()};
-
         // An asset played from its own row (eg. an extra) is identified by its file
         MEDIA::TYPE mediaType{tag ? tag->GetMediaType() : MEDIA::TYPE::NONE};
         int idMedia{tag ? tag->m_iDbId : -1};
@@ -266,7 +273,14 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
 
         int replacedFileId{-1};
-        if (updateNeeded)
+        if (updateNeeded && !resumePointWritten)
+        {
+          // Moving could delete the old file, and with it the only resume point left
+          CLog::LogF(LOGWARNING,
+                     "{} {} stays on file {}, as its resume point could not be saved to {}",
+                     mediaType, idMedia, tag->m_iFileId, redactPath);
+        }
+        else if (updateNeeded)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile

@@ -6,18 +6,27 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DatabaseManager.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "platform/Filesystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
+#include "utils/ItemProperties.h"
+#include "utils/SaveFileStateJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
@@ -688,4 +697,254 @@ TEST(TestVideoUtils, ItemResumeInformationOfNextPartBookmark)
   EXPECT_TRUE(info.isResumable);
   EXPECT_EQ(info.startOffset, 0);
   EXPECT_EQ(info.partNumber, 3);
+}
+
+namespace
+{
+//! The item as CDiscDirectoryHelper::GetOrShowPlaylistSelection() returns the playlist it picked
+//! (see its ApplyPlaylistDetails()): the paths in the tag point at the playlist too
+void PickPlaylist(CFileItem& item, const std::string& playlist)
+{
+  item.SetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL, item.GetDynPath());
+  item.SetDynPath(playlist);
+  item.GetVideoInfoTag()->SetFileNameAndPath(playlist);
+}
+} // namespace
+
+TEST(TestVideoUtils, FlagMainTitleToSave)
+{
+  const std::string image{"/movies/Film (2015)/Film.iso"};
+  const std::string bdmv{"/movies/Film (2015)/BDMV/index.bdmv"};
+  const struct
+  {
+    std::string before;
+    bool inLibrary;
+    bool flagged;
+  } cases[]{
+      {image, true, true},
+      {bdmv, true, true},
+      // Already a playlist, maybe one the user chose, which the main title must not replace
+      {URIUtils::GetBlurayPlaylistPath(image, 801), true, false},
+      // Not in the library (Videos > Files), or a part of a stack, which
+      // CApplicationStackHelper::InitializeStack() gives a blank tag. The stack's own file must not
+      // be replaced by the playlist of one of its parts.
+      {image, false, false},
+  };
+
+  for (const auto& c : cases)
+  {
+    SCOPED_TRACE(c.before + (c.inLibrary ? " in library" : " not in library"));
+    CFileItem item{c.before, false};
+    CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    if (c.inLibrary)
+    {
+      tag->SetMediaType(MEDIA::TYPE::MOVIE);
+      tag->m_iDbId = 1;
+      tag->m_iFileId = 1;
+    }
+    PickPlaylist(item, URIUtils::GetBlurayPlaylistPath(c.before, 800));
+
+    EXPECT_EQ(c.flagged, VIDEO::UTILS::FlagMainTitleToSave(item, c.before));
+    EXPECT_EQ(c.flagged, item.HasProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH));
+  }
+}
+
+namespace
+{
+//! CSaveFileState updates the listing through the window manager, and the database's commit the
+//! library info through the info manager
+class DiscTestGUI : public CGUIComponent
+{
+public:
+  DiscTestGUI() : CGUIComponent(false)
+  {
+    m_pWindowManager = std::make_unique<CGUIWindowManager>();
+    m_guiInfoManager = std::make_unique<CGUIInfoManager>();
+  }
+
+  ~DiscTestGUI() override { m_pWindowManager.reset(); }
+};
+} // namespace
+
+//! A disc in a library scanned before playlists were picked at scan time, stored as the disc
+//! itself, played with its main title picked (disc playback setting "Play main movie") and stopped
+//! part way through
+class TestDiscMainTitleSave : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    m_previousAnnouncements = CServiceBroker::GetAnnouncementManager();
+    CServiceBroker::RegisterAnnouncementManager(
+        std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
+    // CSaveFileState opens the profile's database itself
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyVideos"))
+    {
+      ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
+    ASSERT_TRUE(m_db.Open());
+    CServiceBroker::RegisterGUI(&m_gui);
+
+    // A disc of each test's own, as the tests share the database. It need not exist.
+    m_image = URIUtils::AddFileToFolder(
+        "/TestDiscMainTitleSave", testing::UnitTest::GetInstance()->current_test_info()->name(),
+        "Disc.iso");
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::UnregisterGUI();
+    if (m_idMovie > 0)
+      m_db.DeleteMovie(m_idMovie);
+    if (m_idShow > 0)
+      m_db.DeleteTvShow(m_idShow);
+    m_db.Close();
+    CServiceBroker::UnregisterAnnouncementManager();
+    if (m_previousAnnouncements)
+      CServiceBroker::RegisterAnnouncementManager(m_previousAnnouncements);
+  }
+
+  int AddMovie()
+  {
+    CVideoInfoTag tag;
+    tag.m_strTitle = "Film";
+    tag.m_strFileNameAndPath = m_image;
+    tag.m_strPath = URIUtils::GetDirectory(m_image);
+    m_idMovie = m_db.SetDetailsForMovie(tag, ART::Artwork{});
+    return m_idMovie;
+  }
+
+  //! Picks playlist 1 for the item as listed, and saves its state when playback of it stops at
+  //! \p seconds, or finishes if that is negative, as CApplicationPlayerCallback passes them
+  void PlayMainTitle(VideoDbContentType type, int id, double seconds = 664.0)
+  {
+    CFileItem item{Listed(type, id)};
+    const std::string listed{item.GetDynPath()};
+    PickPlaylist(item, Playlist());
+    EXPECT_TRUE(VIDEO::UTILS::FlagMainTitleToSave(item, listed));
+
+    CBookmark bookmark;
+    bookmark.timeInSeconds = seconds;
+    bookmark.totalTimeInSeconds = 7461.0;
+    bookmark.player = "VideoPlayer";
+    bookmark.playerState =
+        R"(<libbluraystate version="1"><playlistId>1</playlistId></libbluraystate>)";
+    CSaveFileState::DoWork(item, bookmark, seconds < 0.0);
+  }
+
+  //! The item as its listing holds it
+  CFileItem Listed(VideoDbContentType type, int id)
+  {
+    return CFileItem{m_db.GetDetailsByTypeAndId(type, id)};
+  }
+
+  std::string Playlist() const { return URIUtils::GetBlurayPlaylistPath(m_image, 1); }
+
+  CVideoDatabase m_db;
+  std::string m_image;
+  int m_idMovie{-1};
+  int m_idShow{-1};
+
+private:
+  DiscTestGUI m_gui;
+  std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncements;
+};
+
+TEST_F(TestDiscMainTitleSave, AMovieKeepsTheResumePointOfItsMainTitle)
+{
+  ASSERT_GT(AddMovie(), 0);
+
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie);
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  EXPECT_EQ(Playlist(), relisted.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(664.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestDiscMainTitleSave, AMovieStoppedWhereItsImageWasStoppedBeforeKeepsThatResumePoint)
+{
+  // The image's file, and the resume point with it, is deleted when the movie moves to the
+  // playlist, so the resume point has to be written to the playlist though it is the same
+  ASSERT_GT(AddMovie(), 0);
+  CBookmark before;
+  before.timeInSeconds = 664.0;
+  before.totalTimeInSeconds = 7461.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile(m_image, before, CBookmark::RESUME));
+
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie, 664.0);
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  EXPECT_EQ(Playlist(), relisted.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(664.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestDiscMainTitleSave, AMovieStaysOnItsImageWhenItsResumePointCannotBeWrittenToThePlaylist)
+{
+  // Moving to the playlist could delete the image's file and its resume point, leaving none
+  ASSERT_GT(AddMovie(), 0);
+  CBookmark before;
+  before.timeInSeconds = 100.0;
+  before.totalTimeInSeconds = 7461.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile(m_image, before, CBookmark::RESUME));
+
+  // A new resume point fails to be written, as on a database error
+  ASSERT_TRUE(m_db.ExecuteQuery("CREATE TRIGGER test_fail_bookmark BEFORE INSERT ON bookmark "
+                                "BEGIN SELECT RAISE(ABORT, 'test'); END"));
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie, 664.0);
+  ASSERT_TRUE(m_db.ExecuteQuery("DROP TRIGGER test_fail_bookmark"));
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  EXPECT_EQ(m_image, relisted.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(100.0, relisted.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestDiscMainTitleSave, AMovieKeepsItsWatchedStateWhenItsMainTitleIsFinished)
+{
+  ASSERT_GT(AddMovie(), 0);
+  CDateTime lastPlayed;
+  lastPlayed.SetFromDBDateTime("2026-01-01 20:00:00");
+  m_db.SetPlayCount(CFileItem{m_image, false}, 2, lastPlayed);
+
+  PlayMainTitle(VideoDbContentType::MOVIES, m_idMovie, -1.0);
+
+  const CFileItem relisted{Listed(VideoDbContentType::MOVIES, m_idMovie)};
+  const CVideoInfoTag& tag{*relisted.GetVideoInfoTag()};
+  EXPECT_EQ(Playlist(), tag.m_strFileNameAndPath);
+  EXPECT_EQ(3, tag.GetPlayCount());
+  EXPECT_TRUE(tag.m_lastPlayed.IsValid());
+  EXPECT_GT(tag.m_lastPlayed, lastPlayed);
+}
+
+TEST_F(TestDiscMainTitleSave, AnEpisodeMovesToItsPlaylistLeavingTheOtherOnTheImageTheyShare)
+{
+  CVideoInfoTag show;
+  show.m_strTitle = "Show";
+  show.m_strPath = URIUtils::GetDirectory(m_image);
+  m_idShow =
+      m_db.SetDetailsForTvShow({show.m_strPath}, show, ART::Artwork{}, ART::SeasonsArtwork{});
+  ASSERT_GT(m_idShow, 0);
+
+  int idEpisodes[2]{};
+  for (int number : {1, 2})
+  {
+    CVideoInfoTag tag;
+    tag.m_strTitle = "Episode";
+    tag.m_strFileNameAndPath = m_image;
+    tag.m_strPath = show.m_strPath;
+    tag.m_iSeason = 1;
+    tag.m_iEpisode = number;
+    // Added first, as the scanner does, or the second would replace the first on the same file
+    const int idEpisode{m_db.AddNewEpisode(m_idShow, tag)};
+    idEpisodes[number - 1] = m_db.SetDetailsForEpisode(tag, ART::Artwork{}, m_idShow, idEpisode);
+    ASSERT_GT(idEpisodes[number - 1], 0);
+  }
+  ASSERT_NE(idEpisodes[0], idEpisodes[1]);
+
+  PlayMainTitle(VideoDbContentType::EPISODES, idEpisodes[0]);
+
+  const CFileItem first{Listed(VideoDbContentType::EPISODES, idEpisodes[0])};
+  EXPECT_EQ(Playlist(), first.GetVideoInfoTag()->m_strFileNameAndPath);
+  EXPECT_EQ(664.0, first.GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+  const CFileItem second{Listed(VideoDbContentType::EPISODES, idEpisodes[1])};
+  EXPECT_EQ(m_image, second.GetVideoInfoTag()->m_strFileNameAndPath);
 }

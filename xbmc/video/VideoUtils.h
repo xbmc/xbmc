@@ -242,6 +242,18 @@ int SaveDiscPlaylistToLibrary(const CFileItem& item,
 bool SaveDiscPlaylist(CFileItem& item);
 
 /*!
+ \brief Flag a library item that is still stored as its disc (BDMV folder or image), as a library
+ scanned before playlists were picked at scan time holds it, to be stored as the main title picked
+ for it when playback ends. That is what a scan stores now. The pick also points the paths in the
+ tag at the playlist, so CSaveFileState::DoWork() cannot tell from them that the stored file
+ differs.
+ \param item [in,out] The item, already pointed at the playlist picked
+ \param pathBeforePick [in] The item's dynamic path before the playlist was picked
+ \return True if the item was flagged
+ */
+bool FlagMainTitleToSave(CFileItem& item, const std::string& pathBeforePick);
+
+/*!
  * \brief Announce a change of a file's play count as Files.OnPlayCountChanged, for any file in or
  * outside the library, so that e.g. the add-on whose plugin item it is can react.
  * \param[in] file The file. Its credentials are not announced.

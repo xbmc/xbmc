@@ -281,7 +281,7 @@ bool CApplicationPlay::GetPlaylistIfDisc()
         return false; // User cancelled
       m_item = *items[0];
 
-      // Only a choice the user made is saved, and now rather than when playback finishes
+      // A choice the user made is saved now rather than when playback finishes
       if (menuDecision == SHOW_SIMPLE_MENU && m_item.GetDynPath() != oldPath)
       {
         if (KODI::VIDEO::UTILS::CanSaveDiscPlaylist(m_item))
@@ -296,6 +296,9 @@ bool CApplicationPlay::GetPlaylistIfDisc()
           // Removable disc, saved at playback end
           m_item.SetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH, true);
       }
+      // A main title picked for an item still stored as its disc is saved at playback end
+      else if (menuDecision == GET_MAIN_TITLE)
+        KODI::VIDEO::UTILS::FlagMainTitleToSave(m_item, oldPath);
 
       // Reset any resume state as new playlist chosen
       m_options.starttime = m_options.startpercent = 0.0;
