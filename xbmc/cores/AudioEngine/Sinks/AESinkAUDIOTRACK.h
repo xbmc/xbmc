@@ -65,6 +65,7 @@ private:
   uint64_t              m_headPos;
   uint64_t m_headPosOld;
   uint32_t m_stuckCounter;
+  bool m_stuckIndicator = false;
   uint64_t m_timestampPos = 0;
   int64_t m_flushTime = 0;
   bool m_rawNeedsFlush = false;
