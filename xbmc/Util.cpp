@@ -399,11 +399,11 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744);
 
   // Music Playlists
-  else if (StringUtils::StartsWith(path, "special://musicplaylists"))
+  else if (URIUtils::PathHasParent(path + "/", PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC)))
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   // Video Playlists
-  else if (StringUtils::StartsWith(path, "special://videoplaylists"))
+  else if (URIUtils::PathHasParent(path + "/", PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO)))
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
@@ -1386,9 +1386,10 @@ namespace
 std::vector<std::string> PlaylistsFoldersOf(KODI::MEDIA::MediaSection section)
 {
   const std::string path = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
-  return {URIUtils::AddFileToFolder(path, section == KODI::MEDIA::MediaSection::MUSIC ? "music"
-                                                                                      : "video"),
-          URIUtils::AddFileToFolder(path, "mixed")};
+  return {URIUtils::AddFileToFolder(path, section == KODI::MEDIA::MediaSection::MUSIC
+                                              ? CUtil::MUSIC_PLAYLISTS_FOLDER
+                                              : CUtil::VIDEO_PLAYLISTS_FOLDER),
+          URIUtils::AddFileToFolder(path, CUtil::MIXED_PLAYLISTS_FOLDER)};
 }
 } // namespace
 
@@ -1415,6 +1416,18 @@ std::string CUtil::PlaylistsPathOf(KODI::MEDIA::MediaSection section)
     default:
       return {};
   }
+}
+
+bool CUtil::IsPlaylistsPath(const std::string& path, KODI::MEDIA::MediaSection section)
+{
+  const std::string playlists{PlaylistsPathOf(section)};
+  if (playlists.empty())
+    return false;
+  if (URIUtils::PathEquals(path, playlists))
+    return true;
+  return URIUtils::PathEquals(path, section == KODI::MEDIA::MediaSection::MUSIC
+                                        ? MusicPlaylistsLocation()
+                                        : VideoPlaylistsLocation());
 }
 
 bool CUtil::IsInPlaylistsFolder(const std::string& path, KODI::MEDIA::MediaSection section)

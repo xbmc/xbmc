@@ -1582,6 +1582,14 @@ TEST_F(TestTitleFromPath, DecodesAnArchiveNameOnlyWhenItsParentIsAUrl)
             CUtil::GetTitleFromPath("zip://%2fmedia%2f100%2520proof.zip/", true));
 }
 
+TEST_F(TestTitleFromPath, NamesThePlaylistsFolders)
+{
+  const std::string playlists{
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136)};
+  EXPECT_EQ(playlists, CUtil::GetTitleFromPath("special://musicplaylists/"));
+  EXPECT_EQ(playlists, CUtil::GetTitleFromPath("special://videoplaylists/"));
+}
+
 TEST(TestUtil, FoundationNativeAndNestedNormalization)
 {
   EXPECT_EQ("relative?name#part+100%.mkv", CUtil::ValidatePath("relative?name#part+100%.mkv"));

@@ -114,9 +114,9 @@ void CProfileManager::OnSettingsLoaded()
   }
 
   CDirectory::Create(strDir);
-  CDirectory::Create(URIUtils::AddFileToFolder(strDir,"music"));
-  CDirectory::Create(URIUtils::AddFileToFolder(strDir,"video"));
-  CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
+  CDirectory::Create(URIUtils::AddFileToFolder(strDir, CUtil::MUSIC_PLAYLISTS_FOLDER));
+  CDirectory::Create(URIUtils::AddFileToFolder(strDir, CUtil::VIDEO_PLAYLISTS_FOLDER));
+  CDirectory::Create(URIUtils::AddFileToFolder(strDir, CUtil::MIXED_PLAYLISTS_FOLDER));
 }
 
 void CProfileManager::OnSettingsSaved() const

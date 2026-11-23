@@ -600,8 +600,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->IsPath(CUtil::MusicPlaylistsLocation()) ||
-      m_vecItems->IsPath("special://musicplaylists/");
+    const bool inPlaylists{CUtil::IsPlaylistsPath(m_vecItems->GetPath(), MediaSection::MUSIC)};
 
     if (m_vecItems->IsPath(CSourcesDirectory::PathOf(MediaSection::MUSIC)))
     {

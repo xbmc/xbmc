@@ -764,8 +764,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
       m_database.DeleteSet(params.GetSetId());
     }
   }
-  else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
-           m_vecItems->IsPath("special://videoplaylists/"))
+  else if (CUtil::IsPlaylistsPath(m_vecItems->GetPath(), MediaSection::VIDEO))
   {
     pItem->SetFolder(false);
     CFileUtils::DeleteItemWithConfirm(pItem);
@@ -830,8 +829,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   else
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
-                       m_vecItems->IsPath("special://videoplaylists/");
+    const bool inPlaylists{CUtil::IsPlaylistsPath(m_vecItems->GetPath(), MediaSection::VIDEO)};
 
     if (item->HasVideoInfoTag() && item->HasProperty(ITEM::PROPERTY::ARTIST_MUSICID))
       buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
