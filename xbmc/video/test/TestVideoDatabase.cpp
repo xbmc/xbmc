@@ -31,6 +31,7 @@
 #include "utils/DatabaseUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StreamDetails.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
@@ -2370,6 +2371,376 @@ TEST_F(TestVideoDatabase, AShowsFolderDateAddedIsReadBeforeItIsAdded)
   EXPECT_EQ(modified.GetAsDBDateTime(),
             m_db.GetSingleValue(m_db.PrepareSQL("SELECT dateAdded FROM path WHERE idPath = %i",
                                                 m_db.GetPathId(folder))));
+}
+
+TEST_F(TestVideoDatabase, AShowIsWatchedWhileAnyOfItsEpisodesIs)
+{
+  const int idShow{AddTvShow("/tv/Show/")};
+  const int idEpisode{AddEpisode(idShow, "/tv/Show/Show S01E01.mkv", 1)};
+  ASSERT_GT(AddEpisode(idShow, "/tv/Show/Show S01E02.mkv", 2), 0);
+  EXPECT_FALSE(m_db.IsWatched(KODI::MEDIA::TYPE::TV_SHOW, idShow));
+
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem("/tv/Show/Show S01E01.mkv", false), 1).IsValid());
+
+  EXPECT_TRUE(m_db.IsWatched(KODI::MEDIA::TYPE::TV_SHOW, idShow));
+  EXPECT_TRUE(m_db.IsWatched(KODI::MEDIA::TYPE::EPISODE, idEpisode));
+}
+
+TEST_F(TestVideoDatabase, OnlyAnEditLeavingAFileUnwatchedMayClearItsLastPlayedDate)
+{
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem("/videos/film.mkv", false), 2).IsValid());
+
+  EXPECT_FALSE(m_db.CanClearLastPlayed("/videos/film.mkv", std::nullopt));
+  EXPECT_FALSE(m_db.CanClearLastPlayed("/videos/film.mkv", 1));
+  EXPECT_TRUE(m_db.CanClearLastPlayed("/videos/film.mkv", 0));
+  EXPECT_TRUE(m_db.CanClearLastPlayed("/videos/unplayed.mkv", std::nullopt));
+}
+
+TEST_F(TestVideoDatabase, AResumePointWithoutALengthTakesTheOneStoredOrTheVideos)
+{
+  const std::string film{"/videos/film.mkv"};
+  const int idFile{m_db.AddFile(film)};
+  ASSERT_GT(idFile, 0);
+  CStreamDetails details;
+  auto* video = new CStreamDetailVideo();
+  video->m_iDuration = 5400;
+  video->SetSource(CStreamDetail::MEDIA);
+  details.AddStream(video);
+  ASSERT_TRUE(m_db.SetStreamDetailsForFileId(details, idFile));
+
+  CBookmark resumePoint;
+  ASSERT_TRUE(m_db.SetResumePoint(film, 600.0, 0.0));
+  ASSERT_TRUE(m_db.GetResumeBookMark(film, resumePoint));
+  EXPECT_EQ(5400.0, resumePoint.totalTimeInSeconds);
+
+  ASSERT_TRUE(m_db.SetResumePoint(film, 900.0, 3600.0));
+  ASSERT_TRUE(m_db.SetResumePoint(film, 1200.0, 0.0));
+  ASSERT_TRUE(m_db.GetResumeBookMark(film, resumePoint));
+  EXPECT_EQ(1200.0, resumePoint.timeInSeconds);
+  EXPECT_EQ(3600.0, resumePoint.totalTimeInSeconds);
+
+  ASSERT_TRUE(m_db.SetResumePoint(film, 0.0, 0.0));
+  EXPECT_FALSE(m_db.GetResumeBookMark(film, resumePoint));
+}
+
+namespace
+{
+//! The play state rules, which need no database
+class PlayStateRules : public CVideoDatabase
+{
+public:
+  using CVideoDatabase::AddFilePlayState;
+  using CVideoDatabase::EpisodePlayState;
+};
+
+//! \brief A tag as CVideoDatabase::GetFileInfo fills it: bookkeeping, not what the item is
+CVideoInfoTag FileRow()
+{
+  CVideoInfoTag fileDetails;
+  fileDetails.m_iFileId = 42;
+  fileDetails.m_strPath = "plugin://plugin.video.example/";
+  fileDetails.m_strFileNameAndPath = "plugin://plugin.video.example/?play=1";
+  fileDetails.SetPlayCount(3);
+  fileDetails.m_lastPlayed.SetFromDBDateTime("2026-08-10 21:49:28");
+  fileDetails.m_dateAdded.SetFromDBDateTime("2026-08-01 10:00:00");
+  fileDetails.SetResumePoint(120.0, 1800.0, "");
+  return fileDetails;
+}
+
+/*! \brief A tag as an add-on's ListItem supplies it: a description, with no playback history. */
+CVideoInfoTag PluginDescription()
+{
+  CVideoInfoTag details;
+  details.SetMediaType(KODI::MEDIA::TYPE::EPISODE);
+  details.m_strTitle = "Extraterrestrial Girl";
+  details.m_strShowTitle = "Planetes";
+  details.m_iSeason = 1;
+  details.m_iEpisode = 7;
+  details.m_strFileNameAndPath = "http://stream.example/real-stream.mkv";
+  return details;
+}
+
+CVideoInfoTag Episode(int playCount, const char* lastPlayed)
+{
+  CVideoInfoTag episode;
+  episode.SetMediaType(KODI::MEDIA::TYPE::EPISODE);
+  episode.SetPlayCount(playCount);
+  if (lastPlayed)
+    episode.m_lastPlayed.SetFromDBDateTime(lastPlayed);
+  return episode;
+}
+
+CDateTime DateTime(const char* value)
+{
+  CDateTime dateTime;
+  dateTime.SetFromDBDateTime(value);
+  return dateTime;
+}
+
+CVideoDatabase::PlayStateEdit PlayStateEdit(std::optional<int> playCount,
+                                            std::optional<CDateTime> lastPlayed = std::nullopt)
+{
+  CVideoDatabase::PlayStateEdit edit;
+  edit.playCount = playCount;
+  edit.lastPlayed = lastPlayed;
+  return edit;
+}
+} // namespace
+
+TEST(TestVideoDatabasePlayState, KeepsTheDescriptionItIsAppliedTo)
+{
+  CVideoInfoTag details = PluginDescription();
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ(KODI::MEDIA::TYPE::EPISODE, details.GetMediaType());
+  EXPECT_EQ("Extraterrestrial Girl", details.m_strTitle);
+  EXPECT_EQ("Planetes", details.m_strShowTitle);
+  EXPECT_EQ(1, details.m_iSeason);
+  EXPECT_EQ(7, details.m_iEpisode);
+}
+
+TEST(TestVideoDatabasePlayState, AddsTheStateTheFileRowCarries)
+{
+  CVideoInfoTag details = PluginDescription();
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ(42, details.m_iFileId);
+  EXPECT_EQ(3, details.GetPlayCount());
+  EXPECT_EQ("2026-08-10 21:49:28", details.m_lastPlayed.GetAsDBDateTime());
+  EXPECT_EQ("2026-08-01 10:00:00", details.m_dateAdded.GetAsDBDateTime());
+  EXPECT_TRUE(details.GetResumePoint().IsSet());
+  EXPECT_EQ(120.0, details.GetResumePoint().timeInSeconds);
+}
+
+TEST(TestVideoDatabasePlayState, LeavesThePathsAlone)
+{
+  // The row's paths are the plugin URL it is keyed on, not the file that plays.
+  CVideoInfoTag details = PluginDescription();
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ("http://stream.example/real-stream.mkv", details.m_strFileNameAndPath);
+  EXPECT_TRUE(details.m_strPath.empty());
+}
+
+TEST(TestVideoDatabasePlayState, DoesNotDowngradeStateTheItemAlreadyHas)
+{
+  CVideoInfoTag details = PluginDescription();
+  details.SetPlayCount(9);
+  details.m_lastPlayed.SetFromDBDateTime("2026-08-10 23:00:00");
+  details.SetResumePoint(600.0, 1800.0, "");
+
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ(9, details.GetPlayCount());
+  EXPECT_EQ("2026-08-10 23:00:00", details.m_lastPlayed.GetAsDBDateTime());
+  EXPECT_EQ(600.0, details.GetResumePoint().timeInSeconds);
+}
+
+TEST(TestVideoDatabasePlayState, TakesALaterLastPlayedThanTheItemHas)
+{
+  CVideoInfoTag details = PluginDescription();
+  details.m_lastPlayed.SetFromDBDateTime("2026-08-01 09:00:00");
+
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ("2026-08-10 21:49:28", details.m_lastPlayed.GetAsDBDateTime());
+}
+
+TEST(TestVideoDatabasePlayState, FillsAnItemThatSaysNothingAboutItself)
+{
+  // Files.GetFileDetails on a file no add-on described: the row is all there is, and it must
+  // still come through.
+  CVideoInfoTag details;
+  PlayStateRules::AddFilePlayState(FileRow(), details);
+
+  EXPECT_EQ(42, details.m_iFileId);
+  EXPECT_EQ(3, details.GetPlayCount());
+  EXPECT_TRUE(details.GetResumePoint().IsSet());
+}
+
+TEST(TestVideoDatabasePlayState, APlaycountOnlyEditKeepsTheEpisodesLastPlayed)
+{
+  const auto state{
+      PlayStateRules::EpisodePlayState(PlayStateEdit(1), Episode(0, "2026-08-10 21:49:28"))};
+
+  ASSERT_TRUE(state);
+  EXPECT_EQ(1, state->playCount);
+  EXPECT_EQ("2026-08-10 21:49:28", state->lastPlayed.GetAsDBDateTime());
+}
+
+TEST(TestVideoDatabasePlayState, ANeverPlayedEpisodeHasNoTimeToKeep)
+{
+  const auto state{PlayStateRules::EpisodePlayState(PlayStateEdit(1), Episode(0, nullptr))};
+
+  ASSERT_TRUE(state);
+  EXPECT_FALSE(state->lastPlayed.IsValid());
+}
+
+TEST(TestVideoDatabasePlayState, AnEpisodeAlreadyAtThePlaycountIsLeftAlone)
+{
+  EXPECT_FALSE(
+      PlayStateRules::EpisodePlayState(PlayStateEdit(2), Episode(2, "2026-08-10 21:49:28")));
+}
+
+TEST(TestVideoDatabasePlayState, ALastPlayedEditAppliesTheShowsTime)
+{
+  const auto state{
+      PlayStateRules::EpisodePlayState(PlayStateEdit(std::nullopt, DateTime("2026-09-02 20:00:00")),
+                                       Episode(2, "2026-08-10 21:49:28"))};
+
+  ASSERT_TRUE(state);
+  EXPECT_EQ(2, state->playCount);
+  EXPECT_EQ("2026-09-02 20:00:00", state->lastPlayed.GetAsDBDateTime());
+}
+
+TEST_F(TestVideoDatabase, AFolderBeneathAShowIsNotDescribedAsTheShow)
+{
+  const std::string showFolder{"/tv/Planetes/"};
+  const std::string seasonFolder{"/tv/Planetes/Season 1/"};
+  const int idShowPath{m_db.AddPath(showFolder)};
+  ASSERT_GE(idShowPath, 0);
+  ASSERT_GE(m_db.AddPath(seasonFolder), 0);
+  ASSERT_TRUE(m_db.ExecuteQuery("INSERT INTO tvshow (idShow, c00) VALUES (1, 'Planetes')"));
+  ASSERT_TRUE(m_db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idShowPath)));
+
+  CFileItem show{showFolder, true};
+  EXPECT_TRUE(m_db.DescribePath(showFolder, show));
+  EXPECT_EQ("Planetes", show.GetVideoInfoTag()->m_strTitle);
+
+  CFileItem season{seasonFolder, true};
+  EXPECT_FALSE(m_db.DescribePath(seasonFolder, season));
+  EXPECT_TRUE(season.GetVideoInfoTag()->m_strTitle.empty());
+}
+
+TEST_F(TestVideoDatabase, AShowInTwoFoldersIsDescribedAtTheFolderAskedAbout)
+{
+  const std::string firstFolder{"/tv1/Planetes/"};
+  const std::string secondFolder{"/tv2/Planetes/"};
+  const int idFirstPath{m_db.AddPath(firstFolder)};
+  const int idSecondPath{m_db.AddPath(secondFolder)};
+  ASSERT_GE(idFirstPath, 0);
+  ASSERT_GT(idSecondPath, idFirstPath);
+  ASSERT_TRUE(m_db.ExecuteQuery("INSERT INTO tvshow (idShow, c00) VALUES (1, 'Planetes')"));
+  ASSERT_TRUE(m_db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idFirstPath)));
+  ASSERT_TRUE(m_db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idSecondPath)));
+
+  CFileItem show{secondFolder, true};
+  EXPECT_TRUE(m_db.DescribePath(secondFolder, show));
+  EXPECT_EQ("Planetes", show.GetVideoInfoTag()->m_strTitle);
+  EXPECT_EQ(secondFolder, show.GetVideoInfoTag()->GetPath());
+}
+
+// Player.GetItem relies on this for a library item, loading nothing more itself
+TEST_F(TestVideoDatabase, AMovieVersionIsFilledWithItsDetailsFromItsOwnFile)
+{
+  const MovieWithVersion movie{AddMovieWithVersion(KODI::ART::Artwork{}, KODI::ART::Artwork{})};
+  ASSERT_GT(movie.versionFileId, 0);
+  const int idSet{m_db.AddSet("Saga")};
+  ASSERT_GT(idSet, 0);
+  m_db.SetMovieSet(movie.movieId, idSet);
+  const std::string version{"/movies/Movie (2010)/Movie (2010) Standard Edition.mkv"};
+
+  CFileItem item{version, false};
+  ASSERT_TRUE(m_db.DescribePath(version, item));
+  EXPECT_EQ(movie.movieId, item.GetVideoInfoTag()->m_iDbId);
+  EXPECT_EQ(movie.versionFileId, item.GetVideoInfoTag()->m_iFileId);
+  EXPECT_EQ(idSet, item.GetVideoInfoTag()->m_set.GetID());
+}
+
+TEST_F(TestVideoDatabase, AnEditMayNotClearTheLastPlayedDateOfAWatchedMovie)
+{
+  const std::string film{"/movies/Film.mkv"};
+  const int idMovie{AddMovie(film)};
+  ASSERT_GT(idMovie, 0);
+  MarkPlayed(film, 1);
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idMovie));
+
+  EXPECT_EQ(CVideoDatabase::EditResult::REFUSED,
+            m_db.EditItem(KODI::MEDIA::TYPE::MOVIE, idMovie, details, {}, {}, {},
+                          PlayStateEdit(std::nullopt, CDateTime{})));
+  EXPECT_EQ(1, m_db.GetPlayCount(film));
+
+  EXPECT_EQ(CVideoDatabase::EditResult::DONE,
+            m_db.EditItem(KODI::MEDIA::TYPE::MOVIE, idMovie, details, {}, {}, {},
+                          PlayStateEdit(0, CDateTime{})));
+  EXPECT_GE(0, m_db.GetPlayCount(film));
+  EXPECT_FALSE(m_db.GetLastPlayed(film).IsValid());
+}
+
+TEST_F(TestVideoDatabase, EditingAShowsPlayCountGivesItToEachEpisode)
+{
+  const int idShow{AddTvShow("/shows/Show/")};
+  ASSERT_GT(idShow, 0);
+  const std::string first{"/shows/Show/Show S01E01.mkv"};
+  const std::string second{"/shows/Show/Show S01E02.mkv"};
+  ASSERT_GT(AddEpisode(idShow, first, 1), 0);
+  ASSERT_GT(AddEpisode(idShow, second, 2), 0);
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetTvShowInfo("", details, idShow));
+
+  ASSERT_EQ(CVideoDatabase::EditResult::DONE, m_db.EditItem(KODI::MEDIA::TYPE::TV_SHOW, idShow,
+                                                            details, {}, {}, {}, PlayStateEdit(1)));
+
+  EXPECT_EQ(1, m_db.GetPlayCount(first));
+  EXPECT_EQ(1, m_db.GetPlayCount(second));
+
+  CDateTime lastPlayed;
+  lastPlayed.SetFromDBDateTime("2026-09-02 20:00:00");
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem(first, false), 2, lastPlayed).IsValid());
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem(second, false), 1, lastPlayed).IsValid());
+  ASSERT_EQ(CVideoDatabase::EditResult::DONE,
+            m_db.EditItem(KODI::MEDIA::TYPE::TV_SHOW, idShow, details, {}, {}, {},
+                          PlayStateEdit(0, CDateTime{})));
+
+  for (const std::string& file : {first, second})
+  {
+    EXPECT_EQ(0, m_db.GetPlayCount(file)) << file;
+    EXPECT_FALSE(m_db.GetLastPlayed(file).IsValid()) << file;
+  }
+}
+
+TEST_F(TestVideoDatabase, AnItemIsAddedOnlyWhereTheLibraryHasNone)
+{
+  const std::string film{"/movies/Film.mkv"};
+  ASSERT_GT(AddMovie(film), 0);
+  int id{-1};
+  CVideoInfoTag again;
+  EXPECT_EQ(CVideoDatabase::AddResult::IN_LIBRARY,
+            m_db.AddItem(KODI::MEDIA::TYPE::MOVIE, film, again, {}, -1, {}, id));
+
+  CVideoInfoTag added;
+  ASSERT_EQ(CVideoDatabase::AddResult::ADDED,
+            m_db.AddItem(KODI::MEDIA::TYPE::MOVIE, "/movies/Other Film.mkv", added, {}, -1,
+                         PlayStateEdit(2), id));
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, id));
+  EXPECT_EQ("Other Film.mkv", details.m_strTitle);
+  EXPECT_EQ(2, m_db.GetPlayCount("/movies/Other Film.mkv"));
+
+  CVideoInfoTag episode;
+  EXPECT_EQ(CVideoDatabase::AddResult::NO_SUCH_SHOW,
+            m_db.AddItem(KODI::MEDIA::TYPE::EPISODE, "/shows/Show/Show S01E01.mkv", episode, {},
+                         9999, {}, id));
+}
+
+TEST_F(TestVideoDatabase, AFilesPlayStateEditIsRefusedOrStoredWhole)
+{
+  const std::string film{"/videos/film.mkv"};
+  MarkPlayed(film, 1);
+  CVideoInfoTag details;
+
+  EXPECT_EQ(CVideoDatabase::EditResult::REFUSED,
+            m_db.EditFilePlayState(film, PlayStateEdit(std::nullopt, CDateTime{}), details));
+
+  CVideoDatabase::PlayStateEdit watchedAgain{PlayStateEdit(3)};
+  watchedAgain.resume = CVideoDatabase::PlayStateEdit::Resume{600.0, 3600.0};
+  ASSERT_EQ(CVideoDatabase::EditResult::DONE, m_db.EditFilePlayState(film, watchedAgain, details));
+  EXPECT_EQ(3, details.GetPlayCount());
+  EXPECT_EQ(600.0, details.GetResumePoint().timeInSeconds);
 }
 
 TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
