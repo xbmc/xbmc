@@ -11,8 +11,12 @@
 #include "utils/XBMCTinyXML2.h"
 
 #include <algorithm>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -64,6 +68,64 @@ long PlainHttpWarnings(const std::vector<AddonInfoPtr>& repositories)
       lines, [](const std::string& line)
       { return line.find("repository.test.plainhttp uses plain HTTP") != std::string::npos; });
 }
+
+namespace fs = std::filesystem;
+
+std::string FileUrl(const fs::path& path)
+{
+  return path.string();
+}
+
+fs::path WriteRepoDir(const fs::path& root, const std::string& name, const std::string& digest)
+{
+  const fs::path dir = root / name;
+  fs::create_directories(dir);
+
+  {
+    std::ofstream index(dir / "addons.xml");
+    index << "<addons><addon id=\"" << name << ".test\" name=\"" << name
+          << "\" version=\"1.0.0\" provider-name=\"Team Kodi\">"
+          << "<extension point=\"xbmc.python.module\" library=\"lib.so\"/>"
+          << "<extension point=\"kodi.addon.metadata\"><platform>all</platform></extension>"
+          << "</addon></addons>";
+  }
+  {
+    std::ofstream sum(dir / "addons.xml.md5", std::ios::binary);
+    sum << digest << "\n";
+  }
+  return dir;
+}
+
+std::string DirBody(const fs::path& dir,
+                    std::string_view checksumAttrs = "",
+                    std::string_view extra = "")
+{
+  return "<dir><info>" + FileUrl(dir / "addons.xml") + "</info><checksum" +
+         std::string{checksumAttrs} + ">" + FileUrl(dir / "addons.xml.md5") +
+         "</checksum><datadir>" + FileUrl(dir) + "</datadir>" + std::string{extra} + "</dir>";
+}
+
+AddonInfoPtr TwoDirRepository(const std::string& dirA, const std::string& dirB)
+{
+  const std::string xml{
+      R"(<addon id="repository.test.dirdigest" name="Test" version="1.0.0" provider-name="Team Kodi">
+  <extension point="xbmc.addon.repository">)" +
+      dirA + dirB + R"(
+  </extension>
+  <extension point="xbmc.addon.metadata"><platform>all</platform></extension>
+</addon>)"};
+  CXBMCTinyXML2 doc;
+  EXPECT_TRUE(doc.Parse(xml));
+  return CAddonInfoBuilder::Generate(doc.RootElement(), RepositoryDirInfo{});
+}
+
+std::vector<std::string> AddonIds(const std::vector<AddonInfoPtr>& addons)
+{
+  std::vector<std::string> ids;
+  for (const auto& addon : addons)
+    ids.push_back(addon->ID());
+  return ids;
+}
 } // namespace
 
 TEST(TestRepository, AProblemWithARepositoryIsLoggedOncePerVersion)
@@ -77,4 +139,57 @@ TEST(TestRepository, AProblemWithARepositoryIsLoggedOncePerVersion)
 
   EXPECT_EQ(2, PlainHttpWarnings({version1, version1, version2, version2}));
   EXPECT_EQ(0, PlainHttpWarnings({version1, version2}));
+}
+
+TEST(TestRepository, InvalidHashTypeSkipsDirectory)
+{
+  const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
+  const fs::path root = fs::temp_directory_path() / ("kodi-test-repo-" + std::to_string(stamp));
+  fs::remove_all(root);
+  ASSERT_TRUE(fs::create_directories(root));
+
+  const fs::path dira = WriteRepoDir(root, "dira", "digestA");
+  const fs::path dirb = WriteRepoDir(root, "dirb", "digestB");
+
+  // "sha-512" is not a supported digest name and must not take down the repository
+  const AddonInfoPtr repoInfo =
+      TwoDirRepository(DirBody(dira), DirBody(dirb, "", "<hashes>sha-512</hashes>"));
+  ASSERT_NE(nullptr, repoInfo);
+  CRepository repository(repoInfo);
+
+  std::string checksum;
+  std::vector<AddonInfoPtr> addons;
+  int recheckAfter = 0;
+  ASSERT_EQ(CRepository::FetchStatus::OK,
+            repository.FetchIfChanged("", checksum, addons, recheckAfter));
+  ASSERT_EQ("digestA", checksum);
+  ASSERT_EQ((std::vector<std::string>{"dira.test"}), AddonIds(addons));
+
+  fs::remove_all(root);
+}
+
+TEST(TestRepository, InvalidChecksumVerifySkipsDirectory)
+{
+  const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
+  const fs::path root = fs::temp_directory_path() / ("kodi-test-repo-" + std::to_string(stamp));
+  fs::remove_all(root);
+  ASSERT_TRUE(fs::create_directories(root));
+
+  const fs::path dira = WriteRepoDir(root, "dira", "digestA");
+  const fs::path dirb = WriteRepoDir(root, "dirb", "digestB");
+
+  const AddonInfoPtr repoInfo =
+      TwoDirRepository(DirBody(dira), DirBody(dirb, " verify=\"sha-256\""));
+  ASSERT_NE(nullptr, repoInfo);
+  CRepository repository(repoInfo);
+
+  std::string checksum;
+  std::vector<AddonInfoPtr> addons;
+  int recheckAfter = 0;
+  ASSERT_EQ(CRepository::FetchStatus::OK,
+            repository.FetchIfChanged("", checksum, addons, recheckAfter));
+  ASSERT_EQ("digestA", checksum);
+  ASSERT_EQ((std::vector<std::string>{"dira.test"}), AddonIds(addons));
+
+  fs::remove_all(root);
 }
