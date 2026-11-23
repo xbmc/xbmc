@@ -95,6 +95,32 @@ assert li.extra == 7
 )py"));
 }
 
+// a class defined in Python sets its own class attributes; the wrapped types still refuse them
+TEST_F(TestPythonBindings, SubclassSetsClassAttributes)
+{
+#if PY_VERSION_HEX < 0x030A0000
+  GTEST_SKIP() << "the wrapped types are told apart by Py_TPFLAGS_IMMUTABLETYPE, which is 3.10+";
+#else
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc
+class Watcher(xbmc.Player):
+    stops = 0
+Watcher.stops += 1
+Watcher.extra = 'set'
+assert Watcher.stops == 1 and Watcher.extra == 'set'
+try:
+    xbmc.Player.stops = 1
+except AttributeError:
+    pass
+else:
+    raise AssertionError('xbmc.Player took a class attribute')
+)py"));
+#endif
+}
+
 // the service addon idiom: an __init__ that never calls super() must still yield a constructed C++ object
 TEST_F(TestPythonBindings, SubclassNeverCallsSuper)
 {
