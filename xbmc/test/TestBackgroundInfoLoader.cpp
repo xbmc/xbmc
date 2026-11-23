@@ -148,3 +148,58 @@ TEST(TestBackgroundInfoLoader, ItemHeldTwiceIsLoadedAfterBothHolds)
   EXPECT_EQ(loader.Calls(),
             (std::vector<std::string>{"cached:b", "lookup:b", "cached:a", "lookup:a"}));
 }
+
+TEST(TestBackgroundInfoLoader, CallWhenDoneWaitsForStoppedThread)
+{
+  CFileItemList items;
+  AddItems(items);
+  CRecordingLoader loader;
+  EXPECT_FALSE(loader.CallWhenDone([] {}));
+
+  loader.m_blockLookupOf = items[0].get();
+  loader.Load(items);
+  ASSERT_TRUE(loader.m_lookupStarted.Wait(5s));
+  loader.StopAsync();
+
+  CEvent done;
+  std::atomic<bool> onLoaderThread{false};
+  std::atomic<bool> loadingWhenCalled{true};
+  const std::thread::id caller{std::this_thread::get_id()};
+  ASSERT_TRUE(loader.CallWhenDone(
+      [&]
+      {
+        onLoaderThread = std::this_thread::get_id() != caller;
+        loadingWhenCalled = loader.IsLoading();
+        done.Set();
+      }));
+  EXPECT_FALSE(done.Wait(200ms));
+
+  loader.m_continueLookup.Set();
+  ASSERT_TRUE(done.Wait(5s));
+  EXPECT_TRUE(onLoaderThread);
+  // a restart from the function must not be deferred again
+  EXPECT_FALSE(loadingWhenCalled);
+}
+
+TEST(TestBackgroundInfoLoader, StopThreadDropsCallWhenDone)
+{
+  CFileItemList items;
+  AddItems(items);
+  CRecordingLoader loader;
+  loader.m_blockLookupOf = items[0].get();
+  loader.Load(items);
+  ASSERT_TRUE(loader.m_lookupStarted.Wait(5s));
+
+  std::atomic<bool> called{false};
+  ASSERT_TRUE(loader.CallWhenDone([&called] { called = true; }));
+  // StopThread() joins the blocked thread
+  std::thread releaser(
+      [&loader]
+      {
+        std::this_thread::sleep_for(200ms);
+        loader.m_continueLookup.Set();
+      });
+  loader.StopThread();
+  releaser.join();
+  EXPECT_FALSE(called);
+}
