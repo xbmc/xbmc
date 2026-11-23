@@ -126,8 +126,10 @@ TEST_F(TestSystemInfo, GetOsName)
 TEST_F(TestSystemInfo, GetOsVersion)
 {
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release
-  if (g_sysinfo.GetOsVersion() == "0.0")
+  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release, and
+  // lsb_release, when installed, names it with a word such as "rolling"
+  const std::string version = g_sysinfo.GetOsVersion();
+  if (version == "0.0" || version.find_first_not_of("0123456789.") != std::string::npos)
   {
     GTEST_SKIP() << "this distribution states no version";
   }
