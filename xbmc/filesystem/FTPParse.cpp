@@ -8,6 +8,7 @@
 
 #include "FTPParse.h"
 
+#include <charconv>
 #include <regex>
 
 CFTPParse::CFTPParse()
@@ -51,6 +52,15 @@ void setMonFromName(struct tm& time_struct, const std::string& name)
     if (name.size() == 3 && pos % 3 == 0)
       time_struct.tm_mon = pos / 3;
   }
+}
+
+// from_chars leaves value at 0 if str is empty or out of range for T
+template<typename T>
+T toNumber(const std::string& str)
+{
+  T value{};
+  std::from_chars(str.data(), str.data() + str.size(), value);
+  return value;
 }
 } // namespace
 
@@ -103,7 +113,7 @@ void CFTPParse::setTime(const std::string& str)
     else
     {
       /* set the year */
-      time_struct.tm_year = std::stol(year) - 1900;
+      time_struct.tm_year = toNumber<int>(year) - 1900;
     }
   }
   // Regex to read MultiNet time format
@@ -204,7 +214,7 @@ int CFTPParse::FTPParse(const std::string& str)
     auto date = match[7].str();
     m_name = match[8].str();
 
-    m_size = std::stoull(size);
+    m_size = toNumber<uint64_t>(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -238,7 +248,7 @@ int CFTPParse::FTPParse(const std::string& str)
     auto date = match[5].str();
     m_name = match[6].str();
 
-    m_size = std::stoull(size);
+    m_size = toNumber<uint64_t>(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -266,7 +276,7 @@ int CFTPParse::FTPParse(const std::string& str)
     auto date = match[5].str();
     m_name = match[6].str();
 
-    m_size = std::stoull(size);
+    m_size = toNumber<uint64_t>(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -302,13 +312,13 @@ int CFTPParse::FTPParse(const std::string& str)
     std::regex_search(facts, match, std::regex("(?:\\+|,)m(\\d+),"));
     auto date = match[1].str();
 
-    m_size = std::stoull(size);
+    m_size = toNumber<uint64_t>(size);
     if (type == "/")
       m_flagtrycwd = 1;
     if (type == "r")
       m_flagtryretr = 1;
     /* eplf stores the date in time_t format already */
-    m_time = std::stoi(date);
+    m_time = toNumber<time_t>(date);
 
     return 1;
   }
@@ -363,7 +373,7 @@ int CFTPParse::FTPParse(const std::string& str)
     else
     {
       m_flagtryretr = 1;
-      m_size = std::stoull(size);
+      m_size = toNumber<uint64_t>(size);
     }
     setTime(date);
 
