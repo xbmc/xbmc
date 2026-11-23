@@ -244,6 +244,8 @@ namespace XBMCAddon
       Control* GetControlById(int iControlId, CCriticalSection* gc);
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
+      // before the script can run: it may read ListItem labels straight away
+      SWIGHIDDENVIRTUAL void PublishListItem();
       SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);
 #endif
 

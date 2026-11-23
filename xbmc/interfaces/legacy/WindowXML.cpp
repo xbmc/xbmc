@@ -190,6 +190,7 @@ namespace XBMCAddon
           A(m_viewControl).SetItems(*(A(m_vecItems)));
         }
         //----------------------------------------------------
+        PublishListItem();
       }
     }
 
@@ -204,6 +205,7 @@ namespace XBMCAddon
         A(m_vecItems)->Add(fileItem);
       }
       A(m_viewControl).SetItems(*(A(m_vecItems)));
+      PublishListItem();
     }
 
 
@@ -214,6 +216,7 @@ namespace XBMCAddon
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       A(m_vecItems)->Remove(position);
       A(m_viewControl).SetItems(*(A(m_vecItems)));
+      PublishListItem();
     }
 
     int WindowXML::getCurrentListPosition()
@@ -229,6 +232,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       A(m_viewControl).SetSelectedItem(position);
+      PublishListItem();
     }
 
     ListItem* WindowXML::getListItem(int position)
@@ -267,6 +271,7 @@ namespace XBMCAddon
       A(ClearFileItems());
 
       A(m_viewControl).SetItems(*(A(m_vecItems)));
+      PublishListItem();
     }
 
     void WindowXML::setContainerProperty(const String& key, const String& value)
@@ -298,6 +303,7 @@ namespace XBMCAddon
                                                  //  the CGUIMediaWindow::OnAction and calls directly to
                                                  //  CGUIWindow::OnAction
       AddonClass::Ref<Action> inf(new Action(action));
+      PublishListItem();
       invokeCallback(new CallbackFunction<WindowXML,AddonClass::Ref<Action> >(this,&WindowXML::onAction,inf.get()));
       PulseActionEvent();
       return ret;
@@ -324,6 +330,7 @@ namespace XBMCAddon
       case GUI_MSG_WINDOW_INIT:
         {
           ref(window)->OnMessage(message);
+          PublishListItem();
           invokeCallback(new CallbackFunction<WindowXML>(this,&WindowXML::onInit));
           PulseActionEvent();
           return true;
@@ -341,6 +348,7 @@ namespace XBMCAddon
           // check if our focused control is one of our category buttons
           int iControl=message.GetControlId();
 
+          PublishListItem();
           invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onFocus,iControl));
           PulseActionEvent();
         }
@@ -386,12 +394,14 @@ namespace XBMCAddon
             {
               if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
               {
+                PublishListItem();
                 invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onClick,iControl));
                 PulseActionEvent();
                 return true;
               }
               else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_DOUBLE_CLICK)
               {
+                PublishListItem();
                 invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onDoubleClick,iControl));
                 PulseActionEvent();
                 return true;
@@ -399,6 +409,7 @@ namespace XBMCAddon
               else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
               {
                 AddonClass::Ref<Action> inf(new Action(CAction(ACTION_CONTEXT_MENU)));
+                PublishListItem();
                 invokeCallback(new CallbackFunction<WindowXML,AddonClass::Ref<Action> >(this,&WindowXML::onAction,inf.get()));
                 PulseActionEvent();
                 return true;
