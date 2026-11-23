@@ -219,12 +219,26 @@ void CDebugCoreUsage::Draw(Graph graph, float scale)
 
   std::fill(m_pixels.begin(), m_pixels.end(), COLOR_BACKDROP);
 
+  // Most areas are filled over the same background, so the last blend can usually be reused
+  uint32_t lastDst = 0;
+  uint32_t lastColor = 0;
+  uint32_t lastBlend = 0;
   const auto fill = [&](int x1, int y1, int x2, int y2, uint32_t color)
   {
     for (int y = std::max(y1, 0); y < std::min(y2, h); ++y)
+    {
       for (int x = std::max(x1, 0); x < std::min(x2, w); ++x)
-        m_pixels[static_cast<size_t>(y) * w + x] =
-            Blend(m_pixels[static_cast<size_t>(y) * w + x], color);
+      {
+        uint32_t& pixel = m_pixels[static_cast<size_t>(y) * w + x];
+        if (pixel != lastDst || color != lastColor)
+        {
+          lastDst = pixel;
+          lastColor = color;
+          lastBlend = Blend(pixel, color);
+        }
+        pixel = lastBlend;
+      }
+    }
   };
   const auto textWidth = [&](const std::string& text)
   { return static_cast<int>(text.size()) * (GLYPH_WIDTH + 1) * font - font; };
