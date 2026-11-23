@@ -127,7 +127,7 @@ TEST_F(TestSystemInfo, GetOsVersion)
 {
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
   // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release
-  if (g_sysinfo.GetOsVersion().empty())
+  if (g_sysinfo.GetOsVersion() == "0.0")
   {
     GTEST_SKIP() << "this distribution states no version";
   }
