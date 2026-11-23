@@ -218,6 +218,7 @@ protected:
   int m_iNumBuffers = 0;
   int m_iBuffersRequired = 0;
   int m_ditherDepth = 0;
+  int m_outputDitherDepth = 0;
   int m_cmsToken = -1;
   int m_lutSize = 0;
   unsigned m_sourceWidth = 0;
