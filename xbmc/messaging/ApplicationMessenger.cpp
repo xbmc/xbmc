@@ -258,7 +258,11 @@ void CApplicationMessenger::ProcessMessages()
     ProcessMessage(pMsg);
 
     if (waitEvent)
+    {
+      if (m_messageHandled)
+        m_messageHandled();
       waitEvent->Set();
+    }
     delete pMsg;
 
     lock.lock();
@@ -309,7 +313,11 @@ void CApplicationMessenger::ProcessWindowMessages()
 
     ProcessMessage(pMsg);
     if (waitEvent)
+    {
+      if (m_messageHandled)
+        m_messageHandled();
       waitEvent->Set();
+    }
     delete pMsg;
 
     lock.lock();
