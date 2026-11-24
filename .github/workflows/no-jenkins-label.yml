@@ -56,19 +56,27 @@ jobs:
             }
 
             // Label creation through addLabels would leave a grey label with no
-            // description, so create it deliberately the first time.
+            // description, so create it deliberately the first time. Two pull
+            // requests opened at once both miss it and both try to create it;
+            // GitHub rejects the duplicate name, which means the other run has
+            // already made the label and this one should carry on.
             try {
               await github.rest.issues.getLabel({ owner, repo, name });
             } catch (error) {
               if (error.status !== 404) throw error;
-              await github.rest.issues.createLabel({
-                owner,
-                repo,
-                name,
-                color: 'a68a64',
-                description: 'Jenkins does not build this pull request. A merge is still allowed.',
-              });
-              core.info(`Created the ${name} label.`);
+              try {
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name,
+                  color: 'a68a64',
+                  description: 'Jenkins does not build this pull request. A merge is still allowed.',
+                });
+                core.info(`Created the ${name} label.`);
+              } catch (createError) {
+                if (createError.status !== 422) throw createError;
+                core.info(`The ${name} label was created by another run.`);
+              }
             }
 
             if ((pr.labels ?? []).some((label) => label.name === name)) {
