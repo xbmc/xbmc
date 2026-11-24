@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
@@ -167,13 +168,13 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
   else
   {
     // wait for the script to finish or be cancelled, or for the caller to stop
-    while (!IsCancelled() && !CAbandonWhen::IsSet() &&
+    while (!IsCancelled() && !CAbandonWhen::IsSet() && !g_application.IsStopping() &&
            CScriptInvocationManager::GetInstance().IsRunning(scriptId) && !m_scriptDone.Wait(20ms))
       ;
 
     // give the script 30 seconds to exit before we attempt to stop it, unless the caller stops
     XbmcThreads::EndTime<> timer(30s);
-    while (!timer.IsTimePast() && !CAbandonWhen::IsSet() &&
+    while (!timer.IsTimePast() && !CAbandonWhen::IsSet() && !g_application.IsStopping() &&
            CScriptInvocationManager::GetInstance().IsRunning(scriptId) && !m_scriptDone.Wait(20ms))
       ;
 
@@ -186,6 +187,10 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
                 name, scriptId);
       return false;
     }
+
+    // when Kodi quits the job manager waits for this thread, so stop the script now
+    if (g_application.IsStopping() && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
+      cancelled = true;
   }
 
   if (cancelled || IsCancelled())
