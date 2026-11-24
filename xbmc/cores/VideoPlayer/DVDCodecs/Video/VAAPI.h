@@ -547,6 +547,7 @@ public:
   ~CDecoder() override;
 
   bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
+  bool Reuse(AVCodecContext* avctx, const enum AVPixelFormat fmt) override;
   CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame) override;
   bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
   void Reset() override;
@@ -612,6 +613,10 @@ private:
   };
 
   std::unique_ptr<AVBufferRef, AVBufferRefDeleter> m_deviceRef;
+  std::unique_ptr<AVBufferRef, AVBufferRefDeleter> m_framesRef;
+  AVPixelFormat m_swFormat{AV_PIX_FMT_NONE};
+  int m_profile{AV_PROFILE_UNKNOWN};
+  int m_refs{0};
 };
 
 //-----------------------------------------------------------------------------
