@@ -2,7 +2,7 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=wasm
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-# cd $WORKSPACE/build;make -j$BUILDTHREADS dmg
-
-#rename for upload
-#e.x. kodi-20130314-8c2fb31-Frodo-x86_64.dmg
+# The browser build emits these four files in the build directory (README.WASM.md,
+# section 5); there is no archive step, so publishing uses them directly.
+ls -l $WORKSPACE/build/kodi.js $WORKSPACE/build/kodi.wasm \
+      $WORKSPACE/build/kodi.data $WORKSPACE/build/audio_worklet_processor.js
