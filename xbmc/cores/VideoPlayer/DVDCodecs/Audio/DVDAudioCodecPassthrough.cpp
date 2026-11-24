@@ -222,6 +222,19 @@ unsigned int CDVDAudioCodecPassthrough::PackTrueHD()
   if (m_trueHDoffset == 0)
     m_trueHDframes = 0;
 
+  if (m_trueHDoffset > m_trueHDBuffer.size() || m_dataSize > m_trueHDBuffer.size() - m_trueHDoffset)
+  {
+    CLog::LogF(LOGWARNING,
+               "TrueHD packet exceeds buffer capacity (offset: {}, size: {}, capacity: {}, "
+               "frames: {}); discarding group",
+               m_trueHDoffset, m_dataSize, m_trueHDBuffer.size(), m_trueHDframes);
+    m_trueHDoffset = 0;
+    m_trueHDframes = 0;
+    m_currentPts = DVD_NOPTS_VALUE;
+    m_nextPts = DVD_NOPTS_VALUE;
+    return 0;
+  }
+
   memcpy(m_trueHDBuffer.data() + m_trueHDoffset, m_buffer, m_dataSize);
 
   m_trueHDoffset += m_dataSize;
