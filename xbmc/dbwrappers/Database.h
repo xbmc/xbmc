@@ -281,6 +281,13 @@ public:
 
   ConnectionState Connect(const std::string& dbName, const DatabaseSettings& db, bool create);
 
+  /*!
+   \brief Whether this connection's writes announce the items they update
+
+   A caller that announces what it changed itself turns this off, so a change is announced once.
+   */
+  void SetAnnounceUpdates(bool announce) { m_announceUpdates = announce; }
+
   /*! \brief Sets art for a library item.
    \param mediaId the id in the item's table.
    \param mediaType the type of the item, which corresponds to the table it resides in.
@@ -396,6 +403,7 @@ protected:
   bool BuildSQL(std::string_view strQuery, const Filter& filter, std::string& strSQL) const;
 
   bool m_sqlite{true}; ///< \brief whether we use sqlite (defaults to true)
+  bool m_announceUpdates{true};
 
   std::unique_ptr<dbiplus::Database> m_pDB;
   std::unique_ptr<dbiplus::Dataset> m_pDS;
