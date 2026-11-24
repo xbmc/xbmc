@@ -3235,8 +3235,9 @@ bool CVideoDatabase::StorePlayStateEdit(const std::string& file, const PlayState
 
   const int playCount{edit.playCount.value_or(stored.GetPlayCount())};
   const CDateTime lastPlayed{edit.lastPlayed.value_or(stored.m_lastPlayed)};
-  if (playCount != stored.GetPlayCount() || lastPlayed != stored.m_lastPlayed)
-    SetPlayCount(CFileItem(stored), playCount, lastPlayed);
+  if ((playCount != stored.GetPlayCount() || lastPlayed != stored.m_lastPlayed) &&
+      !SetPlayCount(CFileItem(stored), playCount, lastPlayed).IsValid())
+    return false;
 
   return !edit.resume || SetResumePoint(file, edit.resume->position, edit.resume->total);
 }
@@ -3262,8 +3263,9 @@ bool CVideoDatabase::StoreEpisodesPlayState(int idShow, const PlayStateEdit& sho
       continue;
 
     if (const std::optional<PlayState> state{
-            EpisodePlayState(showEdit, *episode->GetVideoInfoTag())})
-      SetPlayCount(*episode, state->playCount, state->lastPlayed);
+            EpisodePlayState(showEdit, *episode->GetVideoInfoTag())};
+        state && !SetPlayCount(*episode, state->playCount, state->lastPlayed).IsValid())
+      return false;
   }
   return true;
 }
@@ -4999,14 +5001,17 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
   if (idMVideo < 0)
     return;
 
+  if (nullptr == m_pDB)
+    return;
+  if (nullptr == m_pDS)
+    return;
+
+  const bool inTransaction{m_pDB->in_transaction()};
+
   try
   {
-    if (nullptr == m_pDB)
-      return;
-    if (nullptr == m_pDS)
-      return;
-
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
     int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));
     DeleteStreamDetails(idFile);
@@ -5027,13 +5032,14 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     if (!bKeepId)
       AnnounceRemove(MEDIA::TYPE::MUSIC_VIDEO, idMVideo);
 
-    CommitTransaction();
-
+    if (!inTransaction)
+      CommitTransaction();
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed");
-    RollbackTransaction();
+    if (!inTransaction)
+      RollbackTransaction();
   }
 }
 

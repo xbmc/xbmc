@@ -2743,6 +2743,42 @@ TEST_F(TestVideoDatabase, AFilesPlayStateEditIsRefusedOrStoredWhole)
   EXPECT_EQ(600.0, details.GetResumePoint().timeInSeconds);
 }
 
+TEST_F(TestVideoDatabase, AMusicVideoEditStaysInTheCallersTransaction)
+{
+  CVideoInfoTag tag{Tag("/musicvideos/Artist - Song.mkv")};
+  const int idMVideo{m_db.SetDetailsForMusicVideo(tag, KODI::ART::Artwork{})};
+  ASSERT_GT(idMVideo, 0);
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMusicVideoInfo("", details, idMVideo));
+
+  details.m_strTitle = "Renamed";
+  m_db.BeginTransaction();
+  EXPECT_EQ(CVideoDatabase::EditResult::DONE,
+            m_db.EditItem(KODI::MEDIA::TYPE::MUSIC_VIDEO, idMVideo, details, {}, {}, {}, {}));
+  m_db.RollbackTransaction();
+
+  ASSERT_TRUE(m_db.GetMusicVideoInfo("", details, idMVideo));
+  EXPECT_EQ("Artist - Song.mkv", details.m_strTitle);
+}
+
+TEST_F(TestVideoDatabase, AnEditWhosePlayCountIsNotStoredIsUndone)
+{
+  const int idMovie{AddMovie("/movies/Film.mkv")};
+  ASSERT_GT(idMovie, 0);
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idMovie));
+  ASSERT_TRUE(m_db.ExecuteQuery("CREATE TRIGGER refusePlayCount BEFORE UPDATE OF playCount ON "
+                                "files BEGIN SELECT RAISE(ABORT, 'refused'); END"));
+
+  details.m_strTitle = "Renamed";
+  EXPECT_EQ(
+      CVideoDatabase::EditResult::FAILED,
+      m_db.EditItem(KODI::MEDIA::TYPE::MOVIE, idMovie, details, {}, {}, {}, PlayStateEdit(2)));
+
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idMovie));
+  EXPECT_EQ("Film.mkv", details.m_strTitle);
+}
+
 TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
 {
   const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
