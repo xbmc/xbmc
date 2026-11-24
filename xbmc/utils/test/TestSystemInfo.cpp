@@ -15,6 +15,9 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include <fstream>
+#include <string>
+
 #include <gtest/gtest.h>
 
 #include "PlatformDefs.h"
@@ -126,10 +129,18 @@ TEST_F(TestSystemInfo, GetOsName)
 TEST_F(TestSystemInfo, GetOsVersion)
 {
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release, and
-  // lsb_release, when installed, names it with a word such as "rolling"
-  const std::string version = g_sysinfo.GetOsVersion();
-  if (version == "0.0" || version.find_first_not_of("0123456789.") != std::string::npos)
+  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release
+#if defined(TARGET_WEBOS)
+  std::ifstream osRelease("/usr/lib/os-release");
+#else
+  std::ifstream osRelease("/etc/os-release");
+#endif
+  bool statesVersion = false;
+  for (std::string line; !statesVersion && std::getline(osRelease, line);)
+  {
+    statesVersion = line.starts_with("VERSION_ID=");
+  }
+  if (!statesVersion)
   {
     GTEST_SKIP() << "this distribution states no version";
   }
