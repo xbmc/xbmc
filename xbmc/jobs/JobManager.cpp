@@ -104,45 +104,85 @@ void CJobManager::Restart()
 
 void CJobManager::CancelJobs()
 {
-  std::unique_lock lock(m_section);
-  m_running = false;
-
-  // clear any pending jobs
-  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
-       ++priority)
   {
-    std::ranges::for_each(m_jobQueue[priority],
-                          [](CWorkItem& wi)
-                          {
-                            for (auto* callback : wi.GetCallbacks())
-                              callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                            wi.FreeJob();
-                          });
-    m_jobQueue[priority].clear();
+    std::unique_lock lock(m_section);
+    m_running = false;
+
+    // clear any pending jobs; their abort callbacks run under the lock so that
+    // CancelJob cannot return while one is still in flight
+    for (auto& queue : m_jobQueue)
+    {
+      for (auto& wi : queue)
+      {
+        for (auto* callback : wi.GetCallbacks())
+          callback->OnJobAbort(wi.GetId(), wi.GetJob());
+        wi.FreeJob();
+      }
+      queue.clear();
+    }
+
+    // Move processing items out so their callbacks can run without m_section held.
+    // The jobs are still owned by the workers executing them; keep the items alive
+    // until the workers have finished, as OnJobComplete will no longer find them
+    // to free the jobs.
+    m_runningNotify = std::move(m_processing);
   }
 
-  // cancel any callbacks on jobs still processing
-  std::ranges::for_each(m_processing,
-                        [](CWorkItem& wi)
-                        {
-                          for (auto* callback : wi.GetCallbacks())
-                            callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                          wi.Cancel();
-                        });
+  // Pop callbacks one at a time under m_section so CancelJob can still unsubscribe
+  // the remaining notifications while they run.
+  const auto notifyAbort = [this](CWorkItem& wi)
+  {
+    for (;;)
+    {
+      IJobCallback* callback;
+      {
+        std::unique_lock lock(m_section);
+        callback = wi.PopCallback();
+        if (callback)
+        {
+          m_abortingJob = wi.GetId();
+          m_abortingThread = std::this_thread::get_id();
+        }
+        m_stateCv.notify_all();
+      }
+      if (!callback)
+        break;
+      callback->OnJobAbort(wi.GetId(), wi.GetJob());
+      {
+        std::unique_lock lock(m_section);
+        m_abortingJob = 0;
+        m_abortingThread = {};
+        m_stateCv.notify_all();
+      }
+    }
+  };
+
+  for (auto& wi : m_runningNotify)
+    notifyAbort(wi);
 
   // tell our workers to finish
+  std::unique_lock lock(m_section);
   while (!m_workers.empty())
   {
-    lock.unlock();
     m_jobEvent.Set();
-    std::this_thread::yield(); // yield after setting the event to give the workers some time to die
-    lock.lock();
+    m_stateCv.wait(lock);
   }
+
+  for (auto& wi : m_runningNotify)
+    wi.FreeJob();
+
+  m_runningNotify.clear();
 }
 
-unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORITY priority)
+unsigned int CJobManager::AddJob(CJob* job,
+                                 IJobCallback* callback,
+                                 CJob::PRIORITY priority,
+                                 CJob** survivingJob)
 {
   std::unique_lock lock(m_section);
+
+  if (survivingJob)
+    *survivingJob = nullptr;
 
   if (!m_running)
   {
@@ -156,6 +196,8 @@ unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORI
   if (it != m_jobQueue[priority].end())
   {
     it->AddCallback(callback);
+    if (survivingJob)
+      *survivingJob = it->GetJob();
     delete job;
     return it->GetId();
   }
@@ -164,11 +206,16 @@ unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORI
   // Note: Jobs that have moved to completion phase (removed from m_processing)
   // won't be found here, causing a new job to be created. This is intentional -
   // the completing job's results are about to be delivered to existing callbacks.
-  auto procIt = std::ranges::find_if(m_processing, [job](const CWorkItem& wi)
-                                     { return wi.GetJob()->Equals(job); });
+  // Work items whose subscribers all cancelled are skipped: merging would delete
+  // the new job while the surviving one may already be cancelled itself.
+  auto procIt =
+      std::ranges::find_if(m_processing, [job](const CWorkItem& wi)
+                           { return !wi.SubscribersCancelled() && wi.GetJob()->Equals(job); });
   if (procIt != m_processing.end())
   {
     procIt->AddCallback(callback);
+    if (survivingJob)
+      *survivingJob = procIt->GetJob();
     delete job;
     return procIt->GetId();
   }
@@ -182,12 +229,20 @@ unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORI
   CWorkItem work(job, m_jobCounter, priority, callback);
   m_jobQueue[priority].emplace_back(work);
 
+  if (survivingJob)
+    *survivingJob = work.GetJob();
+
   StartWorkers(priority);
   return work.GetId();
 }
 
-void CJobManager::CancelJob(unsigned int jobID)
+void CJobManager::CancelJob(unsigned int jobID, const IJobCallback* callback)
 {
+  // Job ids start at 1; 0 is the AddJob failure value and can never match a
+  // work item - and must not be mistaken for an in-flight abort below
+  if (jobID == 0)
+    return;
+
   std::unique_lock lock(m_section);
 
   // check whether we have this job in the queue
@@ -198,9 +253,12 @@ void CJobManager::CancelJob(unsigned int jobID)
                                         [jobID](const auto& wi) { return wi.GetId() == jobID; });
     if (i != m_jobQueue[priority].cend())
     {
-      CWorkItem item(std::move(*i));
-      m_jobQueue[priority].erase(i);
-      item.FreeJob();
+      if (i->Cancel(callback))
+      {
+        CWorkItem item(std::move(*i));
+        m_jobQueue[priority].erase(i);
+        item.FreeJob();
+      }
       return;
     }
   }
@@ -208,7 +266,22 @@ void CJobManager::CancelJob(unsigned int jobID)
   const auto it =
       std::ranges::find_if(m_processing, [jobID](const auto& wi) { return wi.GetId() == jobID; });
   if (it != m_processing.cend())
-    it->Cancel(); // job is in progress, so only thing to do is to remove all callbacks
+  {
+    it->Cancel(callback); // job is in progress, so only thing to do is to remove callback
+    return;
+  }
+  // or waiting for its abort notification to run
+  const auto dit = std::ranges::find_if(m_runningNotify,
+                                        [jobID](const auto& wi) { return wi.GetId() == jobID; });
+  if (dit != m_runningNotify.cend())
+    dit->Cancel(callback);
+
+  // Wait for an in-flight abort of this job to finish before returning, so the
+  // caller can safely destroy itself - even without a callback argument, it may
+  // own the callback currently inside OnJobAbort.
+  const std::thread::id thisThread = std::this_thread::get_id();
+  m_stateCv.wait(lock, [this, jobID, thisThread]
+                 { return m_abortingJob != jobID || m_abortingThread == thisThread; });
 }
 
 void CJobManager::StartWorkers(CJob::PRIORITY priority)
@@ -438,7 +511,10 @@ void CJobManager::RemoveWorker(const CJobWorker* worker)
   // remove our worker
   const auto i = std::ranges::find(m_workers, worker);
   if (i != m_workers.cend())
+  {
     m_workers.erase(i); // workers auto-delete
+    m_stateCv.notify_all();
+  }
 }
 
 unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority)

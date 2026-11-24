@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <mutex>
 
-void CJobQueue::CJobPointer::CancelJob()
+void CJobQueue::CJobPointer::CancelJob(const IJobCallback* callback)
 {
-  CServiceBroker::GetJobManager()->CancelJob(m_id);
+  CServiceBroker::GetJobManager()->CancelJob(m_id, callback);
   m_id = 0;
 }
 
@@ -56,9 +56,15 @@ void CJobQueue::CancelJob(const CJob* job)
   const auto i = std::ranges::find_if(m_processing, JobFinder(job));
   if (i != m_processing.cend())
   {
-    i->CancelJob();
+    CJobPointer jp = *i;
     m_processing.erase(i);
+    ++m_cancelling;
     UpdateIdleState();
+    lock.unlock();
+    jp.CancelJob(this);
+    lock.lock();
+    if (--m_cancelling == 0)
+      QueueNextJob();
     return;
   }
   const auto j = std::ranges::find_if(m_jobQueue, JobFinder(job));
@@ -109,10 +115,21 @@ void CJobQueue::OnJobNotify(const CJob* job)
 void CJobQueue::QueueNextJob()
 {
   std::unique_lock lock(m_section);
+  if (m_cancelling > 0)
+  {
+    UpdateIdleState();
+    return;
+  }
+
   while (!m_jobQueue.empty() && m_processing.size() < m_jobsAtOnce)
   {
     CJobPointer& job = m_jobQueue.back();
-    job.SetId(CServiceBroker::GetJobManager()->AddJob(job.GetJob(), this, m_priority));
+    // The job manager may merge this job into an equal one that is already queued or
+    // processing, deleting it and reporting the surviving job instead
+    CJob* runningJob{nullptr};
+    job.SetId(CServiceBroker::GetJobManager()->AddJob(job.GetJob(), this, m_priority, &runningJob));
+    if (runningJob)
+      job.SetJob(runningJob);
     if (job.GetId() > 0)
       m_processing.emplace_back(job);
     m_jobQueue.pop_back();
@@ -131,12 +148,22 @@ void CJobQueue::UpdateIdleState()
 
 void CJobQueue::CancelJobs()
 {
-  std::unique_lock lock(m_section);
-  std::ranges::for_each(m_processing, [](CJobPointer& jp) { jp.CancelJob(); });
-  std::ranges::for_each(m_jobQueue, [](CJobPointer& jp) { jp.FreeJob(); });
-  m_jobQueue.clear();
-  m_processing.clear();
-  UpdateIdleState();
+  Processing processing;
+  Queue jobQueue;
+  {
+    std::unique_lock lock(m_section);
+    processing = std::move(m_processing);
+    jobQueue = std::move(m_jobQueue);
+    ++m_cancelling;
+    UpdateIdleState();
+  }
+  std::ranges::for_each(processing, [this](CJobPointer& jp) { jp.CancelJob(this); });
+  std::ranges::for_each(jobQueue, [](CJobPointer& jp) { jp.FreeJob(); });
+  {
+    std::unique_lock lock(m_section);
+    if (--m_cancelling == 0)
+      QueueNextJob();
+  }
 }
 
 bool CJobQueue::IsProcessing() const
