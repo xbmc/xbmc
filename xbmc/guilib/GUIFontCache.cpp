@@ -175,16 +175,21 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
     dirtyCache = true;
     std::unique_ptr<CGUIFontCacheEntry<Position, Value>> entry;
 
-    if (!m_list.ageMap.empty())
+    // Drop every entry older than the time limit, reusing the oldest one's
+    // allocations for the new entry. Draining all stale entries at once lets
+    // the cache shrink back after a burst instead of decaying one per miss.
+    while (!m_list.ageMap.empty())
     {
       const auto duration =
           std::chrono::duration_cast<std::chrono::milliseconds>(now - m_list.ageMap.begin()->first);
-      if (duration > FONT_CACHE_TIME_LIMIT)
-      {
-        entry = std::move(m_list.ageMap.begin()->second->second);
-        m_list.hashMap.erase(m_list.ageMap.begin()->second);
-        m_list.ageMap.erase(m_list.ageMap.begin());
-      }
+      if (duration <= FONT_CACHE_TIME_LIMIT)
+        break;
+
+      const auto hashIt = m_list.ageMap.begin()->second;
+      if (!entry)
+        entry = std::move(hashIt->second);
+      m_list.hashMap.erase(hashIt);
+      m_list.ageMap.erase(m_list.ageMap.begin());
     }
 
     // add new entry
