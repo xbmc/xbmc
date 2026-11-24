@@ -158,6 +158,28 @@ protected:
   void RemapBuffer();
   double CalcResampleRatio(double error);
   std::chrono::milliseconds GetErrorInterval();
+  /*!
+   * \brief The speed of the clock while it runs forward, 1.0 otherwise.
+   *
+   * Converts between output time and media time. Audio is paused while the clock doesn't run
+   * forward.
+   */
+  double GetForwardClockSpeed() const;
+  /*!
+   * \brief A clock speed if the clock runs forward, 1.0 otherwise.
+   *
+   * \param clockSpeed the speed of the clock, negative while rewinding
+   * \return the speed to convert between output time and media time at
+   */
+  static double ForwardSpeed(double clockSpeed);
+  /*!
+   * \brief Resample ratio for audio to follow the clock.
+   *
+   * \param clockSpeed the speed of the clock, running forward
+   * \param correction how much slower than the clock audio has to play, negative to play faster
+   * \return the resample ratio, the inverse of the speed audio plays at
+   */
+  static double RatioForSpeed(double clockSpeed, double correction);
 
 public:
   unsigned int GetSpace() override;

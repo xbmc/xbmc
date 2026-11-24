@@ -17,6 +17,21 @@
 
 using namespace ActiveAE;
 
+namespace
+{
+// Adds samples produced at speed to a buffer. A buffer filled over several calls can hold samples
+// produced at different speeds, its speed is their average weighted by the samples.
+void AddSamples(CSampleBuffer& buffer, int samples, double speed)
+{
+  if (samples <= 0)
+    return;
+
+  const int filled = buffer.pkt->nb_samples;
+  buffer.mediaSpeed = (filled * buffer.mediaSpeed + samples * speed) / (filled + samples);
+  buffer.pkt->nb_samples += samples;
+}
+} // namespace
+
 CSoundPacket::CSoundPacket(const SampleConfig& conf, int samples) : config(conf)
 {
   data = CActiveAE::AllocSoundSample(config, samples, bytes_per_sample, planes, linesize);
@@ -76,6 +91,7 @@ CSampleBuffer* CActiveAEBufferPool::GetFreeBuffer()
     m_freeSamples.pop_front();
     buf->refCount = 1;
     buf->centerMixLevel = M_SQRT1_2;
+    buf->mediaSpeed = 1.0;
   }
   return buf;
 }
@@ -277,7 +293,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
         m_changeResampler = true;
       }
 
-      m_procSample->pkt->nb_samples += out_samples;
+      AddSamples(*m_procSample, out_samples, 1.0 / m_resampleRatio);
       busy = true;
       m_empty = (out_samples == 0);
 
@@ -567,7 +583,6 @@ bool CActiveAEBufferPoolAtempo::ProcessBuffers()
         m_changeFilter = true;
       }
 
-      m_procSample->pkt->nb_samples += out_samples;
       busy = true;
       m_empty = m_pTempoFilter->IsEof();
 
@@ -581,7 +596,12 @@ bool CActiveAEBufferPoolAtempo::ProcessBuffers()
         // pts of last sample we added to the buffer
         m_lastSamplePts += static_cast<int64_t>(in->pkt->nb_samples - in->pkt_start_offset) * 1000 /
                            m_format.m_sampleRate;
+        m_inputSpeed = in->mediaSpeed;
       }
+
+      // The filter drains at its old tempo before it changes to a new one
+      AddSamples(*m_procSample, out_samples,
+                 m_inputSpeed * static_cast<double>(m_pTempoFilter->GetOutputTempo()));
 
       // calculate pts for last sample in m_procSample
       int bufferedSamples = m_pTempoFilter->GetBufferedSamples();
@@ -691,12 +711,13 @@ float CActiveAEBufferPoolAtempo::GetDelay()
 
 void CActiveAEBufferPoolAtempo::SetTempo(float tempo)
 {
-  if (tempo > 2.0f)
-    tempo = 2.0;
+  if (tempo > 100.0f)
+    tempo = 100.0;
   else if (tempo < 0.5f)
     tempo = 0.5;
 
-  if (tempo != m_tempo)
+  // Drain and re-create the filter only when the tempo can't be changed in place
+  if (tempo != m_tempo && (m_changeFilter || !m_pTempoFilter->ChangeTempo(tempo)))
     m_changeFilter = true;
 
   m_tempo = tempo;
