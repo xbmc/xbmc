@@ -25,51 +25,38 @@ CHotKeyController::~CHotKeyController()
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
-void CHotKeyController::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                 const std::string& sender,
-                                 const std::string& message,
-                                 const CVariant& data)
+void CHotKeyController::OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event)
 {
-  if (sender != ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
-    return;
-
-  switch (flag)
+  namespace GUI = ANNOUNCEMENT::EVENT::GUI;
+  if (std::holds_alternative<GUI::WindowFocused>(event))
   {
-    case ANNOUNCEMENT::GUI:
+    m_appHasFocus = true;
+    [m_mediaKeytap enableMediaKeyTap];
+  }
+  else if (std::holds_alternative<GUI::WindowUnfocused>(event))
+  {
+    m_appHasFocus = false;
+    if (!m_appIsPlaying)
     {
-      if (message == "WindowFocused")
-      {
-        m_appHasFocus = true;
-        [m_mediaKeytap enableMediaKeyTap];
-      }
-      else if (message == "WindowUnfocused")
-      {
-        m_appHasFocus = false;
-        if (!m_appIsPlaying)
-        {
-          [m_mediaKeytap disableMediaKeyTap];
-        }
-      }
-      break;
+      [m_mediaKeytap disableMediaKeyTap];
     }
-    case ANNOUNCEMENT::Player:
+  }
+}
+
+void CHotKeyController::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
+{
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  if (std::holds_alternative<PLAYER::Play>(event) || std::holds_alternative<PLAYER::Resume>(event))
+  {
+    m_appIsPlaying = true;
+    [m_mediaKeytap enableMediaKeyTap];
+  }
+  else if (std::holds_alternative<PLAYER::Stop>(event))
+  {
+    m_appIsPlaying = false;
+    if (!m_appHasFocus)
     {
-      if (message == "OnPlay" || message == "OnResume")
-      {
-        m_appIsPlaying = true;
-        [m_mediaKeytap enableMediaKeyTap];
-      }
-      else if (message == "OnStop")
-      {
-        m_appIsPlaying = false;
-        if (!m_appHasFocus)
-        {
-          [m_mediaKeytap disableMediaKeyTap];
-        }
-      }
-      break;
+      [m_mediaKeytap disableMediaKeyTap];
     }
-    default:
-      break;
   }
 }

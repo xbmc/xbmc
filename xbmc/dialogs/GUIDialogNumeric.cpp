@@ -63,39 +63,17 @@ void CGUIDialogNumeric::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
 
-  CVariant data;
-  switch (m_mode)
-  {
-  case NUMERIC_MODE::TIME:
-    data["type"] = "time";
-    break;
-  case NUMERIC_MODE::DATE:
-    data["type"] = "date";
-    break;
-  case NUMERIC_MODE::IP_ADDRESS:
-    data["type"] = "ip";
-    break;
-  case NUMERIC_MODE::PASSWORD:
-    data["type"] = "numericpassword";
-    break;
-  case NUMERIC_MODE::NUMBER:
-    data["type"] = "number";
-    break;
-  case NUMERIC_MODE::TIME_SECONDS:
-    data["type"] = "seconds";
-    break;
-  default:
-    data["type"] = "keyboard";
-    break;
-  }
+  ANNOUNCEMENT::EVENT::INPUT::Requested requested;
+  requested.numeric = m_mode;
 
   const CGUIControl *control = GetControl(CONTROL_HEADING_LABEL);
   if (control != nullptr)
-    data["title"] = control->GetDescription();
+    requested.title = control->GetDescription();
 
-  data["value"] = GetOutputString();
+  requested.value = GetOutputString();
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputRequested", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InputEvent{std::move(requested)});
 }
 
 void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
@@ -103,7 +81,8 @@ void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
   // call base class
   CGUIDialog::OnDeinitWindow(nextWindowID);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputFinished");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InputEvent{ANNOUNCEMENT::EVENT::INPUT::Finished{}});
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)

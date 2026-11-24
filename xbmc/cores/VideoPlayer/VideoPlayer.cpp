@@ -1588,10 +1588,9 @@ void CVideoPlayer::Prepare()
                     __FUNCTION__, starttime.count());
         }
 
-        CVariant announcement(
-            StringUtils::SecondsToTimeString(edit->end.count(), TIME_FORMAT_MM_SS));
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
-                                                           announcement);
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Commercial{
+                StringUtils::SecondsToTimeString(edit->end.count(), TIME_FORMAT_MM_SS)}});
       }
     }
   }
@@ -2302,7 +2301,8 @@ void CVideoPlayer::HandlePlaySpeed()
     {
       if (cache.level < 0.0)
       {
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "SourceSlow");
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::SourceSlow{}});
         SetCaching(CACHESTATE_INIT);
       }
       // Note: Previously used cache.level >= 1 would keep video stalled
@@ -2929,11 +2929,10 @@ void CVideoPlayer::QueueAutoSceneSkip(std::chrono::milliseconds seekTime)
 
 void CVideoPlayer::MarkCommBreakSkipped(const EDL::Edit& edit, std::chrono::milliseconds seekTime)
 {
-  CVariant announcement{StringUtils::SecondsToTimeString(
-      std::chrono::duration_cast<std::chrono::seconds>(edit.end - edit.start).count(),
-      TIME_FORMAT_MM_SS)};
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
-                                                     announcement);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+      ANNOUNCEMENT::EVENT::PLAYER::Commercial{StringUtils::SecondsToTimeString(
+          std::chrono::duration_cast<std::chrono::seconds>(edit.end - edit.start).count(),
+          TIME_FORMAT_MM_SS)}});
 
   // use resolved seek target, not edit.start, to also suppress
   // adjacent commercial breaks encountered while seeking
@@ -4337,11 +4336,9 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
   m_messenger.Put(
       std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
   m_processInfo->GetVideoSettingsLocked().SetSubtitleVisible(bVisible);
-  CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
-  data["property"]["subtitleenabled"] = bVisible;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{
+          .streams = AnnouncedStreams(), .subtitleEnabled = bVisible}});
 }
 
 void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
@@ -5159,7 +5156,8 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       else
       {
         // The disc may open a menu itself, so close the player controls as ShowVideoMenu does
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnMenu");
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Menu{}});
       }
       break;
     case BD_EVENT_PLAYLIST_STOP:
@@ -5236,15 +5234,16 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     {
       m_dvd.state = DVDSTATE_NORMAL;
       CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray menu not supported (DVDSTATE_NORMAL)");
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnBlurayMenuError");
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::BlurayMenuError{}});
     }
     break;
     case BD_EVENT_ENC_ERROR:
     {
       m_dvd.state = DVDSTATE_NORMAL;
       CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray the disc/file is encrypted and can't be played (DVDSTATE_NORMAL)");
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
-                                                         "OnBlurayEncryptedError");
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::BlurayEncryptedError{}});
     }
     break;
     case BD_EVENT_DISCONTINUITY:
@@ -5416,8 +5415,8 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         CLog::Log(LOGDEBUG, "DVDNAV_ERROR");
         m_dvd.state = DVDSTATE_NORMAL;
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
-                                                           "OnPlaybackFailed");
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PlaybackFailed{}});
       }
       break;
     default:
@@ -5508,7 +5507,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
           }
 
           // Let everyone know that we've gone to the menu
-          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnMenu");
+          CServiceBroker::GetAnnouncementManager()->Announce(
+              ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Menu{}});
         }
         return true;
       }
@@ -5670,8 +5670,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
         break;
     case ACTION_TOGGLE_COMMSKIP:
       m_SkipCommercials = !m_SkipCommercials;
-      CServiceBroker::GetAnnouncementManager()->Announce(
-          ANNOUNCEMENT::Player, "OnToggleSkipCommercials", CVariant{m_SkipCommercials});
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+          ANNOUNCEMENT::EVENT::PLAYER::ToggleSkipCommercials{m_SkipCommercials}});
       break;
 
     case ACTION_PLAYER_DEBUG:
@@ -5682,7 +5682,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
       break;
 
     case ACTION_PLAYER_PROCESS_INFO:
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnProcessInfo");
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::ProcessInfo{}});
       return true;
   }
 
@@ -7001,13 +7002,20 @@ void CVideoPlayer::SetUpdateStreamDetails()
   m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_SET_UPDATE_STREAM_DETAILS));
 }
 
+// Temporary: names the player by its streams, from the v14 playlist id the item was started
+// with, until the playlist rewrite announces the player's properties.
+KODI::MEDIA::Streams CVideoPlayer::AnnouncedStreams() const
+{
+  return KODI::PLAYLIST::StreamsFromId(
+      static_cast<KODI::PLAYLIST::Id>(m_item.GetProperty("playlist_type_hint").asInteger32(-1)));
+}
+
 void CVideoPlayer::NotifySubtitleUpdate(int flags)
 {
-  CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
+  ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged changed{.streams = AnnouncedStreams()};
   if ((flags & SubtitleChange::FLAG_STATUS_CHANGE) != 0)
   {
-    data["property"]["subtitleenabled"] = m_processInfo->GetVideoSettings().m_SubtitleOn;
+    changed.subtitleEnabled = m_processInfo->GetVideoSettings().m_SubtitleOn;
   }
   if ((flags & SubtitleChange::FLAG_STREAMINFO_CHANGE) != 0)
   {
@@ -7031,11 +7039,10 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
       contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
       contentEntry["language"] = info.language.ToString();
       contentEntry["name"] = info.name;
-      data["property"]["currentsubtitle"] = contentEntry;
+      changed.currentSubtitle = contentEntry;
     }
   }
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{changed});
 }
 
 void CVideoPlayer::NotifyAudioUpdate()
@@ -7045,8 +7052,6 @@ void CVideoPlayer::NotifyAudioUpdate()
   GetAudioStreamInfo(stream, info);
   if (!info.valid)
     return;
-  CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["bitrate"] = info.bitrate;
@@ -7057,9 +7062,9 @@ void CVideoPlayer::NotifyAudioUpdate()
   contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
   contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
-  data["property"]["currentaudiostream"] = contentEntry;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{
+          .streams = AnnouncedStreams(), .currentAudioStream = contentEntry}});
 }
 
 void CVideoPlayer::NotifyVideoUpdate()
@@ -7069,8 +7074,6 @@ void CVideoPlayer::NotifyVideoUpdate()
   GetVideoStreamInfo(stream, info);
   if (!info.valid)
     return;
-  CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["codec"] = info.codecName;
@@ -7078,7 +7081,7 @@ void CVideoPlayer::NotifyVideoUpdate()
   contentEntry["width"] = info.width;
   contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
-  data["property"]["currentvideostream"] = contentEntry;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{
+          .streams = AnnouncedStreams(), .currentVideoStream = contentEntry}});
 }

@@ -39,7 +39,6 @@
 #include "utils/EndianSwap.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <cstring>
@@ -47,6 +46,7 @@
 #include <mutex>
 #include <string>
 #include <utility>
+#include <variant>
 
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
@@ -186,35 +186,32 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   RefreshMetadata();
 }
 
-void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                               const std::string& sender,
-                               const std::string& message,
-                               const CVariant& data)
+void CAirTunesServer::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
-  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  if ((std::holds_alternative<PLAYER::Play>(event) ||
+       std::holds_alternative<PLAYER::Resume>(event)) &&
+      m_streamStarted)
   {
-    if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
-    {
-      RefreshMetadata();
-      RefreshCoverArt();
-      std::unique_lock lock(m_dacpLock);
-      if (m_pDACP)
-        m_pDACP->Play();
-    }
+    RefreshMetadata();
+    RefreshCoverArt();
+    std::unique_lock lock(m_dacpLock);
+    if (m_pDACP)
+      m_pDACP->Play();
+  }
 
-    if (message == "OnStop" && m_streamStarted)
-    {
-      std::unique_lock lock(m_dacpLock);
-      if (m_pDACP)
-        m_pDACP->Stop();
-    }
+  if (std::holds_alternative<PLAYER::Stop>(event) && m_streamStarted)
+  {
+    std::unique_lock lock(m_dacpLock);
+    if (m_pDACP)
+      m_pDACP->Stop();
+  }
 
-    if (message == "OnPause" && m_streamStarted)
-    {
-      std::unique_lock lock(m_dacpLock);
-      if (m_pDACP)
-        m_pDACP->Pause();
-    }
+  if (std::holds_alternative<PLAYER::Pause>(event) && m_streamStarted)
+  {
+    std::unique_lock lock(m_dacpLock);
+    if (m_pDACP)
+      m_pDACP->Pause();
   }
 }
 

@@ -20,6 +20,7 @@
 
 #include <mutex>
 #include <utility>
+#include <variant>
 #if defined(TARGET_ANDROID)
 #include "platform/android/peripherals/PeripheralBusAndroid.h"
 #elif defined(TARGET_DARWIN)
@@ -1106,19 +1107,13 @@ int CPeripherals::GetMessageMask()
   return TMSG_MASK_PERIPHERALS;
 }
 
-void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                            const std::string& sender,
-                            const std::string& message,
-                            const CVariant& data)
+void CPeripherals::OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event)
 {
-  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
+  if (std::holds_alternative<ANNOUNCEMENT::EVENT::SYSTEM::Quit>(event))
   {
-    if (message == "OnQuit")
-    {
-      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-              CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
-        PowerOffDevices();
-    }
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+      PowerOffDevices();
   }
 }
 

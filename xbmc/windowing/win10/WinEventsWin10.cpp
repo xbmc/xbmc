@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 #include "windowing/windows/WinKeyMap.h"
 
@@ -651,62 +650,64 @@ void CWinEventsWin10::OnSystemMediaButtonPressed(const SystemMediaTransportContr
   }
 }
 
-void CWinEventsWin10::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                               const std::string& sender,
-                               const std::string& message,
-                               const CVariant& data)
+void CWinEventsWin10::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
-  if (flag & ANNOUNCEMENT::Player)
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  double speed = 1.0;
+  bool changed = false;
+  MediaPlaybackStatus status = MediaPlaybackStatus::Changing;
+
+  if (const auto* play = std::get_if<PLAYER::Play>(&event))
   {
-    double speed = 1.0;
-    if (data.isMember("player") && data["player"].isMember("speed"))
-      speed = data["player"]["speed"].asDouble(1.0);
+    changed = true;
+    speed = play->speed;
+    status = MediaPlaybackStatus::Playing;
+  }
+  else if (std::holds_alternative<PLAYER::Resume>(event))
+  {
+    changed = true;
+    status = MediaPlaybackStatus::Playing;
+  }
+  else if (std::holds_alternative<PLAYER::Stop>(event))
+  {
+    changed = true;
+    status = MediaPlaybackStatus::Stopped;
+  }
+  else if (std::holds_alternative<PLAYER::Pause>(event))
+  {
+    changed = true;
+    speed = 0.0;
+    status = MediaPlaybackStatus::Paused;
+  }
+  else if (const auto* speedChanged = std::get_if<PLAYER::SpeedChanged>(&event))
+  {
+    changed = true;
+    speed = speedChanged->speed;
+    status = speed != 0.0 ? MediaPlaybackStatus::Playing : MediaPlaybackStatus::Paused;
+  }
 
-    bool changed = false;
-    MediaPlaybackStatus status = MediaPlaybackStatus::Changing;
-
-    if (message == "OnPlay" || message == "OnResume")
+  if (changed)
+  {
+    try
     {
-      changed = true;
-      status = MediaPlaybackStatus::Playing;
-    }
-    else if (message == "OnStop")
-    {
-      changed = true;
-      status = MediaPlaybackStatus::Stopped;
-    }
-    else if (message == "OnPause")
-    {
-      changed = true;
-      status = MediaPlaybackStatus::Paused;
-    }
-    else if (message == "OnSpeedChanged")
-    {
-      changed = true;
-      status = speed != 0.0 ? MediaPlaybackStatus::Playing : MediaPlaybackStatus::Paused;
-    }
-
-    if (changed)
-    {
-      try
+      auto dispatcher = CoreApplication::MainView().Dispatcher();
+      if (dispatcher)
       {
-        auto dispatcher = CoreApplication::MainView().Dispatcher();
-        if (dispatcher)
-        {
-          dispatcher.RunAsync(CoreDispatcherPriority::Normal, DispatchedHandler([status, speed]
-          {
-            auto smtc = SystemMediaTransportControls::GetForCurrentView();
-            if (!smtc)
-              return;
+        dispatcher.RunAsync(CoreDispatcherPriority::Normal,
+                            DispatchedHandler(
+                                [status, speed]
+                                {
+                                  auto smtc = SystemMediaTransportControls::GetForCurrentView();
+                                  if (!smtc)
+                                    return;
 
-            smtc.PlaybackStatus(status);
-            smtc.PlaybackRate(speed);
-          }));
-        }
+                                  smtc.PlaybackStatus(status);
+                                  smtc.PlaybackRate(speed);
+                                }));
       }
-      catch (const winrt::hresult_error&)
-      {
-      }
+    }
+    catch (const winrt::hresult_error&)
+    {
     }
   }
 }

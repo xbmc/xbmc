@@ -58,8 +58,6 @@ public:
 #endif
 #include <libcec/cectypes.h>
 
-class CVariant;
-
 namespace CEC
 {
 class ICECAdapter;
@@ -103,10 +101,9 @@ public:
                         CPeripheralBus* bus);
   ~CPeripheralCecAdapter(void) override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event) override;
+  void OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event) override;
+  void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
 
   // audio control
   bool HasAudioControl(void);

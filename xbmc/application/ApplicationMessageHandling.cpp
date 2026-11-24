@@ -39,7 +39,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/json-rpc/JSONUtils.h"
 #include "interfaces/python/XBPython.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
@@ -70,6 +69,7 @@
 
 #include <chrono>
 #include <memory>
+#include <optional>
 
 #ifdef TARGET_ANDROID
 #include "platform/android/activity/XBMCApp.h"
@@ -134,6 +134,16 @@ bool IsAddonWindowOpen()
 
 // resizing a window sends a resize for every step, reload once it settles
 constexpr auto SKIN_RELOAD_DELAY = std::chrono::milliseconds(500);
+
+// Temporary: names the playing player by its streams, from the v14 playlist id, until the
+// playlist rewrite announces playback.
+MEDIA::Streams PlayingStreams(const CFileItem& item)
+{
+  const PLAYLIST::Id id = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  if (id == PLAYLIST::Id::TYPE_NONE)
+    return MUSIC::IsAudio(item) ? MEDIA::Streams::Audio : MEDIA::Streams::Video;
+  return PLAYLIST::StreamsFromId(id);
+}
 } // unnamed namespace
 
 CApplicationMessageHandling::CApplicationMessageHandling(CApplication& app)
@@ -634,13 +644,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       CServiceBroker::GetXBPython().OnPlayBackStarted(*m_app.m_itemCurrentFile);
 #endif
 
-      CVariant param;
-      param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Play{
+              m_app.CurrentFileItemPtr(), 1, PlayingStreams(m_app.CurrentFileItem())}});
 
       // we don't want a busy dialog when switching channels
       const auto appPlayer = m_app.GetComponent<CApplicationPlayer>();
@@ -744,10 +750,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       pvrManager.OnPlaybackStopped(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackStopped(m_app.CurrentFileItem());
 
-      CVariant data(CVariant::VariantTypeObject);
-      data["end"] = false;
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
-                                                         m_app.CurrentFileItemPtr(), data);
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+          ANNOUNCEMENT::EVENT::PLAYER::Stop{m_app.CurrentFileItemPtr(), false, std::nullopt}});
 
       const CPlaycountIncrementedHandler playCountIncrementedHandler{m_app.CurrentFileItem()};
 
@@ -770,10 +774,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       pvrManager.OnPlaybackEnded(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackEnded(m_app.CurrentFileItem());
 
-      CVariant data(CVariant::VariantTypeObject);
-      data["end"] = true;
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
-                                                         m_app.CurrentFileItemPtr(), data);
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+          ANNOUNCEMENT::EVENT::PLAYER::Stop{m_app.CurrentFileItemPtr(), true, std::nullopt}});
 
       m_app.m_playerEvent.Set();
 
@@ -825,12 +827,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_AVSTARTED:
     {
-      CVariant param;
-      param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVStart",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::AVStart{
+              m_app.CurrentFileItemPtr(), PlayingStreams(m_app.CurrentFileItem())}});
       m_app.m_playerEvent.Set();
 #ifdef HAS_PYTHON
       // informs python script currently running playback has started
@@ -847,53 +846,39 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       // (does nothing if python is not loaded)
       CServiceBroker::GetXBPython().OnAVChange();
 #endif
-      CVariant param;
-      param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVChange",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::AVChange{
+              m_app.CurrentFileItemPtr(), PlayingStreams(m_app.CurrentFileItem())}});
       return true;
     }
 
     case GUI_MSG_PLAYBACK_PAUSED:
     {
-      CVariant param;
-      param["player"]["speed"] = 0;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Pause{
+              m_app.CurrentFileItemPtr(), PlayingStreams(m_app.CurrentFileItem())}});
       return true;
     }
 
     case GUI_MSG_PLAYBACK_RESUMED:
     {
-      CVariant param;
-      param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnResume",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Resume{
+              m_app.CurrentFileItemPtr(), PlayingStreams(m_app.CurrentFileItem())}});
       return true;
     }
 
     case GUI_MSG_PLAYBACK_SEEKED:
     {
-      CVariant param;
       const int64_t iTime = message.GetParam1AsI64();
       const int64_t seekOffset = message.GetParam2AsI64();
-      JSONRPC::CJSONUtils::MillisecondsToTimeObject(static_cast<int>(iTime),
-                                                    param["player"]["time"]);
-      JSONRPC::CJSONUtils::MillisecondsToTimeObject(static_cast<int>(seekOffset),
-                                                    param["player"]["seekoffset"]);
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
       const auto& components = CServiceBroker::GetAppComponents();
       const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-      param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSeek",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Seek{
+              m_app.CurrentFileItemPtr(), static_cast<int>(appPlayer->GetPlaySpeed()),
+              std::chrono::milliseconds{iTime}, std::chrono::milliseconds{seekOffset},
+              PlayingStreams(m_app.CurrentFileItem())}});
 
       CDataCacheCore::GetInstance().SeekFinished(static_cast<int>(seekOffset));
 
@@ -902,12 +887,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_SPEED_CHANGED:
     {
-      CVariant param;
-      param["player"]["speed"] = message.GetParam1();
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSpeedChanged",
-                                                         m_app.CurrentFileItemPtr(), param);
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+          ANNOUNCEMENT::EVENT::PLAYER::SpeedChanged{m_app.CurrentFileItemPtr(), message.GetParam1(),
+                                                    PlayingStreams(m_app.CurrentFileItem())}});
 
       return true;
     }

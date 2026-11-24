@@ -214,8 +214,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       CLog::Log(LOGINFO, "VideoInfoScanner: Starting scan .. (grouping of similar videos is {})",
                 SimilarVideoScanActionToStr(m_similarVideoAction));
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                                                         "OnScanStarted");
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::ScanStarted{}});
 
       // Database operations should not be canceled
       // using Interrupt() while scanning as it could
@@ -320,8 +320,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     m_bRunning = false;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                                                       "OnScanFinished");
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::ScanFinished{}});
 
     if (m_handle)
       m_handle->MarkFinished();
@@ -2774,12 +2774,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         type = ScanSummary::Type::MUSIC_VIDEO;
       m_summary.added.push_back({type, path, strTitle});
 
-      CVariant data;
-      data["added"] = true;
-      if (m_bRunning)
-        data["transaction"] = true;
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                         *pItem, data);
+      // Announce() copies the item before it returns, so it is lent here rather than copied twice
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Update{
+              .item = std::shared_ptr<const CFileItem>(pItem, [](const CFileItem*) {}),
+              .transaction = m_bRunning,
+              .added = true}});
     }
     return lResult;
   }

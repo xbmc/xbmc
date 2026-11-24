@@ -28,7 +28,6 @@
 #include <sys/types.h>
 
 class CDACP;
-class CVariant;
 
 class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer,
                         public KODI::ACTION::IActionListener,
@@ -36,10 +35,7 @@ class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer,
 {
 public:
   // ANNOUNCEMENT::IAnnouncer
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
 
   void RegisterActionListener(bool doRegister);
   static void EnableActionProcessing(bool enable);

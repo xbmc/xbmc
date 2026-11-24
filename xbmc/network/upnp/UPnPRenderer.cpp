@@ -36,6 +36,9 @@
 
 #include <inttypes.h>
 #include <mutex>
+#include <optional>
+#include <utility>
+#include <variant>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -55,8 +58,7 @@ CUPnPRenderer::CUPnPRenderer(const char* friendly_name,
                              unsigned int port /*= 0*/)
   : PLT_MediaRenderer(friendly_name, show_ip, uuid, port)
 {
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player |
-                                                                   ANNOUNCEMENT::Application);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
 }
 
 /*----------------------------------------------------------------------
@@ -237,74 +239,73 @@ NPT_Result CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest& request,
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPRenderer::Announce
+|   CUPnPRenderer::OnPlayerEvent
 +---------------------------------------------------------------------*/
-void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                             const std::string& sender,
-                             const std::string& message,
-                             const CVariant& data)
+void CUPnPRenderer::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
-  if (sender != ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
-    return;
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
 
   NPT_AutoLock lock(m_state);
   PLT_Service *avt, *rct;
 
-  if (flag == ANNOUNCEMENT::Player)
+  if (const auto* changed = std::get_if<PLAYER::PropertiesChanged>(&event))
   {
-    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+    if (!(changed->volume || changed->muted) ||
+        NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
       return;
 
-    if (message == "OnPlay" || message == "OnResume")
+    if (changed->volume)
     {
-      avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
-      avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
-
-      NPT_String meta;
-      if (NPT_SUCCEEDED(GetMetadata(meta)))
-      {
-        avt->SetStateVariable("CurrentTrackMetadata", meta);
-        avt->SetStateVariable("AVTransportURIMetaData", meta);
-      }
-
-      avt->SetStateVariable("TransportPlaySpeed",
-                            NPT_String::FromInteger(data["player"]["speed"].asInteger()));
-      avt->SetStateVariable("TransportState", "PLAYING");
-
-      /* this could be a transition to next track, so clear next */
-      avt->SetStateVariable("NextAVTransportURI", "");
-      avt->SetStateVariable("NextAVTransportURIMetaData", "");
+      const int volume = *changed->volume;
+      rct->SetStateVariable("Volume", std::to_string(volume).c_str());
+      rct->SetStateVariable("VolumeDb", std::to_string(256 * (volume * 60 - 60) / 100).c_str());
     }
-    else if (message == "OnPause")
-    {
-      int64_t speed = data["player"]["speed"].asInteger();
-      avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(speed != 0 ? speed : 1));
-      avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
-    }
-    else if (message == "OnSpeedChanged")
-    {
-      avt->SetStateVariable("TransportPlaySpeed",
-                            NPT_String::FromInteger(data["player"]["speed"].asInteger()));
-    }
-    else if (message == "OnStop")
-    {
-      Reset(avt);
-    }
+    if (changed->muted)
+      rct->SetStateVariable("Mute", *changed->muted ? "1" : "0");
+    return;
   }
-  else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
+
+  if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+    return;
+
+  std::optional<std::pair<std::shared_ptr<const CFileItem>, int>> playing;
+  if (const auto* play = std::get_if<PLAYER::Play>(&event))
+    playing.emplace(play->item, play->speed);
+  else if (const auto* resume = std::get_if<PLAYER::Resume>(&event))
+    playing.emplace(resume->item, 1);
+
+  if (playing)
   {
-    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
-      return;
+    const std::string uri = playing->first ? playing->first->GetPath() : std::string{};
+    avt->SetStateVariable("AVTransportURI", uri.c_str());
+    avt->SetStateVariable("CurrentTrackURI", uri.c_str());
 
-    std::string buffer;
+    NPT_String meta;
+    if (playing->first && NPT_SUCCEEDED(GetMetadata(*playing->first, meta)))
+    {
+      avt->SetStateVariable("CurrentTrackMetadata", meta);
+      avt->SetStateVariable("AVTransportURIMetaData", meta);
+    }
 
-    buffer = std::to_string(data["volume"].asInteger());
-    rct->SetStateVariable("Volume", buffer.c_str());
+    avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(playing->second));
+    avt->SetStateVariable("TransportState", "PLAYING");
 
-    buffer = std::to_string(256 * (data["volume"].asInteger() * 60 - 60) / 100);
-    rct->SetStateVariable("VolumeDb", buffer.c_str());
-
-    rct->SetStateVariable("Mute", data["muted"].asBoolean() ? "1" : "0");
+    /* this could be a transition to next track, so clear next */
+    avt->SetStateVariable("NextAVTransportURI", "");
+    avt->SetStateVariable("NextAVTransportURIMetaData", "");
+  }
+  else if (std::holds_alternative<PLAYER::Pause>(event))
+  {
+    avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(1));
+    avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
+  }
+  else if (const auto* speed = std::get_if<PLAYER::SpeedChanged>(&event))
+  {
+    avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(speed->speed));
+  }
+  else if (std::holds_alternative<PLAYER::Stop>(event))
+  {
+    Reset(avt);
   }
 }
 
@@ -428,10 +429,10 @@ NPT_Result CUPnPRenderer::SetupIcons()
 /*----------------------------------------------------------------------
 |   CUPnPRenderer::GetMetadata
 +---------------------------------------------------------------------*/
-NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
+NPT_Result CUPnPRenderer::GetMetadata(const CFileItem& announced, NPT_String& meta)
 {
   NPT_Result res = NPT_FAILURE;
-  CFileItem item(g_application.CurrentFileItem());
+  CFileItem item(announced);
   NPT_String file_path, tmp;
 
   // we pass an empty CThumbLoader reference, as it can't be used

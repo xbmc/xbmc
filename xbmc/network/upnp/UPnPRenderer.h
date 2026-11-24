@@ -12,7 +12,7 @@
 
 #include <Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.h>
 
-class CVariant;
+class CFileItem;
 
 namespace UPNP
 {
@@ -34,10 +34,7 @@ public:
 
     ~CUPnPRenderer() override;
 
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                  const std::string& sender,
-                  const std::string& message,
-                  const CVariant& data) override;
+    void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
     void UpdateState();
 
     // Http server handler
@@ -62,7 +59,7 @@ public:
 private:
     NPT_Result SetupServices() override;
     NPT_Result SetupIcons() override;
-    NPT_Result GetMetadata(NPT_String& meta);
+    NPT_Result GetMetadata(const CFileItem& item, NPT_String& meta);
     NPT_Result PlayMedia(const NPT_String& uri,
                          const NPT_String& meta,
                          PLT_Action* action = NULL);

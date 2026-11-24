@@ -401,7 +401,8 @@ void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& set
 
   const std::string& settingId{setting->GetId()};
   if (settingId == CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRefresh");
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Refresh{}});
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY ||
            settingId == CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN)
   {

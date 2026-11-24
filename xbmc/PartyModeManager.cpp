@@ -557,19 +557,19 @@ bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT
   return true; // unknown, but we're enabled
 }
 
+// Temporary: names the player by its streams, from the v14 playlist id, until the playlist
+// rewrite replaces the party mode manager.
 void CPartyModeManager::Announce()
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsPlaying())
   {
-    CVariant data;
-
-    data["player"]["playerid"] =
-        static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-    data["property"]["partymode"] = m_bEnabled;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                       data);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{
+            .streams =
+                PLAYLIST::StreamsFromId(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()),
+            .partyMode = m_bEnabled}});
   }
 }
 

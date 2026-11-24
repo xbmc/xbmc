@@ -238,8 +238,8 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
             s.GetName(), s.GetType(), s.GetDomain());
   m_browser->addDiscoveredService(this, s);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
-                                                     CVariant{"zeroconf://"});
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Updated{"zeroconf://"}});
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onServiceFound sent source update announce "
                       "for path zeroconf://");
 }

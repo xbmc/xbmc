@@ -13,6 +13,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
@@ -38,6 +39,7 @@
 #include "pictures/SlideShowDelegator.h"
 #include "pictures/UltraHdr.h"
 #include "playlists/PlayListTypes.h"
+#include "pvr/channels/PVRChannel.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -57,6 +59,7 @@
 #include <algorithm>
 #include <memory>
 #include <mutex>
+#include <variant>
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -189,68 +192,65 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow()
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
-void CGUIWindowSlideShow::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                   const std::string& sender,
-                                   const std::string& message,
-                                   const CVariant& data)
+void CGUIWindowSlideShow::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
-  if (message == "OnPlay" || message == "OnResume")
-  {
-    if (data.isMember("player") && data["player"].isMember("playerid") &&
-        data["player"]["playerid"] == static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
-      Close();
-  }
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  const CFileItem* item{nullptr};
+  if (const auto* play = std::get_if<PLAYER::Play>(&event))
+    item = play->item.get();
+  else if (const auto* resume = std::get_if<PLAYER::Resume>(&event))
+    item = resume->item.get();
+  else
+    return;
+
+  // Temporary: only the video playlist or a TV channel takes over the screen, as the v14 player
+  // id told, until the playlist rewrite announces the streams of what plays.
+  PLAYLIST::Id playerId{CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()};
+  if (item && item->HasPVRChannelInfoTag())
+    playerId = item->GetPVRChannelInfoTag()->IsRadio() ? PLAYLIST::Id::TYPE_MUSIC
+                                                       : PLAYLIST::Id::TYPE_VIDEO;
+
+  if (playerId == PLAYLIST::Id::TYPE_VIDEO && !PLAYER::IsPicture(item))
+    Close();
 }
 
+// Temporary: the slideshow announces its own slides, as a playlist that is none of the two and
+// with the streams of the screen it takes, until the playlist rewrite announces them.
 void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
-  CVariant param;
-  param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Play{
+          item, m_bSlideShow && !m_bPause ? 1 : 0, MEDIA::Streams::Video}});
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 {
-  CVariant param;
-  param["player"]["speed"] = 0;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Pause{item, MEDIA::Streams::Video}});
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
-  CVariant param;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  param["end"] = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
+      ANNOUNCEMENT::EVENT::PLAYER::Stop{item, true, MEDIA::Streams::Video}});
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistClear()
 {
-  CVariant data;
-  data["playlistid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Clear{std::nullopt}});
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
 {
-  CVariant data;
-  data["playlistid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  data["position"] = pos;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnAdd", item, data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Add{std::nullopt, pos, item}});
 }
 
-void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty, const CVariant &value)
+void CGUIWindowSlideShow::AnnounceShuffled()
 {
-  if (strProperty.empty() || value.isNull())
-    return;
-
-  CVariant data;
-  data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
-  data["property"][strProperty] = value;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlaylistEvent{
+      ANNOUNCEMENT::EVENT::PLAYLIST::PropertiesChanged{std::nullopt, true, std::nullopt}});
 }
 
 bool CGUIWindowSlideShow::IsPlaying() const
@@ -1652,7 +1652,7 @@ void CGUIWindowSlideShow::Shuffle()
   m_iNextSlide = GetNextSlide();
   m_bShuffled = true;
 
-  AnnouncePropertyChanged("shuffled", true);
+  AnnounceShuffled();
 }
 
 int CGUIWindowSlideShow::NumSlides() const

@@ -771,28 +771,19 @@ bool FlagMainTitleToSave(CFileItem& item, const std::string& pathBeforePick)
   return true;
 }
 
-namespace
-{
-void AnnounceFileChange(const std::string& file, const std::string& message, CVariant data)
-{
-  // As JSON-RPC hands out paths elsewhere, without credentials
-  data["file"] = CURL(file).GetWithoutUserDetails();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Files, message, data);
-}
-} // unnamed namespace
-
+// As JSON-RPC hands out paths elsewhere, files are announced without credentials
 void AnnouncePlayCountChanged(const std::string& file, int playCount)
 {
-  CVariant data;
-  data["playcount"] = playCount;
-  AnnounceFileChange(file, "OnPlayCountChanged", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::FilesEvent{ANNOUNCEMENT::EVENT::FILES::PlayCountChanged{
+          .file = CURL(file).GetWithoutUserDetails(), .playCount = playCount}});
 }
 
 void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint)
 {
-  CVariant data;
-  data["resume"]["position"] = resumePoint.timeInSeconds;
-  data["resume"]["total"] = resumePoint.totalTimeInSeconds;
-  AnnounceFileChange(file, "OnResumePointChanged", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::FilesEvent{
+      ANNOUNCEMENT::EVENT::FILES::ResumePointChanged{.file = CURL(file).GetWithoutUserDetails(),
+                                                     .position = resumePoint.timeInSeconds,
+                                                     .total = resumePoint.totalTimeInSeconds}});
 }
 } // namespace KODI::VIDEO::UTILS

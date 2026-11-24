@@ -14,6 +14,7 @@
 #include "TextureCache.h"
 #include "application/Application.h"
 #include "filesystem/SpecialProtocol.h"
+#include "interfaces/AnnouncementV14.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
@@ -244,14 +245,14 @@ void CAnnounceReceiver::DeInitialize()
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(GetInstance());
 }
 
-void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                 const std::string& sender,
-                                 const std::string& message,
-                                 const CVariant& data)
+void CAnnounceReceiver::OnAnnouncement(const ANNOUNCEMENT::Announcement& announcement)
 {
   // can be called from c++, we need an auto poll here.
   @autoreleasepool
   {
-    AnnounceBridge(flag, sender, message, data);
+    // Temporary: the bridge reads the JSON-RPC v14 notifications; removed with JSON-RPC v15.
+    for (const auto& [flag, sender, message, data] :
+         ANNOUNCEMENT::V14::NotificationsOf(announcement))
+      AnnounceBridge(flag, sender, message, data);
   }
 }
