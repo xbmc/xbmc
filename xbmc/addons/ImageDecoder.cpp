@@ -14,6 +14,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <limits>
 #include <memory>
 
 using namespace ADDON;
@@ -216,9 +217,16 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (format == XB_FMT_A8R8G8B8 && (width < m_width || height < m_height))
   {
     // Add-ons decode at the size they reported, so scale that down to the size asked for
-    const unsigned int fullPitch = (m_width + 15) / 16 * 16 * 4;
-    const size_t fullSize = static_cast<size_t>(fullPitch) * m_height;
+    const uint64_t fullPitch64 = (static_cast<uint64_t>(m_width) + 15) / 16 * 16 * 4;
     constexpr size_t simdPadding{32};
+    if (fullPitch64 > std::numeric_limits<unsigned int>::max() ||
+        fullPitch64 * m_height > std::numeric_limits<size_t>::max() - simdPadding)
+    {
+      CLog::Log(LOGERROR, "{} - {}x{} is too large to decode", __func__, m_width, m_height);
+      return false;
+    }
+    const unsigned int fullPitch = static_cast<unsigned int>(fullPitch64);
+    const size_t fullSize = static_cast<size_t>(fullPitch) * m_height;
     std::unique_ptr<uint8_t, decltype(&KODI::MEMORY::AlignedFree)> full(
         static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(fullSize + simdPadding, 32)),
         &KODI::MEMORY::AlignedFree);
