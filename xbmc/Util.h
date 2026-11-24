@@ -187,9 +187,18 @@ public:
   static std::string MusicPlaylistsLocation();
   static std::string VideoPlaylistsLocation();
 
+  //! \brief The folders under the playlists path that hold music, video and mixed playlists.
+  static constexpr char MUSIC_PLAYLISTS_FOLDER[] = "music";
+  static constexpr char VIDEO_PLAYLISTS_FOLDER[] = "video";
+  static constexpr char MIXED_PLAYLISTS_FOLDER[] = "mixed";
+
   //! \brief The path listing the playlists of \p section: special://musicplaylists/ or
   //! special://videoplaylists/. Empty for a section without playlists of its own.
   static std::string PlaylistsPathOf(KODI::MEDIA::MediaSection section);
+
+  //! \brief Whether \p path lists the playlists of \p section, as its special:// path or the
+  //! location that path resolves to.
+  static bool IsPlaylistsPath(const std::string& path, KODI::MEDIA::MediaSection section);
 
   //! \brief Whether \p path lies in the playlists folder of \p section, under its special:// path or
   //! the folders that path resolves to, wherever the user keeps playlists.
