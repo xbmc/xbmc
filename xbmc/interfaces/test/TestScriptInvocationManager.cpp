@@ -803,3 +803,18 @@ TEST_F(TestScriptInvocationManager, AStoppedCallerStopsWaitingForItsThread)
   std::unique_lock lock(m_handler.m_runs.lock);
   EXPECT_EQ(2, m_handler.m_runs.started);
 }
+
+// Stopping a running script with wait = true must not deadlock on m_critSection when OnExit()
+// calls OnExecutionDone()
+TEST_F(TestScriptInvocationManager, StoppingARunAndWaitingDoesNotDeadlock)
+{
+  const int id{Manager().ExecuteAsync(m_script, nullptr, {}, false)};
+  ASSERT_GE(id, 0);
+  ASSERT_TRUE(RunningAtOnce(1));
+
+  auto stopFuture{std::async(std::launch::async, [id] { return Manager().Stop(id, true); })};
+  ASSERT_EQ(std::future_status::ready, stopFuture.wait_for(TIMEOUT));
+
+  EXPECT_TRUE(stopFuture.get());
+  EXPECT_FALSE(Manager().IsRunning(id));
+}
