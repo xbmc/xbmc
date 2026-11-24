@@ -25,8 +25,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(CMAKE_ARGS -DDUMMY_ARGS=ON)
 
     else()
-      # Todo: gnutls libgcrypt libgpg-error
-      # find_package(xxx)
+      # --enable-https builds against GnuTLS whenever configure finds it
+      find_package(PkgConfig ${SEARCH_QUIET})
+      if(PKG_CONFIG_FOUND)
+        pkg_check_modules(MHD_GNUTLS gnutls ${SEARCH_QUIET} IMPORTED_TARGET)
+        if(MHD_GNUTLS_FOUND)
+          set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES PkgConfig::MHD_GNUTLS)
+        endif()
+      endif()
 
       if (CMAKE_HOST_SYSTEM_NAME MATCHES "(Free|Net|Open)BSD")
         find_program(MAKE_EXECUTABLE gmake)
