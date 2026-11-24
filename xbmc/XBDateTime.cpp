@@ -1277,7 +1277,9 @@ CDateTime CDateTime::FromRFC1123DateTime(const std::string &dateTime)
 std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSeconds) const
 {
   std::string strOut;
-  const std::string& strFormat = format.empty() ? g_langInfo.GetTimeFormat() : format;
+  const std::string& strFormat =
+      format.empty() ? CServiceBroker::GetResourcesComponent().GetLangInfo().GetTimeFormat()
+                     : format;
 
   KODI::TIME::SystemTime dateTime;
   GetAsSystemTime(dateTime);
@@ -1435,7 +1437,8 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
 
 std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 {
-  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate));
+  return GetAsLocalizedDate(
+      CServiceBroker::GetResourcesComponent().GetLangInfo().GetDateFormat(longDate));
 }
 
 std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
@@ -1614,7 +1617,8 @@ std::string CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool with
 
 std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /* = false */) const
 {
-  const std::string timeFormat = g_langInfo.GetTimeFormat();
+  const std::string timeFormat =
+      CServiceBroker::GetResourcesComponent().GetLangInfo().GetTimeFormat();
   bool use12hourclock = timeFormat.find('h') != std::string::npos;
   switch (format)
   {

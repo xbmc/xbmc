@@ -35,6 +35,7 @@
 #include "ServiceBroker.h"
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -391,33 +392,61 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);
 
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "regions", [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
-                    std::string& current)
-      { CLangInfo::SettingOptionsRegionsFiller(setting, list, current, g_langInfo); });
+      "regions",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsRegionsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "shortdateformats", [](const std::shared_ptr<const CSetting>& setting,
-                             StringSettingOptions& list, std::string& current)
-      { CLangInfo::SettingOptionsShortDateFormatsFiller(setting, list, current, g_langInfo); });
+      "shortdateformats",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsShortDateFormatsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "longdateformats", [](const std::shared_ptr<const CSetting>& setting,
-                            StringSettingOptions& list, std::string& current)
-      { CLangInfo::SettingOptionsLongDateFormatsFiller(setting, list, current, g_langInfo); });
+      "longdateformats",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsLongDateFormatsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "timeformats", [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
-                        std::string& current)
-      { CLangInfo::SettingOptionsTimeFormatsFiller(setting, list, current, g_langInfo); });
+      "timeformats",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsTimeFormatsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "24hourclockformats", [](const std::shared_ptr<const CSetting>& setting,
-                               StringSettingOptions& list, std::string& current)
-      { CLangInfo::SettingOptions24HourClockFormatsFiller(setting, list, current, g_langInfo); });
+      "24hourclockformats",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptions24HourClockFormatsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "speedunits", [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
-                       std::string& current)
-      { CLangInfo::SettingOptionsSpeedUnitsFiller(setting, list, current, g_langInfo); });
+      "speedunits",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsSpeedUnitsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller(
-      "temperatureunits", [](const std::shared_ptr<const CSetting>& setting,
-                             StringSettingOptions& list, std::string& current)
-      { CLangInfo::SettingOptionsTemperatureUnitsFiller(setting, list, current, g_langInfo); });
+      "temperatureunits",
+      [](const std::shared_ptr<const CSetting>& setting, StringSettingOptions& list,
+         std::string& current)
+      {
+        CLangInfo::SettingOptionsTemperatureUnitsFiller(
+            setting, list, current, CServiceBroker::GetResourcesComponent().GetLangInfo());
+      });
   GetSettingsManager()->RegisterSettingOptionsFiller("rendermethods", CBaseRenderer::SettingOptionsRenderMethodsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(
       "imageadjustmentgranularities",
@@ -558,7 +587,8 @@ void CSettings::InitializeISettingsHandlers()
 #endif
   GetSettingsManager()->RegisterSettingsHandler(&CWakeOnAccess::GetInstance());
   GetSettingsManager()->RegisterSettingsHandler(&CRssManager::GetInstance());
-  GetSettingsManager()->RegisterSettingsHandler(&g_langInfo);
+  GetSettingsManager()->RegisterSettingsHandler(
+      &CServiceBroker::GetResourcesComponent().GetLangInfo());
   GetSettingsManager()->RegisterSettingsHandler(&CMediaSettings::GetInstance());
 }
 
@@ -566,7 +596,8 @@ void CSettings::UninitializeISettingsHandlers()
 {
   // unregister ISettingsHandler implementations
   GetSettingsManager()->UnregisterSettingsHandler(&CMediaSettings::GetInstance());
-  GetSettingsManager()->UnregisterSettingsHandler(&g_langInfo);
+  GetSettingsManager()->UnregisterSettingsHandler(
+      &CServiceBroker::GetResourcesComponent().GetLangInfo());
   GetSettingsManager()->UnregisterSettingsHandler(&CRssManager::GetInstance());
   GetSettingsManager()->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
 #ifdef HAS_UPNP
@@ -630,7 +661,7 @@ void CSettings::InitializeISettingCallbacks()
                                           CSettings::SETTING_LOCALE_SUBTITLELANGUAGE});
 
   GetSettingsManager()->RegisterCallback(
-      &g_langInfo,
+      &CServiceBroker::GetResourcesComponent().GetLangInfo(),
       {CSettings::SETTING_LOCALE_COUNTRY, CSettings::SETTING_LOCALE_SHORTDATEFORMAT,
        CSettings::SETTING_LOCALE_LONGDATEFORMAT, CSettings::SETTING_LOCALE_TIMEFORMAT,
        CSettings::SETTING_LOCALE_USE24HOURCLOCK, CSettings::SETTING_LOCALE_TEMPERATUREUNIT,
@@ -671,7 +702,7 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&KODI::LANGUAGE::CLanguageLoader::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&g_langInfo);
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetResourcesComponent().GetLangInfo());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CWakeOnAccess::GetInstance());

@@ -409,6 +409,7 @@ TEST_F(TestDateTime, GetAsStringsWithBias)
 
 TEST_F(TestDateTime, GetAsLocalized)
 {
+  auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   // short date formats using "/"
   // "DD/MM/YYYY",
   // "MM/DD/YYYY",
@@ -446,11 +447,11 @@ TEST_F(TestDateTime, GetAsLocalized)
       KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
 
   // 24 hour clock must be set before time format
-  g_langInfo.Set24HourClock(false);
-  g_langInfo.SetTimeFormat("hh:mm:ss");
+  langInfo.Set24HourClock(false);
+  langInfo.SetTimeFormat("hh:mm:ss");
 
-  g_langInfo.SetShortDateFormat("MM/DD/YYYY");
-  g_langInfo.SetLongDateFormat("DDDD, DD MMMM YYYY");
+  langInfo.SetShortDateFormat("MM/DD/YYYY");
+  langInfo.SetLongDateFormat("DDDD, DD MMMM YYYY");
 
   CDateTime dateTime1;
   dateTime1.SetDateTime(1991, 05, 14, 12, 34, 56);
@@ -518,8 +519,8 @@ TEST_F(TestDateTime, GetAsLocalized)
   CDateTime dateTime3;
   dateTime3.SetDateTime(1991, 05, 9, 12, 34, 56); //Need a single digit date
 
-  g_langInfo.SetShortDateFormat("DD-mmm-YY");
-  g_langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
+  langInfo.SetShortDateFormat("DD-mmm-YY");
+  langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
 
   //Actual formatted date
   //Test short month name and 2 digit year.
@@ -542,8 +543,8 @@ TEST_F(TestDateTime, GetAsLocalized)
       dateTime4.GetAsLocalizedDate(std::string("D-M-YY"), CDateTime::ReturnFormat::CHOICE_YES),
       "%-d-%-m-%y");
 
-  g_langInfo.SetShortDateFormat("D/M/YY");
-  g_langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
+  langInfo.SetShortDateFormat("D/M/YY");
+  langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
 
   //Test getRegion() here because it is directly reliant on GetAsLocalizedDate()
   //and the windows-specific formatting happens in getRegion().
@@ -581,11 +582,11 @@ TEST_F(TestDateTime, GetAsLocalized)
 
 
   // 24 hour clock must be set before time format
-  g_langInfo.Set24HourClock(true);
-  g_langInfo.SetTimeFormat("h:m:s");
+  langInfo.Set24HourClock(true);
+  langInfo.SetTimeFormat("h:m:s");
 
-  g_langInfo.SetShortDateFormat("YYYY-M-D");
-  g_langInfo.SetLongDateFormat("DDDD, MMMM D, YYYY");
+  langInfo.SetShortDateFormat("YYYY-M-D");
+  langInfo.SetLongDateFormat("DDDD, MMMM D, YYYY");
 
   CDateTime dateTime2;
   dateTime2.SetDateTime(2020, 2, 3, 4, 5, 6);

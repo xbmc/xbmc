@@ -11,13 +11,13 @@
 #include "language/Territory.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
-#include "utils/GlobalsHandling.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
 
 #include <locale>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -106,9 +106,22 @@ public:
   const std::string& GetSpeedUnitString() const;
   static const std::string& GetSpeedUnitString(CSpeed::Unit speedUnit);
 
-  void GetRegionNames(std::vector<std::string>& array) const;
-  void SetCurrentRegion(const std::string& strName);
-  const std::string& GetCurrentRegion() const;
+  //! \brief A region as a user picks it: the id the setting holds, and the name shown for it.
+  struct RegionChoice
+  {
+    std::string id;
+    std::string name;
+  };
+  std::vector<RegionChoice> GetRegions() const;
+
+  /*!
+   * \brief Make a region current: the one with this id, else the one whose profile has this name,
+   *        which is what the setting held before regions had ids, else the first.
+   */
+  void SetCurrentRegion(const std::string& idOrName);
+
+  //! \brief The current region's name, as shown to a user.
+  std::string GetCurrentRegion() const;
 
   bool UseLocaleCollation();
 
@@ -153,6 +166,7 @@ protected:
   void SetDefaults();
 
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
+  //! \note A 24-hour format put on a 12-hour clock gains the meridiem it never needed.
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
 
   /*!
@@ -200,6 +214,10 @@ protected:
     sorting & transformations.
     */
     void SetGlobalLocale(CLangInfo& langInfo);
+
+    //! \brief What identifies the region: the place it is for.
+    const std::string& Id() const { return m_territory.ToString(); }
+
     KODI::LANGUAGE::CTerritory m_territory;
     std::string m_strName;
     std::string m_strDateFormatLong;
@@ -213,10 +231,22 @@ protected:
     CSpeed::Unit m_speedUnit;
   };
 
+  //! \brief The region's name, or what is shown for a region with none.
+  static std::string DisplayName(const CRegion& region);
+
+  //! \return The id of the region a setting value names, by id or by a profile's name.
+  std::optional<std::string> RegionIdOf(const std::string& idOrName) const;
+
+  //! \brief Keep what a profile set apart from its region, as the user's own formats.
+  void AdoptProfileFormats(const CRegion& profile, const CRegion& region);
+
   typedef std::map<std::string, CRegion> MAPREGIONS;
   typedef std::map<std::string, CRegion>::iterator ITMAPREGIONS;
   typedef std::pair<std::string, CRegion> PAIR_REGIONS;
+  //! A region per place, keyed by its id: the first profile a pack lists for the place.
   MAPREGIONS m_regions;
+  //! Every named profile a pack lists, by name, including those another stands in for.
+  MAPREGIONS m_profiles;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
   std::locale m_systemLocale; // current locale, matching GUI settings
@@ -231,6 +261,3 @@ protected:
   CSpeed::Unit m_speedUnit;
 };
 } // namespace KODI::LANGUAGE
-
-XBMC_GLOBAL_REF(KODI::LANGUAGE::CLangInfo, g_langInfo);
-#define g_langInfo XBMC_GLOBAL_USE(KODI::LANGUAGE::CLangInfo)

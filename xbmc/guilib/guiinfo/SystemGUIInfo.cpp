@@ -59,6 +59,7 @@ CSystemGUIInfo::CSystemGUIInfo()
 
 std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   if (CTimeUtils::GetFrameTime() - m_lastSysHeatInfoTime >= SYSTEM_HEAT_UPDATE_INTERVAL)
   {
     m_lastSysHeatInfoTime = CTimeUtils::GetFrameTime();
@@ -73,12 +74,12 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
   switch (info)
   {
     case SYSTEM_CPU_TEMPERATURE:
-      return m_cpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_cpuTemp)
+      return m_cpuTemp.IsValid() ? langInfo.GetTemperatureAsString(m_cpuTemp)
                                  : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                                        10005); // Not available
     case SYSTEM_GPU_TEMPERATURE:
       return m_gpuTemp.IsValid()
-                 ? g_langInfo.GetTemperatureAsString(m_gpuTemp)
+                 ? langInfo.GetTemperatureAsString(m_gpuTemp)
                  : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005);
     case SYSTEM_FAN_SPEED:
       text = StringUtils::Format("{}%", m_fanSpeed * 2);
@@ -306,7 +307,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       value = KODI::LANGUAGE::CLanguage::GetInstance().PackName();
       return true;
     case SYSTEM_TEMPERATURE_UNITS:
-      value = g_langInfo.GetTemperatureUnitString();
+      value = CServiceBroker::GetResourcesComponent().GetLangInfo().GetTemperatureUnitString();
       return true;
     case SYSTEM_FRIENDLY_NAME:
       value = CSysInfo::GetDeviceName();
@@ -366,13 +367,13 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 
     case SYSTEM_LOCALE_REGION:
     {
-      value = g_langInfo.GetCurrentRegion();
+      value = CServiceBroker::GetResourcesComponent().GetLangInfo().GetCurrentRegion();
       return true;
     }
 
     case SYSTEM_LOCALE:
     {
-      value = g_langInfo.GetRegionTerritory().ToString();
+      value = CServiceBroker::GetResourcesComponent().GetLangInfo().GetRegionTerritory().ToString();
       return true;
     }
     default:

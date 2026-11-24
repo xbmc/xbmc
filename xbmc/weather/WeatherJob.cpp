@@ -118,7 +118,9 @@ std::string ConstructPath(const std::string& in)
 void FormatTemperature(std::string& text, double temp)
 {
   const CTemperature temperature{CTemperature::CreateFromCelsius(temp)};
-  text = StringUtils::Format("{:.0f}", temperature.To(g_langInfo.GetTemperatureUnit()));
+  text = StringUtils::Format(
+      "{:.0f}",
+      temperature.To(CServiceBroker::GetResourcesComponent().GetLangInfo().GetTemperatureUnit()));
 }
 
 class CWeatherPropertyWriter
@@ -177,6 +179,7 @@ private:
 
 void CWeatherJob::SetFromProperties()
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
   if (window)
   {
@@ -205,11 +208,11 @@ void CWeatherJob::SetFromProperties()
         direction = m_localizer.LocalizeOverviewToken(direction);
         m_info.currentWind = StringUtils::Format(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(434), direction,
-            static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())), g_langInfo.GetSpeedUnitString());
+            static_cast<int>(speed.To(langInfo.GetSpeedUnit())), langInfo.GetSpeedUnitString());
       }
       const std::string windspeed{
-          StringUtils::Format("{} {}", static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())),
-                              g_langInfo.GetSpeedUnitString())};
+          StringUtils::Format("{} {}", static_cast<int>(speed.To(langInfo.GetSpeedUnit())),
+                              langInfo.GetSpeedUnitString())};
       window->SetProperty("Current.WindSpeed", windspeed);
     }
     FormatTemperature(

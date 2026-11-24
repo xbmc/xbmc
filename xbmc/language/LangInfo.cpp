@@ -61,6 +61,8 @@ static std::string shortDateFormats[] = {
   "DD.M.YYYY",
   "D.M.YYYY",
   "D. M. YYYY",
+  "D.M.YYYY.",
+  "DD.M.YYYY.",
   "YYYY.MM.DD",
   // short date formats with abbreviated month and 2 digit year
   "D-mmm-YY",
@@ -186,7 +188,7 @@ CLangInfo::CRegion::CRegion()
 
 void CLangInfo::CRegion::SetDefaults()
 {
-  m_strName = "N/A";
+  m_strName.clear();
 
   m_strDateFormatShort = "DD/MM/YYYY";
   m_strDateFormatLong = "DDDD, D MMMM YYYY";
@@ -367,9 +369,6 @@ bool CLangInfo::Load(const std::string& langInfoPath)
     {
       CRegion region(m_defaultRegion);
       region.m_strName = XMLUtils::GetAttribute(pRegion, "name");
-      if (region.m_strName.empty())
-        region.m_strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-            10005); // Not available
 
       // A langinfo.xml stating no place, or one naming nothing, leaves the region without one
       if (pRegion->Attribute("locale"))
@@ -423,7 +422,12 @@ bool CLangInfo::Load(const std::string& langInfoPath)
       else
         region.m_cDecimalSep = '.';
 
-      m_regions.insert(PAIR_REGIONS(region.m_strName, region));
+      // A pack may list a place more than once, once per clock or date style; the first is the
+      // place's region, and the clock and dates are the user's to change
+      m_regions.try_emplace(region.Id(), region);
+      if (!region.m_strName.empty() && !m_profiles.try_emplace(region.m_strName, region).second)
+        CLog::Log(LOGWARNING, "{}: a second region profile is named \"{}\", it is ignored",
+                  langInfoPath, region.m_strName);
 
       pRegion = pRegion->NextSiblingElement("region");
     }
@@ -464,6 +468,7 @@ bool CLangInfo::UseLocaleCollation()
 void CLangInfo::SetDefaults()
 {
   m_regions.clear();
+  m_profiles.clear();
 
   //Reset default region
   m_defaultRegion.SetDefaults();
@@ -591,20 +596,67 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
   return StringUtils::Empty;
 }
 
-// Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(std::vector<std::string>& array) const
+std::vector<CLangInfo::RegionChoice> CLangInfo::GetRegions() const
 {
-  std::ranges::transform(m_regions, std::back_inserter(array),
-                         [](const auto& region) { return region.first; });
+  std::vector<RegionChoice> regions;
+  std::ranges::transform(m_regions, std::back_inserter(regions), [](const auto& region)
+                         { return RegionChoice{region.first, DisplayName(region.second)}; });
+  return regions;
 }
 
-// Set the current region by its name, names from GetRegionNames() are valid.
-// If the region is not found the first available region is set.
-void CLangInfo::SetCurrentRegion(const std::string& strName)
+std::string CLangInfo::DisplayName(const CRegion& region)
 {
-  ITMAPREGIONS it = m_regions.find(strName);
+  if (!region.m_strName.empty())
+    return region.m_strName;
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10005); // Not available
+}
+
+std::optional<std::string> CLangInfo::RegionIdOf(const std::string& idOrName) const
+{
+  if (m_regions.contains(idOrName))
+    return idOrName;
+  if (const auto profile = m_profiles.find(idOrName); profile != m_profiles.end())
+    return profile->second.Id();
+  return std::nullopt;
+}
+
+void CLangInfo::AdoptProfileFormats(const CRegion& profile, const CRegion& region)
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto adopt =
+      [&settings](const char* setting, const std::string& own, const std::string& regions)
+  {
+    if (own != regions && settings->GetString(setting) == SETTING_REGIONAL_DEFAULT)
+      settings->SetString(setting, own);
+  };
+
+  const bool use24HourClock = DetermineUse24HourClockFromTimeFormat(profile.m_strTimeFormat);
+  if (use24HourClock != DetermineUse24HourClockFromTimeFormat(region.m_strTimeFormat))
+    adopt(CSettings::SETTING_LOCALE_USE24HOURCLOCK,
+          use24HourClock ? TIME_FORMAT_24HOURS : TIME_FORMAT_12HOURS, SETTING_REGIONAL_DEFAULT);
+  adopt(CSettings::SETTING_LOCALE_SHORTDATEFORMAT, profile.m_strDateFormatShort,
+        region.m_strDateFormatShort);
+  adopt(CSettings::SETTING_LOCALE_LONGDATEFORMAT, profile.m_strDateFormatLong,
+        region.m_strDateFormatLong);
+  adopt(CSettings::SETTING_LOCALE_TIMEFORMAT, PrepareTimeFormat(profile.m_strTimeFormat, true),
+        PrepareTimeFormat(region.m_strTimeFormat, true));
+}
+
+void CLangInfo::SetCurrentRegion(const std::string& idOrName)
+{
+  ITMAPREGIONS it = m_regions.find(idOrName);
   if (it != m_regions.end())
     m_currentRegion = &it->second;
+  else if (const auto profile = m_profiles.find(idOrName); profile != m_profiles.end())
+  {
+    // The name of a profile is what the setting held before regions had ids
+    const std::string id{profile->second.Id()};
+    AdoptProfileFormats(profile->second, m_regions.at(id));
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_LOCALE_COUNTRY, id);
+    SetCurrentRegion(id);
+    return;
+  }
   else if (!m_regions.empty())
     m_currentRegion = &m_regions.begin()->second;
   else
@@ -632,10 +684,9 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
     SetSpeedUnit(m_currentRegion->m_speedUnit);
 }
 
-// Returns the current region set for this language
-const std::string& CLangInfo::GetCurrentRegion() const
+std::string CLangInfo::GetCurrentRegion() const
 {
-  return m_currentRegion->m_strName;
+  return DisplayName(*m_currentRegion);
 }
 
 CTemperature::Unit CLangInfo::GetTemperatureUnit() const
@@ -739,8 +790,14 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
     StringUtils::Replace(preparedTimeFormat, "x", "");
   }
   else
+  {
+    if (preparedTimeFormat.find('H') != std::string::npos &&
+        preparedTimeFormat.find('x') == std::string::npos)
+      preparedTimeFormat += " xx";
+
     // replace all "H" with "h"
     StringUtils::Replace(preparedTimeFormat, 'H', 'h');
+  }
 
   StringUtils::Trim(preparedTimeFormat);
 
@@ -752,25 +809,20 @@ void CLangInfo::SettingOptionsRegionsFiller(const SettingConstPtr& setting,
                                             std::string& current,
                                             const CLangInfo& langInfo)
 {
-  std::vector<std::string> regions;
-  langInfo.GetRegionNames(regions);
-  std::sort(regions.begin(), regions.end(), sortstringbyname());
+  std::vector<RegionChoice> regions{langInfo.GetRegions()};
+  std::ranges::sort(regions, sortstringbyname(), &RegionChoice::name);
 
-  bool match = false;
-  for (unsigned int i = 0; i < regions.size(); ++i)
+  const std::optional<std::string> chosen{
+      langInfo.RegionIdOf(std::static_pointer_cast<const CSettingString>(setting)->GetValue())};
+  for (const RegionChoice& region : regions)
   {
-    std::string region = regions[i];
-    list.emplace_back(region, region);
-
-    if (!match && region == std::static_pointer_cast<const CSettingString>(setting)->GetValue())
-    {
-      match = true;
-      current = region;
-    }
+    list.emplace_back(region.name, region.id);
+    if (region.id == chosen)
+      current = region.id;
   }
 
-  if (!match && !regions.empty())
-    current = regions[0];
+  if (!chosen && !regions.empty())
+    current = regions[0].id;
 }
 
 void CLangInfo::SettingOptionsShortDateFormatsFiller(const SettingConstPtr& setting,

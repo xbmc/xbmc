@@ -29,6 +29,7 @@ namespace
 {
 std::string FormatTemperature(const std::string& temperature)
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   if (temperature.empty())
     return temperature;
 
@@ -37,12 +38,13 @@ std::string FormatTemperature(const std::string& temperature)
   if (!t.IsValid())
     return temperature;
 
-  return StringUtils::Format("{:.0f}{}", t.To(g_langInfo.GetTemperatureUnit()),
-                             g_langInfo.GetTemperatureUnitString());
+  return StringUtils::Format("{:.0f}{}", t.To(langInfo.GetTemperatureUnit()),
+                             langInfo.GetTemperatureUnitString());
 }
 
 std::string FormatWindSpeed(const std::string& speed)
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   if (speed.empty())
     return speed;
 
@@ -51,8 +53,8 @@ std::string FormatWindSpeed(const std::string& speed)
   if (!s.IsValid())
     return speed;
 
-  return StringUtils::Format("{} {}", static_cast<int>(s.To(g_langInfo.GetSpeedUnit())),
-                             g_langInfo.GetSpeedUnitString());
+  return StringUtils::Format("{} {}", static_cast<int>(s.To(langInfo.GetSpeedUnit())),
+                             langInfo.GetSpeedUnitString());
 }
 
 std::string FormatPercentage(const std::string& percentage)
@@ -176,6 +178,7 @@ bool CWeatherPropertyHelper::HasHourlyProperties(int index) const
 
 std::string CWeatherPropertyHelper::FormatWind(const std::string& direction, const CSpeed& speed)
 {
+  const auto& langInfo{CServiceBroker::GetResourcesComponent().GetLangInfo()};
   if (direction == "CALM")
   {
     return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1410); // Calm
@@ -187,15 +190,15 @@ std::string CWeatherPropertyHelper::FormatWind(const std::string& direction, con
 
     if (direction.empty())
     {
-      return StringUtils::Format("{} {}", speed.To(g_langInfo.GetSpeedUnit()),
-                                 g_langInfo.GetSpeedUnitString());
+      return StringUtils::Format("{} {}", speed.To(langInfo.GetSpeedUnit()),
+                                 langInfo.GetSpeedUnitString());
     }
     else
     {
       return StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                                      434), // From {direction} at {speed} {unit}
-                                 direction, static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())),
-                                 g_langInfo.GetSpeedUnitString());
+                                 direction, static_cast<int>(speed.To(langInfo.GetSpeedUnit())),
+                                 langInfo.GetSpeedUnitString());
     }
   }
 }

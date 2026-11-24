@@ -18,6 +18,7 @@
 #include "language/LangInfo.h"
 #include "language/Language.h"
 #include "language/LanguageTag.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
@@ -1617,7 +1618,10 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   const std::string menuLang{KODI::LANGUAGE::CLanguage::GetInstance().UI().AsIso6392T()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, menuLang.c_str());
 
-  const std::string countryCode{g_langInfo.GetRegionTerritory().AsIso3166_1Alpha2()};
+  const std::string countryCode{CServiceBroker::GetResourcesComponent()
+                                    .GetLangInfo()
+                                    .GetRegionTerritory()
+                                    .AsIso3166_1Alpha2()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, countryCode.c_str());
 
 #ifdef HAVE_LIBBLURAY_BDJ

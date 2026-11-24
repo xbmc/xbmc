@@ -14,6 +14,7 @@
 #include "XkbCompat.h"
 #include "application/AppInboundProtocol.h"
 #include "language/LangInfo.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Map.h"
@@ -294,7 +295,9 @@ CLibInputKeyboard::CLibInputKeyboard()
 
   m_composeTable =
       std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter>{xkb_compose_table_new_from_locale(
-          m_ctx.get(), g_langInfo.GetSystemLocale().name().c_str(), XKB_COMPOSE_COMPILE_NO_FLAGS)};
+          m_ctx.get(),
+          CServiceBroker::GetResourcesComponent().GetLangInfo().GetSystemLocale().name().c_str(),
+          XKB_COMPOSE_COMPILE_NO_FLAGS)};
   if (!m_composeTable)
   {
     CLog::LogF(LOGWARNING,

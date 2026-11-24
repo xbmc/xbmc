@@ -13,6 +13,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "language/LangInfo.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -53,7 +54,7 @@ bool CWeatherGUIInfo::GetLabel(std::string& value,
     case WEATHER_TEMPERATURE:
       value = StringUtils::Format(
           "{}{}", CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP),
-          g_langInfo.GetTemperatureUnitString());
+          CServiceBroker::GetResourcesComponent().GetLangInfo().GetTemperatureUnitString());
       return true;
     case WEATHER_LOCATION:
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_LOCATION);

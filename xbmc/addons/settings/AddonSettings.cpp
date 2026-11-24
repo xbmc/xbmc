@@ -1232,7 +1232,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
   {
     for (uint32_t hour = 0; hour < 24; hour++)
       values.emplace_back(
-          CDateTime(2000, 1, 1, hour, 0, 0).GetAsLocalizedTime(g_langInfo.GetTimeFormat(), false));
+          CDateTime(2000, 1, 1, hour, 0, 0)
+              .GetAsLocalizedTime(
+                  CServiceBroker::GetResourcesComponent().GetLangInfo().GetTimeFormat(), false));
   }
   else
     values = StringUtils::Split(settingValues, OldSettingValuesSeparator);

@@ -60,24 +60,22 @@
       <decimalseparator>.</decimalseparator>
     </region>
 
-    <region name="UK (12h)" locale="GB">
-      <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
-      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
-      <tempunit>C</tempunit>
-      <speedunit>mph</speedunit>
-      <timezone>GMT</timezone>
-      <thousandsseparator groupingformat="\3">,</thousandsseparator>
-      <decimalseparator>.</decimalseparator>
-    </region>
-
     <region name="UK (24h)" locale="GB">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>mph</speedunit>
-      <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
+    </region>
+
+    <region name="UK (12h)" locale="GB">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>mph</speedunit>
       <thousandsseparator groupingformat="\3">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
@@ -98,7 +96,6 @@
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT</timezone>
       <thousandsseparator groupingformat="\3">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
@@ -109,7 +106,6 @@
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT</timezone>
       <thousandsseparator groupingformat="\3">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
@@ -120,7 +116,6 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>CET</timezone>
       <thousandsseparator groupingformat="\3">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
@@ -131,7 +126,6 @@
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT</timezone>
       <thousandsseparator groupingformat="\3\2">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
@@ -142,7 +136,6 @@
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>IST</timezone>
       <thousandsseparator groupingformat="\3\2">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>

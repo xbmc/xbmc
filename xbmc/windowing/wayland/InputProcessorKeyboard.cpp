@@ -8,7 +8,9 @@
 
 #include "InputProcessorKeyboard.h"
 
+#include "ServiceBroker.h"
 #include "language/LangInfo.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/log.h"
 
 #include "platform/linux/input/EvdevKeyMapping.h"
@@ -51,7 +53,8 @@ void CInputProcessorKeyboard::OnKeyboardKeymap(CSeat* seat, wayland::keyboard_ke
       m_xkbContext = std::make_unique<CXkbcommonContext>();
     }
 
-    m_keymap = m_xkbContext->LocalizedKeymapFromString(keymap, g_langInfo.GetSystemLocale().name());
+    m_keymap = m_xkbContext->LocalizedKeymapFromString(
+        keymap, CServiceBroker::GetResourcesComponent().GetLangInfo().GetSystemLocale().name());
   }
   catch(std::exception const& e)
   {

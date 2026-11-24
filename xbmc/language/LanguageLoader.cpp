@@ -230,7 +230,7 @@ bool CLanguageLoader::Load(std::string language /* = "" */, bool reloadServices 
   DeclareAddonLanguageNames();
 
   CLog::Log(LOGINFO, "CLanguageLoader: loading {} language information...", language);
-  if (!g_langInfo.Load(GetLanguageInfoPath(language)))
+  if (!CServiceBroker::GetResourcesComponent().GetLangInfo().Load(GetLanguageInfoPath(language)))
   {
     CLog::LogF(LOGFATAL, "Failed to load {} language information", language);
     return false;
