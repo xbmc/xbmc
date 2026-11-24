@@ -312,7 +312,9 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CVariant& parameterObject, CVari
   }
 
   CFileItemList items;
-  if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), items, false, sorting, RequiresAdditionalDetails(KODI::MEDIA::TYPE::EPISODE, parameterObject)))
+  if (!videodatabase.GetEpisodesByWhere(
+          videoUrl.ToString(), CDatabase::Filter(), items, sorting,
+          RequiresAdditionalDetails(KODI::MEDIA::TYPE::EPISODE, parameterObject)))
     return InvalidParams;
 
   return HandleItems("episodeid", "episodes", items, parameterObject, result, false);
@@ -768,8 +770,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CVariant& parameterObject, 
     videoUrl.AddOption("tvshowid", id);
 
     CFileItemList episodes;
-    if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), episodes,
-                                          false))
+    if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), episodes))
       return InternalError;
 
     videodatabase.BeginTransaction();

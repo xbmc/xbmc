@@ -194,6 +194,9 @@ public:
   static std::string BuildLimitClauseOnly(int end, int start = 0);
   static size_t GetLimitCount(int end, int start);
 
+  //! The view a media type's items are read from; empty for a type without one
+  static std::string_view ViewNameOf(KODI::MEDIA::TYPE mediaType);
+
 private:
   //! Where a field is read from in one media type's view
   struct Column
