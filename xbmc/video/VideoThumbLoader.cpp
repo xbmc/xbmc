@@ -379,10 +379,13 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
         {
           CVideoInfoTag& tag{*pItem->GetVideoInfoTag()};
           tag.m_streamDetails = loaded->m_streamDetails;
-          if (loaded->HasContentGeometry())
-            tag.m_contentGeometry = loaded->m_contentGeometry;
           if (const int duration{tag.m_streamDetails.GetVideoDuration()}; duration > 0)
             tag.SetDuration(duration);
+          pItem->SetInvalid();
+        }
+        if (loaded->HasContentGeometry())
+        {
+          pItem->GetVideoInfoTag()->m_contentGeometry = loaded->m_contentGeometry;
           pItem->SetInvalid();
         }
       }
