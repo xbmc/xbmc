@@ -212,6 +212,10 @@ protected:
     }
     m_previousWinSystem = CServiceBroker::GetWinSystem();
     m_previousGUI = CServiceBroker::GetGUI();
+    // With no IR Server Suite running, destroying the window system waits about 2 s for its
+    // client's connect attempt to fail.
+    m_previousScanIRServer = std::exchange(
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer, false);
     m_window = std::make_unique<CTestWinSystem>();
     CServiceBroker::RegisterWinSystem(m_window.get());
     m_window->frontToBack = GetParam();
@@ -279,6 +283,8 @@ protected:
     m_window->DestroyRenderSystem();
     CGUITexture::Register({}, {}, {});
     m_window.reset();
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer =
+        m_previousScanIRServer;
     if (m_previousWinSystem)
       CServiceBroker::RegisterWinSystem(m_previousWinSystem);
     else
@@ -356,6 +362,7 @@ protected:
   CGUIComponent* m_previousGUI{nullptr};
   CWinSystemBase* m_previousWinSystem{nullptr};
   HWND m_hwnd{nullptr};
+  bool m_previousScanIRServer{true};
   static inline std::string s_skipReason;
 };
 
