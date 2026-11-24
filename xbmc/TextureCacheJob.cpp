@@ -190,12 +190,11 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
                                                       unsigned int maxWidth,
                                                       unsigned int maxHeight)
 {
-  if (imageURL.IsSpecialImage())
+  if (imageURL.IsSpecialImage() && !IsPVROwnedImage(imageURL.GetSpecialType()))
   {
+    // The target of a generated image is a media file or a folder, not a picture
     IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
-    auto texture = specialImageLoader.Load(imageURL);
-    if (texture)
-      return texture;
+    return specialImageLoader.Load(imageURL);
   }
 
   // Validate file URL to see if it is an image

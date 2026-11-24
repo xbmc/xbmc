@@ -377,6 +377,11 @@ public:
   virtual bool IsStreaming() const { return false; }
 
   /*
+   * Whether the packets tell if they are keyframes, see DemuxPacket::m_keyFrame
+   */
+  virtual bool ReportsKeyFrames() const { return false; }
+
+  /*
   * return the id of the demuxer
   */
   int64_t GetDemuxerId() const { return m_demuxerId; }
