@@ -211,6 +211,10 @@ void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                    std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." +
                        std::string(message),
                    jsonData);
+
+  // abort once OnQuit is queued, so scripts get it before their abort
+  if ((flag & ANNOUNCEMENT::System) && message == "OnQuit")
+    NotifyScriptAborting(nullptr);
 }
 
 // message all registered callbacks that we started playing
