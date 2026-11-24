@@ -42,12 +42,14 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoLibrary.h"
 #include "view/ViewState.h"
 
 #include <algorithm>
 #include <chrono>
 #include <mutex>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define CONTROL_ADD_BOOKMARK           2
@@ -57,6 +59,19 @@
 #define CONTROL_THUMBS                11
 
 using namespace KODI::VIDEO;
+
+namespace
+{
+//! The episodes in the playing file, none if it is not an episode
+std::vector<CVideoInfoTag> EpisodesOfPlayingFile()
+{
+  std::vector<CVideoInfoTag> episodes;
+  const CFileItem& playing{g_application.CurrentFileItem()};
+  if (playing.HasVideoInfoTag() && playing.GetVideoInfoTag()->m_iEpisode > -1)
+    LIBRARY::GetEpisodesByFile(playing.GetDynPath(), episodes);
+  return episodes;
+}
+} // namespace
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
   : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
@@ -109,7 +124,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ADD_EPISODE_BOOKMARK)
       {
-        AddEpisodeBookmark();
+        AddEpisodeBookmark(EpisodesOfPlayingFile());
         Update();
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -221,13 +236,15 @@ void CGUIDialogVideoBookmarks::Delete(int item)
 
 void CGUIDialogVideoBookmarks::Delete(const CBookmark& bm)
 {
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
+  const std::string path{g_application.CurrentFileItem().GetDynPath()};
+  if (!LIBRARY::WithDatabase(
+          [&path, &bm](CVideoDatabase& db)
+          {
+            db.ClearBookMarkOfFile(path, bm, bm.type);
+            return true;
+          }))
     return;
 
-  const std::string path{g_application.CurrentFileItem().GetDynPath()};
-  videoDatabase.ClearBookMarkOfFile(path, bm, bm.type);
-  videoDatabase.Close();
   CUtil::DeleteVideoDatabaseDirectoryCache();
   Update();
 }
@@ -325,22 +342,9 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
 void CGUIDialogVideoBookmarks::Update()
 {
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
-    return;
-
-  if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
+  if (EpisodesOfPlayingFile().size() > 1)
   {
-    std::vector<CVideoInfoTag> episodes;
-    videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(),episodes);
-    if (episodes.size() > 1)
-    {
-      CONTROL_ENABLE(CONTROL_ADD_EPISODE_BOOKMARK);
-    }
-    else
-    {
-      CONTROL_DISABLE(CONTROL_ADD_EPISODE_BOOKMARK);
-    }
+    CONTROL_ENABLE(CONTROL_ADD_EPISODE_BOOKMARK);
   }
   else
   {
@@ -354,8 +358,6 @@ void CGUIDialogVideoBookmarks::Update()
   Clear();
 
   OnRefreshList();
-
-  videoDatabase.Close();
 }
 
 void CGUIDialogVideoBookmarks::Clear()
@@ -522,15 +524,10 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
           bookmark.thumbNailImage.clear();
         }
 
-        CVideoDatabase videoDatabase;
-        if (videoDatabase.Open())
-        {
-          if (episode)
-            videoDatabase.AddBookMarkForEpisode(episodeTag, bookmark);
-          else
-            videoDatabase.AddBookMarkToFile(dynPath, bookmark, CBookmark::STANDARD);
-          videoDatabase.Close();
-        }
+        if (episode)
+          LIBRARY::AddBookMarkForEpisode(episodeTag, bookmark);
+        else
+          LIBRARY::AddBookMarkToFile(dynPath, bookmark, CBookmark::STANDARD);
 
         // an open bookmarks dialog reloads the now-written thumb on the app thread
         if (auto* gui = CServiceBroker::GetGUI())
@@ -565,15 +562,8 @@ CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
   return CGUIWindow::GetFirstFocusableControl(id);
 }
 
-bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
+bool CGUIDialogVideoBookmarks::AddEpisodeBookmark(std::vector<CVideoInfoTag> episodes)
 {
-  std::vector<CVideoInfoTag> episodes;
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
-    return false;
-
-  videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(), episodes);
-  videoDatabase.Close();
   if (!episodes.empty())
   {
     CContextButtons choices;
@@ -619,28 +609,16 @@ bool CGUIDialogVideoBookmarks::OnAddBookmark()
 
 bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
 {
-  bool bReturn = false;
-  if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
-  {
-    CVideoDatabase videoDatabase;
-    if (!videoDatabase.Open())
-      return bReturn;
-    std::vector<CVideoInfoTag> episodes;
-    videoDatabase.GetEpisodesByFile(g_application.CurrentFileItem().GetDynPath(),episodes);
-    if (episodes.size() > 1)
-    {
-      bReturn = CGUIDialogVideoBookmarks::AddEpisodeBookmark();
-      if(bReturn)
-      {
-        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
-        CGUIDialogKaiToast::QueueNotification(
-            CGUIDialogKaiToast::Info,
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(298), // "Bookmarks"
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-                21363)); // "Episode Bookmark created"
-      }
-    }
-    videoDatabase.Close();
-  }
-  return bReturn;
+  std::vector<CVideoInfoTag> episodes{EpisodesOfPlayingFile()};
+  if (episodes.size() <= 1 || !AddEpisodeBookmark(std::move(episodes)))
+    return false;
+
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_LIST, 0,
+                                                           WINDOW_DIALOG_VIDEO_BOOKMARKS);
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(298), // "Bookmarks"
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          21363)); // "Episode Bookmark created"
+  return true;
 }

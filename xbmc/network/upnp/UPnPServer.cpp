@@ -53,6 +53,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbPaths.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
@@ -889,9 +890,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     playlists->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136));
     items.Add(playlists);
 
-    CVideoDatabase database;
-    database.Open();
-    if (database.HasContent(VideoDbContentType::MUSICVIDEOS))
+    if (VIDEO::LIBRARY::HasContent(VideoDbContentType::MUSICVIDEOS))
     {
       CFileItemPtr mvideos(new CFileItem(MEDIA::LIBRARY_PATH::MUSICVIDEOS, true));
       mvideos->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
@@ -1205,17 +1204,10 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastShow") >= 0)
   {
-    CVideoDatabase database;
-    if (!database.Open())
-    {
-      action->SetError(800, "Internal Error");
-      return NPT_SUCCESS;
-    }
-
     CFileItemList items;
-    if (!database.GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(), items,
-                                    SortDescription(),
-                                    GetRequiredVideoDbDetails(NPT_String(filter))))
+    if (!VIDEO::LIBRARY::GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
+                                           CDatabase::Filter(), items, SortDescription(),
+                                           GetRequiredVideoDbDetails(NPT_String(filter))))
     {
       action->SetError(800, "Internal Error");
       return NPT_SUCCESS;
@@ -1227,17 +1219,10 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastSeason") >= 0)
   {
-    CVideoDatabase database;
-    if (!database.Open())
-    {
-      action->SetError(800, "Internal Error");
-      return NPT_SUCCESS;
-    }
-
     CFileItemList items;
-    if (!database.GetSeasonsByWhere(
+    if (!VIDEO::LIBRARY::GetSeasonsByWhere(
             StringUtils::Format("{}-1/?local", VIDEO::DB_PATH::TVSHOW_TITLES), CDatabase::Filter(),
-                                    items, true))
+            items, true))
     {
       action->SetError(800, "Internal Error");
       return NPT_SUCCESS;

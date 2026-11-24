@@ -31,7 +31,7 @@
 #include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 
 using namespace KODI::MESSAGING;
@@ -76,9 +76,7 @@ static int CleanLibrary(const std::vector<std::string>& params)
         std::set<int> paths;
         if (!content.empty() || !directory.empty())
         {
-          CVideoDatabase db;
-          if (db.Open())
-            db.GetPathsForCleaning(directory, content, paths);
+          KODI::VIDEO::LIBRARY::GetPathsForCleaning(directory, content, paths);
           if (paths.empty())
           {
             CLog::Log(LOGWARNING,
@@ -219,10 +217,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
   {
     if (StringUtils::EqualsNoCase(params[0], "video"))
     {
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
-      videodatabase.Close();
+      KODI::VIDEO::LIBRARY::ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
     }
     else
     {
@@ -300,12 +295,9 @@ static int ExportLibrary2(const std::vector<std::string>& params)
   }
   else
   {
-    CVideoDatabase videodatabase;
-    videodatabase.Open();
-    videodatabase.ExportToXML(settings.GetPath(), settings.IsSingleFile(), settings.IsArtwork(),
-                              settings.IsItemExported(ELIBEXPORT_ACTORTHUMBS),
-                              settings.IsOverwrite());
-    videodatabase.Close();
+    KODI::VIDEO::LIBRARY::ExportToXML(
+        settings.GetPath(), settings.IsSingleFile(), settings.IsArtwork(),
+        settings.IsItemExported(ELIBEXPORT_ACTORTHUMBS), settings.IsOverwrite());
   }
   return 0;
 }

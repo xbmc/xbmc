@@ -92,9 +92,9 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "video/FilenameAttributes.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoManagerTypes.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -2277,9 +2277,8 @@ bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTa
 
   // A whole disc played from one of its playlists has the playlist's path in its tag, but the
   // library still holds the disc under the same file id
-  CVideoDatabase db;
   CVideoInfoTag stored;
-  return db.Open() && db.GetFileInfo("", stored, tag->m_iFileId) &&
+  return VIDEO::LIBRARY::GetFileInfo("", stored, tag->m_iFileId) &&
          URIUtils::IsBlurayPath(stored.m_strFileNameAndPath);
 }
 
@@ -2665,10 +2664,8 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath,
 
   std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
 
-  CVideoDatabase database;
-  database.Open();
   // The setting is a source's, found by the start of the video's path, which for a disc is its file
-  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(
+  bool useAllExternalAudio = VIDEO::LIBRARY::GetUseAllExternalAudioForVideo(
       URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath) : videoPath);
 
   if (useAllExternalAudio)

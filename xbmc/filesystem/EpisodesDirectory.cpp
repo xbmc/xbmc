@@ -13,7 +13,7 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 
 #include <memory>
 #include <string>
@@ -33,21 +33,13 @@ bool CEpisodesDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   CLog::LogF(LOGDEBUG, "Retrieving all episodes for URL: {}", url.Get());
 
-  CVideoDatabase database;
-  if (!database.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database");
-    return false;
-  }
-
   const std::string& path{url.GetHostName()};
   const std::string show{url.GetOption("show")};
   int idShow{-1};
   if (!show.empty())
     idShow = static_cast<int>(StringUtils::ToUint32(show));
   std::vector<CVideoInfoTag> episodes;
-  database.GetEpisodesByBasePath(path, episodes, idShow);
-  database.Close();
+  KODI::VIDEO::LIBRARY::GetEpisodesByBasePath(path, episodes, idShow);
   if (episodes.empty())
   {
     CLog::LogF(LOGERROR, "No episodes found for path: {}", path);

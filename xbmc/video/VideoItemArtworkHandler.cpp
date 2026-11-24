@@ -36,6 +36,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoThumbLoader.h"
 #include "video/tags/VideoTagExtractionHelper.h"
 
@@ -110,9 +111,8 @@ bool IsPlainArtAnothers(const CFileItem& item)
   if (tag.GetMediaType() != MEDIA::TYPE::EPISODE || tag.m_iIdShow < 0)
     return false;
 
-  CVideoDatabase db;
   EpisodeFileMap episodes;
-  if (!db.Open() || !db.GetEpisodeMap(tag.m_iIdShow, episodes))
+  if (!LIBRARY::GetEpisodeMap(tag.m_iIdShow, episodes))
     return false;
   const std::string& file{item.GetDynPath()};
   return episodes.count(URIUtils::IsBlurayPath(file) ? URIUtils::GetDiscFile(file) : file) > 1;
@@ -287,15 +287,8 @@ std::string CVideoItemArtworkArtistHandler::GetCurrentArt() const
 
   if (currentArt.empty())
   {
-    CVideoDatabase videodb;
-    if (!videodb.Open())
-    {
-      CLog::LogF(LOGERROR, "Cannot open video database!");
-      return {};
-    }
-
-    currentArt = videodb.GetArtForItem(m_item->GetVideoInfoTag()->m_iDbId,
-                                       m_item->GetVideoInfoTag()->m_type, ART::TYPE::THUMB);
+    currentArt = LIBRARY::GetArtForItem(m_item->GetVideoInfoTag()->m_iDbId,
+                                        m_item->GetVideoInfoTag()->m_type, ART::TYPE::THUMB);
   }
   return currentArt;
 }
@@ -386,15 +379,8 @@ public:
 
 std::string CVideoItemArtworkActorHandler::GetCurrentArt() const
 {
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Cannot open video database!");
-    return {};
-  }
-
-  return videodb.GetArtForItem(m_item->GetVideoInfoTag()->m_iDbId,
-                               m_item->GetVideoInfoTag()->m_type, ART::TYPE::THUMB);
+  return LIBRARY::GetArtForItem(m_item->GetVideoInfoTag()->m_iDbId,
+                                m_item->GetVideoInfoTag()->m_type, ART::TYPE::THUMB);
 }
 
 std::string CVideoItemArtworkActorHandler::GetLocalArt() const
@@ -426,16 +412,9 @@ public:
 
 std::vector<std::string> CVideoItemArtworkSeasonHandler::GetRemoteArt() const
 {
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Cannot open video database!");
-    return {};
-  }
-
   std::vector<std::string> remoteArt;
   CVideoInfoTag tag;
-  videodb.GetTvShowInfo("", tag, m_item->GetVideoInfoTag()->m_iIdShow);
+  LIBRARY::GetTvShowInfo("", tag, m_item->GetVideoInfoTag()->m_iIdShow);
   tag.m_strPictureURL.Parse();
   tag.m_strPictureURL.GetThumbUrls(remoteArt, m_artType, m_item->GetVideoInfoTag()->m_iSeason);
   return remoteArt;
@@ -464,18 +443,11 @@ public:
 
 std::vector<std::string> CVideoItemArtworkMovieSetHandler::GetRemoteArt() const
 {
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Cannot open video database!");
-    return {};
-  }
-
   std::vector<std::string> remoteArt;
   const std::string baseDir =
       StringUtils::Format("{}{}", KODI::VIDEO::DB_PATH::MOVIE_SETS, m_item->GetVideoInfoTag()->m_iDbId);
   CFileItemList items;
-  if (videodb.GetMoviesNav(baseDir, items))
+  if (LIBRARY::GetMoviesNav(baseDir, items))
   {
     for (const auto& item : items)
     {
@@ -616,16 +588,12 @@ std::string CVideoItemArtworkFanartHandler::UpdateRemoteArt(const std::vector<st
 {
   CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
 
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Cannot open video database!");
-  }
-  else
-  {
-    videoTag->m_fanart.SetPrimaryFanart(index);
-    videodb.UpdateFanart(*m_item, m_item->GetVideoContentType());
-  }
+  LIBRARY::WithDatabase(
+      [this, videoTag, index](CVideoDatabase& videodb)
+      {
+        videoTag->m_fanart.SetPrimaryFanart(index);
+        videodb.UpdateFanart(*m_item, m_item->GetVideoContentType());
+      });
   return videoTag->m_fanart.GetImageURL();
 }
 

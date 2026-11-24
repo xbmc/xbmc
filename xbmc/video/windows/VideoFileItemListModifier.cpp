@@ -21,9 +21,11 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoUtils.h"
 
 #include <memory>
+#include <optional>
 
 using namespace KODI::VIDEO;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -117,12 +119,10 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
       pItem->GetVideoInfoTag()->m_strTitle = strLabel;
       pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
       pItem->GetVideoInfoTag()->SetPlayCount((unwatched == 0) ? 1 : 0);
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);
-        db.Close();
-      }
+      if (const std::optional<int> idSeason{LIBRARY::WithDatabase(
+              [&pItem](CVideoDatabase& db) -> std::optional<int>
+              { return db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1); })})
+        pItem->GetVideoInfoTag()->m_iDbId = *idSeason;
       pItem->GetVideoInfoTag()->SetMediaType(KODI::MEDIA::TYPE::SEASON);
   }
   break;
