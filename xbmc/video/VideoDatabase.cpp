@@ -13795,17 +13795,6 @@ bool CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
   return true;
 }
 
-std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int dbId)
-{
-  switch (itemType)
-  {
-    case VideoDbContentType::MOVIES:
-      return GetMovieTitle(dbId);
-    default:
-      return "";
-  }
-}
-
 void CVideoDatabase::UpdateVideoVersionTypeTable()
 {
   try
