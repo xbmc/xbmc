@@ -29,6 +29,7 @@ public:
   void CreateFence();
   void DestroyFence();
   bool IsSignaled();
+  bool HasFence() const { return m_fence != EGL_NO_SYNC_KHR; }
 
 #if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
   void CreateKMSFence(int fd);
