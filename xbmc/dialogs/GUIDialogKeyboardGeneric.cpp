@@ -237,11 +237,9 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   SET_CONTROL_LABEL(CTL_LABEL_HZCODE, "");
   SET_CONTROL_LABEL(CTL_LABEL_HZLIST, "");
 
-  CVariant data;
-  data["title"] = m_strHeading;
-  data["type"] = !m_hiddenInput ? "keyboard" : "password";
-  data["value"] = GetText();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputRequested", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InputEvent{ANNOUNCEMENT::EVENT::INPUT::Requested{
+          .hidden = m_hiddenInput, .title = m_strHeading, .value = GetText()}});
 }
 
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
@@ -578,7 +576,8 @@ void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
   // reset the heading (we don't always have this)
   m_strHeading = "";
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Input, "OnInputFinished");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InputEvent{ANNOUNCEMENT::EVENT::INPUT::Finished{}});
 }
 
 void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)

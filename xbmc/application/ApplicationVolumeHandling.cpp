@@ -25,7 +25,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
 #if defined(TARGET_ANDROID)
@@ -58,11 +57,11 @@ void CApplicationVolumeHandling::SetHardwareVolume(float hardwareVolume)
 
 void CApplicationVolumeHandling::VolumeChanged()
 {
-  CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = static_cast<int>(std::lroundf(GetVolumePercent()));
-  data["muted"] = m_muted;
-  const auto announcementMgr = CServiceBroker::GetAnnouncementManager();
-  announcementMgr->Announce(ANNOUNCEMENT::Application, "OnVolumeChanged", data);
+  // Temporary: JSON-RPC v14 announces the volume and the mute together; with JSON-RPC v15 only
+  // the one that changed is given.
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{
+          .volume = static_cast<int>(std::lroundf(GetVolumePercent())), .muted = m_muted}});
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();

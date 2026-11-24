@@ -11,7 +11,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 
 #include <algorithm>
 #include <chrono>
@@ -43,19 +43,7 @@ CEdlParserResult CMultipleEpisodeEdlParser::Parse(const CFileItem& item,
   const CVideoInfoTag* tag{item.GetVideoInfoTag()};
 
   EpisodeFileMap fileMap;
-  bool success;
-  {
-    CVideoDatabase db;
-    if (!db.Open())
-    {
-      CLog::LogF(LOGERROR, "Failed to open video database");
-      return result;
-    }
-    success = db.GetEpisodeMap(tag->m_iIdShow, fileMap, tag->m_iFileId);
-    db.Close();
-  } // Destroy database if GetEpisodeMap() fails
-
-  if (!success)
+  if (!KODI::VIDEO::LIBRARY::GetEpisodeMap(tag->m_iIdShow, fileMap, tag->m_iFileId))
     return result;
 
   result = Process(item, fps, duration, fileMap);

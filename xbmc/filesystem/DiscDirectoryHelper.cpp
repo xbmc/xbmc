@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
 
@@ -4029,14 +4030,8 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
 
 std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& url)
 {
-  CVideoDatabase database;
-  if (!database.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database");
-    return {};
-  }
   std::vector<CVideoInfoTag> episodesOnDisc;
-  database.GetEpisodesByBlurayPath(url.Get(), episodesOnDisc);
+  KODI::VIDEO::LIBRARY::GetEpisodesByBlurayPath(url.Get(), episodesOnDisc);
   std::ranges::sort(episodesOnDisc,
                     [](const CVideoInfoTag& i, const CVideoInfoTag& j)
                     {

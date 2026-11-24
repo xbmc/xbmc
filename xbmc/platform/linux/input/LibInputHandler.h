@@ -28,10 +28,7 @@ public:
   CLibInputHandler();
   ~CLibInputHandler() override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event) override;
 
   void Start();
 

@@ -20,7 +20,10 @@ class CAction;
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
-class CVariant;
+namespace ANNOUNCEMENT::EVENT::PLAYLIST
+{
+struct PropertiesChanged;
+}
 
 namespace KODI::PLAYLIST
 {
@@ -185,8 +188,7 @@ protected:
   void ReShuffle(Id playlistId, int iPosition);
 
   void AnnouncePropertyChanged(Id playlistId,
-                               const std::string& strProperty,
-                               const CVariant& value);
+                               const ANNOUNCEMENT::EVENT::PLAYLIST::PropertiesChanged& changed);
 
   bool m_bPlayedFirstFile;
   bool m_bPlaybackStarted;

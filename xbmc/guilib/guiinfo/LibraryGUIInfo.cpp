@@ -25,7 +25,85 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
 
+#include <algorithm>
+#include <array>
+#include <iterator>
+#include <optional>
+#include <type_traits>
+#include <utility>
+
 using namespace KODI::GUILIB::GUIINFO;
+
+namespace
+{
+//! Asks a database of its own; nullopt if it cannot be opened
+template<typename Database, typename Question>
+auto Ask(Question&& question) -> std::optional<std::invoke_result_t<Question, Database&>>
+{
+  Database db;
+  if (!db.Open())
+    return {};
+  return std::forward<Question>(question)(db);
+}
+
+std::optional<bool> HasSongs()
+{
+  return Ask<CMusicDatabase>([](CMusicDatabase& db) { return db.GetSongsCount() > 0; });
+}
+
+std::optional<bool> HasSingles()
+{
+  return Ask<CMusicDatabase>([](CMusicDatabase& db) { return db.GetSinglesCount() > 0; });
+}
+
+std::optional<bool> HasCompilations()
+{
+  return Ask<CMusicDatabase>([](CMusicDatabase& db) { return db.GetCompilationAlbumsCount() > 0; });
+}
+
+std::optional<bool> HasBoxsets()
+{
+  return Ask<CMusicDatabase>([](CMusicDatabase& db) { return db.GetBoxsetsCount() > 0; });
+}
+
+std::optional<bool> HasMovieSets()
+{
+  return Ask<CVideoDatabase>([](CVideoDatabase& db) { return db.HasSets(); });
+}
+
+template<VideoDbContentType Content>
+std::optional<bool> HasVideos()
+{
+  return Ask<CVideoDatabase>([](CVideoDatabase& db) { return db.HasContent(Content); });
+}
+
+//! A kind of content a skin can ask whether the library has, and how that is found out
+struct LibraryContent
+{
+  int condition;
+  std::optional<bool> (*ask)();
+};
+
+constexpr std::array CONTENTS{
+    LibraryContent{LIBRARY_HAS_MUSIC, HasSongs},
+    LibraryContent{LIBRARY_HAS_MOVIES, HasVideos<VideoDbContentType::MOVIES>},
+    LibraryContent{LIBRARY_HAS_MOVIE_SETS, HasMovieSets},
+    LibraryContent{LIBRARY_HAS_TVSHOWS, HasVideos<VideoDbContentType::TVSHOWS>},
+    LibraryContent{LIBRARY_HAS_MUSICVIDEOS, HasVideos<VideoDbContentType::MUSICVIDEOS>},
+    LibraryContent{LIBRARY_HAS_SINGLES, HasSingles},
+    LibraryContent{LIBRARY_HAS_COMPILATIONS, HasCompilations},
+    LibraryContent{LIBRARY_HAS_BOXSETS, HasBoxsets},
+};
+
+//! The kind of content a condition asks about; nullopt for another condition
+std::optional<std::size_t> KindOf(int condition)
+{
+  const auto found{std::ranges::find(CONTENTS, condition, &LibraryContent::condition)};
+  if (found == CONTENTS.end())
+    return {};
+  return static_cast<std::size_t>(std::distance(CONTENTS.begin(), found));
+}
+} // namespace
 
 CLibraryGUIInfo::CLibraryGUIInfo()
 {
@@ -41,48 +119,28 @@ bool CLibraryGUIInfo::GetLibraryBool(int condition) const
 
 void CLibraryGUIInfo::SetLibraryBool(int condition, bool value)
 {
-  switch (condition)
-  {
-    case LIBRARY_HAS_MUSIC:
-      m_libraryHasMusic = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MOVIES:
-      m_libraryHasMovies = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MOVIE_SETS:
-      m_libraryHasMovieSets = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_TVSHOWS:
-      m_libraryHasTVShows = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MUSICVIDEOS:
-      m_libraryHasMusicVideos = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_SINGLES:
-      m_libraryHasSingles = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_COMPILATIONS:
-      m_libraryHasCompilations = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_BOXSETS:
-      m_libraryHasBoxsets = value ? 1 : 0;
-      break;
-    default:
-      break;
-  }
+  if (const std::optional<std::size_t> kind{KindOf(condition)})
+    m_libraryHas[*kind] = value ? 1 : 0;
 }
 
 void CLibraryGUIInfo::ResetLibraryBools()
 {
-  m_libraryHasMusic = -1;
-  m_libraryHasMovies = -1;
-  m_libraryHasTVShows = -1;
-  m_libraryHasMusicVideos = -1;
-  m_libraryHasMovieSets = -1;
-  m_libraryHasSingles = -1;
-  m_libraryHasCompilations = -1;
-  m_libraryHasBoxsets = -1;
+  m_libraryHas.fill(-1);
   m_libraryRoleCounts.clear();
+}
+
+bool CLibraryGUIInfo::HasContent(std::size_t kind) const
+{
+  static_assert(CONTENTS.size() == std::tuple_size_v<decltype(m_libraryHas)>);
+
+  int& has{m_libraryHas[kind]};
+  // A database that cannot be opened is asked again next time
+  if (has < 0)
+  {
+    if (const std::optional<bool> asked{CONTENTS[kind].ask()})
+      has = *asked ? 1 : 0;
+  }
+  return has > 0;
 }
 
 bool CLibraryGUIInfo::InitCurrentItem(CFileItem* item)
@@ -112,123 +170,17 @@ bool CLibraryGUIInfo::GetBool(bool& value,
                               int contextWindow,
                               const CGUIInfo& info) const
 {
+  if (const std::optional<std::size_t> kind{KindOf(info.GetInfo())})
+  {
+    value = HasContent(*kind);
+    return true;
+  }
+
   switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // LIBRARY_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    case LIBRARY_HAS_MUSIC:
-    {
-      if (m_libraryHasMusic < 0)
-      { // query
-        CMusicDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasMusic > 0;
-      return true;
-    }
-    case LIBRARY_HAS_MOVIES:
-    {
-      if (m_libraryHasMovies < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasMovies = db.HasContent(VideoDbContentType::MOVIES) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasMovies > 0;
-      return true;
-    }
-    case LIBRARY_HAS_MOVIE_SETS:
-    {
-      if (m_libraryHasMovieSets < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasMovieSets = db.HasSets() ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasMovieSets > 0;
-      return true;
-    }
-    case LIBRARY_HAS_TVSHOWS:
-    {
-      if (m_libraryHasTVShows < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasTVShows = db.HasContent(VideoDbContentType::TVSHOWS) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasTVShows > 0;
-      return true;
-    }
-    case LIBRARY_HAS_MUSICVIDEOS:
-    {
-      if (m_libraryHasMusicVideos < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasMusicVideos = db.HasContent(VideoDbContentType::MUSICVIDEOS) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasMusicVideos > 0;
-      return true;
-    }
-    case LIBRARY_HAS_SINGLES:
-    {
-      if (m_libraryHasSingles < 0)
-      {
-        CMusicDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasSingles = (db.GetSinglesCount() > 0) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasSingles > 0;
-      return true;
-    }
-    case LIBRARY_HAS_COMPILATIONS:
-    {
-      if (m_libraryHasCompilations < 0)
-      {
-        CMusicDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasCompilations = (db.GetCompilationAlbumsCount() > 0) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasCompilations > 0;
-      return true;
-    }
-    case LIBRARY_HAS_BOXSETS:
-    {
-      if (m_libraryHasBoxsets < 0)
-      {
-        CMusicDatabase db;
-        if (db.Open())
-        {
-          m_libraryHasBoxsets = (db.GetBoxsetsCount() > 0) ? 1 : 0;
-          db.Close();
-        }
-      }
-      value = m_libraryHasBoxsets > 0;
-      return true;
-    }
     case LIBRARY_HAS_VIDEO:
     {
       return (GetBool(value, gitem, contextWindow, CGUIInfo(LIBRARY_HAS_MOVIES)) ||
@@ -251,11 +203,10 @@ bool CLibraryGUIInfo::GetBool(bool& value,
       // Otherwise get from DB and store
       if (artistcount < 0)
       {
-        CMusicDatabase db;
-        if (db.Open())
+        if (const std::optional<int> count{Ask<CMusicDatabase>(
+                [&strRole](CMusicDatabase& db) { return db.GetArtistCountForRole(strRole); })})
         {
-          artistcount = db.GetArtistCountForRole(strRole);
-          db.Close();
+          artistcount = *count;
           m_libraryRoleCounts.emplace_back(strRole, artistcount);
         }
       }

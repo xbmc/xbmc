@@ -36,6 +36,7 @@
 class CFileItem;
 class CFileItemList;
 class CStreamDetails;
+class CVideoDbUrl;
 class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
@@ -57,6 +58,26 @@ namespace KODI::VIDEO
   class IVideoInfoScannerObserver;
   struct SScanSettings;
 }
+
+/*!
+ * \brief The details an edit changed, as passed to CVideoDatabase::UpdateDetailsForMovie.
+ */
+namespace KODI::VIDEO::UPDATED_DETAIL
+{
+inline constexpr char ART[] = "art.altered";
+inline constexpr char ARTIST[] = "artist";
+inline constexpr char COUNTRY[] = "country";
+inline constexpr char DATE_ADDED[] = "dateadded";
+inline constexpr char DIRECTOR[] = "director";
+inline constexpr char GENRE[] = "genre";
+inline constexpr char RATINGS[] = "ratings";
+inline constexpr char SET[] = "set";
+inline constexpr char SHOW_LINK[] = "showlink";
+inline constexpr char STUDIO[] = "studio";
+inline constexpr char TAG[] = "tag";
+inline constexpr char UNIQUE_ID[] = "uniqueid";
+inline constexpr char WRITER[] = "writer";
+} // namespace KODI::VIDEO::UPDATED_DETAIL
 
 enum VideoDbDetails
 {
@@ -245,6 +266,20 @@ public:
    \sa SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   int GetPlayCount(const std::string& strFilenameAndPath);
+
+  /*!
+   * \brief Whether a library item counts as watched: a TV show while any of its episodes is, a
+   * movie, episode or music video while it has a play count.
+   */
+  bool IsWatched(KODI::MEDIA::TYPE type, int id) const;
+
+  /*!
+   * \brief Whether an edit may clear the last played date of a library item or a file: one left
+   * watched keeps its date, and a date alone never changes the play count.
+   * \param playCount the play count the same edit sets, nullopt if it keeps the one stored
+   */
+  bool CanClearLastPlayed(KODI::MEDIA::TYPE type, int id, std::optional<int> playCount) const;
+  bool CanClearLastPlayed(const std::string& file, std::optional<int> playCount);
 
   /*! \brief Get the last played time of a filename and path
    \param strFilenameAndPath filename and path to get the last played time for
@@ -503,6 +538,91 @@ public:
                             const KODI::ART::Artwork& artwork,
                             const std::set<std::string, std::less<>>& updatedDetails);
 
+  //! \brief A change a caller makes to how far something has been watched; what is empty is kept
+  struct PlayStateEdit
+  {
+    std::optional<int> playCount;
+    std::optional<CDateTime> lastPlayed; //!< an invalid date clears it
+    struct Resume
+    {
+      double position{0.0}; //!< 0 or less clears it
+      double total{0.0}; //!< as SetResumePoint takes it
+    };
+    std::optional<Resume> resume;
+  };
+
+  enum class EditResult
+  {
+    DONE,
+    REFUSED, //!< it would clear the last played date of what is left watched
+    NOT_FOUND, //!< an episode or season without its show, or a file that cannot be read back
+    FAILED,
+  };
+
+  /*!
+   * \brief Store a caller's edit of a library item in one transaction: \p details as the edit
+   * leaves them, with \p artwork and without \p removedArtwork, and \p playState on its file. A TV
+   * show's play state is given to each of its episodes, which are announced; the item itself is
+   * left for the caller to announce with what it changed.
+   * \param updatedDetails the details whose links are rewritten, as UpdateDetailsForMovie takes them
+   */
+  EditResult EditItem(KODI::MEDIA::TYPE type,
+                      int id,
+                      CVideoInfoTag& details,
+                      const KODI::ART::Artwork& artwork,
+                      const std::set<std::string, std::less<>>& removedArtwork,
+                      const std::set<std::string, std::less<>>& updatedDetails,
+                      const PlayStateEdit& playState);
+
+  enum class AddResult
+  {
+    ADDED,
+    IN_LIBRARY, //!< the library already holds an item of the type at the path
+    NO_SUCH_SHOW,
+    FAILED,
+  };
+
+  /*!
+   * \brief Add a movie, TV show, episode or music video at a path in one transaction, with
+   * \p details, \p artwork and \p playState. One without a title is named after its path. The item
+   * is left for the caller to announce.
+   * \param idShow the show an episode is added to
+   * \param id [out] the new item's id
+   */
+  AddResult AddItem(KODI::MEDIA::TYPE type,
+                    const std::string& path,
+                    CVideoInfoTag& details,
+                    const KODI::ART::Artwork& artwork,
+                    int idShow,
+                    const PlayStateEdit& playState,
+                    int& id);
+
+  /*!
+   * \brief Store a caller's change to a file's play state in one transaction, adding the file if
+   * the library has never seen it.
+   * \param details [out] the file's state afterwards
+   */
+  EditResult EditFilePlayState(const std::string& file,
+                               const PlayStateEdit& playState,
+                               CVideoInfoTag& details);
+
+  /*!
+   * \brief Set what a source holds and how it is scanned, keeping whether it uses all external
+   * audio, which no caller sets. What the library holds below it goes first when \p removeContent.
+   */
+  void SetSourceContent(const std::string& path,
+                        const ADDON::ScraperPtr& scraper,
+                        const KODI::VIDEO::SScanSettings& settings,
+                        bool removeContent);
+
+  /*!
+   * \brief Describe a path as the library holds it: the movie, episode or music video it is the
+   * file of, or for a folder the TV show it is one of the folders of. Otherwise the play state the
+   * files table holds for it is added to what \p item already says.
+   * \return whether the library holds anything for the path
+   */
+  bool DescribePath(const std::string& path, CFileItem& item);
+
   /*!
    * \brief Remove a movie from the library.
    * \param[in] idMovie The id of the movie
@@ -606,6 +726,14 @@ public:
                          const CBookmark& bookmark,
                          CBookmark::EType type = CBookmark::STANDARD);
   bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark &bookmark);
+
+  /*!
+   * \brief Moves a file's resume point, or clears it at a position of 0 or less.
+   * \param total the file's length; 0 or less keeps the stored length, else takes the length of its
+   * video stream
+   */
+  bool SetResumePoint(const std::string& file, double position, double total);
+
   void DeleteResumeBookMark(const CFileItem& item);
   void ClearBookMarkOfFile(const std::string& strFilenameAndPath,
                            const CBookmark& bookmark,
@@ -1012,8 +1140,16 @@ public:
   bool GetSetsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool ignoreSingleMovieSets = false);
   bool GetTvShowsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
   bool GetSeasonsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription());
-  bool GetEpisodesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
-  bool GetMusicVideosByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, bool checkLocks = true, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
+  bool GetEpisodesByWhere(const std::string& strBaseDir,
+                          const Filter& filter,
+                          CFileItemList& items,
+                          const SortDescription& sortDescription = SortDescription(),
+                          int getDetails = VideoDbDetailsNone);
+  bool GetMusicVideosByWhere(const std::string& baseDir,
+                             const Filter& filter,
+                             CFileItemList& items,
+                             const SortDescription& sortDescription = SortDescription(),
+                             int getDetails = VideoDbDetailsNone);
 
   // retrieve sorted and limited items
   bool GetSortedVideos(KODI::MEDIA::TYPE mediaType, const std::string& strBaseDir,
@@ -1264,6 +1400,20 @@ public:
   std::string GetRemovableBlurayPath(std::string originalPath);
 
 protected:
+  //! \brief The play state a TV show's edit leaves one of its episodes with
+  struct PlayState
+  {
+    int playCount;
+    CDateTime lastPlayed;
+  };
+
+  //! \brief The play state \p showEdit leaves \p episode with, nullopt for it to be left as it is
+  static std::optional<PlayState> EpisodePlayState(const PlayStateEdit& showEdit,
+                                                   const CVideoInfoTag& episode);
+
+  //! \brief Adds the play state a file's row holds to \p details, which say what the file is
+  static void AddFilePlayState(const CVideoInfoTag& file, CVideoInfoTag& details);
+
   int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);
 
@@ -1344,6 +1494,28 @@ protected:
                               const std::vector<std::string>& values);
 
   void AddCast(int mediaId, KODI::MEDIA::TYPE mediaType, const std::vector<SActorInfo> &cast);
+
+  //! \brief Builds the item of a listing's row and adds it, unless the profile may not list it
+  //! \return the item's tag, for the details the list loads once; nullptr for no item
+  using ListRow = std::function<CVideoInfoTag*(
+      const dbiplus::sql_record* record, int details, CFileItemList& items)>;
+  //! \brief Makes a listing's row builder, once the listing's url is known
+  using ListRows = std::function<ListRow(const CVideoDbUrl& videoUrl)>;
+
+  /*!
+   * \brief List the movies, TV shows, episodes or music videos a videodb url and a filter select,
+   * sorted and limited, each row built by the type's \p rows
+   */
+  bool ListVideos(KODI::MEDIA::TYPE type,
+                  const std::string& baseDir,
+                  const Filter& filter,
+                  CFileItemList& items,
+                  const SortDescription& sortDescription,
+                  int getDetails,
+                  const ListRows& rows);
+
+  //! \brief Whether the profile may list an item at \p path
+  bool IsUnlocked(const std::string& path) const;
 
   CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
@@ -1501,6 +1673,15 @@ private:
   static void AnnounceRemove(KODI::MEDIA::TYPE content, int id, bool scanning = false);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  //! \brief Store \p edit on a file, against the play state it holds
+  bool StorePlayStateEdit(const std::string& file, const PlayStateEdit& edit);
+
+  //! \brief Give each episode of a show the play state its edit sets
+  bool StoreEpisodesPlayState(int idShow, const PlayStateEdit& showEdit);
+
+  //! \brief A TV show that \p path is one of the folders of; a folder beneath one is not
+  bool GetTvShowOfFolder(const std::string& path, CVideoInfoTag& details, CFileItem* item);
 
   //! The dates added of files and folders about to be added \sa PrepareDateAdded
   std::map<std::string, CDateTime, std::less<>> m_preparedDatesAdded;

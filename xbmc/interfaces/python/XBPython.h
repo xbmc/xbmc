@@ -75,10 +75,10 @@ public:
   void OnPlayBackSeekChapter(int iChapter) override;
   void OnQueueNextItem() override;
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnAnnouncement(const ANNOUNCEMENT::Announcement& announcement) override;
+  void OnVideoLibraryEvent(const ANNOUNCEMENT::VideoLibraryEvent& event) override;
+  void OnAudioLibraryEvent(const ANNOUNCEMENT::AudioLibraryEvent& event) override;
+  void OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event) override;
   void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
@@ -122,6 +122,8 @@ public:
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
 private:
+  void OnLibraryEvent(const ANNOUNCEMENT::LibraryEvent& event, const std::string& library);
+
   CCriticalSection m_critSection;
   PyThreadState* m_mainThreadState{nullptr};
   bool m_bindingModulesLoaded{true};

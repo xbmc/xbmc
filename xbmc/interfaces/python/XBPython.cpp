@@ -19,6 +19,7 @@
 #include "application/Application.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementV14.h"
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/legacy/CallbackHandler.h"
 #include "interfaces/legacy/Monitor.h"
@@ -39,6 +40,7 @@
 #include <condition_variable>
 #include <system_error>
 #include <thread>
+#include <variant>
 
 using namespace std::chrono_literals;
 
@@ -164,56 +166,62 @@ XBPython::~XBPython()
 
 #define CHECK_FOR_ENTRY(l, v) (l.hadSomethingRemoved ? (std::ranges::find(l, v) != l.end()) : true)
 
-void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                        const std::string& sender,
-                        const std::string& message,
-                        const CVariant& data)
+void XBPython::OnVideoLibraryEvent(const ANNOUNCEMENT::VideoLibraryEvent& event)
 {
-  if (flag & ANNOUNCEMENT::VideoLibrary)
-  {
-    if (message == "OnScanFinished")
-      OnScanFinished("video");
-    else if (message == "OnScanStarted")
-      OnScanStarted("video");
-    else if (message == "OnCleanStarted")
-      OnCleanStarted("video");
-    else if (message == "OnCleanFinished")
-      OnCleanFinished("video");
-  }
-  else if (flag & ANNOUNCEMENT::AudioLibrary)
-  {
-    if (message == "OnScanFinished")
-      OnScanFinished("music");
-    else if (message == "OnScanStarted")
-      OnScanStarted("music");
-    else if (message == "OnCleanStarted")
-      OnCleanStarted("music");
-    else if (message == "OnCleanFinished")
-      OnCleanFinished("music");
-  }
-  else if (flag & ANNOUNCEMENT::GUI)
-  {
-    if (message == "OnScreensaverDeactivated")
-      OnScreensaverDeactivated();
-    else if (message == "OnScreensaverActivated")
-      OnScreensaverActivated();
-    else if (message == "OnDPMSDeactivated")
-      OnDPMSDeactivated();
-    else if (message == "OnDPMSActivated")
-      OnDPMSActivated();
-  }
+  OnLibraryEvent(event, "video");
+}
 
-  std::string jsonData;
-  if (CJSONVariantWriter::Write(
-          data, jsonData,
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonOutputCompact))
-    OnNotification(sender,
-                   std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." +
-                       std::string(message),
-                   jsonData);
+void XBPython::OnAudioLibraryEvent(const ANNOUNCEMENT::AudioLibraryEvent& event)
+{
+  OnLibraryEvent(event, "music");
+}
+
+void XBPython::OnLibraryEvent(const ANNOUNCEMENT::LibraryEvent& event, const std::string& library)
+{
+  namespace LIBRARY = ANNOUNCEMENT::EVENT::LIBRARY;
+  if (std::holds_alternative<LIBRARY::ScanFinished>(event))
+    OnScanFinished(library);
+  else if (std::holds_alternative<LIBRARY::ScanStarted>(event))
+    OnScanStarted(library);
+  else if (std::holds_alternative<LIBRARY::CleanStarted>(event))
+    OnCleanStarted(library);
+  else if (std::holds_alternative<LIBRARY::CleanFinished>(event))
+    OnCleanFinished(library);
+}
+
+void XBPython::OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event)
+{
+  namespace GUI = ANNOUNCEMENT::EVENT::GUI;
+  if (std::holds_alternative<GUI::ScreensaverDeactivated>(event))
+    OnScreensaverDeactivated();
+  else if (std::holds_alternative<GUI::ScreensaverActivated>(event))
+    OnScreensaverActivated();
+  else if (std::holds_alternative<GUI::DPMSDeactivated>(event))
+    OnDPMSDeactivated();
+  else if (std::holds_alternative<GUI::DPMSActivated>(event))
+    OnDPMSActivated();
+}
+
+void XBPython::OnAnnouncement(const ANNOUNCEMENT::Announcement& announcement)
+{
+  IAnnouncer::OnAnnouncement(announcement);
+
+  // Temporary: add-ons are given the JSON-RPC v14 notifications; removed with JSON-RPC v15.
+  for (const auto& [flag, sender, message, data] : ANNOUNCEMENT::V14::NotificationsOf(announcement))
+  {
+    std::string jsonData;
+    if (CJSONVariantWriter::Write(
+            data, jsonData,
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonOutputCompact))
+      OnNotification(sender,
+                     std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." +
+                         std::string(message),
+                     jsonData);
+  }
 
   // abort once OnQuit is queued, so scripts get it before their abort
-  if ((flag & ANNOUNCEMENT::System) && message == "OnQuit")
+  if (const auto* system = std::get_if<ANNOUNCEMENT::SystemEvent>(&announcement);
+      system && std::holds_alternative<ANNOUNCEMENT::EVENT::SYSTEM::Quit>(*system))
     NotifyScriptAborting(nullptr);
 }
 

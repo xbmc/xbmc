@@ -98,10 +98,9 @@ public:
   ~CXBMCApp() override;
 
   // IAnnouncer IF
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnInputEvent(const ANNOUNCEMENT::InputEvent& event) override;
+  void OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event) override;
+  void OnInfoEvent(const ANNOUNCEMENT::InfoEvent& event) override;
 
   void onReceive(CJNIIntent intent) override;
   void onNewIntent(CJNIIntent intent) override;

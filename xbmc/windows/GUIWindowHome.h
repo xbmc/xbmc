@@ -12,8 +12,6 @@
 #include "interfaces/IAnnouncer.h"
 #include "jobs/IJobCallback.h"
 
-class CVariant;
-
 class CGUIWindowHome :
       public CGUIWindow,
       public ANNOUNCEMENT::IAnnouncer,
@@ -23,10 +21,8 @@ public:
   CGUIWindowHome(void);
   ~CGUIWindowHome(void) override;
   void OnInitWindow() override;
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnVideoLibraryEvent(const ANNOUNCEMENT::VideoLibraryEvent& event) override;
+  void OnAudioLibraryEvent(const ANNOUNCEMENT::AudioLibraryEvent& event) override;
 
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
@@ -35,6 +31,7 @@ public:
 private:
   int m_updateRA; // flag for which recently added items needs to be queried
   void AddRecentlyAddedJobs(int flag);
+  void OnLibraryEvent(const ANNOUNCEMENT::LibraryEvent& event, int library);
 
   bool m_recentlyAddedRunning = false;
   int m_cumulativeUpdateFlag = 0;

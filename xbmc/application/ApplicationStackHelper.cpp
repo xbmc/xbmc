@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoUtils.h"
 
 #include <algorithm>
@@ -226,20 +227,15 @@ void CApplicationStackHelper::GetStackPartAndOptions(CFileItem& item,
     start = std::chrono::milliseconds(item.GetStartOffset());
     if (start == STARTOFFSET_RESUME_MS)
     {
-      CVideoDatabase db;
-      if (db.Open())
+      CBookmark bookmark;
+      if (KODI::VIDEO::LIBRARY::GetResumeBookMark(path, bookmark))
       {
-        CBookmark bookmark;
-        if (db.GetResumeBookMark(path, bookmark))
-        {
-          updated = ProcessNextPartInBookmark(item, bookmark);
-          start = std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::duration<double>(bookmark.timeInSeconds));
-          options.starttime = bookmark.timeInSeconds;
-          options.state = bookmark.playerState;
-          item.SetStartOffset(STARTOFFSET_RESUME);
-        }
-        db.Close();
+        updated = ProcessNextPartInBookmark(item, bookmark);
+        start = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::duration<double>(bookmark.timeInSeconds));
+        options.starttime = bookmark.timeInSeconds;
+        options.state = bookmark.playerState;
+        item.SetStartOffset(STARTOFFSET_RESUME);
       }
     }
   }
@@ -329,12 +325,7 @@ void CApplicationStackHelper::SetNextPartBookmark(const std::string& path)
 
   bookmark.playerState = StringUtils::Format("<nextpart>{}</nextpart>", GetCurrentPartNumber());
 
-  CVideoDatabase db;
-  if (db.Open())
-  {
-    db.AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
-    db.Close();
-  }
+  KODI::VIDEO::LIBRARY::AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
 }
 
 bool CApplicationStackHelper::IsPlayingStack() const

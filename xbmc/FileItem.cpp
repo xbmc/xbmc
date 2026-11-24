@@ -73,6 +73,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoUtils.h"
 
 #include <cstdint>
@@ -2263,15 +2264,8 @@ bool CFileItem::LoadDetails()
     if (HasVideoInfoTag())
       return true;
 
-    CVideoDatabase db;
-    if (!db.Open())
-    {
-      CLog::LogF(LOGERROR, "Error opening video database");
-      return false;
-    }
-
     auto tag{std::make_unique<CVideoInfoTag>()};
-    if (db.LoadVideoInfo(GetDynPath(), *tag))
+    if (VIDEO::LIBRARY::LoadVideoInfo(GetDynPath(), *tag))
     {
       const CFileItem loadedItem{*tag};
       UpdateInfo(loadedItem);
@@ -2290,15 +2284,8 @@ bool CFileItem::LoadDetails()
       const auto item{(*playlist)[0]};
       if (VIDEO::IsVideo(*item))
       {
-        CVideoDatabase db;
-        if (!db.Open())
-        {
-          CLog::LogF(LOGERROR, "Error opening video database");
-          return false;
-        }
-
         CVideoInfoTag tag;
-        if (db.LoadVideoInfo(GetDynPath(), tag))
+        if (VIDEO::LIBRARY::LoadVideoInfo(GetDynPath(), tag))
         {
           UpdateInfo(*item);
           *GetVideoInfoTag() = tag;

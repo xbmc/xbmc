@@ -165,8 +165,8 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
     }
     if (! (flags & kCFNetServiceFlagMoreComing) )
     {
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
-                                                         CVariant{"zeroconf://"});
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::SourcesEvent{ANNOUNCEMENT::EVENT::SOURCES::Updated{"zeroconf://"}});
       CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback sent sources update "
                           "announcement for path zeroconf://");
     }

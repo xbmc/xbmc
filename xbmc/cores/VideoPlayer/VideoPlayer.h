@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
 #include "language/LanguageTag.h"
+#include "media/MediaStreams.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
@@ -517,6 +518,7 @@ protected:
     FLAG_STATUS_CHANGE = 0x0001,
     FLAG_STREAMINFO_CHANGE = 0x0002,
   };
+  KODI::MEDIA::Streams AnnouncedStreams() const;
   void NotifySubtitleUpdate(int flags);
   void NotifyAudioUpdate();
   void NotifyVideoUpdate();

@@ -804,9 +804,8 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(const uint8_t* msgElement)
     if (trafAdvVol)
       appVolume->SetVolume(m_TA_TP_TrafficVolume + trafAdvVol);
 
-    CVariant data(CVariant::VariantTypeObject);
-    data["on"] = true;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PVR, "RDSRadioTA", data);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::PVREvent{ANNOUNCEMENT::EVENT::PVR::RadioTrafficAnnouncement{true}});
   }
 
   if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.trafficadvisory"))
@@ -816,9 +815,8 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(const uint8_t* msgElement)
     const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
     appVolume->SetVolume(m_TA_TP_TrafficVolume);
 
-    CVariant data(CVariant::VariantTypeObject);
-    data["on"] = false;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PVR, "RDSRadioTA", data);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::PVREvent{ANNOUNCEMENT::EVENT::PVR::RadioTrafficAnnouncement{false}});
   }
 
   return 4;
@@ -1032,9 +1030,9 @@ unsigned int CDVDRadioRDSData::DecodeRTC(uint8_t *msgElement)
             msgElement[UECP_CLOCK_CENTSEC], minus ? '-' : '+',
             msgElement[UECP_CLOCK_LOCALOFFSET] * 30);
 
-  CVariant data(CVariant::VariantTypeObject);
-  data["dateTime"] = (m_RTC_DateTime.IsValid()) ? m_RTC_DateTime.GetAsRFC1123DateTime() : "";
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PVR, "RDSRadioRTC", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PVREvent{ANNOUNCEMENT::EVENT::PVR::RadioClock{
+          m_RTC_DateTime.IsValid() ? m_RTC_DateTime.GetAsRFC1123DateTime() : ""}});
 
   return 8;
 }
@@ -1555,14 +1553,10 @@ void CDVDRadioRDSData::SendTMCSignal(unsigned int flags, uint8_t *data)
 
   if (m_currentChannel)
   {
-    CVariant msg(CVariant::VariantTypeObject);
-    msg["channel"] = m_currentChannel->ChannelName();
-    msg["ident"]   = m_PI_Current;
-    msg["flags"]   = flags;
-    msg["x"]       = m_TMC_LastData[0];
-    msg["y"]       = (unsigned int)(m_TMC_LastData[1]<<8 | m_TMC_LastData[2]);
-    msg["z"]       = (unsigned int)(m_TMC_LastData[3]<<8 | m_TMC_LastData[4]);
-
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PVR, "RDSRadioTMC", msg);
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::PVREvent{ANNOUNCEMENT::EVENT::PVR::RadioTrafficMessage{
+            m_currentChannel->ChannelName(), m_PI_Current, flags, m_TMC_LastData[0],
+            static_cast<unsigned int>(m_TMC_LastData[1] << 8 | m_TMC_LastData[2]),
+            static_cast<unsigned int>(m_TMC_LastData[3] << 8 | m_TMC_LastData[4])}});
   }
 }

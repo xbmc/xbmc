@@ -19,8 +19,5 @@ public:
   CGUISourcesAnnouncementHandler();
   ~CGUISourcesAnnouncementHandler();
 
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnSourcesEvent(const ANNOUNCEMENT::SourcesEvent& event) override;
 };

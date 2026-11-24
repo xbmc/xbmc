@@ -355,10 +355,7 @@ public:
   int GetMessageMask() override;
 
   // implementation of IAnnouncer
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
+  void OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event) override;
 
   // Implementation of IMsgTargetCallback
   bool OnMessage(CGUIMessage& message) override;

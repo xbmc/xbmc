@@ -114,7 +114,8 @@ void EnableRenderGUI(bool enable)
 - (void)windowDidBecomeKey:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowFocused");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::WindowFocused{}});
 
   EnableRenderGUI([self isWindowVisible]);
 
@@ -128,7 +129,8 @@ void EnableRenderGUI(bool enable)
 - (void)windowDidResignKey:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = false;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowUnfocused");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::WindowUnfocused{}});
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)

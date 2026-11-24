@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 // clang-format off
 constexpr uint32_t PLAYER_HAS_MEDIA                  = 1;
 constexpr uint32_t PLAYER_HAS_AUDIO                  = 2;

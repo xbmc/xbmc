@@ -8,6 +8,7 @@
 
 #include "FileItem.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementV14.h"
 #include "threads/Event.h"
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
@@ -28,15 +29,17 @@ namespace
 {
 constexpr auto TIMEOUT = 5s;
 
+OtherEvent TestEvent()
+{
+  return {CAnnouncementManager::ANNOUNCEMENT_SENDER, "Test", {}};
+}
+
 //! Stands in for an announcer that waits on another thread, as closing a window waits on the GUI
 //! thread.
 class CBlockingAnnouncer : public IAnnouncer
 {
 public:
-  void Announce(AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override
+  void OnAnnouncement(const Announcement& announcement) override
   {
     m_entered.Set();
     m_released = m_release.Wait(TIMEOUT);
@@ -50,14 +53,11 @@ public:
 class CRecordingAnnouncer : public IAnnouncer
 {
 public:
-  void Announce(AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override
+  void OnAnnouncement(const Announcement& announcement) override
   {
     if (m_removed)
       m_calledAfterRemoval = true;
-    m_data = data;
+    m_data = V14::NotificationsOf(announcement).at(0).data;
     m_called.Set();
   }
 
@@ -72,10 +72,7 @@ class CSelfRemovingAnnouncer : public IAnnouncer
 public:
   explicit CSelfRemovingAnnouncer(CAnnouncementManager& manager) : m_manager(manager) {}
 
-  void Announce(AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override
+  void OnAnnouncement(const Announcement& announcement) override
   {
     m_manager.RemoveAnnouncer(this);
     m_removed.Set();
@@ -88,10 +85,7 @@ public:
 class CThrowingAnnouncer : public IAnnouncer
 {
 public:
-  void Announce(AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override
+  void OnAnnouncement(const Announcement& announcement) override
   {
     m_called.Set();
     throw std::runtime_error("announcer failed");
@@ -115,7 +109,7 @@ protected:
 TEST_F(TestAnnouncementManager, AnAnnouncerCanBeAddedWhileAnotherIsBeingCalled)
 {
   m_manager.AddAnnouncer(&m_blocking);
-  m_manager.Announce(Other, "Test");
+  m_manager.Announce(TestEvent());
   ASSERT_TRUE(m_blocking.m_entered.Wait(TIMEOUT));
 
   m_manager.AddAnnouncer(&m_recording);
@@ -129,7 +123,7 @@ TEST_F(TestAnnouncementManager, AnAnnouncerRemovedDuringADispatchIsNotCalledAfte
 {
   m_manager.AddAnnouncer(&m_blocking);
   m_manager.AddAnnouncer(&m_recording);
-  m_manager.Announce(Other, "Test");
+  m_manager.Announce(TestEvent());
   ASSERT_TRUE(m_blocking.m_entered.Wait(TIMEOUT));
 
   m_manager.RemoveAnnouncer(&m_recording);
@@ -144,7 +138,7 @@ TEST_F(TestAnnouncementManager, AnAnnouncerRemovedDuringADispatchIsNotCalledAfte
 TEST_F(TestAnnouncementManager, RemovingAnAnnouncerWaitsForItsCallInProgress)
 {
   m_manager.AddAnnouncer(&m_blocking);
-  m_manager.Announce(Other, "Test");
+  m_manager.Announce(TestEvent());
   ASSERT_TRUE(m_blocking.m_entered.Wait(TIMEOUT));
 
   std::atomic<bool> removed{false};
@@ -167,27 +161,26 @@ TEST_F(TestAnnouncementManager, AnAnnouncerCanRemoveItselfWhileBeingCalled)
 {
   CSelfRemovingAnnouncer announcer(m_manager);
   m_manager.AddAnnouncer(&announcer);
-  m_manager.Announce(Other, "Test");
+  m_manager.Announce(TestEvent());
 
   EXPECT_TRUE(announcer.m_removed.Wait(TIMEOUT));
   m_manager.Deinitialize();
 }
 
-// An item given by reference is copied as it is announced, so that it may change, or go, at once
-TEST_F(TestAnnouncementManager, AnItemGivenByReferenceIsAnnouncedAsItWasThen)
+// A lent item is copied as it is announced, so that it may change, or go, at once
+TEST_F(TestAnnouncementManager, ALentItemIsAnnouncedAsItWasThen)
 {
   // The announcement thread is held until the item has changed and gone
   m_manager.AddAnnouncer(&m_blocking, Other);
   m_manager.AddAnnouncer(&m_recording, VideoLibrary);
-  m_manager.Announce(Other, "Hold");
+  m_manager.Announce(TestEvent());
   ASSERT_TRUE(m_blocking.m_entered.Wait(TIMEOUT));
   {
     CFileItem item{"smb://host/Show/Show S01E01.mkv", false};
     item.GetVideoInfoTag()->m_iDbId = 7;
-    item.GetVideoInfoTag()->m_type = "episode";
-    CVariant data;
-    data["added"] = true;
-    m_manager.Announce(VideoLibrary, "OnUpdate", item, data);
+    item.GetVideoInfoTag()->SetMediaType(KODI::MEDIA::TYPE::EPISODE);
+    m_manager.Announce(VideoLibraryEvent{EVENT::LIBRARY::Update{
+        .item = std::shared_ptr<const CFileItem>(&item, [](const CFileItem*) {}), .added = true}});
     item.GetVideoInfoTag()->m_iDbId = 8;
   }
   m_blocking.m_release.Set();
@@ -207,7 +200,7 @@ TEST(TestAnnouncementManagerFailure, RemovingAnAnnouncerWhoseCallThrewDoesNotWai
   auto announcer = std::make_unique<CThrowingAnnouncer>();
   manager->Start();
   manager->AddAnnouncer(announcer.get());
-  manager->Announce(Other, "Test");
+  manager->Announce(TestEvent());
   ASSERT_TRUE(announcer->m_called.Wait(TIMEOUT));
 
   auto removed = std::make_shared<CEvent>();
@@ -225,4 +218,122 @@ TEST(TestAnnouncementManagerFailure, RemovingAnAnnouncerWhoseCallThrewDoesNotWai
     FAIL() << "RemoveAnnouncer is still waiting on a call that threw";
   }
   remover.join();
+}
+
+namespace
+{
+class CTypedAnnouncer : public IAnnouncer
+{
+public:
+  void OnPlayerEvent(const PlayerEvent& event) override
+  {
+    m_event = event;
+    m_typed.Set();
+  }
+
+  void OnAnnouncement(const Announcement& announcement) override
+  {
+    m_message = MessageOf(announcement);
+    m_data = V14::NotificationsOf(announcement).at(0).data;
+    IAnnouncer::OnAnnouncement(announcement);
+    m_legacy.Set();
+  }
+
+  PlayerEvent m_event;
+  CEvent m_typed;
+  std::string m_message;
+  CVariant m_data;
+  CEvent m_legacy;
+};
+} // namespace
+
+TEST_F(TestAnnouncementManager, ATypedEventReachesListenersAsItselfAndAsData)
+{
+  CTypedAnnouncer announcer;
+  m_manager.AddAnnouncer(&announcer, Player);
+  const auto item = std::make_shared<CFileItem>("/music/song.flac", false);
+  m_manager.Announce(PlayerEvent{EVENT::PLAYER::Play{item, 1, KODI::MEDIA::Streams::Audio}});
+  ASSERT_TRUE(announcer.m_typed.Wait(TIMEOUT));
+  ASSERT_TRUE(announcer.m_legacy.Wait(TIMEOUT));
+  m_manager.RemoveAnnouncer(&announcer);
+  m_manager.Deinitialize();
+
+  const auto* play = std::get_if<EVENT::PLAYER::Play>(&announcer.m_event);
+  ASSERT_NE(nullptr, play);
+  ASSERT_NE(nullptr, play->item);
+  EXPECT_NE(item, play->item) << "a listener must receive the copy taken when it was announced";
+  EXPECT_EQ("/music/song.flac", play->item->GetPath());
+
+  EXPECT_EQ("OnPlay", announcer.m_message);
+  EXPECT_EQ(1, announcer.m_data["player"]["speed"].asInteger());
+  EXPECT_TRUE(announcer.m_data["item"].isMember("type"));
+}
+
+namespace
+{
+class CLibraryAnnouncer : public IAnnouncer
+{
+public:
+  void OnVideoLibraryEvent(const VideoLibraryEvent& event) override
+  {
+    m_video = event;
+    m_videoReceived.Set();
+  }
+
+  void OnAudioLibraryEvent(const AudioLibraryEvent& event) override
+  {
+    m_audio = event;
+    m_audioReceived.Set();
+  }
+
+  void OnAnnouncement(const Announcement& announcement) override
+  {
+    if (FlagOf(announcement) == VideoLibrary)
+      m_videoData = V14::NotificationsOf(announcement).at(0).data;
+    IAnnouncer::OnAnnouncement(announcement);
+  }
+
+  VideoLibraryEvent m_video;
+  CEvent m_videoReceived;
+  AudioLibraryEvent m_audio;
+  CEvent m_audioReceived;
+  CVariant m_videoData;
+};
+} // namespace
+
+TEST_F(TestAnnouncementManager, ALibraryEventReachesTheHandlerForItsLibrary)
+{
+  CLibraryAnnouncer announcer;
+  m_manager.AddAnnouncer(&announcer, VideoLibrary | AudioLibrary);
+  const auto item = std::make_shared<CFileItem>("/movies/film.mkv", false);
+  m_manager.Announce(AudioLibraryEvent{EVENT::LIBRARY::ScanStarted{}});
+  m_manager.Announce(VideoLibraryEvent{EVENT::LIBRARY::Update{.item = item, .added = true}});
+  ASSERT_TRUE(announcer.m_audioReceived.Wait(TIMEOUT));
+  ASSERT_TRUE(announcer.m_videoReceived.Wait(TIMEOUT));
+  m_manager.RemoveAnnouncer(&announcer);
+  m_manager.Deinitialize();
+
+  EXPECT_TRUE(std::holds_alternative<EVENT::LIBRARY::ScanStarted>(announcer.m_audio));
+  const auto* update = std::get_if<EVENT::LIBRARY::Update>(&announcer.m_video);
+  ASSERT_NE(nullptr, update);
+  ASSERT_NE(nullptr, update->item);
+  EXPECT_NE(item, update->item) << "a listener must receive the copy taken when it was announced";
+  EXPECT_TRUE(update->added);
+
+  EXPECT_TRUE(announcer.m_videoData["added"].asBoolean());
+  EXPECT_TRUE(announcer.m_videoData["item"].isMember("type"));
+}
+
+TEST_F(TestAnnouncementManager, ATypedEventIsNotDeliveredForAnotherFlag)
+{
+  CTypedAnnouncer announcer;
+  m_manager.AddAnnouncer(&announcer, Playlist);
+  m_manager.Announce(PlayerEvent{EVENT::PLAYER::Menu{}});
+  m_manager.Announce(PlaylistEvent{EVENT::PLAYLIST::Clear{}});
+  ASSERT_TRUE(announcer.m_legacy.Wait(TIMEOUT));
+  m_manager.RemoveAnnouncer(&announcer);
+  m_manager.Deinitialize();
+
+  EXPECT_FALSE(announcer.m_typed.Wait(0ms));
+  EXPECT_EQ("OnClear", announcer.m_message);
 }

@@ -25,7 +25,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
-#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -35,6 +34,7 @@
 #include "utils/log.h"
 
 #include <mutex>
+#include <variant>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -163,35 +163,29 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 #define AUTH_REALM "AirPlay"
 #define AUTH_REQUIRED "WWW-Authenticate: Digest realm=\"" AUTH_REALM "\", nonce=\"{:s}\"\r\n"
 
-void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                              const std::string& sender,
-                              const std::string& message,
-                              const CVariant& data)
+void CAirPlayServer::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
   std::unique_lock lock(ServerInstanceLock);
 
-  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
+  if (!ServerInstance)
+    return;
+
+  if (const auto* stop = std::get_if<PLAYER::Stop>(&event))
   {
-    if (message == "OnStop")
-    {
-      bool shouldRestoreVolume = true;
-      if (data.isMember("player") && data["player"].isMember("playerid"))
-        shouldRestoreVolume =
-            (data["player"]["playerid"] != static_cast<int>(PLAYLIST::Id::TYPE_PICTURE));
+    if (!PLAYER::IsPicture(stop->item.get()))
+      restoreVolume();
 
-      if (shouldRestoreVolume)
-        restoreVolume();
-
-      ServerInstance->AnnounceToClients(EVENT_STOPPED);
-    }
-    else if (message == "OnPlay" || message == "OnResume")
-    {
-      ServerInstance->AnnounceToClients(EVENT_PLAYING);
-    }
-    else if (message == "OnPause")
-    {
-      ServerInstance->AnnounceToClients(EVENT_PAUSED);
-    }
+    ServerInstance->AnnounceToClients(EVENT_STOPPED);
+  }
+  else if (std::holds_alternative<PLAYER::Play>(event) ||
+           std::holds_alternative<PLAYER::Resume>(event))
+  {
+    ServerInstance->AnnounceToClients(EVENT_PLAYING);
+  }
+  else if (std::holds_alternative<PLAYER::Pause>(event))
+  {
+    ServerInstance->AnnounceToClients(EVENT_PAUSED);
   }
 }
 

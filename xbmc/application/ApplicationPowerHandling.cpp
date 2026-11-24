@@ -93,7 +93,8 @@ bool CApplicationPowerHandling::ToggleDPMS(bool manual)
       m_dpmsIsManual = false;
       SetRenderGUI(true);
       CheckOSScreenSaverInhibitionSetting();
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnDPMSDeactivated");
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::DPMSDeactivated{}});
       return dpms->DisablePowerSaving();
     }
     else
@@ -104,7 +105,8 @@ bool CApplicationPowerHandling::ToggleDPMS(bool manual)
         m_dpmsIsManual = manual;
         SetRenderGUI(false);
         CheckOSScreenSaverInhibitionSetting();
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnDPMSActivated");
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::DPMSActivated{}});
         return true;
       }
     }
@@ -133,10 +135,8 @@ bool CApplicationPowerHandling::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPresse
   if (result)
   {
     // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
-    CVariant data(CVariant::VariantTypeObject);
-    data["shuttingdown"] = bPowerOffKeyPressed;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI,
-                                                       "OnScreensaverDeactivated", data);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUIEvent{
+        ANNOUNCEMENT::EVENT::GUI::ScreensaverDeactivated{bPowerOffKeyPressed}});
   }
 
   return result;
@@ -370,7 +370,8 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   m_screensaverActive = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnScreensaverActivated");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::GUIEvent{ANNOUNCEMENT::EVENT::GUI::ScreensaverActivated{}});
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock =

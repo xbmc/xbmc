@@ -29,16 +29,15 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <mutex>
+#include <variant>
 
 #include <libcec/cec.h>
 
 using namespace PERIPHERALS;
 using namespace CEC;
-using namespace ANNOUNCEMENT;
 using namespace std::chrono_literals;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
@@ -150,40 +149,26 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_configuration.Clear();
 }
 
-void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                     const std::string& sender,
-                                     const std::string& message,
-                                     const CVariant& data)
+void CPeripheralCecAdapter::OnGUIEvent(const ANNOUNCEMENT::GUIEvent& event)
 {
-  if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-      message == "OnQuit" && m_bIsReady)
+  namespace GUI = ANNOUNCEMENT::EVENT::GUI;
+  if (!m_bIsReady)
+    return;
+
+  if (const auto* deactivated = std::get_if<GUI::ScreensaverDeactivated>(&event))
   {
-    std::unique_lock lock(m_critSection);
-    m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
-    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
-    StopThread(false);
-  }
-  else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           message == "OnScreensaverDeactivated" && m_bIsReady)
-  {
-    bool bIgnoreDeactivate(false);
-    if (data["shuttingdown"].isBoolean())
-    {
-      // don't respond to the deactivation if we are just going to suspend/shutdown anyway
-      // the tv will not have time to switch on before being told to standby and
-      // may not action the standby command.
-      bIgnoreDeactivate = data["shuttingdown"].asBoolean();
-      if (bIgnoreDeactivate)
-        CLog::Log(LOGDEBUG, "{} - ignoring OnScreensaverDeactivated for power action",
-                  __FUNCTION__);
-    }
+    // don't respond to the deactivation if we are just going to suspend/shutdown anyway
+    // the tv will not have time to switch on before being told to standby and
+    // may not action the standby command.
+    const bool bIgnoreDeactivate = deactivated->shuttingDown;
+    if (bIgnoreDeactivate)
+      CLog::Log(LOGDEBUG, "{} - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     if (m_bPowerOnScreensaver && !bIgnoreDeactivate && m_configuration.bActivateSource)
     {
       ActivateSource();
     }
   }
-  else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           message == "OnScreensaverActivated" && m_bIsReady)
+  else if (std::holds_alternative<GUI::ScreensaverActivated>(event))
   {
     const int iStandbyMode = GetSettingInt("cec_standby_screensaver_mode");
     if (iStandbyMode != LOCALISED_ID_NONE)
@@ -201,8 +186,19 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
         StandbyDevices();
     }
   }
-  else if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           message == "OnSleep")
+}
+
+void CPeripheralCecAdapter::OnSystemEvent(const ANNOUNCEMENT::SystemEvent& event)
+{
+  namespace SYSTEM = ANNOUNCEMENT::EVENT::SYSTEM;
+  if (const auto* quit = std::get_if<SYSTEM::Quit>(&event); quit && m_bIsReady)
+  {
+    std::unique_lock lock(m_critSection);
+    m_iExitCode = quit->exitCode;
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
+    StopThread(false);
+  }
+  else if (std::holds_alternative<SYSTEM::Sleep>(event))
   {
     // this will also power off devices when we're the active source
     {
@@ -211,8 +207,7 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     }
     StopThread();
   }
-  else if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           message == "OnWake")
+  else if (std::holds_alternative<SYSTEM::Wake>(event))
   {
     CLog::Log(LOGDEBUG, "{} - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     if (ReopenConnection())
@@ -227,15 +222,19 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
         ActivateSource();
     }
   }
-  else if (flag == ANNOUNCEMENT::Player && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           message == "OnStop")
+}
+
+void CPeripheralCecAdapter::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
+{
+  namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
+  if (std::holds_alternative<PLAYER::Stop>(event))
   {
     std::unique_lock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == ANNOUNCEMENT::Player && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
-           (message == "OnPlay" || message == "OnResume"))
+  else if (std::holds_alternative<PLAYER::Play>(event) ||
+           std::holds_alternative<PLAYER::Resume>(event))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);

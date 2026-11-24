@@ -44,15 +44,15 @@ CPlayList::CPlayList(Id id /* = PLAYLIST::TYPE_NONE */) : m_id(id)
   m_bWasPlayed = false;
 }
 
+// Temporary: maps the v14 playlist id to the events' playlist, until the playlist rewrite
+// announces its own changes.
 void CPlayList::AnnounceRemove(int pos)
 {
   if (m_id == Id::TYPE_NONE)
     return;
 
-  CVariant data;
-  data["playlistid"] = static_cast<int>(m_id);
-  data["position"] = pos;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnRemove", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Remove{TypeFromId(m_id), pos}});
 }
 
 void CPlayList::AnnounceClear()
@@ -60,9 +60,8 @@ void CPlayList::AnnounceClear()
   if (m_id == Id::TYPE_NONE)
     return;
 
-  CVariant data;
-  data["playlistid"] = static_cast<int>(m_id);
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Clear{TypeFromId(m_id)}});
 }
 
 void CPlayList::AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos)
@@ -70,10 +69,8 @@ void CPlayList::AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos)
   if (m_id == Id::TYPE_NONE)
     return;
 
-  CVariant data;
-  data["playlistid"] = static_cast<int>(m_id);
-  data["position"] = pos;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnAdd", item, data);
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Add{TypeFromId(m_id), pos, item}});
 }
 
 void CPlayList::Add(const std::shared_ptr<CFileItem>& item, int iPosition, int iOrder)

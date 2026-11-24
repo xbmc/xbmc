@@ -31,7 +31,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/geometry/ContentGeometryScanner.h"
 
@@ -366,10 +366,7 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(
             shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(651), path))
     {
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ImportFromXML(path);
-      videodatabase.Close();
+      VIDEO::LIBRARY::ImportFromXML(path);
     }
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCANCONTENTGEOMETRY)
@@ -401,7 +398,8 @@ void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& set
 
   const std::string& settingId{setting->GetId()};
   if (settingId == CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRefresh");
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Refresh{}});
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY ||
            settingId == CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN)
   {

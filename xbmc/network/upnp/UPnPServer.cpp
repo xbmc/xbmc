@@ -53,12 +53,14 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbPaths.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
 #include <memory>
+#include <variant>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -512,48 +514,64 @@ failure:
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPServer::Announce
+|   CUPnPServer::OnLibraryEvent
 +---------------------------------------------------------------------*/
-void CUPnPServer::Announce(AnnouncementFlag flag,
-                           const std::string& sender,
-                           const std::string& message,
-                           const CVariant& data)
+void CUPnPServer::OnVideoLibraryEvent(const VideoLibraryEvent& event)
 {
+  OnLibraryEvent(event, VideoLibrary);
+}
+
+void CUPnPServer::OnAudioLibraryEvent(const AudioLibraryEvent& event)
+{
+  OnLibraryEvent(event, AudioLibrary);
+}
+
+void CUPnPServer::OnLibraryEvent(const LibraryEvent& event, AnnouncementFlag flag)
+{
+  namespace LIBRARY = EVENT::LIBRARY;
   NPT_String path;
   int item_id;
   std::string item_type;
 
-  if (sender != CAnnouncementManager::ANNOUNCEMENT_SENDER)
-    return;
-
-  if (message != "OnUpdate" && message != "OnRemove" && message != "OnScanStarted" &&
-      message != "OnScanFinished")
-    return;
-
-  if (data.isNull())
+  if (std::holds_alternative<LIBRARY::ScanStarted>(event))
   {
-    if (message == "OnScanStarted" || message == "OnCleanStarted")
-    {
-      m_scanning = true;
-    }
-    else if (message == "OnScanFinished" || message == "OnCleanFinished")
-    {
-      OnScanCompleted(flag);
-    }
+    m_scanning = true;
+  }
+  else if (std::holds_alternative<LIBRARY::ScanFinished>(event))
+  {
+    OnScanCompleted(flag);
   }
   else
   {
     // handle both updates & removals
-    if (!data["item"].isNull())
+    if (const auto* update = std::get_if<LIBRARY::Update>(&event); update && update->item)
     {
-      item_id = (int)data["item"]["id"].asInteger();
-      item_type = data["item"]["type"].asString();
+      // an item names itself
+      if (update->item->HasVideoInfoTag())
+      {
+        item_id = update->item->GetVideoInfoTag()->m_iDbId;
+        item_type = update->item->GetVideoInfoTag()->m_type;
+      }
+      else if (update->item->HasMusicInfoTag())
+      {
+        item_id = update->item->GetMusicInfoTag()->GetDatabaseId();
+        item_type = KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG);
+      }
+      else
+        return;
+    }
+    else if (update)
+    {
+      item_id = update->id;
+      item_type = update->otherType.empty() ? KODI::MEDIA::NameOf(update->type) : update->otherType;
+    }
+    else if (const auto* remove = std::get_if<LIBRARY::Remove>(&event))
+    {
+      item_id = remove->id;
+      item_type = KODI::MEDIA::NameOf(remove->type);
     }
     else
-    {
-      item_id = (int)data["id"].asInteger();
-      item_type = data["type"].asString();
-    }
+      return;
 
     // we always update 'recently added' nodes along with the specific container,
     // as we don't differentiate 'updates' from 'adds' in RPC interface
@@ -872,9 +890,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     playlists->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136));
     items.Add(playlists);
 
-    CVideoDatabase database;
-    database.Open();
-    if (database.HasContent(VideoDbContentType::MUSICVIDEOS))
+    if (VIDEO::LIBRARY::HasContent(VideoDbContentType::MUSICVIDEOS))
     {
       CFileItemPtr mvideos(new CFileItem(MEDIA::LIBRARY_PATH::MUSICVIDEOS, true));
       mvideos->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
@@ -1188,17 +1204,10 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastShow") >= 0)
   {
-    CVideoDatabase database;
-    if (!database.Open())
-    {
-      action->SetError(800, "Internal Error");
-      return NPT_SUCCESS;
-    }
-
     CFileItemList items;
-    if (!database.GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(), items,
-                                    SortDescription(),
-                                    GetRequiredVideoDbDetails(NPT_String(filter))))
+    if (!VIDEO::LIBRARY::GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
+                                           CDatabase::Filter(), items, SortDescription(),
+                                           GetRequiredVideoDbDetails(NPT_String(filter))))
     {
       action->SetError(800, "Internal Error");
       return NPT_SUCCESS;
@@ -1210,17 +1219,10 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastSeason") >= 0)
   {
-    CVideoDatabase database;
-    if (!database.Open())
-    {
-      action->SetError(800, "Internal Error");
-      return NPT_SUCCESS;
-    }
-
     CFileItemList items;
-    if (!database.GetSeasonsByWhere(
+    if (!VIDEO::LIBRARY::GetSeasonsByWhere(
             StringUtils::Format("{}-1/?local", VIDEO::DB_PATH::TVSHOW_TITLES), CDatabase::Filter(),
-                                    items, true))
+            items, true))
     {
       action->SetError(800, "Internal Error");
       return NPT_SUCCESS;
@@ -1264,8 +1266,9 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     if (allVideoItems || searchClass.Find("object.item.videoItem.videoBroadcast") >= 0)
     {
-      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(),
-                                       items, true, SortDescription(), requiredVideoDbDetails))
+      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
+                                       CDatabase::Filter(), items, SortDescription(),
+                                       requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
@@ -1281,7 +1284,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     if (allVideoItems || searchClass.Find("object.item.videoItem.musicVideoClip") >= 0)
     {
       if (!database.GetMusicVideosByWhere(std::string{VIDEO::DB_PATH::MUSICVIDEO_TITLES} + "?local",
-                                          CDatabase::Filter(), items, true, SortDescription(),
+                                          CDatabase::Filter(), items, SortDescription(),
                                           requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");
@@ -1393,11 +1396,13 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
       }
       if (playCount.IsEmpty())
       {
-        CVariant data;
-        data["id"] = updated.GetVideoInfoTag()->m_iDbId;
-        data["type"] = updated.GetVideoInfoTag()->m_type;
-        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                           data);
+        const MEDIA::TYPE type{updated.GetVideoInfoTag()->GetMediaType()};
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Update{
+                .type = type,
+                .otherType =
+                    type == MEDIA::TYPE::NONE ? updated.GetVideoInfoTag()->m_type : std::string{},
+                .id = updated.GetVideoInfoTag()->m_iDbId}});
       }
       updatelisting = true;
     }

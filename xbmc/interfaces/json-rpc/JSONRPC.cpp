@@ -220,17 +220,9 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(ITransportLayer* transport,
 
 JSONRPC_STATUS CJSONRPC::NotifyAll(const CVariant& parameterObject, CVariant& result)
 {
-  if (parameterObject["data"].isNull())
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other,
-                                                       parameterObject["sender"].asString(),
-                                                       parameterObject["message"].asString());
-  else
-  {
-    CVariant data = parameterObject["data"];
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other,
-                                                       parameterObject["sender"].asString(),
-                                                       parameterObject["message"].asString(), data);
-  }
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::OtherEvent{parameterObject["sender"].asString(),
+                               parameterObject["message"].asString(), parameterObject["data"]});
 
   return ACK;
 }

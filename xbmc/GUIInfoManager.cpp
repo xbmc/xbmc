@@ -12642,7 +12642,8 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem& item)
 
   m_infoProviders.InitCurrentItem(m_currentFile.get());
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InfoEvent{ANNOUNCEMENT::EVENT::INFO::Changed{}});
 }
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string& thumbFileName)
@@ -12990,7 +12991,8 @@ void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag& tag)
   m_currentFile->SetFromVideoInfoTag(tag);
   m_currentFile->SetStartOffset(0);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InfoEvent{ANNOUNCEMENT::EVENT::INFO::Changed{}});
 }
 
 void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag& tag)
@@ -12998,7 +13000,8 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag& tag)
   m_currentFile->SetFromMusicInfoTag(tag);
   m_currentFile->SetStartOffset(0);
 
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
+  CServiceBroker::GetAnnouncementManager()->Announce(
+      ANNOUNCEMENT::InfoEvent{ANNOUNCEMENT::EVENT::INFO::Changed{}});
 }
 
 const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
