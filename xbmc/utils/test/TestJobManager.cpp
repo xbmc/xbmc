@@ -439,3 +439,116 @@ TEST_F(TestJobManager, CallbacksCountTowardsTheConcurrencyLimit)
 
   EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
 }
+
+TEST_F(TestJobManager, CancelJobWaitsForInFlightAbort)
+{
+  Flags flags;
+  BlockingCallback callback;
+  const unsigned int id = CServiceBroker::GetJobManager()->AddJob(new DummyJob(&flags), &callback);
+
+  ASSERT_TRUE(poll([&flags]() { return flags.started.load(); }));
+
+  // CancelJobs aborts the running job on its own thread; the callback blocks
+  // inside OnJobAbort until released
+  std::thread shutdown([]() { CServiceBroker::GetJobManager()->CancelJobs(); });
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  // A callback-less CancelJob, as every direct caller uses, must not return
+  // while the abort is still in flight
+  std::atomic<bool> cancelReturned{false};
+  std::thread canceller(
+      [&]()
+      {
+        CServiceBroker::GetJobManager()->CancelJob(id);
+        cancelReturned = true;
+      });
+
+  EXPECT_FALSE(poll(200, [&cancelReturned]() { return cancelReturned.load(); }));
+
+  flags.lingerAtWork = false;
+  callback.Release();
+
+  EXPECT_TRUE(poll([&cancelReturned]() { return cancelReturned.load(); }));
+  canceller.join();
+  shutdown.join();
+}
+
+namespace
+{
+class ScanJob : public CJob
+{
+public:
+  ScanJob(std::string dir, Flags* flags) : m_dir(std::move(dir)), m_flags(flags) {}
+
+  const char* GetType() const override { return "ScanJob"; }
+
+  bool Equals(const CJob* job) const override
+  {
+    const auto* other = dynamic_cast<const ScanJob*>(job);
+    return other && m_dir == other->m_dir;
+  }
+
+  bool DoWork() override
+  {
+    m_flags->started = true;
+    while (m_flags->lingerAtWork)
+      std::this_thread::yield();
+    m_flags->finished = true;
+    return true;
+  }
+
+private:
+  std::string m_dir;
+  Flags* m_flags;
+};
+
+class CompleteCallback : public IJobCallback
+{
+public:
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override { completed = true; }
+
+  std::atomic<bool> completed{false};
+};
+} // namespace
+
+TEST_F(TestJobManager, AddJobDoesNotMergeIntoJobWithCancelledSubscribers)
+{
+  Flags flags1;
+  Flags flags2;
+  flags2.lingerAtWork = false;
+  CompleteCallback cb1;
+  CompleteCallback cb2;
+
+  const unsigned int id1 =
+      CServiceBroker::GetJobManager()->AddJob(new ScanJob("/music", &flags1), &cb1);
+  ASSERT_TRUE(poll([&flags1]() { return flags1.started.load(); }));
+
+  // strip the only subscriber while the job keeps running
+  CServiceBroker::GetJobManager()->CancelJob(id1, &cb1);
+
+  // an equal job must queue and run rather than merge into the abandoned one
+  CServiceBroker::GetJobManager()->AddJob(new ScanJob("/music", &flags2), &cb2);
+
+  ASSERT_TRUE(poll([&flags2]() { return flags2.finished.load(); }));
+  ASSERT_TRUE(poll([&cb2]() { return cb2.completed.load(); }));
+
+  flags1.lingerAtWork = false;
+  ASSERT_TRUE(poll([&flags1]() { return flags1.finished.load(); }));
+}
+
+TEST_F(TestJobManager, CancelJobWithUnknownIdReturns)
+{
+  // Job ids start at 1; 0 is the AddJob failure value. Neither it nor an id
+  // matching no work item may wait on an abort that does not exist.
+  std::atomic<bool> returned{false};
+  std::thread canceller(
+      [&]()
+      {
+        CServiceBroker::GetJobManager()->CancelJob(0);
+        CServiceBroker::GetJobManager()->CancelJob(424242);
+        returned = true;
+      });
+  EXPECT_TRUE(poll([&returned]() { return returned.load(); }));
+  // detach so a regression leaks a blocked thread instead of hanging the suite
+  canceller.detach();
+}

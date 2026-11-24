@@ -53,6 +53,35 @@ private:
   Shared& m_shared;
 };
 
+//! \brief Jobs comparing equal when they share a tag, so the job manager merges duplicates
+class EqualJob : public CJob
+{
+public:
+  EqualJob(int tag, BlockingJob::Shared& shared) : m_tag(tag), m_shared(shared) {}
+
+  const char* GetType() const override { return "EqualJob"; }
+
+  bool Equals(const CJob* job) const override
+  {
+    const auto* other = dynamic_cast<const EqualJob*>(job);
+    return other != nullptr && other->m_tag == m_tag;
+  }
+
+  bool DoWork() override
+  {
+    ++m_shared.started;
+    while (!m_shared.release)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    ++m_shared.finished;
+    return true;
+  }
+
+private:
+  int m_tag;
+  BlockingJob::Shared& m_shared;
+};
+
 /*! \brief Lets the jobs holding this finish, and waits until they have
 
  A failed assertion returns from the test at once, so without this the jobs would be left waiting
@@ -106,9 +135,8 @@ TEST_F(TestJobQueue, WaitForCompletionReturnsWhenNothingWasEverQueued)
 
 TEST_F(TestJobQueue, WaitForCompletionReturnsOnceJobsFinish)
 {
-  CJobQueue queue{false, 2, CJob::PRIORITY_LOW};
-
   BlockingJob::Shared shared;
+  CJobQueue queue{false, 2, CJob::PRIORITY_LOW};
   const Releaser releaser{shared};
   ASSERT_TRUE(queue.AddJob(new BlockingJob(shared)));
   ASSERT_TRUE(queue.AddJob(new BlockingJob(shared)));
@@ -123,9 +151,8 @@ TEST_F(TestJobQueue, WaitForCompletionReturnsOnceJobsFinish)
 
 TEST_F(TestJobQueue, WaitForCompletionReturnsOnceCancellingLeavesNothingQueued)
 {
-  CJobQueue queue{false, 1, CJob::PRIORITY_LOW};
-
   BlockingJob::Shared shared;
+  CJobQueue queue{false, 1, CJob::PRIORITY_LOW};
   const Releaser releaser{shared};
   auto* running = new BlockingJob(shared);
   auto* waiting = new BlockingJob(shared);
@@ -142,4 +169,44 @@ TEST_F(TestJobQueue, WaitForCompletionReturnsOnceCancellingLeavesNothingQueued)
   // Nothing is left for the queue to report on, even though what it handed over is still going
   queue.CancelJob(running);
   EXPECT_TRUE(queue.WaitForCompletion(NOT_IDLE));
+}
+
+TEST_F(TestJobQueue, WaitForCompletionReturnsWhenJobMergesIntoAnotherQueuesJob)
+{
+  BlockingJob::Shared shared;
+  CJobQueue queueA{false, 1, CJob::PRIORITY_LOW};
+  CJobQueue queueB{false, 1, CJob::PRIORITY_LOW};
+  const Releaser releaser{shared};
+
+  ASSERT_TRUE(queueA.AddJob(new EqualJob(1, shared)));
+  ASSERT_TRUE(poll([&shared]() { return shared.started == 1; }));
+
+  // An equal job from another queue is merged into the running one by the job manager
+  ASSERT_TRUE(queueB.AddJob(new EqualJob(1, shared)));
+
+  shared.release = true;
+  EXPECT_TRUE(queueA.WaitForCompletion(SETTLE));
+  EXPECT_TRUE(queueB.WaitForCompletion(SETTLE));
+  EXPECT_EQ(shared.started.load(), 1);
+}
+
+TEST_F(TestJobQueue, CancellingMergedJobInOneQueueStillCompletesOtherQueue)
+{
+  BlockingJob::Shared shared;
+  CJobQueue queueA{false, 1, CJob::PRIORITY_LOW};
+  CJobQueue queueB{false, 1, CJob::PRIORITY_LOW};
+  const Releaser releaser{shared};
+
+  ASSERT_TRUE(queueA.AddJob(new EqualJob(1, shared)));
+  ASSERT_TRUE(poll([&shared]() { return shared.started == 1; }));
+
+  ASSERT_TRUE(queueB.AddJob(new EqualJob(1, shared)));
+
+  queueA.CancelJobs();
+  EXPECT_TRUE(queueA.WaitForCompletion(NOT_IDLE));
+  EXPECT_FALSE(queueB.WaitForCompletion(NOT_IDLE));
+
+  shared.release = true;
+  EXPECT_TRUE(queueB.WaitForCompletion(SETTLE));
+  EXPECT_EQ(shared.started.load(), 1);
 }
