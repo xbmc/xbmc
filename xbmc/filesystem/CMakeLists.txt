@@ -201,6 +201,15 @@ if(CORE_SYSTEM_NAME STREQUAL wasm)
                       wasm/XhrHttpClient.h)
 endif()
 
+if(TARGET ${APP_NAME_LC}::Libtorrent)
+  list(APPEND SOURCES MagnetDirectory.cpp
+                      MagnetFile.cpp
+  )
+  list(APPEND HEADERS MagnetDirectory.h
+                      MagnetFile.h
+  )
+endif()
+
 core_add_library(filesystem)
 if(ENABLE_STATIC_LIBS AND ENABLE_UPNP)
   target_link_libraries(filesystem PRIVATE upnp)
