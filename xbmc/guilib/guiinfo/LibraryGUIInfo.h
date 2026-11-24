@@ -10,6 +10,8 @@
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
 
+#include <array>
+#include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
@@ -46,14 +48,11 @@ public:
   void ResetLibraryBools();
 
 private:
-  mutable int m_libraryHasMusic;
-  mutable int m_libraryHasMovies;
-  mutable int m_libraryHasTVShows;
-  mutable int m_libraryHasMusicVideos;
-  mutable int m_libraryHasMovieSets;
-  mutable int m_libraryHasSingles;
-  mutable int m_libraryHasCompilations;
-  mutable int m_libraryHasBoxsets;
+  //! Whether the library has content of a kind, asked of its database the first time
+  bool HasContent(std::size_t kind) const;
+
+  //! Per kind of content: -1 until known, else whether the library has it
+  mutable std::array<int, 8> m_libraryHas{};
 
   //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
   //For checking visibility of custom nodes for a role.
