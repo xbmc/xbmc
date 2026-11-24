@@ -724,13 +724,12 @@ std::string CURL::GetWithoutFilename() const
     else
       hostname = m_strHostName;
 
+    protectIPv6(hostname);
+    strURL += hostname;
     if (HasPort())
     {
-      protectIPv6(hostname);
-      strURL += hostname + StringUtils::Format(":{}", m_iPort);
+      strURL += StringUtils::Format(":{}", m_iPort);
     }
-    else
-      strURL += hostname;
 
     strURL += "/";
   }
