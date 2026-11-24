@@ -315,6 +315,16 @@ bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t valu
   return m_req->AddProperty(object, name, value);
 }
 
+bool CDRMAtomic::TestProperties(CDRMObject* object,
+                                const std::vector<std::pair<const char*, uint64_t>>& properties)
+{
+  CDRMAtomicRequest request;
+  for (const auto& [name, value] : properties)
+    request.AddProperty(object, name, value);
+
+  return drmModeAtomicCommit(m_fd, request.Get(), DRM_MODE_ATOMIC_TEST_ONLY, nullptr) == 0;
+}
+
 CDRMAtomic::CDRMAtomicRequest::CDRMAtomicRequest() : m_atomicRequest(drmModeAtomicAlloc())
 {
 }

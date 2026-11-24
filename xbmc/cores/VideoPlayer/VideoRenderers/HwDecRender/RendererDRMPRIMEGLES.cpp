@@ -44,9 +44,6 @@ CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
   if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
     return nullptr;
 
-  if (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) != 1)
-    return nullptr;
-
   auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
   if (!buf)
     return nullptr;

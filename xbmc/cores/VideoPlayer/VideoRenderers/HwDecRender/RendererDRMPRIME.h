@@ -10,6 +10,8 @@
 
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 
+#include <atomic>
+
 class CVideoBuffer;
 class CVideoLayerBridgeDRMPRIME;
 
@@ -54,6 +56,7 @@ private:
   CRect m_planeDestRect;
 
   std::shared_ptr<CVideoLayerBridgeDRMPRIME> m_videoLayerBridge;
+  std::atomic<bool> m_planeRefused{false};
 
   struct BUFFER
   {
