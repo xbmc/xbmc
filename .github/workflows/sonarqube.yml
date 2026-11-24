@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - master
+# Only the newest push to master is worth analysing.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -33,6 +37,8 @@ jobs:
         # xbmc/interfaces/swig/CMakeLists.txt requires SWIG 4.5.0 or newer to generate the
         # python bindings, which is newer than the version Ubuntu ships. Build the same
         # version tools/depends/native/swig pins for cross-compiled platforms.
+        # Built outside the checkout so the scan does not index SWIG's sources.
+        working-directory: ${{ runner.temp }}
         run: |
           curl -fL -o swig.tar.gz https://mirrors.kodi.tv/build-deps/sources/swig-4.5.0.tar.gz
           echo "fef7c3db99d2894064ac8cded989dc574fc15b8a497db6239e278e326616c905df8c2d2a28848f6e0874c1732af958772d504da84c5f068b719a4d192a472e96  swig.tar.gz" | sha512sum -c -
@@ -45,10 +51,26 @@ jobs:
         run: |
           mkdir build
           cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D ENABLE_INTERNAL_FFMPEG=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+      # SonarQube Cloud's report upload intermittently times out, so allow it longer and retry
+      # a failed scan once.
       - name: SonarQube Scan
+        id: scan
+        continue-on-error: true
         uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             --define sonar.cfamily.compile-commands=build/compile_commands.json
+            --define sonar.scanner.responseTimeout=300
+            --define sonar.scanner.socketTimeout=300
+      - name: SonarQube Scan (retry)
+        if: steps.scan.outcome == 'failure'
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            --define sonar.cfamily.compile-commands=build/compile_commands.json
+            --define sonar.scanner.responseTimeout=300
+            --define sonar.scanner.socketTimeout=300
