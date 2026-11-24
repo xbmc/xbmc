@@ -32,7 +32,7 @@ public:
 
 #if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
   void CreateKMSFence(int fd);
-  void CreateGPUFence();
+  bool CreateGPUFence();
   EGLint FlushFence();
   void WaitSyncGPU();
   void WaitSyncCPU();

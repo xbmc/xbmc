@@ -98,9 +98,10 @@ EGLSyncKHR CEGLFence::CreateFence(int fd)
   return fence;
 }
 
-void CEGLFence::CreateGPUFence()
+bool CEGLFence::CreateGPUFence()
 {
   m_gpuFence = CreateFence(EGL_NO_NATIVE_FENCE_FD_ANDROID);
+  return m_gpuFence != EGL_NO_SYNC_KHR;
 }
 
 void CEGLFence::CreateKMSFence(int fd)
