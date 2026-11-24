@@ -762,25 +762,31 @@ void CDatabase::Interrupt()
   m_pDS->interrupt();
 }
 
-void CDatabase::BeginTransaction()
+bool CDatabase::BeginTransaction()
 {
   try
   {
     if (nullptr != m_pDB)
+    {
       m_pDB->start_transaction();
+      return true;
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "database:begintransaction failed");
   }
+  return false;
 }
 
 bool CDatabase::CommitTransaction()
 {
+  // Without a database, nothing was begun or written
+  if (nullptr == m_pDB)
+    return false;
   try
   {
-    if (nullptr != m_pDB)
-      m_pDB->commit_transaction();
+    m_pDB->commit_transaction();
   }
   catch (...)
   {

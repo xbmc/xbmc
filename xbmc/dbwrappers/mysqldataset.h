@@ -32,6 +32,10 @@ protected:
   /* connect descriptor */
   MYSQL* conn{nullptr};
   bool _in_transaction{false};
+  //! The transaction begun has ended without its commit or rollback: it couldn't be begun, its
+  //! connection was lost, the server rolled it back to end a deadlock, or a statement in it timed out
+  //! waiting for a lock. Nothing more is written in it, and its commit fails.
+  bool _transaction_lost{false};
 
 public:
   /* default constructor */
@@ -76,6 +80,11 @@ public:
   std::string vprepare(std::string_view format, va_list args) override;
 
   bool in_transaction() override { return _in_transaction; }
+  /*!
+   \brief Whether the transaction begun has ended without its commit or rollback, so that what is
+   written now would be committed alone, statement by statement
+   */
+  bool transaction_lost() const { return _in_transaction && _transaction_lost; }
   int query_with_reconnect(std::string_view query);
   void configure_connection();
 

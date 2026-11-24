@@ -1,4 +1,5 @@
-set(SOURCES TestLibraryIds.cpp
+set(SOURCES TestDatabaseTransactions.cpp
+            TestLibraryIds.cpp
             TestMysqlDataset.cpp
             TestVPrepare.cpp)
 
