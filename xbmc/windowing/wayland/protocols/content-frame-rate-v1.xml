@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="content_frame_rate_v1">
+  <copyright>
+    Copyright 2026 Contributors
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice (including the next
+    paragraph) shall be included in all copies or substantial portions of the
+    Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+  </copyright>
+
+  <interface name="wp_content_frame_rate_manager_v1" version="1">
+    <description summary="surface content frame rate manager">
+      This interface allows a client to describe the intended content frame
+      rate of a surface so that compositors can optimize presentation timing.
+
+      A compositor generally cannot tell the cadence content is authored at
+      from the rate at which a client happens to commit buffers. Knowing the
+      intended cadence lets the compositor pace scanout to match it, for
+      example by picking an output refresh rate that is an integer multiple
+      of the content frame rate, or by applying low framerate compensation
+      when the content rate falls below the minimum refresh rate of a
+      variable refresh rate output. Without this information, fixed cadence
+      content such as 23.976 fps video can be presented with an uneven
+      distribution of frame durations, which is visible as judder.
+
+      The content frame rate is a hint and does not guarantee an exact output
+      refresh rate or compositor behavior.
+
+      Warning! The protocol described in this file is currently in the testing
+      phase. Backward compatible changes may be added together with the
+      corresponding interface version bump. Backward incompatible changes can
+      only be done by creating a new major version of the extension.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the content frame rate manager object">
+        Destroy the content frame rate manager. This doesn't destroy objects
+        created with the manager.
+      </description>
+    </request>
+
+    <enum name="error">
+      <entry name="already_constructed" value="0"
+             summary="wl_surface already has a frame rate object"/>
+    </enum>
+
+    <request name="get_surface_content_frame_rate">
+      <description summary="create a new content frame rate object">
+        Create a new content frame rate object associated with the given
+        surface.
+
+        Creating a wp_content_frame_rate_v1 from a wl_surface which already
+        has one attached is a client error: already_constructed.
+      </description>
+      <arg name="id" type="new_id" interface="wp_content_frame_rate_v1"/>
+      <arg name="surface" type="object" interface="wl_surface"/>
+    </request>
+  </interface>
+
+  <interface name="wp_content_frame_rate_v1" version="1">
+    <description summary="content frame rate object for a surface">
+      The content frame rate object allows clients to hint the intended frame
+      production cadence of content shown on a surface.
+
+      Values are represented as a rational number (numerator / denominator)
+      to express exact rates like 24000/1001.
+
+      The client may request to switch to another frame rate at any time.
+      When the associated surface gets destroyed, this object becomes inert and
+      the client should destroy it.
+
+      This interface carries information in one direction only. The compositor
+      does not report back whether or how the hint was taken into account.
+      Clients that need to know how their content is actually being presented
+      should use the presentation-time protocol, which reports the presentation
+      timestamps and refresh interval that were actually used.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the content frame rate object">
+        Switch back to not specifying any content frame rate for this surface.
+        This is equivalent to setting the frame rate to unknown, including
+        double-buffering semantics. See set_frame_rate for details.
+      </description>
+    </request>
+
+    <enum name="error">
+      <entry name="invalid_denominator" value="0"
+             summary="denominator must not be zero"/>
+    </enum>
+
+    <request name="set_frame_rate">
+      <description summary="specify the surface content frame rate">
+        Set the content frame rate hint for the surface.
+
+        The rate is a rational value defined as numerator / denominator in
+        frames per second. For example:
+          - 24/1 for 24.000 fps
+          - 24000/1001 for ~23.976 fps
+          - 60000/1001 for ~59.94 fps
+
+        If numerator is zero, the client indicates that no specific frame rate
+        hint applies (unknown).
+
+        A denominator of zero is invalid and is a client error:
+        invalid_denominator.
+
+        This is purely a hint for the compositor, which may use it to choose
+        presentation strategies such as refresh rate selection or frame pacing.
+
+        The frame rate is double-buffered state, see wl_surface.commit for
+        details.
+      </description>
+      <arg name="numerator" type="uint"
+           summary="frame rate numerator, or 0 for unknown"/>
+      <arg name="denominator" type="uint"
+           summary="frame rate denominator, must not be zero when numerator is non-zero"/>
+    </request>
+  </interface>
+</protocol>

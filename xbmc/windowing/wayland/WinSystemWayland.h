@@ -23,11 +23,13 @@
 
 #include <atomic>
 #include <chrono>
+#include <cstdint>
 #include <ctime>
 #include <list>
 #include <map>
 #include <set>
 #include <time.h>
+#include <utility>
 
 #include <wayland-client.hpp>
 #include <wayland-cursor.hpp>
@@ -83,6 +85,7 @@ public:
   std::string GetClipboardText() override;
 
   bool SetHDR(const VideoPicture* videoPicture) override;
+  void SetContentFrameRate(float fps) override;
   bool IsHDRDisplay() override;
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
@@ -220,6 +223,9 @@ private:
   wayland::viewporter_t m_viewporter;
   wayland::fractional_scale_manager_v1_t m_fractionalScaleManager;
   wayland::fractional_scale_v1_t m_fractionalScale;
+  wayland::content_frame_rate_manager_v1_t m_contentFrameRateManager;
+  wayland::content_frame_rate_v1_t m_contentFrameRate;
+  std::pair<std::uint32_t, std::uint32_t> m_contentFrameRateSent{0, 1};
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
