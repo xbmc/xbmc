@@ -128,7 +128,7 @@ bool CInputManager::ProcessMouse(int windowId)
   appPower->ResetSystemIdleTimer();
   appPower->ResetScreenSaver();
 
-  if (appPower->WakeUpScreenSaverAndDPMS())
+  if (appPower->WakeUpOnInput())
     return true;
 
   // Retrieve the corresponding action
@@ -185,7 +185,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
     const auto appPower = components.GetComponent<CApplicationPowerHandling>();
     appPower->ResetSystemIdleTimer();
     appPower->ResetScreenSaver();
-    appPower->WakeUpScreenSaverAndDPMS();
+    appPower->WakeUpOnInput();
   }
 
   // now handle any buttons or axis
@@ -226,7 +226,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
           appPower->ResetScreenSaver();
 
           // in case we wokeup the screensaver or screen - eat that action...
-          if (appPower->WakeUpScreenSaverAndDPMS())
+          if (appPower->WakeUpOnInput())
             return true;
 
           m_Mouse.SetActive(false);
@@ -592,7 +592,7 @@ bool CInputManager::HandleKey(const CKey& key)
   appPower->ResetScreenSaver();
 
   // allow some keys to be processed while the screensaver is active
-  if (appPower->WakeUpScreenSaverAndDPMS(processKey) && !processKey)
+  if (appPower->WakeUpOnInput(processKey) && !processKey)
   {
     CLog::LogF(LOGDEBUG, "{} pressed, screen saver/dpms woken up",
                m_Keyboard.GetKeyName(key.GetButtonCode()));

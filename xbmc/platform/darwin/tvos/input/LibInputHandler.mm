@@ -48,7 +48,7 @@
     appPower->ResetScreenSaver();
 
     // in case we wokeup the screensaver or screen - eat that action...
-    if (appPower->WakeUpScreenSaverAndDPMS())
+    if (appPower->WakeUpOnInput())
       return;
     CServiceBroker::GetInputManager().QueueAction(CAction(actionID, 1.0f, 0.0f, actionName));
   }

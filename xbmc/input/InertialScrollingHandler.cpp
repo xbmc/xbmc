@@ -89,7 +89,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPower = components.GetComponent<CApplicationPowerHandling>();
     appPower->ResetScreenSaver();
-    appPower->WakeUpScreenSaverAndDPMS();
+    appPower->WakeUpOnInput();
   }
   else if (action->GetID() == ACTION_GESTURE_END &&
            !m_panPoints.empty()) // do we need to animate inertial scrolling?
