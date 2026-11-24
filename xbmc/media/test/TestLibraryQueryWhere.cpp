@@ -8,9 +8,11 @@
 
 #include "dbwrappers/test/DatabaseTestUtils.h"
 #include "media/LibraryQuery.h"
+#include "media/MediaType.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <ostream>
@@ -30,11 +32,17 @@ struct WhereCase
   std::string_view rules;
   std::string_view where;
   bool useOriginalDate{false};
+  //! The items the clause is for, when not the first the type lists
+  std::optional<MEDIA::TYPE> itemType{};
 };
 
 void PrintTo(const WhereCase& c, std::ostream* os)
 {
   *os << c.type << ' ' << c.rules << (c.useOriginalDate ? " (original dates)" : "");
+  if (c.itemType)
+  {
+    *os << " for " << MEDIA::NameOf(*c.itemType);
+  }
 }
 
 constexpr const char* MUSIC_DB_NAME = "TestLibraryQueryWhereMusic";
@@ -71,12 +79,18 @@ protected:
       ADD_FAILURE() << "could not load " << json;
       return std::nullopt;
     }
-    const MEDIA::LIBRARY_QUERY::Source source{
-        MEDIA::LIBRARY_QUERY::SourcesOf(playlist.GetType()).front()};
-    const bool music{source.section == MEDIA::MediaSection::MUSIC};
+    const auto sources{MEDIA::LIBRARY_QUERY::SourcesOf(playlist.GetType())};
+    const auto source{std::ranges::find_if(sources, [&c](const MEDIA::LIBRARY_QUERY::Source& s)
+                                           { return !c.itemType || s.itemType == *c.itemType; })};
+    if (source == sources.end())
+    {
+      ADD_FAILURE() << c.type << " lists no " << MEDIA::NameOf(*c.itemType);
+      return std::nullopt;
+    }
+    const bool music{source->section == MEDIA::MediaSection::MUSIC};
     return playlist.GetWhereClause(music ? static_cast<const CDatabase&>(s_music->Get())
                                          : static_cast<const CDatabase&>(s_video->Get()),
-                                   source.itemType, c.useOriginalDate);
+                                   source->itemType, c.useOriginalDate);
   }
 
   static std::unique_ptr<CConnectedTestDatabase<CMusicDatabase>> s_music;
@@ -448,6 +462,21 @@ const WhereCase MUSICVIDEOS_RULES[] = {
      R"sql(((musicvideo_view.c08 LIKE '%x%')))sql"},
 };
 
+const WhereCase MIXED_RULES[] = {
+    {"mixed", R"({"field":"albumartist","operator":"is","value":"Queen"})",
+     R"sql((( EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = songview.idAlbum AND album_artist.idArtist = artist.idArtist AND artist.strArtist LIKE 'Queen'))))sql",
+     false, MEDIA::TYPE::SONG},
+    {"mixed", R"({"field":"albumartist","operator":"is","value":"Queen"})",
+     R"sql((( EXISTS (SELECT 1 FROM actor_link         JOIN actor ON actor.actor_id=actor_link.actor_id         WHERE actor_link.media_id=musicvideo_view.idMVideo AND actor.name  LIKE 'Queen' AND actor_link.media_type = 'musicvideo'))))sql",
+     false, MEDIA::TYPE::MUSIC_VIDEO},
+    {"mixed", R"({"field":"tracknumber","operator":"is","value":"1"})",
+     R"sql(((CAST(songview.iTrack as DECIMAL(6,1)) = 1)))sql",
+     false, MEDIA::TYPE::SONG},
+    {"mixed", R"({"field":"tracknumber","operator":"is","value":"1"})",
+     R"sql(((CAST(musicvideo_view.c12 as DECIMAL(6,1)) = 1)))sql",
+     false, MEDIA::TYPE::MUSIC_VIDEO},
+};
+
 //! Rules on a field the type has none of, and number rules whose value is not a number
 const WhereCase REFUSED_RULES[] = {
     {"musicvideos", R"({"field":"albumartist","operator":"is","value":"Queen"})", ""},
@@ -456,7 +485,6 @@ const WhereCase REFUSED_RULES[] = {
     {"songs", R"({"field":"videoresolution","operator":"is","value":"1080"})", ""},
     {"tvshows", R"({"field":"videocodec","operator":"is","value":"h264"})", ""},
     {"mixed", R"({"field":"originaltitle","operator":"is","value":"x"})", ""},
-    {"mixed", R"({"field":"albumartist","operator":"isnot","value":"Queen"})", ""},
     {"movies", R"({"field":"nosuchfield","operator":"is","value":"x"})", ""},
     {"movies", R"({"field":"rating","operator":"greaterthan","value":"0 OR 1=1"})", ""},
     {"movies", R"({"field":"year","operator":"is","value":"2000 OR 1=1"})", ""},
@@ -483,6 +511,7 @@ INSTANTIATE_TEST_SUITE_P(Episodes, TestLibraryQueryWhere, ::testing::ValuesIn(EP
 INSTANTIATE_TEST_SUITE_P(MusicVideos,
                          TestLibraryQueryWhere,
                          ::testing::ValuesIn(MUSICVIDEOS_RULES));
+INSTANTIATE_TEST_SUITE_P(Mixed, TestLibraryQueryWhere, ::testing::ValuesIn(MIXED_RULES));
 
 namespace
 {

@@ -16,6 +16,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
@@ -72,6 +73,11 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     partyModePath = profileManager->GetUserDataItem("PartyMode.xsp");
 
   playlistLoaded=playlist.Load(partyModePath);
+  if (!playlistLoaded && XFILE::CFile::Exists(partyModePath))
+  {
+    OnError(16033, "Party mode could not read its rules. Aborting.");
+    return false;
+  }
 
   if (playlistLoaded)
   {

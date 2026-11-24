@@ -702,16 +702,15 @@ TEST(TestLibraryQuery, AMixedPlaylistOffersTheFieldsSongsAndMusicVideosBothHave)
 {
   std::vector<std::string> fields;
   MEDIA::CLibraryQuery::GetAvailableFields(MEDIA::LIBRARY_QUERY::TYPE::MIXED, fields);
-  EXPECT_EQ((std::vector<std::string>{"genre", "album", "artist", "title", "year", "time",
-                                      "filename", "path", "playcount", "lastplayed", "rating",
-                                      "userrating", "dateadded", "playlist", "virtualfolder"}),
-            fields);
+  EXPECT_EQ(
+      (std::vector<std::string>{"genre", "album", "artist", "albumartist", "title", "year", "time",
+                                "tracknumber", "filename", "path", "playcount", "lastplayed",
+                                "rating", "userrating", "dateadded", "playlist", "virtualfolder"}),
+      fields);
 
   for (const Field field : MEDIA::CLibraryQueryRule::GetFields(MEDIA::LIBRARY_QUERY::TYPE::MIXED))
   {
     EXPECT_TRUE(MEDIA::CLibraryQueryRule::HasField(MEDIA::LIBRARY_QUERY::TYPE::SONGS, field));
-    EXPECT_TRUE(
-        MEDIA::CLibraryQueryRule::HasField(MEDIA::LIBRARY_QUERY::TYPE::MUSIC_VIDEOS, field));
   }
 }
 

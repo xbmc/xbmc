@@ -180,11 +180,16 @@ std::vector<Field> ListFields(LIBRARY_QUERY::TYPE type)
   bool isVideo = false;
   if (type == LIBRARY_QUERY::TYPE::MIXED)
   {
-    // What songs and music videos both have, so that a rule can be asked of either
+    // What songs and music videos both have, so that a rule can be asked of either. The video
+    // library also writes an album artist and a track number for music videos, which their own
+    // playlists do not offer.
     const std::vector<Field> musicVideos{ListFields(LIBRARY_QUERY::TYPE::MUSIC_VIDEOS)};
     std::ranges::copy_if(ListFields(LIBRARY_QUERY::TYPE::SONGS), std::back_inserter(fields),
                          [&musicVideos](Field field)
-                         { return std::ranges::find(musicVideos, field) != musicVideos.end(); });
+                         {
+                           return field == Field::ALBUM_ARTIST || field == Field::TRACK_NUMBER ||
+                                  std::ranges::find(musicVideos, field) != musicVideos.end();
+                         });
     return fields;
   }
   else if (type == LIBRARY_QUERY::TYPE::SONGS)
