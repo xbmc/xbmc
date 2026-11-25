@@ -1342,18 +1342,14 @@ CInfoScanner::InfoRet CMusicInfoScanner::UpdateDatabaseAlbumInfo(
       if (pDialog && bAllowSelection)
       {
         std::string strTempAlbum(album.strAlbum);
-        if (!CGUIKeyboardFactory::ShowAndGetInput(
-                strTempAlbum,
-                CVariant{localizeStrings.Get(16011)},
-                false))
+        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum,
+                                                  CVariant{localizeStrings.Get(16011)}, false))
           albumDownloadStatus = InfoRet::CANCELLED;
         else
         {
           std::string strTempArtist(album.GetAlbumArtistString());
-          if (!CGUIKeyboardFactory::ShowAndGetInput(
-                  strTempArtist,
-                  CVariant{localizeStrings.Get(16025)},
-                  false))
+          if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist,
+                                                    CVariant{localizeStrings.Get(16025)}, false))
             albumDownloadStatus = InfoRet::CANCELLED;
           else
           {

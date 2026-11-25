@@ -255,9 +255,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     items.Add(item);
 
     std::string thumb;
-    if (CGUIDialogFileBrowser::ShowAndGetImage(
-            items, shares, localizeStrings.Get(1030),
-            thumb) &&
+    if (CGUIDialogFileBrowser::ShowAndGetImage(items, shares, localizeStrings.Get(1030), thumb) &&
         !StringUtils::EqualsNoCase(thumb, KODI::ART::CHOICE::CURRENT))
     {
       m_needsSaving = true;
