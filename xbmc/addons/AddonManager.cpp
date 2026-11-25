@@ -31,7 +31,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "jobs/JobManager.h"
-#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/FileUtils.h"

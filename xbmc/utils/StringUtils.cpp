@@ -50,6 +50,7 @@
 #include <math.h>
 #include <numeric>
 #include <ranges>
+#include <span>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
