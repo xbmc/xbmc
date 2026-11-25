@@ -16,11 +16,12 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ItemProperties.h"
-#include "utils/StringUtils.h"
+#include "utils/SaveFileStateJob.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -312,9 +313,15 @@ bool CApplicationStackHelper::UpdateDiscStackAndTimes(const CFileItem& playedFil
   return true;
 }
 
-void CApplicationStackHelper::SetNextPartBookmark(const std::string& path)
+void CApplicationStackHelper::SetNextPartBookmark()
 {
   std::unique_lock stackLock(m_critSection);
+
+  if (m_stackMap.empty() || !CServiceBroker::GetSettingsComponent()
+                                 ->GetProfileManager()
+                                 ->GetCurrentProfile()
+                                 .canWriteDatabases())
+    return;
 
   // When parts are played completely but the size of subsequent parts is not known (ie. blurays)
   //  then setting the time and total time as the parts played and total parts will show progress as a fraction
@@ -323,9 +330,12 @@ void CApplicationStackHelper::SetNextPartBookmark(const std::string& path)
   bookmark.timeInSeconds = GetCurrentPartNumber();
   bookmark.totalTimeInSeconds = GetTotalPartNumbers();
 
-  bookmark.playerState = StringUtils::Format("<nextpart>{}</nextpart>", GetCurrentPartNumber());
+  bookmark.playerState = KODI::VIDEO::UTILS::MakeNextPartPlayerState(GetCurrentPartNumber(), "");
 
-  KODI::VIDEO::LIBRARY::AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
+  // Kept where closing the stack's last part keeps it, which is where it is read back
+  KODI::VIDEO::LIBRARY::AddBookMarkToFile(
+      CSaveFileState::ProgressTrackingFileOf(*m_stackMap.begin()->second->stackItem), bookmark,
+      CBookmark::RESUME);
 }
 
 bool CApplicationStackHelper::IsPlayingStack() const

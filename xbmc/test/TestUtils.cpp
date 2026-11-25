@@ -12,7 +12,10 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/LanguageLoader.h"
 #include "platform/Filesystem.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -363,4 +366,15 @@ bool WriteTextFile(const std::string& path, const std::string& text)
   if (!file.OpenForWrite(path, true))
     return false;
   return text.empty() || file.Write(text.data(), text.size()) == static_cast<ssize_t>(text.size());
+}
+
+CScopedLanguageStrings::CScopedLanguageStrings()
+  : m_loaded(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"))
+{
+}
+
+CScopedLanguageStrings::~CScopedLanguageStrings()
+{
+  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
 }

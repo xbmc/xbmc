@@ -18,7 +18,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
-#include "interfaces/AnnouncementManager.h"
 #include "media/MediaType.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -168,17 +167,6 @@ std::string FindTrailer(const CFileItem& item,
     strTrailer = findTrailerFor(discFile);
 
   return strTrailer;
-}
-
-bool HasMovieFolder(CVideoDatabase& database, const std::string& videoPath)
-{
-  // A playlist's path (bluray://.../BDMV/PLAYLIST/) is deeper than its disc's, so would be taken
-  // for a folder below the source's root
-  const std::string path{URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath)
-                                                           : videoPath};
-  SScanSettings settings;
-  bool foundDirectly{false};
-  return database.GetScraperForPath(path, settings, foundDirectly) && settings.parent_name_root;
 }
 
 std::string GetOpticalMediaPath(const CFileItem& item)
@@ -755,21 +743,5 @@ bool FlagMainTitleToSave(CFileItem& item, const std::string& pathBeforePick)
 
   item.SetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH, true);
   return true;
-}
-
-// As JSON-RPC hands out paths elsewhere, files are announced without credentials
-void AnnouncePlayCountChanged(const std::string& file, int playCount)
-{
-  CServiceBroker::GetAnnouncementManager()->Announce(
-      ANNOUNCEMENT::FilesEvent{ANNOUNCEMENT::EVENT::FILES::PlayCountChanged{
-          .file = CURL(file).GetWithoutUserDetails(), .playCount = playCount}});
-}
-
-void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint)
-{
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::FilesEvent{
-      ANNOUNCEMENT::EVENT::FILES::ResumePointChanged{.file = CURL(file).GetWithoutUserDetails(),
-                                                     .position = resumePoint.timeInSeconds,
-                                                     .total = resumePoint.totalTimeInSeconds}});
 }
 } // namespace KODI::VIDEO::UTILS

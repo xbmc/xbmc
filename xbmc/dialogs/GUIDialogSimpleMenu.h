@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "video/VideoDatabase.h"
+#include "video/DiscPlaylist.h"
 
 #include <vector>
 
@@ -22,5 +22,5 @@ public:
   static bool ShowPlaylistSelection(const CFileItem& item,
                                     CFileItem& selectedItem,
                                     const CFileItemList& items,
-                                    const std::vector<CVideoDatabase::PlaylistInfo>& usedPlaylists);
+                                    const std::vector<KODI::VIDEO::DiscPlaylist>& usedPlaylists);
 };

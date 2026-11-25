@@ -1050,10 +1050,6 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
             false))
       return true;
 
-    CVideoDatabase videodb;
-    if (!videodb.Open())
-      return true;
-
     // get the media type and convert from plural to singular (by removing the trailing "s")
     std::string mediaType = item->GetPath().substr(9);
     mediaType.pop_back();
@@ -1061,7 +1057,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
     if (localizedType.empty())
       return true;
 
-    if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
+    if (VIDEO::LIBRARY::HasTag(strTag, MEDIA::MediaTypeOf(mediaType)))
     {
       std::string strError = StringUtils::Format(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20463), strTag);
@@ -1069,21 +1065,12 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
       return true;
     }
 
-    int idTag = videodb.AddTag(strTag);
-    CFileItemList items;
+    const int idTag{VIDEO::LIBRARY::AddTag(strTag)};
+    std::vector<int> items;
     std::string strLabel = StringUtils::Format(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20464), localizedType);
     if (CGUIDialogVideoInfo::GetItemsForTag(strLabel, mediaType, items, idTag))
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        if (!items[index]->HasVideoInfoTag() || items[index]->GetVideoInfoTag()->m_iDbId <= 0)
-          continue;
-
-        videodb.AddTagToItem(items[index]->GetVideoInfoTag()->m_iDbId, idTag,
-                             MediaTypeFromName(mediaType));
-      }
-    }
+      VIDEO::LIBRARY::AddTagToItems(idTag, items, MediaTypeFromName(mediaType));
 
     Refresh(true);
     return true;

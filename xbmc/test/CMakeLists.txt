@@ -17,7 +17,8 @@ set(SOURCES TestAutoSwitch.cpp
             TestUtil.cpp
             TestUtils.cpp)
 
-set(HEADERS TestBasicEnvironment.h
+set(HEADERS TestAnnouncements.h
+            TestBasicEnvironment.h
             TestLibrary.h
             TestUtils.h)
 

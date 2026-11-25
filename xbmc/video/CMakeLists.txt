@@ -41,6 +41,8 @@ set(SOURCES Bookmark.cpp
 
 set(HEADERS Bookmark.h
             ContextMenus.h
+            DiscPlaylist.h
+            EpisodeFileMap.h
             Episode.h
             FilenameAttributes.h
             geometry/ContentBarDetector.h
@@ -66,6 +68,7 @@ set(HEADERS Bookmark.h
             VideoDatabaseColumns.h
             VideoDatabaseDDL.h
             VideoDatabaseMigration.h
+            VideoDbContentType.h
             VideoDbPaths.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h

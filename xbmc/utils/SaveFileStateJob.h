@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string>
+
 class CBookmark;
 class CFileItem;
 
@@ -17,5 +19,8 @@ public:
   static void DoWork(CFileItem& item,
                      CBookmark& bookmark,
                      bool updatePlayCount);
+
+  //! The file an item's resume point and play count are kept against
+  static std::string ProgressTrackingFileOf(const CFileItem& item);
 };
 

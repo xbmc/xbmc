@@ -66,4 +66,9 @@ struct VideoAssetInfo
   int m_idMedia{-1};
   KODI::MEDIA::TYPE m_mediaType{KODI::MEDIA::TYPE::NONE};
   VideoAssetType m_assetType{VideoAssetType::UNKNOWN};
+
+  //! Whether the file is a movie's version or extra
+  bool IsAsset() const { return m_assetType != VideoAssetType::UNKNOWN; }
+  //! Whether the file is a movie's asset of this type
+  bool IsAsset(VideoAssetType type) const { return m_assetType == type; }
 };

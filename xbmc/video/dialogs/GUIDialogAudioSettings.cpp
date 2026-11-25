@@ -8,7 +8,6 @@
 
 #include "GUIDialogAudioSettings.h"
 
-#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "application/ApplicationComponents.h"
@@ -16,10 +15,8 @@
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
-#include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -32,8 +29,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoStreamSelect.h"
+#include "video/guilib/VideoGUIUtils.h"
 
 #include <memory>
 #include <string>
@@ -167,30 +164,8 @@ void CGUIDialogAudioSettings::OnSettingAction(const std::shared_ptr<const CSetti
 
 bool CGUIDialogAudioSettings::Save()
 {
-  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-
-  if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
-    return true;
-
-  // prompt user if they are sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
-    return true;
-
-  // reset the settings
-  CVideoDatabase db;
-  if (!db.Open())
-    return true;
-
-  db.EraseAllVideoSettings();
-  db.Close();
-
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  CMediaSettings::GetInstance().GetDefaultVideoSettings() = appPlayer->GetVideoSettings();
-  CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
-  CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
-
+  KODI::VIDEO::UTILS::MakeVideoSettingsDefault([](CVideoSettings& defaults)
+                                               { defaults.m_AudioStream = -1; });
   return true;
 }
 

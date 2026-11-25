@@ -62,7 +62,11 @@ public:
 
   static void ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
 
-  static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
+  static bool GetItemsForTag(const std::string& strHeading,
+                             const std::string& type,
+                             std::vector<int>& items,
+                             int idTag = -1,
+                             bool showAll = true);
   static bool AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem);
   static bool RemoveItemsFromTag(const std::shared_ptr<CFileItem>& tagItem);
 

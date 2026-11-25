@@ -53,7 +53,15 @@ bool AddBookMarkToFile(const std::string& strFilenameAndPath,
                        const CBookmark& bookmark,
                        CBookmark::EType type);
 
+int AddSetForMovie(const std::string& name, int idMovie);
+
 int AddTag(const std::string& tag);
+
+bool AddTagToItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type);
+
+bool ClearAllBookMarksOfFile(const std::string& strFilenameAndPath);
+
+bool DeleteItem(VideoDbContentType type, int id);
 
 void DeleteTag(int idTag, VideoDbContentType mediaType);
 
@@ -67,6 +75,12 @@ bool GetArtForItem(int mediaId, KODI::MEDIA::TYPE mediaType, KODI::ART::Artwork&
 std::string GetArtForItem(int mediaId, const std::string& mediaType, const std::string& artType);
 
 CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
+
+bool GetDetailsOfItem(const CVideoInfoTag& item,
+                      CVideoInfoTag& details,
+                      int getDetails = VideoDbDetailsAll);
+
+bool GetDiscResumeBookMark(const std::string& discId, CBookmark& bookmark);
 
 bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile = -1);
 
@@ -108,6 +122,8 @@ bool GetPathsForCleaning(const std::string& directory,
                          const std::string& content,
                          std::set<int>& paths);
 
+std::vector<DiscPlaylist> GetPlaylistsByPath(const std::string& path);
+
 std::string GetRemovableBlurayPath(const std::string& originalPath);
 
 bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark& bookmark);
@@ -140,13 +156,27 @@ bool GetTvShowsByWhere(const std::string& strBaseDir,
 
 bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
 
+bool GetVideosForTag(KODI::MEDIA::TYPE type, int idTag, bool tagged, CFileItemList& items);
+
 bool HasContent(VideoDbContentType type);
+
+bool HasTag(const std::string& name, KODI::MEDIA::TYPE type);
+
+bool HasVideoInfo(const CFileItem& item);
 
 void ImportFromXML(const std::string& path);
 
 bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details);
 
+bool LookupByFolders(const std::string& path, bool shows = false);
+
+bool RemoveVideoAsset(int idFile);
+
+bool RemoveTagFromItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type);
+
 bool ScraperInUse(const std::string& scraperID);
+
+bool SetItemTitle(const CVideoInfoTag& item, const std::string& title);
 
 bool SetPathHash(const std::string& path, const std::string& hash);
 

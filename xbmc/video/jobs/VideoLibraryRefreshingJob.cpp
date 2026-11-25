@@ -691,8 +691,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     std::string mediaPath;
 
     // remove any existing data for the item we're going to refresh
+    bool removed{false};
     if (origDbId > 0)
     {
+      removed = true;
       if (scraper->Content() == ADDON::ContentType::MOVIES)
       {
         mediaPath = db.GetSingleValue(
@@ -709,7 +711,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           for (const auto& version : versions)
           {
             if (URIUtils::GetDiscFile(version->GetDynPath()) == discFile)
-              db.DeleteVideoAsset(version->GetVideoInfoTag()->m_iDbId,
+              db.UnlinkVideoAsset(version->GetVideoInfoTag()->m_iDbId,
                                   DeleteMovieHashAction::HASH_PRESERVE);
           }
         }
@@ -732,7 +734,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           db.DeleteSeason(origDbId);
         else if (m_refreshAll)
           db.DeleteTvShow(origDbId);
+        else
+          removed = false;
       }
+      else
+        removed = false;
     }
 
     if (pluginTag || pluginArt)
@@ -759,6 +765,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // something went wrong
       MarkFinished();
+      m_removedItem = removed;
 
       if (!mediaPath.empty())
         db.InvalidatePathHash(mediaPath);
@@ -806,6 +813,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           // state and settings and removes the old file, which takes its bookmarks with it, so they
           // are added again before the move is committed.
           db.BeginTransaction();
+          db.SetAnnounceFileChanges(false);
           const std::string path{tag.m_strFileNameAndPath};
           if (db.SetFileForMedia(path, VideoDbContentType::UNKNOWN, idMovie, discFileState) > 0 &&
               (!discResumePoint.IsSet() ||
@@ -818,6 +826,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           }
           else
             db.RollbackTransaction();
+          db.SetAnnounceFileChanges(true);
         }
         m_item->SetPath(m_item->GetVideoInfoTag()->m_strFileNameAndPath);
       }

@@ -113,11 +113,13 @@ public:
    \param[inout] item Video item to be refreshed
    \param[in] forceRefresh Whether to force a complete refresh (including NFO or internet lookup)
    \param[in] refreshAll Whether to refresh all sub-items (in case of a tvshow)
+   \param[out] removed Whether a refresh that failed had taken the item out of the library
    \return True if the item has been successfully refreshed, false otherwise.
   */
   bool RefreshItemModal(std::shared_ptr<CFileItem> item,
-                        bool forceRefresh = true,
-                        bool refreshAll = false);
+                        bool forceRefresh,
+                        bool refreshAll,
+                        bool& removed);
 
   /*!
    \brief Queue a watched status update job.

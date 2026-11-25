@@ -388,15 +388,7 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 
 void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
-  CVideoDatabase videoDatabase;
-  if (!videoDatabase.Open())
-    return;
-
-  const std::string path{g_application.CurrentFileItem().GetDynPath()};
-  videoDatabase.ClearBookMarksOfFile(path, CBookmark::STANDARD);
-  videoDatabase.ClearBookMarksOfFile(path, CBookmark::RESUME);
-  videoDatabase.ClearBookMarksOfFile(path, CBookmark::EPISODE);
-  videoDatabase.Close();
+  LIBRARY::ClearAllBookMarksOfFile(g_application.CurrentFileItem().GetDynPath());
   Update();
 }
 

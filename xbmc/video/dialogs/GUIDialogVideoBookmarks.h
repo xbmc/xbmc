@@ -9,12 +9,13 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-#include "video/VideoDatabase.h"
+#include "video/Bookmark.h"
 #include "view/GUIViewControl.h"
 
 #include <vector>
 
 class CFileItemList;
+class CVideoInfoTag;
 
 class CGUIDialogVideoBookmarks : public CGUIDialog
 {

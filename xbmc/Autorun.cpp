@@ -47,7 +47,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoLibrary.h"
 
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
@@ -589,10 +589,8 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   std::string strUniqueId = CServiceBroker::GetMediaManager().GetDiskUniqueId(path);
   if (!strUniqueId.empty())
   {
-    CVideoDatabase dbs;
-    dbs.Open();
     CBookmark bookmark;
-    if (dbs.GetResumeBookMark(strUniqueId, bookmark))
+    if (LIBRARY::GetDiscResumeBookMark(strUniqueId, bookmark))
       return true;
   }
   return false;

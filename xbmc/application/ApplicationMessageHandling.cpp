@@ -790,7 +790,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
             return true;
 
           // Selection of next part playlist cancelled so create bookmark for next part
-          stackHelper->SetNextPartBookmark(m_app.CurrentFileItem().GetDynPath());
+          stackHelper->SetNextPartBookmark();
         }
       }
 

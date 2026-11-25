@@ -162,6 +162,8 @@ CVideoInfoScanner::CVideoInfoScanner()
   : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings())
 {
   m_scanAll = false;
+  // What a scan writes comes from NFO files, or the record an item had before
+  m_database.SetAnnounceFileChanges(false);
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
