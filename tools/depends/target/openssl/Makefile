@@ -82,6 +82,13 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install_sw
+ifeq ($(OS),wasm)
+# Binary add-ons import OpenSSL from Kodi when loaded, like libc. They link
+# these empty archives, kept out of lib/ where Kodi's own link looks.
+	mkdir -p $(PREFIX)/lib/addon-libs
+	$(AR) rc $(PREFIX)/lib/addon-libs/libcrypto.a
+	$(AR) rc $(PREFIX)/lib/addon-libs/libssl.a
+endif
 	touch $@
 
 clean:

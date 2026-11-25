@@ -38,6 +38,15 @@ function(add_addon_depends addon searchpath)
         get_filename_component(id ${file} NAME_WE)
       endif()
 
+      # provided by Kodi on this platform (see the add-on toolchain); the
+      # empty target satisfies the depends that list it as a dependency
+      if(id IN_LIST ADDON_DEPENDS_PROVIDED)
+        if(NOT TARGET ${id})
+          add_custom_target(${id})
+        endif()
+        continue()
+      endif()
+
       # check if the dependency has a platforms.txt
       set(platform_found FALSE)
       check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
