@@ -9,8 +9,7 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
-#include "playlists/SmartPlayList.h"
-#include "utils/ContentNames.h"
+#include "media/LibraryQuery.h"
 
 #include <string>
 #include <utility>
@@ -27,8 +26,9 @@ public:
   void OnInitWindow() override;
   void OnDeinitWindow(int nextWindowID) override;
 
-  static bool EditRule(KODI::PLAYLIST::CSmartPlaylistRule& rule,
-                       const std::string& type = KODI::MEDIA::CONTENT::SONGS);
+  static bool EditRule(
+      KODI::MEDIA::CLibraryQueryRule& rule,
+      KODI::MEDIA::LIBRARY_QUERY::TYPE type = KODI::MEDIA::LIBRARY_QUERY::TYPE::SONGS);
 
 protected:
   void OnField();
@@ -38,9 +38,9 @@ protected:
   void UpdateButtons();
   void OnBrowse();
   std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> GetValidOperators(
-      const KODI::PLAYLIST::CSmartPlaylistRule& rule) const;
+      const KODI::MEDIA::CLibraryQueryRule& rule) const;
 
-  KODI::PLAYLIST::CSmartPlaylistRule m_rule;
+  KODI::MEDIA::CLibraryQueryRule m_rule;
   bool m_cancelled;
-  std::string m_type;
+  KODI::MEDIA::LIBRARY_QUERY::TYPE m_type{KODI::MEDIA::LIBRARY_QUERY::TYPE::SONGS};
 };

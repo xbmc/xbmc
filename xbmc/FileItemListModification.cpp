@@ -8,8 +8,8 @@
 
 #include "FileItemListModification.h"
 
+#include "media/LibraryQueryFileItemListModifier.h"
 #include "music/windows/MusicFileItemListModifier.h"
-#include "playlists/SmartPlaylistFileItemListModifier.h"
 #include "pvr/guilib/PVRFileItemListModifier.h"
 #include "video/windows/VideoFileItemListModifier.h"
 
@@ -19,7 +19,7 @@ using namespace KODI;
 
 CFileItemListModification::CFileItemListModification()
 {
-  m_modifiers.push_back(std::make_unique<PLAYLIST::CSmartPlaylistFileItemListModifier>());
+  m_modifiers.push_back(std::make_unique<MEDIA::CLibraryQueryFileItemListModifier>());
   m_modifiers.push_back(std::make_unique<CMusicFileItemListModifier>());
   m_modifiers.push_back(std::make_unique<CVideoFileItemListModifier>());
   m_modifiers.push_back(std::make_unique<PVR::CPVRFileItemListModifier>());

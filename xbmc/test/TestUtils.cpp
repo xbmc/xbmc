@@ -356,3 +356,11 @@ CScopedSetting::~CScopedSetting()
 {
   CurrentSettings()->GetSetting(m_id)->FromString(m_previous);
 }
+
+bool WriteTextFile(const std::string& path, const std::string& text)
+{
+  XFILE::CFile file;
+  if (!file.OpenForWrite(path, true))
+    return false;
+  return text.empty() || file.Write(text.data(), text.size()) == static_cast<ssize_t>(text.size());
+}

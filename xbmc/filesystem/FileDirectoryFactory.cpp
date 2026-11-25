@@ -35,8 +35,8 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/APKDirectory.h"
 #endif
+#include "media/LibraryQuery.h"
 #include "playlists/PlayListFactory.h"
-#include "playlists/SmartPlayList.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -267,7 +267,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (url.IsFileType("xsp"))
   { // XBMC Smart playlist - just XML renamed to XSP
     // read the name of the playlist in
-    CSmartPlaylist playlist;
+    MEDIA::CLibraryQuery playlist;
     if (playlist.OpenAndReadName(url))
     {
       pItem->SetLabel(playlist.GetName());

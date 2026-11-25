@@ -24,6 +24,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "filesystem/SourcesDirectory.h"
+#include "media/LibraryQuery.h"
 #include "media/MediaSection.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
@@ -85,10 +86,6 @@
 
 #define CONTROL_LABELFILES          12
 
-#define PROPERTY_PATH_DB            "path.db"
-#define PROPERTY_SORT_ORDER         "sort.order"
-#define PROPERTY_SORT_ASCENDING     "sort.ascending"
-
 #define PLUGIN_REFRESH_DELAY 200
 
 using namespace ADDON;
@@ -97,8 +94,9 @@ using namespace KODI::MESSAGING;
 using KODI::MEDIA::MediaSection;
 using namespace std::chrono_literals;
 
-CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
-    : CGUIWindow(id, xmlFile)
+CGUIMediaWindow::CGUIMediaWindow(int id, const char* xmlFile)
+  : CGUIWindow(id, xmlFile),
+    m_filter(std::make_unique<MEDIA::CLibraryQuery>())
 {
   m_loadType = KEEP_IN_MEMORY;
   m_vecItems = new CFileItemList;
@@ -236,7 +234,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     if (m_canFilterAdvanced)
     {
       m_canFilterAdvanced = false;
-      m_filter.Reset();
+      m_filter->Reset();
     }
     m_strFilterPath.clear();
 
@@ -663,14 +661,14 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
     // We do this as the new SortBy methods are a superset of the SORT_METHOD methods, thus
     // not all are available. This may be removed once SORT_METHOD_* have been replaced by
     // SortBy.
-    if ((sorting.sortBy == SortBy::PLAYLIST_ORDER) && items.HasProperty(PROPERTY_SORT_ORDER))
+    if ((sorting.sortBy == SortBy::PLAYLIST_ORDER) && items.HasProperty(ITEM::PROPERTY::SORT_ORDER))
     {
-      SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+      SortBy sortBy = (SortBy)items.GetProperty(ITEM::PROPERTY::SORT_ORDER).asInteger();
       if (sortBy != SortBy::NONE && sortBy != SortBy::PLAYLIST_ORDER &&
           sortBy != SortBy::PROGRAM_COUNT)
       {
         sorting.sortBy = sortBy;
-        sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean()
+        sorting.sortOrder = items.GetProperty(ITEM::PROPERTY::SORT_ASCENDING).asBoolean()
                                 ? SortOrder::ASCENDING
                                 : SortOrder::DESCENDING;
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -859,7 +857,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   // clear the filter
   SetProperty("filter", "");
   m_canFilterAdvanced = false;
-  m_filter.Reset();
+  m_filter->Reset();
   return true;
 }
 
@@ -993,7 +991,15 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   // Check whether to enabled advanced filtering based on the content type
   m_canFilterAdvanced = CheckFilterAdvanced(*m_vecItems);
   if (m_canFilterAdvanced)
-    m_filter.SetType(m_vecItems->GetContent());
+  {
+    const std::optional<MEDIA::LIBRARY_QUERY::TYPE> type{
+        MEDIA::LIBRARY_QUERY::TypeFromName(m_vecItems->GetContent())};
+    if (type)
+    {
+      m_filter->SetType(*type);
+    }
+    m_canFilterAdvanced = type.has_value();
+  }
 
   //  Ask the derived class if it wants to load additional info
   //  for the fileitems like media info or additional
@@ -1173,7 +1179,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     // if we have a filtered list, we need to add the filtered
     // path to be able to come back to the filtered view
     std::string strCurrentDirectory = m_vecItems->GetPath();
-    if (m_canFilterAdvanced && !m_filter.IsEmpty() &&
+    if (m_canFilterAdvanced && !m_filter->IsEmpty() &&
         !URIUtils::PathEquals(m_strFilterPath, strCurrentDirectory))
     {
       m_history.RemoveParentPath();
@@ -1363,7 +1369,8 @@ bool CGUIMediaWindow::GoParentFolder()
     return false;
 
   // No items to show so go another level up
-  if (!m_vecItems->GetPath().empty() && (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
+  if (!m_vecItems->GetPath().empty() &&
+      (m_filter->IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
   {
     CGUIDialogKaiToast::QueueNotification(
         CGUIDialogKaiToast::Info,
@@ -1938,10 +1945,14 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
   // as preset or if it's empty
   if (updateFilterPath || m_strFilterPath.empty())
   {
-    if (items.HasProperty(PROPERTY_PATH_DB))
-      m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
+    if (items.HasProperty(ITEM::PROPERTY::PATH_DB))
+    {
+      m_strFilterPath = items.GetProperty(ITEM::PROPERTY::PATH_DB).asString();
+    }
     else
+    {
       m_strFilterPath = items.GetPath();
+    }
   }
 
   // maybe the filter path can contain a filter
@@ -1959,11 +1970,11 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
   // check if there is a filter and re-apply it
   if (canfilter && !filter.empty())
   {
-    if (!m_filter.LoadFromJson(filter))
+    if (!m_filter->LoadFromJson(filter))
     {
       CLog::Log(LOGWARNING,
                 "CGUIMediaWindow::UpdateFilterPath(): unable to load existing filter ({})", filter);
-      m_filter.Reset();
+      m_filter->Reset();
       m_strFilterPath = m_vecItems->GetPath();
     }
     else
@@ -1992,14 +2003,18 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // if the filter has changed, get the new filter path
   if (filtered && m_canFilterAdvanced)
   {
-    if (items.HasProperty(PROPERTY_PATH_DB))
-      m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
+    if (items.HasProperty(ITEM::PROPERTY::PATH_DB))
+    {
+      m_strFilterPath = items.GetProperty(ITEM::PROPERTY::PATH_DB).asString();
+    }
     // only set m_strFilterPath if it hasn't been set before
     // otherwise we might overwrite it with a non-filter path
     // in case GetFilteredItems() returns true even though no
     // db-based filter (e.g. watched filter) has been applied
     else if (m_strFilterPath.empty())
+    {
       m_strFilterPath = items.GetPath();
+    }
   }
 
   GetGroupedItems(*m_vecItems);
@@ -2134,11 +2149,13 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   // and there hasn't been a filter applied before which
   // would have to be removed
   CURL url(m_strFilterPath);
-  if (m_filter.IsEmpty() && !url.HasOption("filter"))
+  if (m_filter->IsEmpty() && !url.HasOption("filter"))
+  {
     return false;
+  }
 
   CFileItemList resultItems;
-  XFILE::CSmartPlaylistDirectory::GetDirectory(m_filter, resultItems, m_strFilterPath, true);
+  XFILE::CSmartPlaylistDirectory::GetDirectory(*m_filter, resultItems, m_strFilterPath, true);
 
   // put together a lookup map for faster path comparison
   std::map<std::string, CFileItemPtr> lookup;
@@ -2187,15 +2204,17 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   items.ClearItems();
   items.Append(filteredItems);
   items.SetPath(resultItems.GetPath());
-  if (resultItems.HasProperty(PROPERTY_PATH_DB))
-    items.SetProperty(PROPERTY_PATH_DB, resultItems.GetProperty(PROPERTY_PATH_DB));
+  if (resultItems.HasProperty(ITEM::PROPERTY::PATH_DB))
+  {
+    items.SetProperty(ITEM::PROPERTY::PATH_DB, resultItems.GetProperty(ITEM::PROPERTY::PATH_DB));
+  }
   return true;
 }
 
 bool CGUIMediaWindow::IsFiltered()
 {
   return (!m_canFilterAdvanced && !GetProperty("filter").empty()) ||
-         (m_canFilterAdvanced && !m_filter.IsEmpty());
+         (m_canFilterAdvanced && !m_filter->IsEmpty());
 }
 
 bool CGUIMediaWindow::IsSameStartFolder(const std::string &dir)
@@ -2232,7 +2251,9 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
   }
   // advanced filtering
   else
-    CGUIDialogMediaFilter::ShowAndEditMediaFilter(m_strFilterPath, m_filter);
+  {
+    CGUIDialogMediaFilter::ShowAndEditMediaFilter(m_strFilterPath, *m_filter);
+  }
 
   return true;
 }

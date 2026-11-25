@@ -18,6 +18,7 @@ set(SOURCES TestBookmark.cpp
             TestVideoInfoScannerExtras.cpp
             TestVideoInfoTag.cpp
             TestVideoItemArtworkHandler.cpp
+            TestVideoLibraryQuery.cpp
             TestVideoStreamSelect.cpp
             TestVideoTagLoaderFFmpeg.cpp
             TestVideoTagLoaderNFO.cpp

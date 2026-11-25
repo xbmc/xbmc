@@ -11,6 +11,7 @@
 #include "DatabaseTypes.h"
 #include "URL.h"
 #include "XBDateTime.h"
+#include "dbwrappers/DatabaseQueryImpl.h"
 #include "dbwrappers/dataset.h"
 #include "imagefiles/ImageFileURL.h"
 #include "utils/DatabaseUtils.h"
@@ -24,7 +25,12 @@
 
 using enum CDatabaseQueryRule::FieldType;
 
-struct TranslateField
+template class CDatabaseQueryRuleOf<TextureField, CDatabaseQueryNoContext>;
+template class CDatabaseQueryRuleCombination<CTextureRule>;
+
+namespace
+{
+struct TextureFieldRow
 {
   std::string_view string;
   TextureField field;
@@ -33,57 +39,54 @@ struct TranslateField
 };
 
 // clang-format off
-static const auto fields = std::array{
-  TranslateField{"textureid",        TextureField::ID,                 REAL_FIELD, "texture.id"},
-  TranslateField{"url",              TextureField::URL,                TEXT_FIELD, "texture.url"},
-  TranslateField{"cachedurl",        TextureField::CACHED_URL,         TEXT_FIELD, "texture.cachedurl"},
-  TranslateField{"lasthashcheck",    TextureField::LAST_HASH_CHECK,    TEXT_FIELD, "texture.lasthashcheck"},
-  TranslateField{"imagehash",        TextureField::IMAGE_HASH,         TEXT_FIELD, "texture.imagehash"},
-  TranslateField{"width",            TextureField::WIDTH,              REAL_FIELD, "sizes.width"},
-  TranslateField{"height",           TextureField::HEIGHT,             REAL_FIELD, "sizes.height"},
-  TranslateField{"usecount",         TextureField::USE_COUNT,          REAL_FIELD, "sizes.usecount"},
-  TranslateField{"lastused",         TextureField::LAST_USED,          TEXT_FIELD, "sizes.lastusetime"},
-  TranslateField{"lastlibrarycheck", TextureField::LAST_LIBRARY_CHECK, TEXT_FIELD, "texture.lastlibrarycheck"},
+const auto fields = std::array{
+  TextureFieldRow{"textureid",        TextureField::ID,                 REAL_FIELD, "texture.id"},
+  TextureFieldRow{"url",              TextureField::URL,                TEXT_FIELD, "texture.url"},
+  TextureFieldRow{"cachedurl",        TextureField::CACHED_URL,         TEXT_FIELD, "texture.cachedurl"},
+  TextureFieldRow{"lasthashcheck",    TextureField::LAST_HASH_CHECK,    TEXT_FIELD, "texture.lasthashcheck"},
+  TextureFieldRow{"imagehash",        TextureField::IMAGE_HASH,         TEXT_FIELD, "texture.imagehash"},
+  TextureFieldRow{"width",            TextureField::WIDTH,              REAL_FIELD, "sizes.width"},
+  TextureFieldRow{"height",           TextureField::HEIGHT,             REAL_FIELD, "sizes.height"},
+  TextureFieldRow{"usecount",         TextureField::USE_COUNT,          REAL_FIELD, "sizes.usecount"},
+  TextureFieldRow{"lastused",         TextureField::LAST_USED,          TEXT_FIELD, "sizes.lastusetime"},
+  TextureFieldRow{"lastlibrarycheck", TextureField::LAST_LIBRARY_CHECK, TEXT_FIELD, "texture.lastlibrarycheck"},
 };
 // clang-format on
+} // unnamed namespace
 
-int CTextureRule::TranslateField(const char *field) const
+TextureField CTextureRule::TranslateField(const char* field) const
 {
   const auto f = std::ranges::find_if(fields, [field](const auto& f)
                                       { return StringUtils::EqualsNoCase(field, f.string); });
-  return f == fields.end() ? static_cast<int>(TextureField::NONE) : static_cast<int>(f->field);
+  return f == fields.end() ? TextureField::NONE : f->field;
 }
 
-std::string CTextureRule::TranslateField(int field) const
+std::string CTextureRule::TranslateField(TextureField field) const
 {
-  const auto f = std::ranges::find_if(fields, [field](const auto& f)
-                                      { return field == static_cast<int>(f.field); });
+  const auto f = std::ranges::find(fields, field, &TextureFieldRow::field);
   return f == fields.end() ? "none" : std::string(f->string);
 }
 
-std::string CTextureRule::GetField(int field, const std::string&) const
+std::string CTextureRule::GetField(TextureField field, const CDatabaseQueryNoContext&) const
 {
-  const auto f = std::ranges::find_if(fields, [field](const auto& f)
-                                      { return field == static_cast<int>(f.field); });
+  const auto f = std::ranges::find(fields, field, &TextureFieldRow::field);
   return f == fields.end() ? "" : std::string(f->dbTable);
 }
 
-CDatabaseQueryRule::FieldType CTextureRule::GetFieldType(int field) const
+CDatabaseQueryRule::FieldType CTextureRule::GetFieldType(TextureField field) const
 {
-  const auto f = std::ranges::find_if(fields, [field](const auto& f)
-                                      { return field == static_cast<int>(f.field); });
+  const auto f = std::ranges::find(fields, field, &TextureFieldRow::field);
   return f == fields.end() ? TEXT_FIELD : f->type;
 }
 
-std::string CTextureRule::FormatParameter(const std::string &operatorString,
-                                          const std::string &param,
-                                          const CDatabase &db,
-                                          const std::string &strType) const
+std::optional<std::string> CTextureRule::FormatParameter(const std::string& operatorString,
+                                                         const std::string& param,
+                                                         const CDatabase& db) const
 {
   std::string parameter(param);
-  if (m_field == static_cast<int>(TextureField::URL))
+  if (m_field == TextureField::URL)
     parameter = IMAGE_FILES::ToCacheKey(param);
-  return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
+  return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db);
 }
 
 void CTextureRule::GetAvailableFields(std::vector<std::string>& fieldList)
@@ -499,12 +502,3 @@ void CTextureDatabase::ClearTextureForPath(const std::string &url, const std::st
   }
 }
 
-CDatabaseQueryRule *CTextureDatabase::CreateRule() const
-{
-  return new CTextureRule();
-}
-
-CDatabaseQueryRuleCombination *CTextureDatabase::CreateCombination() const
-{
-  return new CDatabaseQueryRuleCombination();
-}

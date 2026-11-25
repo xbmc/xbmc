@@ -34,6 +34,8 @@ inline constexpr char TVSHOW_YEARS[] = "videodb://tvshows/years/";
 inline constexpr char TVSHOW_ACTORS[] = "videodb://tvshows/actors/";
 inline constexpr char TVSHOW_STUDIOS[] = "videodb://tvshows/studios/";
 inline constexpr char TVSHOW_TAGS[] = "videodb://tvshows/tags/";
+//! The episodes of every season of every TV show
+inline constexpr char ALL_EPISODES[] = "videodb://tvshows/titles/-1/-1/";
 
 inline constexpr char MUSICVIDEOS[] = "videodb://musicvideos/";
 inline constexpr char MUSICVIDEO_GENRES[] = "videodb://musicvideos/genres/";

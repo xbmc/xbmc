@@ -4,6 +4,7 @@ set(SOURCES TestGUIWindowMusicNav.cpp
             TestMusicDatabaseInfoProvider.cpp
             TestMusicDbPaths.cpp
             TestMusicFileItemClassify.cpp
-            TestMusicInfoTag.cpp)
+            TestMusicInfoTag.cpp
+            TestMusicLibraryQuery.cpp)
 
 core_add_test_library(music_test)

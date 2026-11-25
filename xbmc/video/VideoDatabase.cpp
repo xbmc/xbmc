@@ -39,9 +39,9 @@
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "language/LanguageTag.h"
+#include "media/LibraryQuery.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/Artist.h"
-#include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -13871,43 +13871,45 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   auto option = options.find("xsp");
   if (option != options.end())
   {
-    PLAYLIST::CSmartPlaylist xsp;
+    MEDIA::CLibraryQuery xsp;
     if (!xsp.LoadFromJson(option->second.asString()))
       return false;
 
     // check if the filter playlist matches the item type
-    if (xsp.GetType() == itemType ||
-       (xsp.GetGroup() == itemType && !xsp.IsGroupMixed()) ||
-        // handle episode listings with videodb://tvshows/titles/ which get the rest
-        // of the path (season and episodeid) appended later
-       (xsp.GetType() == MEDIA::CONTENT::EPISODES && itemType == MEDIA::CONTENT::TVSHOWS))
+    const std::optional<MEDIA::TYPE> xspItemType{
+        MEDIA::LIBRARY_QUERY::ItemTypeIn(xsp.GetType(), MEDIA::MediaSection::VIDEO)};
+    if (xspItemType && xsp.AppliesTo(MEDIA::MediaSection::VIDEO, itemType, false))
     {
-      std::set<std::string, std::less<>> playlists;
-      filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
-
-      if (xsp.GetLimit() > 0)
-        sorting.limitEnd = xsp.GetLimit();
-      if (xsp.GetOrder() != SortBy::NONE)
-        sorting.sortBy = xsp.GetOrder();
-      if (xsp.GetOrderDirection() != SortOrder::NONE)
-        sorting.sortOrder = xsp.GetOrderDirection();
-      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
-        sorting.sortAttributes = SortAttributeIgnoreArticle;
+      const std::optional<std::string> where = xsp.GetWhereClause(*this, *xspItemType, false);
+      if (!where)
+      {
+        return false;
+      }
+      filter.AppendWhere(*where);
+      xsp.ApplyOrder(sorting, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                  CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING));
     }
   }
 
   option = options.find("filter");
   if (option != options.end())
   {
-    PLAYLIST::CSmartPlaylist xspFilter;
+    MEDIA::CLibraryQuery xspFilter;
     if (!xspFilter.LoadFromJson(option->second.asString()))
       return false;
 
     // check if the filter playlist matches the item type
-    if (xspFilter.GetType() == itemType)
+    const std::optional<MEDIA::TYPE> filterItemType{
+        MEDIA::LIBRARY_QUERY::ItemTypeIn(xspFilter.GetType(), MEDIA::MediaSection::VIDEO)};
+    if (filterItemType && xspFilter.AppliesTo(MEDIA::MediaSection::VIDEO, itemType, true))
     {
-      std::set<std::string, std::less<>> playlists;
-      filter.AppendWhere(xspFilter.GetWhereClause(*this, playlists));
+      const std::optional<std::string> where =
+          xspFilter.GetWhereClause(*this, *filterItemType, false);
+      if (!where)
+      {
+        return false;
+      }
+      filter.AppendWhere(*where);
     }
     // remove the filter if it doesn't match the item type
     else

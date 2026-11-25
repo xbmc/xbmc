@@ -78,7 +78,7 @@ protected:
 // has been read back from the library.
 //
 // The classes are the shape of the streamdetails table, which smart playlists filter with SQL
-// built from user-authored rules (see CSmartPlaylistRule::GetWhereClause). Those rules live in
+// built from user-authored rules (see CLibraryQueryRule::GetWhereClause). Those rules live in
 // .xsp files rather than in the database, so another notation would silently stop matching and no
 // database migration could repair it.
 

@@ -12,14 +12,14 @@
 
 #include <string>
 
-namespace KODI::PLAYLIST
+namespace KODI::MEDIA
 {
 
-class CSmartPlaylistFileItemListModifier : public IFileItemListModifier
+class CLibraryQueryFileItemListModifier : public IFileItemListModifier
 {
 public:
-  CSmartPlaylistFileItemListModifier() = default;
-  ~CSmartPlaylistFileItemListModifier() override = default;
+  CLibraryQueryFileItemListModifier() = default;
+  ~CLibraryQueryFileItemListModifier() override = default;
 
   bool CanModify(const CFileItemList &items) const override;
   bool Modify(CFileItemList &items) const override;
@@ -28,4 +28,4 @@ private:
   static std::string GetUrlOption(const std::string &path, const std::string &option);
 };
 
-} // namespace KODI::PLAYLIST
+} // namespace KODI::MEDIA

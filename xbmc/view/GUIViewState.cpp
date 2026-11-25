@@ -41,13 +41,11 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/ContentNames.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/GUIViewStateVideo.h"
 #include "video/VideoUtils.h"
 #include "view/ViewState.h"
-
-#define PROPERTY_SORT_ORDER         "sort.order"
-#define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
 using namespace KODI;
 using namespace ADDON;
@@ -559,14 +557,15 @@ void CGUIViewState::AddPlaylistOrder(const CFileItemList& items, const LABEL_MAS
   SortBy sortBy = SortBy::PLAYLIST_ORDER;
   int sortLabel = 559;
   SortOrder sortOrder = SortOrder::ASCENDING;
-  if (items.HasProperty(PROPERTY_SORT_ORDER))
+  if (items.HasProperty(ITEM::PROPERTY::SORT_ORDER))
   {
-    sortBy = static_cast<SortBy>(items.GetProperty(PROPERTY_SORT_ORDER).asInteger());
+    sortBy = static_cast<SortBy>(items.GetProperty(ITEM::PROPERTY::SORT_ORDER).asInteger());
     if (sortBy != SortBy::NONE)
     {
       sortLabel = SortUtils::GetSortLabel(sortBy);
-      sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrder::ASCENDING
-                                                                         : SortOrder::DESCENDING;
+      sortOrder = items.GetProperty(ITEM::PROPERTY::SORT_ASCENDING).asBoolean()
+                      ? SortOrder::ASCENDING
+                      : SortOrder::DESCENDING;
     }
   }
 

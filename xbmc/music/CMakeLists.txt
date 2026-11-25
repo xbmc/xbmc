@@ -8,6 +8,7 @@ set(SOURCES Album.cpp
             MusicEmbeddedImageFileLoader.cpp
             MusicFileItemClassify.cpp
             MusicInfoLoader.cpp
+            MusicLibraryQuery.cpp
             MusicLibraryQueue.cpp
             MusicThumbLoader.cpp
             MusicUtils.cpp
@@ -25,6 +26,7 @@ set(HEADERS Album.h
             MusicEmbeddedImageFileLoader.h
             MusicFileItemClassify.h
             MusicInfoLoader.h
+            MusicLibraryQuery.h
             MusicLibraryQueue.h
             MusicThumbLoader.h
             MusicUtils.h
