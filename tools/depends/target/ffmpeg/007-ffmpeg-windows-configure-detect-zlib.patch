@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: thexai <58434170+thexai@users.noreply.github.com>
+Date: Sat, 21 Nov 2026 13:30:00 +0100
+Subject: [PATCH] ffmpeg: windows: configure: detect zlib
+
+zlib 1.4 names the MSVC import library libz.lib.
+---
+ configure | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/configure b/configure
+index b7100a4..3b4042b 100755
+--- a/configure
++++ b/configure
+@@ -7180,7 +7180,8 @@ fi
+ enabled zlib && msvc_style_linker && probe_msvc_zlib_libname
+ enabled  zlib && { check_pkg_config zlib zlib "zlib.h" zlibVersion ||
+                    { zlib_msvc_lib=z.lib;    check_lib zlib zlib.h zlibVersion -lz; } ||
+-                   { zlib_msvc_lib=zlib.lib; check_lib zlib zlib.h zlibVersion -lz; }; }
++                   { zlib_msvc_lib=zlib.lib; check_lib zlib zlib.h zlibVersion -lz; } ||
++                   { zlib_msvc_lib=libz.lib; check_lib zlib zlib.h zlibVersion -lz; }; }
+ enabled bzlib && check_lib bzlib bzlib.h BZ2_bzlibVersion    -lbz2
+ enabled  lzma && check_lib lzma   lzma.h lzma_version_number -llzma
+ 
+-- 
+2.49.0
+
