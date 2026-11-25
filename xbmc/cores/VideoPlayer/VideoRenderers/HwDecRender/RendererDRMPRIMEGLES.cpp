@@ -411,6 +411,20 @@ bool CRendererDRMPRIMEGLES::ConfigChanged(const VideoPicture& picture)
   return false;
 }
 
+bool CRendererDRMPRIMEGLES::SupportsLiveHDRMetadata() const
+{
+  return CServiceBroker::GetWinSystem()->SupportsLiveHDRMetadata();
+}
+
+bool CRendererDRMPRIMEGLES::UpdateLightMetadata(const VideoPicture& picture)
+{
+  // The metadata lives on the connector and there are no per buffer copies to update
+  if (!m_passthroughHDR || !SupportsLiveHDRMetadata())
+    return true;
+
+  return CServiceBroker::GetWinSystem()->RefreshHDRLightMetadata(&picture);
+}
+
 void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 {
   BUFFER& buf = m_buffers[index];

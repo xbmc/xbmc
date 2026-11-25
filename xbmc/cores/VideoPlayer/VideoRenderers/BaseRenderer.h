@@ -98,6 +98,16 @@ public:
    * \return false if the renderer has to be configured again for them
    */
   virtual bool ChangePictureSize(const VideoPicture& picture) { return false; }
+  /*!
+   * \brief Called when only the HDR metadata content (mastering display, MaxCLL/MaxFALL) changed
+   * mid-stream
+   * \return false if a required live update failed and has to be retried with the next picture,
+   * true otherwise (also when no live update is needed)
+   */
+  virtual bool UpdateLightMetadata(const VideoPicture& picture) { return true; }
+  /*! \brief True if UpdateLightMetadata() also applies changes of the mastering display metadata,
+   * so that these do not require a reconfigure */
+  virtual bool SupportsLiveHDRMetadata() const { return false; }
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;

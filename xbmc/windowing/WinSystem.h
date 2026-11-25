@@ -254,6 +254,13 @@ public:
    *
    */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
+  /*!
+   * \brief Push updated HDR light metadata (MaxCLL/MaxFALL) to the display without
+   * a mode change. Only meaningful while HDR passthrough is active.
+   */
+  virtual bool RefreshHDRLightMetadata(const VideoPicture* videoPicture) { return false; }
+  /*! \brief True if RefreshHDRLightMetadata() is able to push HDR metadata live */
+  virtual bool SupportsLiveHDRMetadata() const { return false; }
   // UWP refreshes cached HDR state on the UI thread when this is queried.
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
