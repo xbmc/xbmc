@@ -556,7 +556,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         {
           case CActiveAEControlProtocol::INIT:
             LoadSettings();
-            if (!m_settings.device.empty() && CAESinkFactory::HasSinks())
+            if (!m_settings.device.empty())
             {
               m_state = AE_TOP_UNCONFIGURED;
               m_bStateMachineSelfTrigger = true;
@@ -572,7 +572,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
           case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
             LoadSettings();
-            if (!m_settings.device.empty() && CAESinkFactory::HasSinks())
+            if (!m_settings.device.empty())
             {
               m_controlPort.SendOutMessage(CActiveAEControlProtocol::INIT);
             }
@@ -2089,7 +2089,8 @@ bool CActiveAE::InitSink()
         m_openedDevice = openedDevice.name;
       }
       m_sinkHasVolume = data->hasVolume;
-      m_sinkFallback = data->fallback;
+      // with no sink registered there is no device to retry
+      m_sinkFallback = data->fallback && CAESinkFactory::HasSinks();
       if (m_sinkFallback)
       {
         m_fallbackRetry.Set(ErrorRetryDelay(++m_extErrorRetries));
