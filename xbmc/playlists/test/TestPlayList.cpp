@@ -48,7 +48,9 @@ TEST(TestPlayListRandomShuffle, AnAddedEntryComesAfterTheCurrentOne)
       if (entry == 3)
         seenCurrent = true;
       if (entry == 9)
+      {
         EXPECT_TRUE(seenCurrent) << "the new entry was placed among those already played";
+      }
     }
   }
 }

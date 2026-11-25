@@ -55,7 +55,9 @@ protected:
     XFILE::CFile file;
     ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(m_dir, name), true));
     if (!content.empty())
+    {
       ASSERT_EQ(static_cast<ssize_t>(content.size()), file.Write(content.data(), content.size()));
+    }
     file.Close();
   }
 
