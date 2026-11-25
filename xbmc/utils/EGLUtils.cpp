@@ -354,13 +354,9 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
 
   if (!selected)
   {
-    if (errorMsg && !hdr)
-    {
-      CEGLUtils::Log(LOGERROR, errorMsg);
-      Destroy();
-    }
-    else if (errorMsg)
-      CEGLUtils::Log(LOGINFO, errorMsg);
+    // The display stays with the caller, which may try other formats or renderable types on it
+    if (errorMsg)
+      CEGLUtils::Log(hdr ? LOGINFO : LOGERROR, errorMsg);
     return false;
   }
 
