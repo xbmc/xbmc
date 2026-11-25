@@ -632,7 +632,7 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
                                        MediaSection section) const
 {
   if (!StringUtils::StartsWithNoCase(m_strMediaSourcePath, "root") &&
-      !StringUtils::StartsWithNoCase(m_strMediaSourcePath, "library://"))
+      !URIUtils::IsLibraryFolder(m_strMediaSourcePath))
   {
     if (!g_passwordManager.bMasterUser &&
         profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
