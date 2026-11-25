@@ -24,6 +24,7 @@ class CWinSystemWaylandEGLContextGL : public CWinSystemWaylandEGLContext, public
 {
 public:
   static void Register();
+  using CWinSystemWaylandEGLContext::Register;
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   // Implementation of CWinSystemBase via CWinSystemWaylandEGLContext
