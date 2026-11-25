@@ -8897,9 +8897,12 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
   return false;
 }
 
-bool CVideoDatabase::GetSortedVideos(MEDIA::TYPE mediaType, const std::string& strBaseDir,
-                                     const SortDescription &sortDescription, CFileItemList& items,
-                                     const Filter &filter /* = Filter() */)
+bool CVideoDatabase::GetSortedVideos(MEDIA::TYPE mediaType,
+                                     const std::string& strBaseDir,
+                                     const SortDescription& sortDescription,
+                                     CFileItemList& items,
+                                     const Filter& filter /* = Filter() */,
+                                     int getDetails /* = VideoDbDetailsNone */)
 {
   if (nullptr == m_pDB || nullptr == m_pDS)
     return false;
@@ -8931,13 +8934,13 @@ bool CVideoDatabase::GetSortedVideos(MEDIA::TYPE mediaType, const std::string& s
 
   bool success = false;
   if (mediaType == MEDIA::TYPE::MOVIE)
-    success = GetMoviesByWhere(strBaseDir, filter, items, sorting);
+    success = GetMoviesByWhere(strBaseDir, filter, items, sorting, getDetails);
   else if (mediaType == MEDIA::TYPE::TV_SHOW)
-    success = GetTvShowsByWhere(strBaseDir, filter, items, sorting);
+    success = GetTvShowsByWhere(strBaseDir, filter, items, sorting, getDetails);
   else if (mediaType == MEDIA::TYPE::EPISODE)
-    success = GetEpisodesByWhere(strBaseDir, filter, items, sorting);
+    success = GetEpisodesByWhere(strBaseDir, filter, items, sorting, getDetails);
   else if (mediaType == MEDIA::TYPE::MUSIC_VIDEO)
-    success = GetMusicVideosByWhere(strBaseDir, filter, items, sorting);
+    success = GetMusicVideosByWhere(strBaseDir, filter, items, sorting, getDetails);
   else
     return false;
 
@@ -9251,8 +9254,6 @@ bool CVideoDatabase::GetMoviesByWhere(
               itemUrl.AddOption("assetType", static_cast<int>(VideoAssetType::VERSION));
               //! @todo reset hasvideoversions/hasvideoextras or not? have to let the implementation
               //! mature to decide.
-              //item->GetVideoInfoTag()->SetHasVideoVersions(false);
-              //item->GetVideoInfoTag()->SetHasVideoExtras(false);
             }
             else if (!flattenVersions && (movie.HasVideoVersions() || movie.HasVideoExtras()))
             {
@@ -9453,28 +9454,36 @@ bool CVideoDatabase::GetMusicVideosNav(const std::string& strBaseDir, CFileItemL
   return GetMusicVideosByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
-bool CVideoDatabase::GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
+bool CVideoDatabase::GetRecentlyAdded(MEDIA::TYPE type,
+                                      CFileItemList& items,
+                                      unsigned int limit /* = 0 */,
+                                      int getDetails /* = VideoDbDetailsNone */,
+                                      const std::string& strBaseDir /* = {} */)
 {
-  Filter filter;
-  filter.order = "dateAdded desc, idMovie desc";
-  filter.limit = PrepareSQL("%u", limit ? limit : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryRecentlyAddedItems);
-  return GetMoviesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
-}
+  std::string baseDir{strBaseDir};
+  if (baseDir.empty())
+  {
+    switch (type)
+    {
+      case MEDIA::TYPE::MOVIE:
+        baseDir = VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES;
+        break;
+      case MEDIA::TYPE::EPISODE:
+        baseDir = VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES;
+        break;
+      case MEDIA::TYPE::MUSIC_VIDEO:
+        baseDir = VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS;
+        break;
+      default:
+        return false;
+    }
+  }
 
-bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
-{
+  // The limit is the query's, as a limit in the sort only applies when the list is sorted
   Filter filter;
-  filter.order = "dateAdded desc, idEpisode desc";
+  filter.order = PrepareSQL("dateAdded desc, %s desc", std::string{IdColumnOf(type)}.c_str());
   filter.limit = PrepareSQL("%u", limit ? limit : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryRecentlyAddedItems);
-  return GetEpisodesByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
-}
-
-bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit /* = 0 */, int getDetails /* = VideoDbDetailsNone */)
-{
-  Filter filter;
-  filter.order = "dateAdded desc, idMVideo desc";
-  filter.limit = PrepareSQL("%u", limit ? limit : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryRecentlyAddedItems);
-  return GetMusicVideosByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
+  return GetSortedVideos(type, baseDir, SortDescription(), items, filter, getDetails);
 }
 
 bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir,
@@ -9627,6 +9636,20 @@ bool CVideoDatabase::HasContent(VideoDbContentType type)
     CLog::LogF(LOGERROR, "failed");
   }
   return result;
+}
+
+CVideoDatabase::Totals CVideoDatabase::GetTotals() const
+{
+  const auto count{[this](const std::string& view, const std::string& expression)
+                   { return std::atoi(GetSingleValue(view, expression).c_str()); }};
+  return {.movies = count("movie_view", "count(1)"),
+          .moviesWatched = count("movie_view", "count(playCount)"),
+          .tvShows = count("tvshow_view", "count(1)"),
+          .tvShowsWatched = count("tvshow_view", "sum(watchedcount = totalcount)"),
+          .episodes = count("tvshow_view", "sum(totalcount)"),
+          .episodesWatched = count("tvshow_view", "sum(watchedcount)"),
+          .musicVideos = count("musicvideo_view", "count(1)"),
+          .musicVideosWatched = count("musicvideo_view", "count(playCount)")};
 }
 
 ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,

@@ -1047,9 +1047,16 @@ public:
   bool GetEpisodesNav(const std::string& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idShow=-1, int idSeason=-1, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
   bool GetMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1, int idTag=-1, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
 
-  bool GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
-  bool GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
-  bool GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
+  /*!
+   * \brief The movies, episodes or music videos added most recently, newest first
+   * \param limit how many, 0 for as many as the advanced settings give
+   * \param strBaseDir the node they are listed under, empty for the type's recently added node
+   */
+  bool GetRecentlyAdded(KODI::MEDIA::TYPE type,
+                        CFileItemList& items,
+                        unsigned int limit = 0,
+                        int getDetails = VideoDbDetailsNone,
+                        const std::string& strBaseDir = {});
   bool GetInProgressTvShowsNav(const std::string& strBaseDir,
                                CFileItemList& items,
                                int getDetails = VideoDbDetailsNone);
@@ -1058,6 +1065,20 @@ public:
 
   bool HasContent();
   bool HasContent(VideoDbContentType type);
+
+  //! The size of the library, and how much of it has been watched
+  struct Totals
+  {
+    int movies{0};
+    int moviesWatched{0};
+    int tvShows{0};
+    int tvShowsWatched{0}; //!< those with every episode watched
+    int episodes{0};
+    int episodesWatched{0};
+    int musicVideos{0};
+    int musicVideosWatched{0};
+  };
+  Totals GetTotals() const;
   bool HasSets() const;
 
   void CleanDatabase(CGUIDialogProgressBarHandle* handle = nullptr,
@@ -1152,9 +1173,12 @@ public:
                              int getDetails = VideoDbDetailsNone);
 
   // retrieve sorted and limited items
-  bool GetSortedVideos(KODI::MEDIA::TYPE mediaType, const std::string& strBaseDir,
-                       const SortDescription &sortDescription, CFileItemList& items,
-                       const Filter &filter = Filter());
+  bool GetSortedVideos(KODI::MEDIA::TYPE mediaType,
+                       const std::string& strBaseDir,
+                       const SortDescription& sortDescription,
+                       CFileItemList& items,
+                       const Filter& filter = Filter(),
+                       int getDetails = VideoDbDetailsNone);
 
   // retrieve a list of items
   bool GetItems(const std::string &strBaseDir, CFileItemList &items, const Filter &filter = Filter(), const SortDescription &sortDescription = SortDescription());

@@ -653,6 +653,9 @@ public:
                          bool countOnly = false);
   int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
   int GetSongsCount(const Filter& filter = Filter());
+
+  //! \brief The number of different album names the songs carry
+  int GetAlbumNamesCount() const;
   bool GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription& sorting) override;
   int GetOrderFilter(KODI::MEDIA::TYPE type, const SortDescription& sorting, Filter& filter) const;
 

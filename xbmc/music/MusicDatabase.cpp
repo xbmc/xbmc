@@ -9619,6 +9619,11 @@ unsigned int CMusicDatabase::GetRandomSongIDs(const Filter& filter,
   return 0;
 }
 
+int CMusicDatabase::GetAlbumNamesCount() const
+{
+  return std::atoi(GetSingleValue("songview", "count(distinct strAlbum)").c_str());
+}
+
 int CMusicDatabase::GetSongsCount(const Filter& filter)
 {
   try
