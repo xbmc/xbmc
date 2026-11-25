@@ -5,9 +5,9 @@ XBMC_PLATFORM_DIR=wasm
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-tarballs=/Users/Shared/xbmc-depends/tarballs \
+    --with-tarballs="$WASM_TARBALLS" \
     --host=wasm32-unknown-emscripten \
     --with-platform=wasm \
-    --with-toolchain=/Applications/emsdk-$SDK_VERSION \
+    --with-toolchain="$WASM_TOOLCHAIN" \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi

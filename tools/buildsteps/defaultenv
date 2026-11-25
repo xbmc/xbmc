@@ -78,6 +78,11 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_CONFIGURATION="Release"
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_XCODE_APP="Xcode_15.2.app" # CI host is macos currently
+    # These two paths differ between the macOS builder and a Linux container;
+    # the macOS values stay the defaults so the existing job is unaffected.
+    # EMSDK is set inside the builder image, where it replaces the
+    # /Applications/emsdk-* layout.
+    DEFAULT_WASM_TARBALLS=/Users/Shared/xbmc-depends/tarballs
   ;;
 
   freebsd)
@@ -103,6 +108,14 @@ fi
 if [ "$XBMC_DEPENDS_ROOT" == "Default" ]
 then
   XBMC_DEPENDS_ROOT=$DEFAULT_XBMC_DEPENDS_ROOT
+fi
+
+# Resolved here so getBuildHash and every caller share one identity, including
+# the EMSDK fallback for the toolchain path.
+if [ "$XBMC_PLATFORM_DIR" == "wasm" ]
+then
+  WASM_TARBALLS=${WASM_TARBALLS:-$DEFAULT_WASM_TARBALLS}
+  WASM_TOOLCHAIN=${WASM_TOOLCHAIN:-${EMSDK:-/Applications/emsdk-$SDK_VERSION}}
 fi
 
 if [ "$XCODE_APP" == "Default" ]
@@ -135,7 +148,7 @@ fi
 
 #helper functions
 
-#hash a dir based on the git revision, Configuration, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN and XBMC_DEPENDS_ROOT
+#hash a dir based on the git revision, Configuration, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN, XBMC_DEPENDS_ROOT, WASM_TARBALLS and WASM_TOOLCHAIN
 #param1 path to be hashed
 function getBuildHash ()
 {
@@ -144,6 +157,8 @@ function getBuildHash ()
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath)"
   hashStr="$hashStr $Configuration $SDK_PATH $NDK_PATH $NDK_VERSION $SDK_VERSION $TOOLCHAIN $XBMC_DEPENDS_ROOT $XCODE_APP"
+  [ -z "$WASM_TARBALLS" ] || hashStr="$hashStr $WASM_TARBALLS"
+  [ -z "$WASM_TOOLCHAIN" ] || hashStr="$hashStr $WASM_TOOLCHAIN"
   [ -z "$DEBUG_SWITCH" ] || hashStr="$hashStr $DEBUG_SWITCH"
   echo $hashStr
 }
