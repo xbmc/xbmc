@@ -1,4 +1,5 @@
-set(SOURCES TestAlarmClock.cpp
+set(SOURCES TestActorProtocol.cpp
+            TestAlarmClock.cpp
             TestAliasShortcutUtils.cpp
             TestArchive.cpp
             TestArtUtils.cpp

@@ -790,11 +790,31 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           return;
         case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
-          HandleDeviceCountChange(reinterpret_cast<const char*>(msg->data), false);
-          return;
         case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
-          HandleDeviceCountChange("", true);
+        {
+          // endpoints report several changes for one event, e.g. display audio during a
+          // display mode switch, and each of them would enumerate all sinks again
+          const bool defaultDeviceChanged =
+              m_controlPort.PurgeOut(CActiveAEControlProtocol::DEFAULTDEVICECHANGE) > 0 ||
+              signal == CActiveAEControlProtocol::DEFAULTDEVICECHANGE;
+
+          std::string driver;
+          if (signal == CActiveAEControlProtocol::DEVICECOUNTCHANGE)
+            driver = reinterpret_cast<const char*>(msg->data);
+
+          bool allDrivers = defaultDeviceChanged;
+          m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECOUNTCHANGE,
+                                 [&driver, &allDrivers](const Message& purged)
+                                 {
+                                   if (driver != reinterpret_cast<const char*>(purged.data))
+                                     allDrivers = true;
+                                 });
+          if (allDrivers)
+            driver.clear();
+
+          HandleDeviceCountChange(driver, defaultDeviceChanged);
           return;
+        }
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
@@ -3101,7 +3121,8 @@ void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultD
   if (defaultDeviceChanged)
     CLog::LogF(LOGDEBUG, "default device change event");
   else
-    CLog::LogF(LOGDEBUG, "device count change event from driver: {}", driver);
+    CLog::LogF(LOGDEBUG, "device count change event from driver: {}",
+               driver.empty() ? "all drivers" : driver);
 
   const std::string currentDriver = m_openedDriver;
   const std::string currentDevice = m_openedDevice;
