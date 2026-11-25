@@ -8,7 +8,9 @@ elseif(TARGET ${APP_NAME_LC}::OpenGLES)
   endif()
 endif()
 
-if(FBO_GL_SUPPORTED AND (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx"))
+# Emscripten has an EGL target, but neither pbuffer surfaces nor a CWinSystemEGL.
+if(FBO_GL_SUPPORTED AND NOT CORE_SYSTEM_NAME STREQUAL "wasm" AND
+   (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx"))
   set(SOURCES HwRenderingContext.cpp)
   set(HEADERS IHwRenderingContext.h)
 

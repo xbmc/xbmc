@@ -55,6 +55,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-lembind"
     # kodi_pre.js uses Module.ccall('kodi_wasm_dispatch_paste', ...) for clipboard paste.
     "SHELL:-sEXPORTED_RUNTIME_METHODS=ccall,cwrap"
+    "SHELL:-sMAIN_MODULE=2"
+    "SHELL:-sEXPORTED_FUNCTIONS=@${CMAKE_SOURCE_DIR}/cmake/scripts/wasm/addon-exports.txt"
     "SHELL:--pre-js ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/kodi_pre.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/windowing/wasm/webgl_commit.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/audio_worklet.js"
@@ -68,6 +70,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/mse_bridge.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/tizen_emss.js"
   )
+
+  # Exported by the linker, so that side modules get libGL's wrappers, which proxy to the
+  # thread owning the WebGL context.
+  file(STRINGS ${CMAKE_SOURCE_DIR}/cmake/scripts/wasm/addon-exports-gl.txt _wasm_gl_exports
+       REGEX "^[^#]")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+               ${CMAKE_SOURCE_DIR}/cmake/scripts/wasm/addon-exports-gl.txt)
+  foreach(_sym IN LISTS _wasm_gl_exports)
+    add_link_options("SHELL:-Wl,--export-if-defined=${_sym}")
+  endforeach()
 
   # tizen_sockets.js returns one getaddrinfo() node per address, and older
   # Emscripten freeaddrinfo() frees only the first one.

@@ -192,7 +192,9 @@ public:
    */
   bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy);
 
+#if !defined(TARGET_WASM)
   void SurfaceAttrib(EGLint attribute, EGLint value);
+#endif
   bool CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace = EGL_NONE);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool InitializeDisplay(EGLint renderingApi);
