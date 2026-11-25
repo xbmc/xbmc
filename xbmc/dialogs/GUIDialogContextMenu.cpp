@@ -428,14 +428,14 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       // add the current thumb, if available
       if (!share->m_strThumbnailImage.empty())
       {
-        CFileItemPtr current(new CFileItem(ART::CHOICE::CURRENT, false));
+        auto current = std::make_shared<CFileItem>(ART::CHOICE::CURRENT, false);
         current->SetArt(ART::TYPE::THUMB, share->m_strThumbnailImage);
         current->SetLabel(localizeStrings.Get(20016));
         items.Add(current);
       }
       else if (item->HasArt(ART::TYPE::THUMB))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-        CFileItemPtr current(new CFileItem(ART::CHOICE::CURRENT, false));
+        auto current = std::make_shared<CFileItem>(ART::CHOICE::CURRENT, false);
         current->SetArt(ART::TYPE::THUMB, item->GetArt(ART::TYPE::THUMB));
         current->SetLabel(localizeStrings.Get(20016));
         items.Add(current);
@@ -444,13 +444,13 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       std::string folderThumb = ART::GetFolderThumb(*item);
       if (CFileUtils::Exists(folderThumb))
       {
-        CFileItemPtr local(new CFileItem(ART::CHOICE::LOCAL, false));
+        auto local = std::make_shared<CFileItem>(ART::CHOICE::LOCAL, false);
         local->SetArt(ART::TYPE::THUMB, folderThumb);
         local->SetLabel(localizeStrings.Get(20017));
         items.Add(local);
       }
       // and add a "no thumb" entry as well
-      CFileItemPtr nothumb(new CFileItem(ART::CHOICE::NONE, false));
+      auto nothumb = std::make_shared<CFileItem>(ART::CHOICE::NONE, false);
       nothumb->SetArt(ART::TYPE::ICON, item->GetArt(ART::TYPE::ICON));
       nothumb->SetLabel(localizeStrings.Get(20018));
       items.Add(nothumb);
