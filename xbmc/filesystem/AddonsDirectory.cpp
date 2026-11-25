@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <array>
 #include <functional>
+#include <iterator>
 #include <set>
 
 using namespace KODI;
@@ -858,9 +859,14 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetProperty(ITEM::PROPERTY::ADDON_ID, addon->ID());
   item->SetProperty(ITEM::PROPERTY::ADDON_NAME, addon->Name());
   item->SetCanQueue(false);
-  const auto it = addon->ExtraInfo().find("language");
-  if (it != addon->ExtraInfo().end())
-    item->SetProperty("Addon.Language", it->second);
+  if (const auto& languages = addon->Languages(); !languages.empty())
+  {
+    std::vector<std::string> tags;
+    tags.reserve(languages.size());
+    std::ranges::transform(languages, std::back_inserter(tags),
+                           [](const auto& language) { return language.ToString(); });
+    item->SetProperty("Addon.Language", StringUtils::Join(tags, " "));
+  }
 
   return item;
 }
