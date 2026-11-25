@@ -107,6 +107,7 @@
         -->
         <activity
             android:name=".Main"
+            android:enableOnBackInvokedCallback="true"
             android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"

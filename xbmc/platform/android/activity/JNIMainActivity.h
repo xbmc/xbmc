@@ -33,6 +33,7 @@ public:
   static void _onInputDeviceChanged(JNIEnv *env, jobject context, jint deviceId);
   static void _onInputDeviceRemoved(JNIEnv *env, jobject context, jint deviceId);
   static void _onVisibleBehindCanceled(JNIEnv *env, jobject context);
+  static void _onBackInvoked(JNIEnv* env, jobject context);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(void*), void* variant);

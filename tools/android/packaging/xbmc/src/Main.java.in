@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.widget.RelativeLayout;
+import android.window.OnBackInvokedDispatcher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,6 +69,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   native void _doFrame(long frameTimeNanos);
 
   native void _onVisibleBehindCanceled();
+
+  native void _onBackInvoked();
 
   private Runnable leanbackUpdateRunnable = new Runnable()
   {
@@ -120,6 +123,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     System.loadLibrary("@APP_NAME_LC@");
 
     super.onCreate(savedInstanceState);
+
+    if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU)
+    {
+      getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+          OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::_onBackInvoked);
+    }
 
     setContentView(R.layout.activity_main);
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
