@@ -228,6 +228,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(const std::shared_ptr<const CSe
 
 void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   if (setting == NULL)
     return;
 
@@ -244,18 +245,18 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     {
       CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::CURRENT, false));
       item->SetArt(KODI::ART::TYPE::THUMB, m_thumb);
-      item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
+      item->SetLabel(localizeStrings.Get(20016));
       items.Add(item);
     }
 
     CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::NONE, false));
     item->SetArt(KODI::ART::TYPE::THUMB, KODI::ART::DEFAULT::USER);
-    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
+    item->SetLabel(localizeStrings.Get(20018));
     items.Add(item);
 
     std::string thumb;
     if (CGUIDialogFileBrowser::ShowAndGetImage(
-            items, shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1030),
+            items, shares, localizeStrings.Get(1030),
             thumb) &&
         !StringUtils::EqualsNoCase(thumb, KODI::ART::CHOICE::CURRENT))
     {
