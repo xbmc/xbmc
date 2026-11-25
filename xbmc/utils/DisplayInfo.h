@@ -11,6 +11,7 @@
 #include <memory>
 #include <stdint.h>
 #include <string>
+#include <utility>
 #include <vector>
 
 struct di_info;
@@ -71,6 +72,11 @@ public:
   //! when its HDR static metadata leaves it unset
   float GetMaxLuminance() const;
 
+  //! The lowest and highest refresh rates, in Hz, of the display's HDMI 2.1
+  //! variable refresh rate. The lowest is 0 if it has none, the highest 0 if
+  //! it has no limit.
+  std::pair<int, int> GetVariableRefreshRange() const { return {m_vrrMinHz, m_vrrMaxHz}; }
+
 private:
   explicit CDisplayInfo(const std::vector<uint8_t>& edid);
 
@@ -90,6 +96,8 @@ private:
 
   const di_cta_colorimetry_block* m_colorimetry = nullptr;
   const di_cta_hdr_static_metadata_block* m_hdr_static_metadata = nullptr;
+  int m_vrrMinHz = 0;
+  int m_vrrMaxHz = 0;
 };
 
 } // namespace UTILS

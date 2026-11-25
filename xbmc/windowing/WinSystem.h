@@ -21,7 +21,9 @@
 
 #include <atomic>
 #include <memory>
+#include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 inline constexpr const char* OUTPUT_NAME_DEFAULT = "Default";
@@ -134,6 +136,23 @@ public:
    * display stops doing so while this is set.
    */
   void SetLowLatencyPresentation(bool lowLatency) { m_lowLatencyPresentation = lowLatency; }
+
+  /*!
+   * \brief Let the display refresh as each frame is presented, within the
+   * range of rates it can follow
+   *
+   * Only takes effect while SetLowLatencyPresentation() is set too.
+   */
+  void SetVariableRefresh(bool variableRefresh) { m_variableRefresh = variableRefresh; }
+
+  /*!
+   * \brief The refresh rates, in Hz, the display follows presented frames between
+   *
+   * \return The lowest and the highest, which is the rate of the display's
+   *         mode, while the display refreshes as frames are presented. Nothing
+   *         while it keeps to its mode's rate.
+   */
+  virtual std::optional<std::pair<double, double>> GetVariableRefreshRange() const { return {}; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
@@ -395,4 +414,5 @@ protected:
   std::unique_ptr<CGraphicContext> m_gfxContext;
   std::shared_ptr<CDPMSSupport> m_dpms;
   std::atomic<bool> m_lowLatencyPresentation{false};
+  std::atomic<bool> m_variableRefresh{false};
 };

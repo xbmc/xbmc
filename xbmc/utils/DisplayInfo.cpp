@@ -103,6 +103,22 @@ void CDisplayInfo::Parse()
 
           switch (cta_tag)
           {
+#if defined(HAVE_LIBDISPLAYINFO_HDMI_FORUM)
+            case DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM:
+            case DI_CTA_DATA_BLOCK_HDMI_SINK_CAP:
+            {
+              // HDMI 2.1 gives the variable refresh rate in either block
+              const auto* forum = di_cta_data_block_get_vendor_hdmi_forum(block);
+              const auto* sink = di_cta_data_block_get_hdmi_sink_cap(block);
+              const di_cta_hdmi_scds* scds = forum ? &forum->scds : sink ? &sink->scds : nullptr;
+              if (scds && scds->vrr_min_hz > 0)
+              {
+                m_vrrMinHz = scds->vrr_min_hz;
+                m_vrrMaxHz = scds->vrr_max_hz;
+              }
+              break;
+            }
+#endif
             case DI_CTA_DATA_BLOCK_COLORIMETRY:
             {
               m_colorimetry = di_cta_data_block_get_colorimetry(block);
