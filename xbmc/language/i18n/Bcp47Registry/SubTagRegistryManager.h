@@ -19,12 +19,20 @@ namespace KODI::LANGUAGE::I18N
 class CSubTagRegistryManager
 {
 public:
-  ~CSubTagRegistryManager();
-
   /*!
-   * \brief The registry every tag is validated against, loaded on first use.
+   * \brief The IANA registry Kodi ships, loaded on first use.
+   *
+   * The registry is a published table that does not change while Kodi runs, so it is held as data
+   * rather than as a service.
+   *
+   * \note Read on first use, from a path that resolves only once the special protocol is set up.
+   *       A parse before that leaves the registry empty for the rest of the run, so nothing may
+   *       parse a language during static initialization.
+   * \return The registry, empty rather than absent if the shipped file cannot be read.
    */
   static const CSubTagRegistryManager& GetInstance();
+
+  ~CSubTagRegistryManager();
 
   bool Initialize(std::unique_ptr<IRegistryRecordProvider> provider = nullptr);
   void Deinitialize();
