@@ -77,6 +77,24 @@ public:
   virtual bool SupportsHdr() const { return false; }
 
   /*!
+   * \brief Whether the shader preset is still to be tried
+   */
+  bool ShaderPresetPending() const
+  {
+    return m_bShadersNeedUpdate && !m_renderSettings.VideoSettings().GetShaderPreset().empty();
+  }
+
+  /*!
+   * \brief Whether the shader preset was tried and couldn't be used, leaving the
+   * plain picture
+   */
+  bool ShaderPresetFailed() const
+  {
+    return !m_bShadersNeedUpdate && !m_bUseShaderPreset &&
+           !m_renderSettings.VideoSettings().GetShaderPreset().empty();
+  }
+
+  /*!
    * \brief Draw for an HDR10 output, at the given luminance in nits
    *
    * \param paperWhite, peak The luminance of ordinary colours and of the

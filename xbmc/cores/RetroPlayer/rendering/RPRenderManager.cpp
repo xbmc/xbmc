@@ -731,7 +731,13 @@ void CRPRenderManager::UpdateHdrOutput()
   if (wanted)
   {
     const std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
-    wanted = renderer && renderer->SupportsHdr();
+
+    // Keep the output as it is until the filter has been tried, so one that fails to load
+    // never turns HDR on, and choosing another filter doesn't leave HDR for a frame
+    if (renderer && renderer->ShaderPresetPending())
+      return;
+
+    wanted = renderer && renderer->SupportsHdr() && !renderer->ShaderPresetFailed();
   }
 
   // A display that refused HDR is asked again once something changes
