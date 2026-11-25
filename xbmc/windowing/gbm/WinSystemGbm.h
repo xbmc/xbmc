@@ -70,6 +70,8 @@ public:
 
   bool UseLimitedColor() override;
 
+  std::optional<std::pair<double, double>> GetVariableRefreshRange() const override;
+
   bool Hide() override;
   bool Show(bool raise = true) override;
   void Register(IDispResource* resource) override;
@@ -118,6 +120,10 @@ protected:
 private:
   void UpdateContentType();
   void ResetContentType();
+  void UpdateVrr();
+  void ResetVrr();
+  //! The display's variable refresh range in the current mode, up to the mode's rate
+  std::optional<std::pair<double, double>> GetVrrModeRange() const;
   static void ApplyLimitGuiSize(void* userptr);
   static void ApplyColorRangeSetting(void* userptr);
 
@@ -149,6 +155,12 @@ private:
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
   std::optional<uint64_t> m_contentTypeRequested;
   int m_contentTypeAttempts = 0;
+  std::optional<uint64_t> m_vrrRequested;
+  int m_vrrAttempts = 0;
+  bool m_vrrWanted = false;
+  //! The connector's "vrr_capable", read each time variable refresh is wanted
+  bool m_vrrCapable = false;
+  bool m_vrrActive = false;
 
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };
