@@ -88,12 +88,18 @@ protected:
 
 private:
   /*!
+   * \brief Whether the display refreshes as each frame is ready, with the game
+   * timed by its own rate
+   */
+  bool DisplayFollowsGame();
+
+  /*!
    * \brief Run the next frame in step with the screen, if it can be
    *
    * \return False if the frame should be timed by the game's own rate instead
    */
   bool PaceToDisplay();
-  void StopPacing();
+  void StopPacing(bool displayFollows = false);
   void RunFrame();
 
   enum class PacingState
@@ -103,6 +109,7 @@ private:
     RATE_TOO_FAR,
     FRAME_TOO_SLOW,
     PACED,
+    FOLLOWED,
   };
 
   /*!

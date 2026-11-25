@@ -27,11 +27,45 @@ constexpr int64_t STALE_INTERVALS = 3;
 // Paced refreshes between reports of how pacing is going
 constexpr int64_t REPORT_REFRESHES = 600;
 
+// Where the display could follow a game, one that running in step would speed
+// up or slow down by less than this still runs in step: the change can't be
+// heard, and its frames still start just in time for the screen
+constexpr double MIN_FOLLOWED_RATE_CHANGE = 0.005;
+
 int64_t ToNs(CDisplayPacing::Clock::time_point when)
 {
   return std::chrono::duration_cast<std::chrono::nanoseconds>(when.time_since_epoch()).count();
 }
 } // namespace
+
+bool CDisplayPacing::FollowsGame(double fps,
+                                 double minRate,
+                                 double maxRate,
+                                 double maxRateDifference)
+{
+  if (minRate <= 0.0 || fps < minRate || fps > maxRate)
+    return false;
+
+  // In step, the game would run at the rate of the display's mode
+  const double rateChange = std::abs(maxRate / fps - 1.0);
+  return maxRateDifference <= 0.0 || rateChange > maxRateDifference ||
+         rateChange >= MIN_FOLLOWED_RATE_CHANGE;
+}
+
+void CDisplayPacing::OnFrameRun()
+{
+  if (m_followedFrameNs.load() != 0)
+    m_frameRun.Set();
+}
+
+void CDisplayPacing::WaitForNextFrame()
+{
+  // Counted from when the last frame was drawn rather than run, so a frame that
+  // takes longer to run than the one before needs more than a frame's time
+  const int64_t frameNs = m_followedFrameNs.load();
+  if (frameNs != 0)
+    m_frameRun.Wait(std::chrono::nanoseconds(2 * frameNs));
+}
 
 void CDisplayPacing::OnFrameTaken(Clock::time_point when, bool newFrame)
 {

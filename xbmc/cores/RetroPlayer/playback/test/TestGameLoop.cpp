@@ -10,7 +10,10 @@
 #include "cores/RetroPlayer/playback/SavestateWorker.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <future>
+#include <mutex>
+#include <optional>
 #include <thread>
 
 #include <gtest/gtest.h>
@@ -100,4 +103,66 @@ TEST(TestGameLoop, QuiesceHandlesPausedAndUnstartedLoops)
   loop.Quiesce();
   loop.Stop();
   EXPECT_EQ(callback.ends, 1u);
+}
+
+TEST(TestGameLoop, LetsTheDisplayFollowOnlyAGameItWouldNotPace)
+{
+  using Clock = CDisplayPacing::Clock;
+
+  class Callback : public IGameLoopCallback
+  {
+  public:
+    explicit Callback(const CDisplayPacing& pacing) : m_pacing(pacing) {}
+    void FrameEvent() override
+    {
+      std::unique_lock lock(m_mutex);
+      m_followed = m_pacing.FollowedFrameTime() != Clock::duration::zero();
+      m_frameRun.notify_all();
+    }
+    void RewindEvent() override {}
+    void EndEvent() override {}
+
+    bool WaitForFrame(bool followed)
+    {
+      std::unique_lock lock(m_mutex);
+      return m_frameRun.wait_for(lock, 5s, [&] { return m_followed == followed; });
+    }
+
+  private:
+    const CDisplayPacing& m_pacing;
+    std::mutex m_mutex;
+    std::condition_variable m_frameRun;
+    std::optional<bool> m_followed;
+  };
+
+  CDisplayPacing pacing;
+  pacing.SetRefreshRateSource([] { return 60.0; });
+  pacing.SetVariableRefreshRange(40.0, 60.0);
+
+  std::atomic<bool> rendering{true};
+  std::thread renderer(
+      [&]
+      {
+        while (rendering)
+        {
+          pacing.OnFrameTaken(Clock::now());
+          std::this_thread::sleep_for(16ms);
+        }
+      });
+
+  Callback callback(pacing);
+  CGameLoop loop(&callback, 50.0, &pacing);
+  loop.SetSpeed(1.0);
+  loop.Start();
+
+  // 50 fps is too far from the screen's 60 Hz to pace
+  EXPECT_TRUE(callback.WaitForFrame(true));
+
+  // 59.95 fps is paced, and the display keeps to its own rate
+  loop.SetFrameRate(59.95);
+  EXPECT_TRUE(callback.WaitForFrame(false));
+
+  loop.Stop();
+  rendering = false;
+  renderer.join();
 }

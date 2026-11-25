@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/Event.h"
+
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -71,6 +73,59 @@ public:
    * Only meaningful while Interval() is not zero.
    */
   Clock::time_point NextTake(Clock::time_point now) const;
+
+  /*!
+   * \brief Whether the display should refresh as each of the game's frames is
+   * ready, rather than the game run in step with the display
+   *
+   * \param fps The game's own frame rate
+   * \param minRate The lowest rate the display can follow, in Hz, or 0 if it
+   *        can't follow the game
+   * \param maxRate The highest, which is the rate of the display's mode
+   * \param maxRateDifference As for MaxRateDifference(), or 0 if the game isn't
+   *        run in step with the display
+   */
+  static bool FollowsGame(double fps, double minRate, double maxRate, double maxRateDifference);
+
+  /*!
+   * \brief The refresh rates, in Hz, the display can follow the game's frames
+   * between, or 0 while it keeps to its mode's rate
+   */
+  double VariableRefreshMinRate() const { return m_vrrMinRate.load(); }
+  double VariableRefreshMaxRate() const { return m_vrrMaxRate.load(); }
+  void SetVariableRefreshRange(double minRate, double maxRate)
+  {
+    m_vrrMinRate.store(minRate);
+    m_vrrMaxRate.store(maxRate);
+  }
+
+  /*!
+   * \brief How long each of the game's frames lasts while the display follows
+   * the game, or zero while the display keeps to its own rate
+   */
+  Clock::duration FollowedFrameTime() const
+  {
+    return std::chrono::duration_cast<Clock::duration>(
+        std::chrono::nanoseconds(m_followedFrameNs.load()));
+  }
+  void SetFollowedFrameTime(Clock::duration frameTime)
+  {
+    m_followedFrameNs.store(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(frameTime).count());
+  }
+
+  /*!
+   * \brief The game loop has run a frame
+   */
+  void OnFrameRun();
+
+  /*!
+   * \brief While the display follows the game, wait for the game's next frame,
+   * or for two frames' time without one
+   *
+   * Called from the rendering thread before it draws.
+   */
+  void WaitForNextFrame();
 
   /*!
    * \brief Whether the game may run at the screen's rate instead of its own
@@ -139,6 +194,11 @@ private:
   std::atomic<double> m_maxRateDifference{0.02};
   std::atomic<int64_t> m_marginNs{2'500'000};
   std::atomic<bool> m_paced{false};
+
+  std::atomic<double> m_vrrMinRate{0.0};
+  std::atomic<double> m_vrrMaxRate{0.0};
+  std::atomic<int64_t> m_followedFrameNs{0};
+  CEvent m_frameRun;
 
   // Published for the game loop
   std::atomic<int64_t> m_lastTakeNs{0};

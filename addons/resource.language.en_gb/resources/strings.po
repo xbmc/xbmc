@@ -20073,7 +20073,19 @@ msgctxt "#35382"
 msgid "{0:d} frames"
 msgstr ""
 
-#empty strings from id 35383 to 35399
+#. Setting to let a display with a variable refresh rate follow the game
+#: system/settings/settings.xml
+msgctxt "#35383"
+msgid "Use variable refresh rate"
+msgstr ""
+
+#. Help text for setting "Use variable refresh rate" of label #35383
+#: system/settings/settings.xml
+msgctxt "#35384"
+msgid "Let a display with a variable refresh rate (VRR) refresh with the game, instead of changing the game's speed to match the display. The game runs at its own speed and pitch, and each frame is shown once. Games very close to the display's rate still run in step with it."
+msgstr ""
+
+#empty strings from id 35385 to 35399
 
 #. Heading of the notification when a player's controller disconnects during a game
 #: xbmc/games/agents/input/AgentInput.cpp

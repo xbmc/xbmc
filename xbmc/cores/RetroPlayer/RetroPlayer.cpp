@@ -229,6 +229,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing file");
 
+  CServiceBroker::GetWinSystem()->SetVariableRefresh(false);
+
   const bool autosaveEligible = m_autoSave && m_autoSave->HasInitialDelayElapsed();
   m_autoSave.reset();
 
@@ -488,6 +490,19 @@ bool CRetroPlayer::OnAction(const CAction& action)
 
 void CRetroPlayer::FrameMove()
 {
+  if (m_processInfo)
+  {
+    CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+    winSystem->SetVariableRefresh(m_gameServices.GameSettings().VariableRefreshRate());
+    const auto range = winSystem->GetVariableRefreshRange();
+    CDisplayPacing& displayPacing = m_processInfo->GetDisplayPacing();
+    displayPacing.SetVariableRefreshRange(range ? range->first : 0.0, range ? range->second : 0.0);
+
+    // A display that follows the game refreshes when a frame is drawn, so
+    // drawing waits for the game's next one
+    displayPacing.WaitForNextFrame();
+  }
+
   if (m_renderManager)
     m_renderManager->FrameMove();
 

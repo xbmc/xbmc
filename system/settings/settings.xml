@@ -2920,6 +2920,12 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="gamesgeneral.variablerefreshrate" type="boolean" label="35383" help="35384">
+          <requirement>HAVE_GBM</requirement>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="gamesgeneral.enablerunahead" type="boolean" label="35378" help="35379">
           <level>0</level>
           <default>false</default>
