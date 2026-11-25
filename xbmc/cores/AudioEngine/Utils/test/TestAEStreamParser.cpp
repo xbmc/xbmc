@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -99,6 +100,8 @@ std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream,
     const size_t available = std::min(chunk, stream.size() - pos);
     const int used =
         parser.AddData(stream.data() + pos, static_cast<unsigned int>(available), &out, &outSize);
+    // AddData() hands each frame out in a buffer allocated with new[], which the caller owns.
+    const std::unique_ptr<uint8_t[]> packet(out);
     if (outSize > 0)
       types.push_back(parser.GetDataType());
     if (used <= 0 && outSize == 0)
