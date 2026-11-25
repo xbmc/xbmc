@@ -2,18 +2,12 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=wasm
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-# These two paths differ between the macOS builder and a Linux container; the
-# macOS values stay the defaults so the existing job is unaffected. EMSDK is set
-# inside the builder image, where it replaces the /Applications/emsdk-* layout.
-WASM_TARBALLS=${WASM_TARBALLS:-/Users/Shared/xbmc-depends/tarballs}
-WASM_TOOLCHAIN=${WASM_TOOLCHAIN:-${EMSDK:-/Applications/emsdk-$SDK_VERSION}}
-
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-tarballs=$WASM_TARBALLS \
+    --with-tarballs="$WASM_TARBALLS" \
     --host=wasm32-unknown-emscripten \
     --with-platform=wasm \
-    --with-toolchain=$WASM_TOOLCHAIN \
+    --with-toolchain="$WASM_TOOLCHAIN" \
     --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
 fi
