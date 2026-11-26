@@ -7,6 +7,11 @@ on:
 permissions:
   pull-requests: read
 
+# Labelling a PR sends one event per label; only the newest run judges the finished state.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   rules:
     if: github.repository == 'xbmc/xbmc'
@@ -16,7 +21,11 @@ jobs:
       - uses: actions/github-script@v9
         with:
           script: |
-            const pr = context.payload.pull_request
+            // The event carries the PR as it was when the event fired, not as it is now
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo,
+              pull_number: context.payload.pull_request.number
+            })
             const labels = pr.labels.map(label => label.name)
             const files = (await github.paginate(github.rest.pulls.listFiles, {
               ...context.repo,
