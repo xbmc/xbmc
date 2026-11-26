@@ -320,6 +320,9 @@ void CGUIControlGroup::AssignDepth()
   {
     for (auto* control : m_children)
     {
+      if (!control->IsVisible())
+        continue;
+
       if (m_renderFocusedLast && control->HasFocus())
         focusedControl = control;
       else
