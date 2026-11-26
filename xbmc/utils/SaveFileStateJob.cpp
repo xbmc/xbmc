@@ -69,9 +69,7 @@ std::string CSaveFileState::ProgressTrackingFileOf(const CFileItem& item)
   return progressTrackingFile;
 }
 
-void CSaveFileState::DoWork(CFileItem& item,
-                            CBookmark& bookmark,
-                            bool updatePlayCount)
+void CSaveFileState::DoWork(CFileItem& item, CBookmark& bookmark, bool updatePlayCount)
 {
   const std::string progressTrackingFile{ProgressTrackingFileOf(item)};
   if (!progressTrackingFile.empty())

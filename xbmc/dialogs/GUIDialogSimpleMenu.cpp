@@ -158,9 +158,8 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
 
   // See if playlist already used
   const int newPlaylist{selectedItem.GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
-  auto matching{usedPlaylists |
-                std::views::filter([newPlaylist](const KODI::VIDEO::DiscPlaylist& p)
-                                   { return p.playlist == newPlaylist; })};
+  auto matching{usedPlaylists | std::views::filter([newPlaylist](const KODI::VIDEO::DiscPlaylist& p)
+                                                   { return p.playlist == newPlaylist; })};
   if (std::ranges::empty(matching))
     return true; // Not used
 

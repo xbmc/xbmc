@@ -4056,9 +4056,8 @@ void LabelUsedPlaylists(CFileItemList& items,
 
     // Several episodes can share one playlist, and choosing it detaches all of them, so all of
     // them are named
-    auto owners{usedPlaylists |
-                std::views::filter([playlist](const KODI::VIDEO::DiscPlaylist& used)
-                                   { return used.playlist == playlist; })};
+    auto owners{usedPlaylists | std::views::filter([playlist](const KODI::VIDEO::DiscPlaylist& used)
+                                                   { return used.playlist == playlist; })};
     if (std::ranges::distance(owners) == 0)
       continue;
 
