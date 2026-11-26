@@ -720,7 +720,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(const std::string& sArtist)
 }
 
 // fetch list of episodes from URL (from video database)
-VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl,
+                                            const std::set<int>& seasons /* = {} */)
 {
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
@@ -729,10 +730,22 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
   CLog::LogF(LOGDEBUG, "Searching '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
+  // complete=1: an item may carry its episode's details (video.complete)
   std::stringstream str;
   str << "plugin://" << ID()
       << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
-      << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+      << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON()) << "&complete=1";
+  if (!seasons.empty())
+  {
+    std::string numbers;
+    const char* separator{""};
+    for (const int season : seasons)
+    {
+      numbers += separator + std::to_string(season);
+      separator = ",";
+    }
+    str << "&seasons=" << CURL::Encode(numbers);
+  }
 
   CFileItemList items;
   if (!RunForListing(*this, str.str(), items))
@@ -749,6 +762,8 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
     ep.cDate = tag.m_firstAired;
     ep.iSubepisode = static_cast<int>(items[i]->GetProperty("video.sub_episode").asInteger());
     ep.cScraperUrl.AppendUrl(CScraperUrl::SUrlEntry(items[i]->GetURL().Get()));
+    if (items[i]->GetProperty("video.complete").asBoolean())
+      ep.item = items[i];
   }
 
   return vcep;

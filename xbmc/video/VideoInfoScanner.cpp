@@ -2969,7 +2969,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
             pDlgProgress->Progress();
           }
 
-          episodes = scraper->GetEpisodeList(url);
+          // The seasons of the episodes left to look up, or all where one is named by its date or
+          // title, as it may be in any season
+          std::set<int> seasons;
+          for (auto left = file; left != files.end(); ++left)
+          {
+            if (m_database.GetEpisodeId(left->strPath, left->iEpisode, left->iSeason) < 0)
+              seasons.insert(left->iSeason);
+          }
+          if (!seasons.empty() && *seasons.begin() < 0)
+            seasons.clear();
+          episodes = scraper->GetEpisodeList(url, seasons);
+          // A scraper may list none of the seasons named, which isn't a failure
+          if (episodes.empty() && !seasons.empty())
+            episodes = scraper->GetEpisodeList(url);
           if (episodes.empty())
           {
             CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the episode guide of '{}'",
@@ -3087,8 +3100,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         CFileItem scraperItem;
         scraperItem.SetPath(file->strPath);
-        if (!scraper->GetVideoDetails({}, guide->cScraperUrl, false /*fMovie*/,
-                                      *scraperItem.GetVideoInfoTag()))
+        // An episode listed with its details (video.complete) isn't asked for them again
+        if (guide->item && guide->item->HasVideoInfoTag())
+        {
+          *scraperItem.GetVideoInfoTag() = *guide->item->GetVideoInfoTag();
+          scraperItem.GetVideoInfoTag()->m_streamDetails.Reset();
+        }
+        else if (!scraper->GetVideoDetails({}, guide->cScraperUrl, false /*fMovie*/,
+                                           *scraperItem.GetVideoInfoTag()))
         {
           CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
                     CURL::GetRedacted(file->strPath));
