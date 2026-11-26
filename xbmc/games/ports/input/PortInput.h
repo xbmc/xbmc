@@ -35,7 +35,12 @@ class CControllerActivity;
 class CPortInput : public JOYSTICK::IInputHandler, public KEYMAP::IKeymapEnvironment
 {
 public:
-  CPortInput(JOYSTICK::IInputHandler* gameInput);
+  /*!
+   * \param gameInput The game's input handler for the port
+   * \param takeover A handler that can take input before the game does, or
+   *        nullptr. Hotkeys still come first.
+   */
+  CPortInput(JOYSTICK::IInputHandler* gameInput, JOYSTICK::IInputHandler* takeover = nullptr);
   ~CPortInput() override;
 
   void RegisterInput(JOYSTICK::IInputProvider* provider);
@@ -76,6 +81,7 @@ public:
 private:
   // Construction parameters
   JOYSTICK::IInputHandler* const m_gameInput;
+  JOYSTICK::IInputHandler* const m_takeover;
 
   // Handles input to Kodi
   std::unique_ptr<KEYMAP::CKeymapHandling> m_appInput;

@@ -9,6 +9,7 @@
 #include "GameClientJoystick.h"
 
 #include "GameClientInput.h"
+#include "GameClientStickMouse.h"
 #include "GameClientTopology.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
@@ -28,7 +29,8 @@ CGameClientJoystick::CGameClientJoystick(CGameClient& gameClient,
   : m_gameClient(gameClient),
     m_portAddress(portAddress),
     m_controller(controller),
-    m_portInput(new CPortInput(this))
+    m_stickMouse(std::make_unique<CGameClientStickMouse>(gameClient)),
+    m_portInput(new CPortInput(this, m_stickMouse.get()))
 {
   assert(m_controller.get() != NULL);
 }
@@ -51,6 +53,10 @@ void CGameClientJoystick::UnregisterInput(JOYSTICK::IInputProvider* inputProvide
   m_activeMotors.clear();
 
   m_portInput->UnregisterInput(inputProvider);
+
+  // The joystick outlives its controller, so a mouse button held when the
+  // controller goes would stay down in the game
+  m_stickMouse->ReleaseButtons();
 }
 
 void CGameClientJoystick::EnableRumble(bool bEnabled)

@@ -95,6 +95,27 @@ public:
                            const ControllerPtr& controller,
                            PERIPHERALS::PeripheralPtr mouse);
   bool IsMouseOpen() const;
+
+  /*!
+   * \brief Check if MoveMouse() and PressMouseButton() reach a mouse
+   */
+  bool CanMoveMouse() const;
+
+  /*!
+   * \brief Move the pointer of the game's mouse
+   *
+   * \param x The motion to the right, in mouse units
+   * \param y The motion down, in mouse units
+   */
+  void MoveMouse(int x, int y);
+
+  /*!
+   * \brief Press or release a button of the game's mouse
+   *
+   * \param button The button's name in the mouse's profile, such as "left"
+   * \param pressed True to press the button, false to release it
+   */
+  void PressMouseButton(const std::string& button, bool pressed);
   bool IsControllerMouseOpen(const std::string& portAddress,
                              const std::string& controllerId,
                              const PERIPHERALS::PeripheralPtr& mouse) const;
@@ -202,6 +223,11 @@ private:
    */
   std::unique_ptr<CGameClientMouse> m_mouse;
   std::string m_mouseControllerPort; // The controller port the mouse plays, if not the mouse port
+
+  // The controller in the mouse port, empty while it's closed. Guarded on its
+  // own, as MoveMouse() is called from the peripheral thread.
+  std::string m_mouseControllerId;
+  mutable std::mutex m_mouseControllerIdMutex;
 
   /*!
    * \brief Hardware input handler

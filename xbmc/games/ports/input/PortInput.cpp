@@ -20,8 +20,9 @@
 using namespace KODI;
 using namespace GAME;
 
-CPortInput::CPortInput(JOYSTICK::IInputHandler* gameInput)
+CPortInput::CPortInput(JOYSTICK::IInputHandler* gameInput, JOYSTICK::IInputHandler* takeover)
   : m_gameInput(gameInput),
+    m_takeover(takeover),
     m_inputSink(new CInputSink(gameInput)),
     m_controllerActivity(std::make_unique<CControllerActivity>())
 {
@@ -38,6 +39,9 @@ void CPortInput::RegisterInput(JOYSTICK::IInputProvider* provider)
   // Register input handler
   provider->RegisterInputHandler(this, false);
 
+  if (m_takeover != nullptr)
+    provider->RegisterInputHandler(m_takeover, false);
+
   // Register GUI input
   m_appInput = std::make_unique<KEYMAP::CKeymapHandling>(provider, false, this);
 }
@@ -51,6 +55,8 @@ void CPortInput::UnregisterInput(JOYSTICK::IInputProvider* provider)
 
   if (provider != nullptr)
   {
+    if (m_takeover != nullptr)
+      provider->UnregisterInputHandler(m_takeover);
     provider->UnregisterInputHandler(this);
     provider->UnregisterInputHandler(m_inputSink.get());
   }
