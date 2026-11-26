@@ -52,5 +52,7 @@ protected:
 
   std::shared_ptr<CSettings> m_settings;
   int m_iSection = 0;
+  //! The level the categories and settings were last built for
+  int m_builtLevel = -1;
   bool m_returningFromSkinLoad = false; // true if we are returning from loading the skin
 };

@@ -81,6 +81,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       m_iSection = message.GetParam2() - CGUIDialogSettingsManagerBase::GetID();
       CGUIDialogSettingsManagerBase::OnMessage(message);
+      m_builtLevel = GetSettingLevel();
       m_returningFromSkinLoad = false;
 
       if (!message.GetStringParam(0).empty())
@@ -176,6 +177,11 @@ void CGUIWindowSettingsCategory::OnWindowLoaded()
 
 void CGUIWindowSettingsCategory::OnSettingLevelChanged()
 {
+  // The notification reaches this window once for each id in its range
+  if (GetSettingLevel() == m_builtLevel)
+    return;
+  m_builtLevel = GetSettingLevel();
+
   // try to keep the current position
   std::string oldCategory;
   if (m_iCategory >= 0 && m_iCategory < static_cast<int>(m_categories.size()))
