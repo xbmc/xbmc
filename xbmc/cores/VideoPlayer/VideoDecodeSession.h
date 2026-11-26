@@ -10,11 +10,13 @@
 
 #include "DVDStreamInfo.h"
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 
 class CDVDDemux;
+struct DemuxPacket;
 class CDVDInputStream;
 class CDVDVideoCodec;
 class CFileItem;
@@ -38,6 +40,16 @@ struct VideoDecodeSession
 std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileItem,
                                                          int codecOptions,
                                                          const std::string& redactPath);
+
+//! \brief Seek to a position in milliseconds and hand \p take the video stream's packets from the
+//! first keyframe there, until it returns false or the packets read reach a limit.
+//! \return false if the seek failed
+bool SeekAndReadVideoPackets(CDVDDemux& demuxer,
+                             int videoStream,
+                             int64_t seekToMs,
+                             const std::string& redactPath,
+                             int& packetsTried,
+                             const std::function<bool(const DemuxPacket&)>& take);
 
 //! \brief Seek to a position in milliseconds and decode the first usable picture there.
 bool SeekAndDecodePictureAt(CDVDDemux& demuxer,

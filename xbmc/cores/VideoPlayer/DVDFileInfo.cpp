@@ -14,6 +14,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "VideoDecodeSession.h"
+#include "VideoHdrBitstream.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/Texture.h"
 #include "network/NetworkFileItemClassify.h"
@@ -530,7 +531,9 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   return result;
 }
 
-static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
+//! \param hint the stream's, taken before any of its packets are read
+static bool GetDetailsFromFrame(CDVDStreamInfo& hint,
+                                int videoStream,
                                 CDVDDemux* demuxer,
                                 const std::string& redactPath,
                                 CStreamDetailVideo& vDetail)
@@ -539,7 +542,6 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
   std::vector<AVPixelFormat> pixFmts{AV_PIX_FMT_YUV420P};
   processInfo->SetPixFormats(pixFmts);
 
-  CDVDStreamInfo hint(*stream, true);
   hint.codecOptions = CODEC_FORCE_SOFTWARE;
 
   std::unique_ptr<CDVDVideoCodec> videoCodec =
@@ -552,8 +554,8 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
 
   VideoPicture picture = {};
   int packetsTried = 0;
-  if (!SeekAndDecodePictureAt(*demuxer, *videoCodec, stream->uniqueId,
-                              demuxer->GetStreamLength() / 5, redactPath, picture, packetsTried))
+  if (!SeekAndDecodePictureAt(*demuxer, *videoCodec, videoStream, demuxer->GetStreamLength() / 5,
+                              redactPath, picture, packetsTried))
   {
     CLog::LogF(LOGERROR, "no picture decoded after {} packets", packetsTried);
     return false;
@@ -564,6 +566,99 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
   if (vDetail.m_strHdrDetail.find("7") != std::string::npos)
     vDetail.m_strHdrDetail += picture.strDVELType;
   return true;
+}
+
+bool CDVDFileInfo::SetStreamHdrDetails(const CDemuxStreamVideo& stream, CStreamDetailVideo& details)
+{
+  details.m_strHdrType = CStreamDetails::HdrTypeToString(stream.hdr_type);
+  if (stream.hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    details.m_strHdrDetail =
+        stream.dovi.dv_profile == 0 ? "" : std::to_string(static_cast<int>(stream.dovi.dv_profile));
+    // distinguish HDR10 from HLG base
+    if (stream.dovi.dv_profile == 8)
+    {
+      details.m_strHdrDetail += ".";
+      details.m_strHdrDetail +=
+          std::to_string(static_cast<int>(stream.dovi.dv_bl_signal_compatibility_id));
+      if (stream.dovi.dv_bl_signal_compatibility_id == 4)
+        details.m_strHdrTypeAlt = "hlg";
+    }
+  }
+  return stream.hdr_type != StreamHdrType::HDR_TYPE_NONE &&
+         stream.hdr_type != StreamHdrType::HDR_TYPE_HLG && stream.dovi.dv_profile != 5 &&
+         stream.dovi.dv_profile <= 10 && details.m_strHdrTypeAlt != "hlg";
+}
+
+bool CDVDFileInfo::SetPictureHdrDetails(const CDemuxStreamVideo& stream,
+                                        const std::string& redactPath,
+                                        const VideoPacketReader& readPackets,
+                                        CStreamDetailVideo& details)
+{
+  using KODI::UTILS::DOLBYVISION::EnhancementLayer;
+
+  // The demuxer may replace the stream while its packets are read (CDVDDemuxFFmpeg::Read(), when
+  // its size changes), so nothing of it is used once they are
+  const StreamHdrType streamHdrType = stream.hdr_type;
+  const bool readEnhancementLayer = details.m_strHdrDetail.find("7") != std::string::npos;
+  CVideoHdrBitstream bitstream(
+      stream.codec, {stream.extraData.GetData(), stream.extraData.GetSize()}, readEnhancementLayer);
+  if (bitstream.GetState() == CVideoHdrBitstream::State::MORE)
+    readPackets([&bitstream](const DemuxPacket& packet)
+                { return bitstream.Add(packet) == CVideoHdrBitstream::State::MORE; });
+  if (bitstream.GetState() != CVideoHdrBitstream::State::DONE)
+  {
+    CLog::LogF(LOGDEBUG, "{} packets of {} don't tell its HDR details, decoding a picture",
+               bitstream.GetPackets(), redactPath);
+    return false;
+  }
+
+  // The decoder's picture has the stream's HDR type, and HDR10+ from its metadata
+  StreamHdrType hdrType = streamHdrType;
+  StreamHdrType hdrTypeAlt = StreamHdrType::HDR_TYPE_NONE;
+  if (bitstream.HasHdr10Plus() && hdrType == StreamHdrType::HDR_TYPE_HDR10)
+    hdrType = StreamHdrType::HDR_TYPE_HDR10PLUS;
+  else if (bitstream.HasHdr10Plus() && hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+    hdrTypeAlt = StreamHdrType::HDR_TYPE_HDR10PLUS;
+
+  details.m_strHdrType = CStreamDetails::HdrTypeToString(hdrType);
+  details.m_strHdrTypeAlt = CStreamDetails::HdrTypeToString(hdrTypeAlt);
+  if (readEnhancementLayer && hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    if (bitstream.GetEnhancementLayer() == EnhancementLayer::MEL)
+      details.m_strHdrDetail += "MEL";
+    else if (bitstream.GetEnhancementLayer() == EnhancementLayer::FEL)
+      details.m_strHdrDetail += "FEL";
+  }
+
+  CLog::LogF(LOGDEBUG, "read the HDR details of {} from {} packets", redactPath,
+             bitstream.GetPackets());
+  return true;
+}
+
+//! Reads what GetDetailsFromFrame() tells from the stream's packets at the same place, without
+//! decoding them. False when they don't tell.
+static bool GetDetailsFromBitstream(CDemuxStreamVideo* stream,
+                                    CDVDDemux* demuxer,
+                                    const std::string& redactPath,
+                                    CStreamDetailVideo& vDetail)
+{
+#if defined(TARGET_DARWIN_TVOS)
+  // The decoder gives a picture of Dolby Vision with an HDR10 base layer the HDR10 type
+  // (CDVDVideoCodecFFmpeg::GetPictureCommon()), so such a stream is decoded
+  if (stream->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION && stream->dovi.dv_profile == 8 &&
+      stream->dovi.dv_bl_signal_compatibility_id == 1)
+    return false;
+#endif
+
+  const int videoStream = stream->uniqueId;
+  const auto readPackets = [&](const std::function<bool(const DemuxPacket&)>& take)
+  {
+    int packetsTried = 0;
+    SeekAndReadVideoPackets(*demuxer, videoStream, demuxer->GetStreamLength() / 5, redactPath,
+                            packetsTried, take);
+  };
+  return CDVDFileInfo::SetPictureHdrDetails(*stream, redactPath, readPackets, vDetail);
 }
 
 /* returns true if details have been added */
@@ -594,28 +689,15 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = vstream->stereo_mode;
       p->m_language = vstream->language;
-      p->m_strHdrType = CStreamDetails::HdrTypeToString(vstream->hdr_type);
-      if (vstream->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
-      {
-        p->m_strHdrDetail = vstream->dovi.dv_profile == 0
-                                ? ""
-                                : std::to_string(static_cast<int>(vstream->dovi.dv_profile));
-        // distinguish HDR10 from HLG base
-        if (vstream->dovi.dv_profile == 8)
-        {
-          p->m_strHdrDetail += ".";
-          p->m_strHdrDetail +=
-              std::to_string(static_cast<int>(vstream->dovi.dv_bl_signal_compatibility_id));
-          if (vstream->dovi.dv_bl_signal_compatibility_id == 4)
-            p->m_strHdrTypeAlt = "hlg";
-        }
-      }
       // look for DV EL type and/or hdr10+
-      if (vstream->hdr_type != StreamHdrType::HDR_TYPE_NONE &&
-          vstream->hdr_type != StreamHdrType::HDR_TYPE_HLG && vstream->dovi.dv_profile != 5 &&
-          vstream->dovi.dv_profile <= 10 && p->m_strHdrTypeAlt != "hlg")
+      if (SetStreamHdrDetails(*vstream, *p))
       {
-        if (!GetDetailsFromFrame(vstream, pDemux, CURL::GetRedacted(path), *p))
+        const std::string redactPath = CURL::GetRedacted(path);
+        // Reading the packets may replace the stream, so the decoder's hint is taken first
+        CDVDStreamInfo hint(*vstream, true);
+        const int videoStream = vstream->uniqueId;
+        if (!GetDetailsFromBitstream(vstream, pDemux, redactPath, *p) &&
+            !GetDetailsFromFrame(hint, videoStream, pDemux, redactPath, *p))
           CLog::LogF(LOGERROR, "Failed to get HDR details from frame");
       }
       p->SetSource(CStreamDetail::MEDIA);

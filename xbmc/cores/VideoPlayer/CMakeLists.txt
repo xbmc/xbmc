@@ -20,6 +20,7 @@ set(SOURCES AudioSinkAE.cpp
             RadioRDSLanguages.cpp
             VideoDecodeSession.cpp
             VideoFileGeometry.cpp
+            VideoHdrBitstream.cpp
             VideoPlayer.cpp
             VideoPlayerAudio.cpp
             VideoPlayerAudioID3.cpp
@@ -54,6 +55,7 @@ set(HEADERS AudioSinkAE.h
             RadioRDSLanguages.h
             VideoDecodeSession.h
             VideoFileGeometry.h
+            VideoHdrBitstream.h
             VideoPlayer.h
             VideoPlayerAudio.h
             VideoPlayerAudioID3.h
