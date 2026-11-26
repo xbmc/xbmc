@@ -947,8 +947,12 @@
 	<variable name="MediaVideoPropVar">
 		<value condition="VideoPlayer.IsStereoscopic + Window.IsActive(fullscreenvideo)">3D$INFO[VideoPlayer.VideoResolution, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[VideoPlayer.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
 		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[VideoPlayer.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
-		<value condition="ListItem.IsStereoscopic">3D$INFO[ListItem.VideoResolution, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[ListItem.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
-		<value>$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[ListItem.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+		<value condition="ListItem.IsStereoscopic">3D$INFO[ListItem.VideoResolution, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[ListItemAspectVar, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+		<value>$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[ListItemAspectVar, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+	</variable>
+	<variable name="ListItemAspectVar">
+		<value condition="!String.IsEmpty(ListItem.ContentAspect)">$INFO[ListItem.ContentAspect]</value>
+		<value>$INFO[ListItem.VideoAspect]</value>
 	</variable>
 	<variable name="MediaAudioPropVar">
 		<value condition="String.IsEqual(VideoPlayer.AudioLanguage,und) + Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
