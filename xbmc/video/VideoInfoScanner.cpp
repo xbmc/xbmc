@@ -33,6 +33,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "resources/LocalizeStrings.h"
@@ -197,6 +198,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Process()
   {
+    // A scraper's call in flight is given up once the scan stops
+    const CScriptRunner::CAbandonWhen abandonOnStop{m_bStop};
     try
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -216,7 +219,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!m_bStop)
         {
           std::set<int> paths;
-          m_database.CleanDatabase(m_handle, paths, false);
+          m_database.CleanDatabase(m_handle, paths, false, &m_bStop);
         }
 
         if (m_handle)
@@ -313,7 +316,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         // An empty set cleans the whole library, which a scan of part of it must not do
         if (m_bClean && !(m_scanSubtree && m_pathsToClean.empty()))
-          m_database.CleanDatabase(m_handle, m_pathsToClean, false);
+          m_database.CleanDatabase(m_handle, m_pathsToClean, false, &m_bStop);
         else
         {
           if (m_handle)
@@ -329,8 +332,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-      CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {} ms",
-                duration.count());
+      // A scan stopped, by Stop() or the user's answer to a failed search, is no finished one
+      if (m_bStop)
+        CLog::Log(LOGINFO, "VideoInfoScanner: Stopped scan. Scanning for video info took {} ms",
+                  duration.count());
+      else
+        CLog::Log(LOGINFO, "VideoInfoScanner: Finished scan. Scanning for video info took {} ms",
+                  duration.count());
       ReportSummary();
 
       // Deliberately after the scan is timed and the library is browsable, so that fetching the
@@ -393,6 +401,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_bCanInterrupt)
       m_database.Interrupt();
 
+    if (!m_bStop)
+      CLog::Log(LOGINFO, "VideoInfoScanner: Stopping the scan");
     m_bStop = true;
   }
 
@@ -1811,7 +1821,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     if (ret == InfoRet::CANCELLED || ret == InfoRet::INFO_ERROR)
     {
-      CLog::Log(LOGWARNING,
+      // A look-up given up, as the scan stopped, is no error
+      CLog::Log(ret == InfoRet::CANCELLED ? LOGDEBUG : LOGWARNING,
                 "VideoInfoScanner: Error {} occurred while retrieving"
                 "information for {}.",
                 static_cast<int>(ret), CURL::GetRedacted(pItem->GetPath()));
@@ -2089,6 +2100,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                    : nullptr,
                     pDlgProgress))
     {
+      // A call a stop gave up isn't a failed look-up
+      if (m_bStop)
+        return InfoRet::CANCELLED;
       ++m_failedLookups; // found, but its details couldn't be retrieved
       return InfoRet::NOT_FOUND;
     }
@@ -2705,6 +2719,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                    pDlgProgress))
       return HandleMovieSetAndVersions();
 
+    if (m_bStop)
+      return InfoRet::CANCELLED;
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
     ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;
@@ -2967,6 +2983,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::INFO_ERROR;
       return InfoRet::ADDED;
     }
+    if (m_bStop)
+      return InfoRet::CANCELLED;
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
     ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;

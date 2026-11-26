@@ -37,7 +37,8 @@ public:
    \param lookUp looks video i up, on any thread
    \param handBack takes video i once it and those before it have been looked up, on the calling
    thread, and returns false to look up no more
-   \param stop whether to look up no more, as the scan is cancelled
+   \param stop whether to look up no more, as the scan is cancelled. A look-up waiting for an
+   add-on's script, such as a python scraper's call, stops waiting once it is set.
    */
   static void Run(size_t count,
                   size_t workers,

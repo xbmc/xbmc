@@ -8,6 +8,7 @@
 
 #include "VideoInfoScannerLookups.h"
 
+#include "interfaces/generic/ScriptRunner.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
 
@@ -199,9 +200,10 @@ void CVideoLookups::CRun::LookUp(size_t index)
     added = &*std::prev(std::ranges::upper_bound(m_additions, index, {}, &Addition::first));
   }
 
-  // A video whose look-up throws is still handed back, on one thread as on several
+  // A video whose look-up throws is still handed back
   try
   {
+    const CScriptRunner::CAbandonWhen abandonOnStop{m_stop};
     added->lookUp(index - added->first, index);
   }
   catch (...)

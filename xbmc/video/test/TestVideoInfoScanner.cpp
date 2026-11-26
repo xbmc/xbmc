@@ -3030,6 +3030,18 @@ TEST_F(TestVideoInfoScannerTvShows, AShowFolderWithoutEpisodesIsNotListedAgain)
   EXPECT_EQ(0, CountEpisodes());
 }
 
+// A source a scan stopped in keeps no record, so that the next scan looks at it again
+TEST_F(TestVideoInfoScannerTvShows, ASourceAStoppedScanLeftIsLookedAtAgain)
+{
+  Episode(Show("Show"), "Show S01E01.mkv");
+  TestScanner scanner{m_settings};
+  scanner.Stop();
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ("", Record(m_root));
+}
+
 // As a Blu-ray rip's, an AVCHD rip's playlists, streams and backup copies are below its index, so
 // aren't listed. Its episodes don't show it, as the rip is one episode on its index either way.
 TEST_F(TestVideoInfoScannerTvShows, AnAvchdRipInAShowIsNotListedBelowItsIndex)
@@ -3551,6 +3563,107 @@ protected:
 };
 } // namespace
 
+// A python scraper's call can't be cancelled, and the stop of a scan can't interrupt a socket read
+// the script waits in. The scan stops waiting for it instead.
+TEST_F(TestVideoInfoScannerPython, AStoppedScanStopsWaitingForAScrapersCall)
+{
+  // Searched for one at a time: one is being searched for, and the other waits its turn
+  File(m_root, "Alpha (2001).mkv");
+  File(m_root, "Beta (2002).mkv");
+  TestScanner scanner{m_settings};
+  std::future<void> scan{
+      std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); })};
+  const bool searching{RunsStarted(1)};
+
+  scanner.Stop();
+  const bool stopped{scan.wait_for(std::chrono::seconds{10}) == std::future_status::ready};
+  LetRunsEnd();
+  scan.wait();
+
+  EXPECT_TRUE(searching);
+  EXPECT_TRUE(stopped);
+  EXPECT_EQ(0, CountMovies());
+}
+
+// A music video, looked up on the scan's own thread, whose details call ends in failure as the scan
+// is stopped isn't a failed look-up
+TEST_F(TestVideoInfoScannerPython, AVideoWhoseCallAStopEndsIsNoFailedLookUp)
+{
+  const std::string id{"metadata.test.videoinfoscanner.python.musicvideos"};
+  struct SAddon
+  {
+    std::string id;
+    std::string folder;
+    ~SAddon()
+    {
+      CServiceBroker::GetAddonMgr().UnloadAddon(id);
+      XFILE::CDirectory::RemoveRecursive(folder);
+    }
+  } const addon{id, Folder(CSpecialProtocol::TranslatePath("special://home/addons/"), id)};
+  File(addon.folder, "addon.xml", R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python.musicvideos" name="Test" version="1.0.0"
+       provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.musicvideos" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)");
+  File(addon.folder, "scraper.py");
+  ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(id, ADDON::ORIGIN_SYSTEM,
+                                                      ADDON::CAddonVersion{"1.0.0"}));
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='musicvideos', strScraper='%s', strSettings='' WHERE idPath=%i",
+      id.c_str(), m_db.GetPathId(m_root))));
+  File(m_root, "Artist - Song.mkv");
+  std::mutex lock;
+  std::condition_variable changed;
+  bool asked{false};
+  bool answer{false};
+  {
+    std::unique_lock guard(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [&](int handle, const CURL& call)
+    {
+      if (call.GetOption("action") == "find")
+      {
+        CFileItem video{"song", false};
+        video.SetLabel("Song");
+        XFILE::CPluginDirectory::AddItem(handle, &video, 1);
+        XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+        return;
+      }
+      std::unique_lock details(lock);
+      asked = true;
+      changed.notify_all();
+      changed.wait_for(details, std::chrono::seconds{30}, [&answer] { return answer; });
+      XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+    };
+  }
+  LetRunsEnd();
+  TestScanner scanner{m_settings};
+  std::future<void> scan{
+      std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); })};
+  bool detailsAsked{false};
+  {
+    std::unique_lock guard(lock);
+    detailsAsked = changed.wait_for(guard, std::chrono::seconds{10}, [&asked] { return asked; });
+  }
+
+  scanner.Stop();
+  {
+    std::unique_lock guard(lock);
+    answer = true;
+  }
+  changed.notify_all();
+  scan.wait();
+
+  ASSERT_TRUE(detailsAsked);
+  EXPECT_TRUE(scanner.Summary().failed.empty());
+}
+
 // A scan reads the settings of a folder's scraper as it lists the folder, while a look-up's call to
 // the scraper runs: reading them doesn't wait for the call to end
 TEST_F(TestVideoInfoScannerPython, AScrapersSettingsAreReadWhileItMakesACall)
@@ -3624,4 +3737,108 @@ TEST_F(TestVideoInfoScannerPython, AMovieIsLookedUpByTheIdentifierInItsFolderNam
                                     return call.find("action=getdetails") != std::string::npos &&
                                            call.find("603") != std::string::npos;
                                   }));
+}
+
+namespace
+{
+//! Answers as a movie scraper: a search finds the title searched for, with details of that title.
+//! Asked for anything else, such as the url in an nfo, it finds nothing.
+void AnswerAsAMovieScraper(int handle, const CURL& call)
+{
+  const std::string action{call.GetOption("action")};
+  if (action == "getdetails")
+  {
+    CFileItem movie{call.GetOption("url"), false};
+    movie.GetVideoInfoTag()->SetTitle(call.GetOption("url"));
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &movie);
+    return;
+  }
+  if (action == "find")
+  {
+    CFileItem movie{call.GetOption("title"), false};
+    movie.SetLabel(call.GetOption("title"));
+    XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
+  }
+  XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+}
+
+bool Eventually(const std::function<bool()>& condition)
+{
+  for (int i = 0; i < 500 && !condition(); ++i)
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  return condition();
+}
+} // namespace
+
+// A scan stopped while the next batch is looked up, the batch before it added, ends, keeping the
+// movies added and the records of their folders, and recording none after them
+TEST_F(TestVideoInfoScannerPython, AScanStoppedBetweenBatchesKeepsTheFoldersAddedBeforeIt)
+{
+  // Only Gamma, the first of the second batch, is searched for, as the others have full nfos, so
+  // that its search, which holds the scraper, holds up no other
+  std::vector<std::string> folders;
+  for (const std::string name : {"Alpha", "Beta", "Gamma", "Kappa"})
+  {
+    folders.push_back(Folder(m_root, name + " (2001)"));
+    if (name == "Gamma")
+      File(folders.back(), name + " (2001).mkv");
+    else
+      FolderMovie(folders.back(), name + " (2001).mkv");
+  }
+  // Gamma isn't found until the test lets it. Shared, as its call may end after the test.
+  struct SSearch
+  {
+    std::mutex lock;
+    std::condition_variable changed;
+    bool searching{false};
+    bool answer{false};
+  };
+  const auto gamma{std::make_shared<SSearch>()};
+  {
+    std::unique_lock guard(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [gamma](int handle, const CURL& call)
+    {
+      if (call.GetOption("title") == "Gamma")
+      {
+        std::unique_lock search(gamma->lock);
+        gamma->searching = true;
+        gamma->changed.notify_all();
+        gamma->changed.wait_for(search, std::chrono::seconds(30),
+                                [&gamma] { return gamma->answer; });
+      }
+      AnswerAsAMovieScraper(handle, call);
+    };
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.LimitFoldersLookedUpTogether(2);
+  std::future<void> scan{
+      std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); })};
+  bool between{false};
+  {
+    std::unique_lock guard(gamma->lock);
+    between = gamma->changed.wait_for(guard, std::chrono::seconds(10),
+                                      [&gamma] { return gamma->searching; });
+  }
+  between =
+      between && Eventually([this, &folders] { return Record(folders[1]).starts_with("2|"); });
+
+  scanner.Stop();
+  const bool stopped{scan.wait_for(std::chrono::seconds(10)) == std::future_status::ready};
+  {
+    std::unique_lock guard(gamma->lock);
+    gamma->answer = true;
+  }
+  gamma->changed.notify_all();
+  scan.wait();
+
+  EXPECT_TRUE(between);
+  EXPECT_TRUE(stopped);
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_TRUE(Record(folders[0]).starts_with("2|"));
+  EXPECT_TRUE(Record(folders[1]).starts_with("2|"));
+  EXPECT_FALSE(Record(folders[2]).starts_with("2|"));
+  EXPECT_FALSE(Record(folders[3]).starts_with("2|"));
+  EXPECT_FALSE(Record(m_root).starts_with("2|"));
 }

@@ -11338,7 +11338,8 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
 
 void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                                    const std::set<int>& paths,
-                                   bool showProgress)
+                                   bool showProgress,
+                                   const std::atomic<bool>* stop /* = nullptr */)
 {
   CGUIDialogProgress* progress = nullptr;
   try
@@ -11348,6 +11349,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
     if (nullptr == m_pDS)
       return;
     if (nullptr == m_pDS2)
+      return;
+
+    if (stop && *stop)
       return;
 
     auto start = std::chrono::steady_clock::now();
@@ -11474,6 +11478,17 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         }
         if (del)
           filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
+
+        if (stop && *stop)
+        {
+          if (progress)
+            progress->Close();
+          m_pDS2->close();
+          RollbackTransaction();
+          CServiceBroker::GetAnnouncementManager()->Announce(
+              ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::CleanFinished{}});
+          return;
+        }
 
         if (!handle && progress)
         {
@@ -12040,6 +12055,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                              "AND id NOT IN (SELECT idType FROM videoversion)",
                              VideoAssetType::EXTRA, VideoAssetTypeOwner::SYSTEM));
 
+      if (stop && *stop)
+      {
+        if (progress)
+          progress->Close();
+        RollbackTransaction();
+        CServiceBroker::GetAnnouncementManager()->Announce(
+            ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::CleanFinished{}});
+        return;
+      }
       CommitTransaction();
 
       if (handle)
