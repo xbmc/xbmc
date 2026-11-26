@@ -1320,6 +1320,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
         m_aeReset = true;
       }
     }
+    else if (!m_hdmiEncodings)
+    {
+      // Starting unplugged, e.g. with the AVR off: its first plug is a change.
+      m_hdmiEncodings.emplace();
+    }
     if (m_hdmiPlugged && m_wakeUp)
     {
       OnWakeup();
