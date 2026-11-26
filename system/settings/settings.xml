@@ -2945,7 +2945,12 @@
           </control>
         </setting>
         <setting id="gamesgeneral.hdrvideofilters" type="boolean" label="35311" help="35312">
-          <requirement>HAVE_GBM</requirement>
+          <requirement>
+            <or>
+              <condition>HAVE_GBM</condition>
+              <condition>HAVE_ANDROID</condition>
+            </or>
+          </requirement>
           <level>2</level>
           <default>false</default>
           <control type="toggle" />

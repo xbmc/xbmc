@@ -10,6 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -24,6 +26,13 @@
 #include "PlatformDefs.h"
 
 #include <EGL/eglext.h>
+
+extern "C"
+{
+#include <libavutil/csp.h>
+}
+
+CWinSystemAndroidGLESContext::~CWinSystemAndroidGLESContext() = default;
 
 void CWinSystemAndroidGLESContext::Register()
 {
@@ -78,6 +87,12 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
     return false;
   }
 
+  m_hasSurfacelessContext =
+      CEGLUtils::HasExtension(GetEGLDisplay(), "EGL_KHR_surfaceless_context") &&
+      eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, GetEGLContext()) == EGL_TRUE;
+  if (m_hasSurfacelessContext)
+    eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
   return true;
 }
 
@@ -99,6 +114,7 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
 
   if (!m_pGLContext.BindContext())
   {
+    m_pGLContext.DestroySurface();
     return false;
   }
 
@@ -107,8 +123,34 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroidGLESContext::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
+  m_nWidth = newWidth;
+  m_nHeight = newHeight;
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
   return true;
+}
+
+bool CWinSystemAndroidGLESContext::DestroyWindow()
+{
+  bool contextBound = true;
+  if (m_guiComposite.IsActive())
+  {
+    m_pGLContext.DestroySurface();
+    // Background game cleanup still needs the context after the window is gone.
+    contextBound =
+        eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, GetEGLContext()) == EGL_TRUE;
+    if (!contextBound)
+    {
+      m_hasSurfacelessContext = false;
+      CEGLUtils::Log(LOGERROR, "Failed to bind background game context");
+    }
+  }
+  return CWinSystemAndroid::DestroyWindow() && contextBound;
+}
+
+bool CWinSystemAndroidGLESContext::DestroyRenderSystem()
+{
+  SetGuiCompositing(0);
+  return CRenderSystemGLES::DestroyRenderSystem();
 }
 
 bool CWinSystemAndroidGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
@@ -224,12 +266,12 @@ bool CWinSystemAndroidGLESContext::IsHDRDisplay()
 
 bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 {
-  if (!CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
+  if (videoPicture && !IsHDRDisplaySettingEnabled())
     return false;
 
-  EGLint HDRColorSpace = 0;
+  EGLint HDRColorSpace = EGL_NONE;
 
-#if EGL_EXT_gl_colorspace_bt2020_linear
+#if EGL_EXT_gl_colorspace_bt2020_pq
   if (m_hasHDRConfig && m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension)
   {
     // Mastering display / content light level metadata is optional and does not describe the
@@ -255,8 +297,19 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
       m_lightMetadata = nullptr;
     }
 
-    if (HDRColorSpace != m_HDRColorSpace || displayMetadataChanged)
+    const bool missingSurface = m_nativeWindow && GetEGLSurface() == EGL_NO_SURFACE;
+    if (HDRColorSpace != m_HDRColorSpace || displayMetadataChanged || missingSurface)
     {
+      if (!m_nativeWindow)
+      {
+        if (HDRColorSpace != EGL_NONE)
+          return false;
+        m_HDRColorSpace = EGL_NONE;
+        m_displayMetadata.reset();
+        m_lightMetadata.reset();
+        return true;
+      }
+
       CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: {}", HDRColorSpace);
 
       m_HDRColorSpace = HDRColorSpace;
@@ -267,13 +320,117 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
       // TODO: discuss with NVIDIA why this prevent turning HDR display off
       //m_lightMetadata = !videoPicture || m_HDRColorSpace == EGL_NONE ? nullptr : std::unique_ptr<AVContentLightMetadata>(new AVContentLightMetadata(videoPicture->lightMetadata));
       m_pGLContext.DestroySurface();
-      CreateSurface();
-      m_pGLContext.BindContext();
+      if (!CreateSurface() || !m_pGLContext.BindContext())
+      {
+        m_HDRColorSpace = EGL_NONE;
+        m_displayMetadata.reset();
+        m_lightMetadata.reset();
+        m_pGLContext.DestroySurface();
+        if (!CreateSurface() || !m_pGLContext.BindContext())
+        {
+          m_pGLContext.DestroySurface();
+          CLog::Log(LOGERROR, "CWinSystemAndroidGLESContext: failed to restore SDR surface");
+        }
+        return false;
+      }
+
+      EGLint colorSpace = EGL_NONE;
+      if (eglQuerySurface(GetEGLDisplay(), GetEGLSurface(), EGL_GL_COLORSPACE_KHR, &colorSpace))
+        CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: EGL surface colorspace: {:#x}",
+                  colorSpace);
     }
   }
 #endif
 
-  return m_HDRColorSpace == HDRColorSpace;
+  return m_HDRColorSpace == HDRColorSpace && (!videoPicture || HDRColorSpace != EGL_NONE);
+}
+
+bool CWinSystemAndroidGLESContext::SupportsHDRGameOutput()
+{
+  const auto player = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (!player->IsPlayingGame() || !IsHDRGameOutputValid() || !m_hasHDRConfig || !m_hasSurfacelessContext ||
+      !m_hasEGL_BT2020_PQ_Colorspace_Extension || !m_hasEGL_ST2086_Extension ||
+      !IsHDRDisplaySettingEnabled() || !GetDisplayHDRCapabilities().SupportsHDR10())
+    return false;
+
+  return m_pGLContext.GetConfigAttrib(EGL_COLOR_COMPONENT_TYPE_EXT, true) ==
+             EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT &&
+         m_pGLContext.GetConfigAttrib(EGL_RED_SIZE, true) == 16 &&
+         m_pGLContext.GetConfigAttrib(EGL_GREEN_SIZE, true) == 16 &&
+         m_pGLContext.GetConfigAttrib(EGL_BLUE_SIZE, true) == 16 &&
+         m_pGLContext.GetConfigAttrib(EGL_ALPHA_SIZE, true) == 16;
+}
+
+bool CWinSystemAndroidGLESContext::IsHDRGameOutputValid() const
+{
+  // Larger GUI surfaces are not yet validated for Android HDR compositing.
+  return m_nativeWindow && GetEGLSurface() != EGL_NO_SURFACE && m_nWidth == 1920 && m_nHeight == 1080 &&
+         (!m_guiComposite.IsActive() || m_HDRColorSpace == EGL_GL_COLORSPACE_BT2020_PQ_EXT);
+}
+
+bool CWinSystemAndroidGLESContext::SetVideoOutput(const VideoPicture* videoPicture)
+{
+  if (!videoPicture)
+    return true;
+
+  const auto player = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (player->IsPlayingGame())
+    return videoPicture->color_transfer == AVCOL_TRC_SMPTE2084 && SupportsHDRGameOutput();
+
+  // Android switches its single EGL surface in SetHDR, including the output format.
+  return videoPicture->color_transfer == AVCOL_TRC_SMPTE2084 && m_hasHDRConfig &&
+         m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension &&
+         IsHDRDisplaySettingEnabled() && GetDisplayHDRCapabilities().SupportsHDR10();
+}
+
+bool CWinSystemAndroidGLESContext::SetGuiCompositing(int colorTransfer)
+{
+  if (colorTransfer == 0)
+  {
+    m_guiComposite.Disable();
+    return false;
+  }
+
+  if (colorTransfer != AVCOL_TRC_SMPTE2084 || !SupportsHDRGameOutput() ||
+      m_HDRColorSpace != EGL_GL_COLORSPACE_BT2020_PQ_EXT)
+    return false;
+
+  // Android's GUI setting supplies PQ white; the LUT uses normalized linear light.
+  const float sdrPeak = static_cast<float>(
+      av_csp_trc_func_inv_from_id(AVCOL_TRC_SMPTE2084)(
+          static_cast<double>(GetGuiSdrPeakLuminance())) /
+      10000.0);
+  if (!m_guiComposite.Enable(colorTransfer, false, sdrPeak) ||
+      !m_guiComposite.Prepare(m_nWidth, m_nHeight, GetEnabledFrontToBackRendering()))
+  {
+    CLog::Log(LOGERROR, "CWinSystemAndroidGLESContext: failed to initialize HDR GUI compositing");
+    m_guiComposite.Disable();
+    return false;
+  }
+
+  return true;
+}
+
+bool CWinSystemAndroidGLESContext::BeginGuiComposite(bool guiWillRender)
+{
+  if (!guiWillRender || !m_guiComposite.IsActive() || !IsHDRGameOutputValid())
+    return false;
+
+  m_guiComposite.SetSdrPeak(static_cast<float>(
+      av_csp_trc_func_inv_from_id(AVCOL_TRC_SMPTE2084)(
+          static_cast<double>(GetGuiSdrPeakLuminance())) /
+      10000.0));
+  return m_guiComposite.Begin(guiWillRender, m_nWidth, m_nHeight, GetEnabledFrontToBackRendering());
+}
+
+void CWinSystemAndroidGLESContext::EndGuiComposite()
+{
+  m_guiComposite.End(false);
+}
+
+void CWinSystemAndroidGLESContext::CompositeGui()
+{
+  m_guiComposite.Composite(*this, false, GetGUIElementCount());
 }
 
 int CWinSystemAndroidGLESContext::GetOutputBitDepth() const

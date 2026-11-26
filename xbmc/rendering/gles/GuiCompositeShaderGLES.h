@@ -20,6 +20,7 @@ public:
   ~CGuiCompositeShaderGLES() override;
 
   void SetProjection(const GLfloat* proj) { m_proj = proj; }
+  void SetSdrPeak(float peak);
 
   bool CreateLUTs(int colorTransfer);
 

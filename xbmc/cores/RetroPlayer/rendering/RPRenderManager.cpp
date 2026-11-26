@@ -731,7 +731,8 @@ void CRPRenderManager::UpdateHdrOutput()
   if (wanted)
   {
     const std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
-    wanted = renderer && renderer->SupportsHdr();
+    const CWinSystemBase* windowing = m_renderContext.Windowing();
+    wanted = renderer && renderer->SupportsHdr() && windowing && windowing->IsHDRGameOutputValid();
   }
 
   // A display that refused HDR is asked again once something changes
