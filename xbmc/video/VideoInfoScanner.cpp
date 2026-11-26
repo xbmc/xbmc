@@ -4356,6 +4356,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       ReadEpisodeDiscsAhead(EpisodeDiscs(toAdd));
     }
 
+    // All seasons (empty) if an episode is matched by date or title
+    std::set<int> seasons;
+    for (const auto& lookup : lookups)
+      for (const auto& file : lookup)
+        seasons.insert(file->iSeason);
+    if (!seasons.empty() && *seasons.begin() < 0)
+      seasons.clear();
+
     // The show's episode guide, fetched by the first episode that needs it, unless it was with the
     // show
     struct
@@ -4461,7 +4469,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
                 }
 
                 const CScraperCalls::CRegistration call{m_scraperCalls};
-                guide.episodes = scraper->GetEpisodeList(url);
+                guide.episodes = scraper->GetEpisodeList(url, seasons);
+                // A scraper may list none of the seasons named, which isn't a failure
+                if (guide.episodes.empty() && !seasons.empty())
+                  guide.episodes = scraper->GetEpisodeList(url);
                 if (guide.episodes.empty())
                 {
                   CLog::Log(LOGWARNING,
@@ -4600,6 +4611,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
             CFileItem scraperItem;
             scraperItem.SetPath(file->strPath);
             bool fetched{false};
+            if (guideEntry->item && guideEntry->item->HasVideoInfoTag())
+            {
+              *scraperItem.GetVideoInfoTag() = *guideEntry->item->GetVideoInfoTag();
+              scraperItem.GetVideoInfoTag()->m_streamDetails.Reset();
+              fetched = true;
+            }
+            else
             {
               const CScraperCalls::CRegistration call{m_scraperCalls};
               fetched = scraper->GetVideoDetails({}, guideEntry->cScraperUrl, false /*fMovie*/,

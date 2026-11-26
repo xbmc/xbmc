@@ -14,6 +14,7 @@
 #include "video/Episode.h"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -118,7 +119,12 @@ public:
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(const std::string& sAlbum,
                                                         const std::string& sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(const std::string& sArtist);
-  KODI::VIDEO::EPISODELIST GetEpisodeList(const CScraperUrl& scurl);
+  /*!
+   \param seasons the seasons the episodes are wanted of, which the scraper is told, and may list
+   alone; all if empty
+   */
+  KODI::VIDEO::EPISODELIST GetEpisodeList(const CScraperUrl& scurl,
+                                          const std::set<int>& seasons = {});
 
   struct StringHash
   {

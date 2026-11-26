@@ -71,6 +71,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -3843,8 +3844,8 @@ constexpr const char* PYTHON_SHOW_SCRAPER_ADDON = R"(<?xml version="1.0" encodin
 
 /*!
  \brief Answers as a tv show scraper: a search finds the show, whose guide lists episodes 1 and 2
- of season 1. Asked for the episodes' details with the list, it gives the first's there, marked
- complete; the second's are given only when asked for on their own.
+ of season 1 and episode 1 of season 2. Asked for the episodes' details with the list, it gives the
+ first's there, marked complete; the others' are given only when asked for on their own.
  */
 void AnswerAsAShowScraper(int handle, const CURL& call)
 {
@@ -3865,19 +3866,20 @@ void AnswerAsAShowScraper(int handle, const CURL& call)
   }
   else if (action == "getepisodelist")
   {
-    for (const int number : {1, 2})
+    for (const auto& [path, season, number] :
+         {std::tuple{"first", 1, 1}, std::tuple{"second", 1, 2}, std::tuple{"third", 2, 1}})
     {
-      CFileItem episode{number == 1 ? "first" : "second", false};
+      CFileItem episode{path, false};
       CVideoInfoTag& tag{*episode.GetVideoInfoTag()};
-      tag.m_iSeason = 1;
+      tag.m_iSeason = season;
       tag.m_iEpisode = number;
-      tag.SetTitle(episode.GetPath());
-      if (number == 1 && call.GetOption("complete") == "1")
+      tag.SetTitle(path);
+      if (episode.GetPath() == "first" && call.GetOption("complete") == "1")
       {
         tag.SetPlot("Listed with the episodes");
         episode.SetProperty("video.complete", true);
       }
-      XFILE::CPluginDirectory::AddItem(handle, &episode, 2);
+      XFILE::CPluginDirectory::AddItem(handle, &episode, 3);
     }
     XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
   }
@@ -4358,6 +4360,92 @@ TEST_F(TestVideoInfoScannerPython, AScanStoppedBetweenBatchesKeepsTheFoldersAdde
   EXPECT_FALSE(Record(folders[2]).starts_with("2|"));
   EXPECT_FALSE(Record(folders[3]).starts_with("2|"));
   EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+// A scraper that lists an episode with its details, marked complete, isn't asked for them again,
+// and the episode is added with them. One listed without them is asked for them on its own.
+TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeListedCompleteIsAddedWithoutACallForItsDetails)
+{
+  const std::string season{Folder(Folder(m_root, "Show"), "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{File(season, "Show S01E02.mkv")};
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  CVideoInfoTag episode;
+  ASSERT_TRUE(m_db.GetEpisodeInfo(first, episode, m_db.GetEpisodeId(first, 1, 1)));
+  EXPECT_EQ("Listed with the episodes", episode.m_strPlot);
+  ASSERT_TRUE(m_db.GetEpisodeInfo(second, episode, m_db.GetEpisodeId(second, 2, 1)));
+  EXPECT_EQ("Asked for on its own", episode.m_strPlot);
+  EXPECT_EQ(1u, Calls({"action=getepisodelist", "complete=1"}));
+  EXPECT_EQ(0u, Calls({"action=getepisodedetails", "url=first"}));
+  EXPECT_EQ(1u, Calls({"action=getepisodedetails", "url=second"}));
+}
+
+// A known show's episode list is asked for the seasons of the episodes the scan looks up
+TEST_F(TestVideoInfoScannerPythonShows, AKnownShowsListIsAskedForTheSeasonsOfItsNewEpisodes)
+{
+  const std::string show{Folder(m_root, "Show")};
+  File(Folder(show, "Season 1"), "Show S01E01.mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  ASSERT_EQ(1u, Calls({"action=getepisodelist"}));
+
+  const std::string third{File(Folder(show, "Season 2"), "Show S02E01.mkv")};
+  Touch(show);
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+
+  ASSERT_GT(m_db.GetEpisodeId(third, 1, 2), 0);
+  EXPECT_EQ(1u, Calls({"action=getepisodelist", "seasons=2"}));
+
+  // One named by its date may be of any season
+  File(show, "Show 2021-05-04.mkv");
+  Touch(show);
+  TestScanner later{m_settings};
+  later.Scan(m_root);
+
+  EXPECT_EQ(3u, Calls({"action=getepisodelist"}));
+  EXPECT_EQ(1u, Calls({"action=getepisodelist", "seasons="}));
+}
+
+// An episode of a season the scraper lists none of is not found, rather than its guide failing
+TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeOfASeasonTheScraperHasNoneOfIsNotFound)
+{
+  const std::string show{Folder(m_root, "Show")};
+  File(Folder(show, "Season 1"), "Show S01E01.mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [](int handle, const CURL& call)
+    {
+      if (call.GetOption("action") == "getepisodelist" && call.GetOption("seasons") == "3")
+        XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+      else
+        AnswerAsAShowScraper(handle, call);
+    };
+  }
+  LetRunsEnd();
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  File(Folder(show, "Season 3"), "Show S03E01.mkv");
+  Touch(show);
+
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+
+  EXPECT_TRUE(again.Summary().failed.empty());
+  EXPECT_EQ(1u, again.Summary().notFound.size());
 }
 
 // A show's folder holding no episode is recorded, and a later scan doesn't look the show up again

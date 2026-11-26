@@ -21,6 +21,40 @@ def get_params():
     return {}
 
 
+def set_episode1_details(tags):
+    tags.setTitle('Demo Episode 1')
+    tags.setOriginalTitle('Demo æpisod 1x1')
+    tags.setSeason(1)
+    tags.setEpisode(1)
+    tags.setUserRating(5)
+    tags.setPlotOutline('Outline yo')
+    tags.setPlot('Plot yo')
+    tags.setTagLine('Tag yo')
+    tags.setDuration(110)
+    tags.setMpaa('T')
+    tags.setTrailer('/home/akva/fluffy/unicorns.mkv')
+    tags.setGenres(['Action', 'Comedy'])
+    tags.setCountries(['Norway', 'Sweden', 'China'])
+    tags.setWriters(['None', 'Want', 'To Admit It'])
+    tags.setDirectors(['Director 1', 'Director 2'])
+    tags.setStudios(['Studio1', 'Studio2'])
+    tags.setDateAdded('2016-01-01')
+    tags.setPremiered('2015-01-01')
+    tags.setFirstAired('2007-01-01')
+    tags.setTagLine('Family / Dad <3')
+    tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultrating='imdb')
+    tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultuniqueid='tvdb')
+    tags.addSeason(1, 'Beautiful')
+    tags.addSeason(2, 'Sun')
+    tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
+                  xbmc.Actor('monkey', 'orange', order=1, thumbnail='/home/akva/Pictures/coffee.jpg')])
+    tags.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+    tags.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
+    tags.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
+                            {'image': '/home/akva/Pictures/hawaii-shirt.png',
+                             'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
+
+
 params = get_params()
 plugin_handle = int(sys.argv[1])
 action = params.get('action')
@@ -80,17 +114,28 @@ elif action == 'getdetails':
 
 elif action == 'getepisodelist':
     url = params['url']
+    # complete=1: an episode listed with all its details may be marked video.complete, and Kodi then
+    # takes them from the list rather than asking for them with getepisodedetails
+    complete = params.get('complete') == '1'
+    # seasons: the seasons a scan looks up, comma separated, which a scraper may list alone; all
+    # seasons are wanted when it isn't given
+    seasons = {int(season) for season in params['seasons'].split(',')} if 'seasons' in params else None
     xbmc.log(f'Get episode list callback "{url}"', xbmc.LOGDEBUG)
-    if url == '/path/to/show/guide':
+    if url == '/path/to/show/guide' and (seasons is None or 1 in seasons):
         liz = xbmcgui.ListItem('Demo Episode 1x1', offscreen=True)
         tags = liz.getVideoInfoTag()
-        tags.setTitle('Demo Episode 1')
-        tags.setSeason(1)
-        tags.setEpisode(1)
-        tags.setFirstAired('2015-01-01')
-        tags.addAvailableArtwork('/path/to/episode1', 'banner')
+        if complete:
+            set_episode1_details(tags)
+            liz.setProperty('video.complete', 'true')
+        else:
+            tags.setTitle('Demo Episode 1')
+            tags.setSeason(1)
+            tags.setEpisode(1)
+            tags.setFirstAired('2015-01-01')
+            tags.addAvailableArtwork('/path/to/episode1', 'banner')
         xbmcplugin.addDirectoryItem(handle=plugin_handle, url="/path/to/episode1", listitem=liz, isFolder=False)
 
+    if url == '/path/to/show/guide' and (seasons is None or 2 in seasons):
         liz = xbmcgui.ListItem('Demo Episode 2x2', offscreen=True)
         tags = liz.getVideoInfoTag()
         tags.setTitle('Demo Episode 2')
@@ -105,38 +150,7 @@ elif action == 'getepisodedetails':
     if url == '/path/to/episode1':
         xbmc.log('Get episode 1 details callback', xbmc.LOGDEBUG)
         liz = xbmcgui.ListItem('Demo Episode 1', offscreen=True)
-        tags = liz.getVideoInfoTag()
-        tags.setTitle('Demo Episode 1')
-        tags.setOriginalTitle('Demo æpisod 1x1')
-        tags.setSeason(1)
-        tags.setEpisode(1)
-        tags.setUserRating(5)
-        tags.setPlotOutline('Outline yo')
-        tags.setPlot('Plot yo')
-        tags.setTagLine('Tag yo')
-        tags.setDuration(110)
-        tags.setMpaa('T')
-        tags.setTrailer('/home/akva/fluffy/unicorns.mkv')
-        tags.setGenres(['Action', 'Comedy'])
-        tags.setCountries(['Norway', 'Sweden', 'China'])
-        tags.setWriters(['None', 'Want', 'To Admit It'])
-        tags.setDirectors(['Director 1', 'Director 2'])
-        tags.setStudios(['Studio1', 'Studio2'])
-        tags.setDateAdded('2016-01-01')
-        tags.setPremiered('2015-01-01')
-        tags.setFirstAired('2007-01-01')
-        tags.setTagLine('Family / Dad <3')
-        tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultrating='imdb')
-        tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultuniqueid='tvdb')
-        tags.addSeason(1, 'Beautiful')
-        tags.addSeason(2, 'Sun')
-        tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
-                      xbmc.Actor('monkey', 'orange', order=1, thumbnail='/home/akva/Pictures/coffee.jpg')])
-        tags.addAvailableArtwork('DefaultBackFanart.png', 'banner')
-        tags.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        tags.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'},
-                                {'image': '/home/akva/Pictures/hawaii-shirt.png',
-                                 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
+        set_episode1_details(liz.getVideoInfoTag())
         xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
 
     elif url == '/path/to/episode2':
