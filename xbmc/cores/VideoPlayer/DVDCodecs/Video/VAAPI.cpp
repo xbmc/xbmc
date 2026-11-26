@@ -65,6 +65,20 @@ constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP8 = "videoplayer.usevaapivp8";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP9 = "videoplayer.usevaapivp9";
 constexpr auto SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapirender";
 
+// a released decoder must not overwrite the label of the codec that replaced it
+static void SetDeintLabel(const CVaapiConfig& config, const std::string& label)
+{
+  if (!config.deintLabelGate)
+  {
+    config.processInfo->SetVideoDeintMethod(label);
+    return;
+  }
+
+  std::lock_guard lock(config.deintLabelGate->mutex);
+  if (config.deintLabelGate->open)
+    config.processInfo->SetVideoDeintMethod(label);
+}
+
 void VAAPI::VaErrorCallback(void *user_context, const char *message)
 {
   std::string str{message};
@@ -506,6 +520,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiConfig.context = 0;
   m_vaapiConfig.configId = VA_INVALID_ID;
   m_vaapiConfig.processInfo = &m_processInfo;
+  m_vaapiConfig.deintLabelGate = &m_deintLabelGate;
   m_getBufferError = 0;
 }
 
@@ -831,6 +846,11 @@ void CDecoder::Close()
 
 long CDecoder::Release()
 {
+  {
+    std::lock_guard lock(m_deintLabelGate.mutex);
+    m_deintLabelGate.open = false;
+  }
+
   if (m_presentPicture)
   {
     m_presentPicture->Release();
@@ -2178,7 +2198,7 @@ void COutput::InitCycle()
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
       m_pp = nullptr;
-      m_config.processInfo->SetVideoDeintMethod("unknown");
+      SetDeintLabel(m_config, "unknown");
     }
     if (!m_pp)
     {
@@ -2219,7 +2239,7 @@ void COutput::InitCycle()
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
       m_pp = nullptr;
-      m_config.processInfo->SetVideoDeintMethod("unknown");
+      SetDeintLabel(m_config, "unknown");
     }
     if (!m_pp)
     {
@@ -2398,7 +2418,7 @@ bool CSkipPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
 bool CSkipPostproc::Init(EINTERLACEMETHOD method)
 {
-  m_config.processInfo->SetVideoDeintMethod("none");
+  SetDeintLabel(m_config, "none");
   return true;
 }
 
@@ -2616,22 +2636,22 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
   {
   case VS_INTERLACEMETHOD_VAAPI_BOB:
     vppMethod = VAProcDeinterlacingBob;
-    m_config.processInfo->SetVideoDeintMethod("vaapi-bob");
+    SetDeintLabel(m_config, "vaapi-bob");
     break;
   case VS_INTERLACEMETHOD_VAAPI_MADI:
     vppMethod = VAProcDeinterlacingMotionAdaptive;
-    m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
+    SetDeintLabel(m_config, "vaapi-madi");
     break;
   case VS_INTERLACEMETHOD_VAAPI_MACI:
     vppMethod = VAProcDeinterlacingMotionCompensated;
-    m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
+    SetDeintLabel(m_config, "vaapi-mcdi");
     break;
   case VS_INTERLACEMETHOD_NONE:
     // Early exit, filter parameter buffer not needed then
-    m_config.processInfo->SetVideoDeintMethod("vaapi-none");
+    SetDeintLabel(m_config, "vaapi-none");
     return true;
   default:
-    m_config.processInfo->SetVideoDeintMethod("unknown");
+    SetDeintLabel(m_config, "unknown");
     return false;
   }
 
@@ -3152,7 +3172,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
       return false;
     }
 
-    m_config.processInfo->SetVideoDeintMethod("bwdif");
+    SetDeintLabel(m_config, "bwdif");
   }
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
@@ -3160,13 +3180,13 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
-    m_config.processInfo->SetVideoDeintMethod("none");
+    SetDeintLabel(m_config, "none");
   }
   else
   {
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
-    m_config.processInfo->SetVideoDeintMethod("unknown");
+    SetDeintLabel(m_config, "unknown");
     return false;
   }
   m_diMethod = method;

@@ -176,6 +176,12 @@ private:
 class CVideoSurfaces;
 class CVAAPIContext;
 
+struct CVaapiDeintLabelGate
+{
+  std::mutex mutex;
+  bool open{true};
+};
+
 struct CVaapiConfig
 {
   int surfaceWidth;
@@ -200,6 +206,8 @@ struct CVaapiConfig
   // pictures so the renderer can pick its sampling path per-fourcc without
   // re-inspecting the surface.
   std::int32_t pixelFormat{};
+  // owned by CDecoder; a plain pointer as the config is passed as a raw message payload
+  CVaapiDeintLabelGate* deintLabelGate{nullptr};
 };
 
 /**
@@ -592,6 +600,7 @@ protected:
   int m_ErrorCount;
 
   bool m_vaapiConfigured;
+  CVaapiDeintLabelGate m_deintLabelGate;
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
   int m_getBufferError;
