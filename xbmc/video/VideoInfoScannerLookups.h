@@ -106,6 +106,26 @@ public:
     bool m_ended{false};
     std::vector<std::unique_ptr<CThread>> m_threads;
   };
+
+  /*!
+   \brief The video looked up on a thread, for as long as one lives there: the scraper's calls and
+   the probes made for it wait for those of the video being added and of the videos before it
+   */
+  class CPlace
+  {
+  public:
+    //! \param place the video's index in its run
+    explicit CPlace(size_t place);
+    ~CPlace();
+    CPlace(const CPlace&) = delete;
+    CPlace& operator=(const CPlace&) = delete;
+
+  private:
+    const size_t m_previous;
+  };
+  //! \brief The place in its run, from 1, of the video the calling thread looks up, or 0 for the
+  //! video being added
+  static size_t Place();
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it

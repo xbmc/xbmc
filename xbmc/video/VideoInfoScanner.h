@@ -15,6 +15,7 @@
 #include "VideoManagerTypes.h"
 #include "XBDateTime.h"
 #include "addons/Scraper.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
 #include "utils/StreamDetails.h"
@@ -24,6 +25,7 @@
 #include "video/VideoInfoScannerWalk.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <cstdint>
 #include <deque>
 #include <functional>
@@ -450,8 +452,8 @@ class ISetInfoTagLoader;
 
     //! \brief Which of the items are looked up, and with which scraper, before any is
     void PlanLookups(ItemLookups& batch);
-    //! \brief Look an item up, on any thread
-    void LookUpItem(ItemLookups& batch, size_t i) const;
+    //! \brief Look an item up, on any thread \param place its place in the run looking it up
+    void LookUpItem(ItemLookups& batch, size_t i, size_t place) const;
     //! \brief Add an item once it is looked up \return false to look up no more
     bool HandBackItem(ItemLookups& batch, size_t i);
     void EndLookups(ItemLookups& batch);
@@ -741,6 +743,61 @@ class ISetInfoTagLoader;
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
+
+    /*!
+     \brief The scan's calls to the scraper. They are made one at a time, as a scraper's provider
+     expects, the one for the video the scan needs soonest first, and on one interpreter, where what
+     the scraper fetched for one video is kept for the next. Stop() lets those waiting through.
+     */
+    class CScraperCalls
+    {
+    public:
+      //! \brief Lets the calls waiting go ahead, to be given up at once
+      void CancelAll();
+      //! \brief The calls waiting for their turn
+      size_t Waiting();
+
+      //! \brief Calls made on this thread while it lives are for the video at a place of the scan's
+      //! run, looked up ahead, and wait for those of the video being added and of the videos before
+      //! it
+      using CPlace = CVideoLookups::CPlace;
+
+      //! \brief While one lives on a thread, the scraper calls made on it keep to the scan's
+      //! interpreter: those that wait for their turn, and those that don't, such as asking the
+      //! scraper for the url an nfo holds
+      class CInterpreter : public CScriptInvocationManager::CAffinity::CScope
+      {
+      public:
+        explicit CInterpreter(const CScraperCalls& calls) : CScope(calls.m_affinity) {}
+      };
+
+      //! \brief A call to the scraper, for as long as the registration lives, which waits for its
+      //! turn
+      class CRegistration
+      {
+      public:
+        explicit CRegistration(CScraperCalls& calls);
+        ~CRegistration();
+        CRegistration(const CRegistration&) = delete;
+        CRegistration& operator=(const CRegistration&) = delete;
+
+      private:
+        CScraperCalls& m_scraperCalls;
+        const CInterpreter m_interpreter;
+        //! Whether it took its turn, which one a stop let through doesn't
+        bool m_placed{false};
+      };
+
+    private:
+      std::mutex m_lock;
+      std::condition_variable m_freed;
+      //! The places of the videos of the calls waiting, 0 for those of the video being added
+      std::multiset<size_t> m_waiting;
+      bool m_calling{false};
+      bool m_cancelled{false};
+      CScriptInvocationManager::CAffinity m_affinity;
+    };
+    mutable CScraperCalls m_scraperCalls;
 
     //! The progress of the whole scan, by folder
     CScanProgress m_progress;

@@ -201,6 +201,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     // A scraper's call in flight is given up once the scan stops
     const CScriptRunner::CAbandonWhen abandonOnStop{m_bStop};
+    const CScraperCalls::CInterpreter interpreter{m_scraperCalls};
     try
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -410,7 +411,56 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (!m_bStop)
       CLog::Log(LOGINFO, "VideoInfoScanner: Stopping the scan");
     m_bStop = true;
+    m_scraperCalls.CancelAll();
     m_discReadAhead.Abandon();
+  }
+
+  void CVideoInfoScanner::CScraperCalls::CancelAll()
+  {
+    {
+      std::unique_lock lock(m_lock);
+      m_cancelled = true;
+    }
+    m_freed.notify_all();
+  }
+
+  size_t CVideoInfoScanner::CScraperCalls::Waiting()
+  {
+    std::unique_lock lock(m_lock);
+    return m_waiting.size();
+  }
+
+  CVideoInfoScanner::CScraperCalls::CRegistration::CRegistration(CScraperCalls& calls)
+    : m_scraperCalls(calls),
+      m_interpreter(calls)
+  {
+    std::unique_lock lock(m_scraperCalls.m_lock);
+    const size_t place{CVideoLookups::Place()};
+    const auto waiting{m_scraperCalls.m_waiting.insert(place)};
+    m_scraperCalls.m_freed.wait(lock,
+                                [this, place]
+                                {
+                                  return (!m_scraperCalls.m_calling &&
+                                          place <= *m_scraperCalls.m_waiting.begin()) ||
+                                         m_scraperCalls.m_cancelled;
+                                });
+    m_scraperCalls.m_waiting.erase(waiting);
+    if (!m_scraperCalls.m_cancelled)
+    {
+      m_scraperCalls.m_calling = true;
+      m_placed = true;
+    }
+  }
+
+  CVideoInfoScanner::CScraperCalls::CRegistration::~CRegistration()
+  {
+    {
+      std::unique_lock lock(m_scraperCalls.m_lock);
+      if (m_placed)
+        m_scraperCalls.m_calling = false;
+    }
+    // All, as only the call next in line may go
+    m_scraperCalls.m_freed.notify_all();
   }
 
   std::pair<CInfoScanner::ScanComplete, CInfoScanner::ContentFound> CVideoInfoScanner::DoScan(
@@ -807,7 +857,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     ReadDiscsAhead(batch);
     CVideoLookups::Run(
         static_cast<size_t>(scan.items.Size()), LookUpThreads(),
-        [this, &batch](size_t i) { LookUpItem(batch, i); },
+        [this, &batch](size_t i) { LookUpItem(batch, i, i); },
         [this, &batch](size_t i) { return HandBackItem(batch, i); }, m_bStop);
     EndLookups(batch);
     m_database.Close();
@@ -1249,10 +1299,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     batch.failedLookups.resize(folders.size());
     // Looked up in the order of the run, the batches before first
     batch.first = run.Add(entries.size(),
-                          [this, &entries](size_t e, size_t)
+                          [this, &entries](size_t e, size_t place)
                           {
                             if (const Entry & entry{entries[e]}; entry.item)
-                              LookUpItem(*entry.scan->lookups, *entry.item);
+                              LookUpItem(*entry.scan->lookups, *entry.item, place);
                           });
   }
 
@@ -1754,7 +1804,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // A dialog is updated from this thread, so each item is looked up in turn
     CVideoLookups::Run(
         static_cast<size_t>(items.Size()), pDlgProgress ? 1 : LookUpThreads(),
-        [this, &batch](size_t i) { LookUpItem(batch, i); },
+        [this, &batch](size_t i) { LookUpItem(batch, i, i); },
         [this, &batch](size_t i) { return HandBackItem(batch, i); }, m_bStop);
 
     EndLookups(batch);
@@ -1819,11 +1869,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::LookUpItem(ItemLookups& batch, size_t i) const
+  void CVideoInfoScanner::LookUpItem(ItemLookups& batch, size_t i, size_t place) const
   {
+    const CScraperCalls::CInterpreter interpreter{m_scraperCalls};
     if (const std::optional<ItemLookups::Candidate>& candidate{batch.candidates[i]};
         candidate && candidate->lookUpAlongside && !batch.lookups[i].done && !m_bStop)
     {
+      const CVideoLookups::CPlace turn{place};
       LookUpMovie(*(*batch.items)[static_cast<int>(i)], batch.bDirNames, candidate->info2,
                   batch.useLocal, batch.useFolderNames, batch.lookups[i]);
       batch.lookups[i].done = true;
@@ -3025,6 +3077,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::vector<CScraperUrl> results;
       try
       {
+        const CScraperCalls::CRegistration call{m_scraperCalls};
         results = info2->FindMovie(title, year);
         lookup.searchResult = 1;
       }
@@ -3197,6 +3250,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         if (!alreadyHasArt && !item->IsPlugin())
         {
+          const CScraperCalls::CRegistration call{m_scraperCalls};
           CVideoInfoTag tag{showInfo};
           scraper->GetArtwork(tag); // Can alter other fields in the tag
           showInfo.m_strPictureURL = tag.m_strPictureURL; // We only want artwork
@@ -4216,6 +4270,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   pDlgProgress->Progress();
                 }
 
+                const CScraperCalls::CRegistration call{m_scraperCalls};
                 guide.episodes = scraper->GetEpisodeList(url);
                 if (guide.episodes.empty())
                 {
@@ -4354,8 +4409,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
             CFileItem scraperItem;
             scraperItem.SetPath(file->strPath);
-            if (!scraper->GetVideoDetails({}, guideEntry->cScraperUrl, false /*fMovie*/,
-                                          *scraperItem.GetVideoInfoTag()))
+            bool fetched{false};
+            {
+              const CScraperCalls::CRegistration call{m_scraperCalls};
+              fetched = scraper->GetVideoDetails({}, guideEntry->cScraperUrl, false /*fMovie*/,
+                                                 *scraperItem.GetVideoInfoTag());
+            }
+            if (!fetched)
             {
               CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
                         CURL::GetRedacted(file->strPath));
@@ -4395,6 +4455,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     const auto lookUp{[&](size_t index)
                       {
+                        const CScraperCalls::CInterpreter interpreter{m_scraperCalls};
                         try
                         {
                           lookUpFile(index);
@@ -4521,8 +4582,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                         CGUIDialogProgress* pDialog /* = nullptr */) const
   {
     CVideoInfoTag movieDetails;
-    if (!scraper->GetVideoDetails(uniqueIDs, url, true /*fMovie*/, movieDetails))
-      return false;
+    {
+      const CScraperCalls::CRegistration call{m_scraperCalls};
+      if (!scraper->GetVideoDetails(uniqueIDs, url, true /*fMovie*/, movieDetails))
+        return false;
+    }
 
     if (loader)
       loader->Load(movieDetails, true);
@@ -4581,6 +4645,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::vector<CScraperUrl> found;
     try
     {
+      const CScraperCalls::CRegistration call{m_scraperCalls};
       found = scraper->FindMovie(title, year);
     }
     catch (const CScraperError&)

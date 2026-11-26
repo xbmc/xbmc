@@ -63,6 +63,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -411,6 +412,7 @@ public:
   using CVideoInfoScanner::FolderSettings;
   using CVideoInfoScanner::GetMovieIdentifier;
   using CVideoInfoScanner::SourceName;
+  using CScraperCalls = CVideoInfoScanner::CScraperCalls;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
   using ScanSummary = CVideoInfoScanner::ScanSummary;
 
@@ -2811,6 +2813,82 @@ TEST_F(TestVideoInfoScanner, TheLibraryIsTheSameHoweverManyFoldersAreLookedUpTog
   EXPECT_EQ(together, scanned(1));
 }
 
+// A scraper call waits while another is being made
+TEST(TestVideoInfoScannerScraperCalls, ACallWaitsForAPlace)
+{
+  TestScanner::CScraperCalls calls;
+  std::optional<TestScanner::CScraperCalls::CRegistration> made{std::in_place, calls};
+  auto waiting{std::async(std::launch::async, [&calls]
+                          { const TestScanner::CScraperCalls::CRegistration call{calls}; })};
+
+  const bool waited{waiting.wait_for(std::chrono::milliseconds(200)) ==
+                    std::future_status::timeout};
+  made.reset();
+  const bool placed{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Lets it through, should it still be waiting, so that the test ends
+  calls.CancelAll();
+  EXPECT_TRUE(waited);
+  EXPECT_TRUE(placed);
+}
+
+// A stopped scan lets the calls waiting for a place go ahead, to be given up at once
+TEST(TestVideoInfoScannerScraperCalls, AStopLetsTheWaitingCallsThrough)
+{
+  TestScanner::CScraperCalls calls;
+  std::optional<TestScanner::CScraperCalls::CRegistration> made{std::in_place, calls};
+  auto waiting{std::async(std::launch::async, [&calls]
+                          { const TestScanner::CScraperCalls::CRegistration call{calls}; })};
+
+  calls.CancelAll();
+  const bool through{waiting.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  // Frees its place, should it still be waiting, so that the test ends
+  made.reset();
+  EXPECT_TRUE(through);
+}
+
+// Of the calls waiting, the one for the video being added goes first, then those of the videos
+// looked up ahead of it in the order the scan adds them
+TEST(TestVideoInfoScannerScraperCalls, TheCallForTheVideoNeededSoonestGoesFirst)
+{
+  TestScanner::CScraperCalls calls;
+  std::optional<TestScanner::CScraperCalls::CRegistration> made{std::in_place, calls};
+  std::mutex lock;
+  std::vector<std::string> turns;
+  const auto call{[&calls, &lock, &turns](std::optional<size_t> place, std::string name)
+                  {
+                    return std::async(std::launch::async,
+                                      [&calls, &lock, &turns, place, name]
+                                      {
+                                        std::optional<TestScanner::CScraperCalls::CPlace> ahead;
+                                        if (place)
+                                          ahead.emplace(*place);
+                                        const TestScanner::CScraperCalls::CRegistration turn{calls};
+                                        std::unique_lock guard(lock);
+                                        turns.push_back(name);
+                                      });
+                  }};
+  std::vector<std::future<void>> waiting;
+  waiting.push_back(call(5, "sixth"));
+  waiting.push_back(call(std::nullopt, "added"));
+  waiting.push_back(call(1, "second"));
+  const auto deadline{std::chrono::steady_clock::now() + std::chrono::seconds(5)};
+  while (calls.Waiting() < waiting.size() && std::chrono::steady_clock::now() < deadline)
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+  made.reset();
+  bool through{true};
+  for (std::future<void>& call : waiting)
+    through = call.wait_for(std::chrono::seconds(5)) == std::future_status::ready && through;
+  // Lets them through, should any still be waiting, and lets them finish before their turns are
+  // read
+  calls.CancelAll();
+  for (std::future<void>& call : waiting)
+    call.wait();
+
+  EXPECT_TRUE(through);
+  EXPECT_EQ((std::vector<std::string>{"added", "second", "sixth"}), turns);
+}
+
 // Music videos
 
 TEST_F(TestVideoInfoScanner, AFolderOfAMusicVideoSourceIsNotReportedAsNotFound)
@@ -3613,6 +3691,131 @@ protected:
   bool m_registered{false};
   std::string m_pythonScraper;
 };
+
+constexpr const char* PYTHON_SHOW_SCRAPER_ID = "metadata.test.videoinfoscanner.python.tvshows";
+
+constexpr const char* PYTHON_SHOW_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python.tvshows" name="Test python show scraper"
+       version="1.0.0" provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+/*!
+ \brief Answers as a tv show scraper: a search finds the show, whose guide lists episodes 1 and 2
+ of season 1. Asked for the episodes' details with the list, it gives the first's there, marked
+ complete; the second's are given only when asked for on their own.
+ */
+void AnswerAsAShowScraper(int handle, const CURL& call)
+{
+  const std::string action{call.GetOption("action")};
+  if (action == "find")
+  {
+    CFileItem show{"show", false};
+    show.SetLabel("Show");
+    XFILE::CPluginDirectory::AddItem(handle, &show, 1);
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getdetails")
+  {
+    CFileItem show{"show", false};
+    show.GetVideoInfoTag()->SetTitle("Show");
+    show.GetVideoInfoTag()->SetEpisodeGuide("guide");
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &show);
+  }
+  else if (action == "getepisodelist")
+  {
+    for (const int number : {1, 2})
+    {
+      CFileItem episode{number == 1 ? "first" : "second", false};
+      CVideoInfoTag& tag{*episode.GetVideoInfoTag()};
+      tag.m_iSeason = 1;
+      tag.m_iEpisode = number;
+      tag.SetTitle(episode.GetPath());
+      if (number == 1 && call.GetOption("complete") == "1")
+      {
+        tag.SetPlot("Listed with the episodes");
+        episode.SetProperty("video.complete", true);
+      }
+      XFILE::CPluginDirectory::AddItem(handle, &episode, 2);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getepisodedetails")
+  {
+    CFileItem episode{call.GetOption("url"), false};
+    episode.GetVideoInfoTag()->SetTitle(call.GetOption("url"));
+    episode.GetVideoInfoTag()->SetPlot("Asked for on its own");
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &episode);
+  }
+  else
+    XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+}
+
+//! A tv show source looked up with a python scraper, whose scripts a stand-in runs
+class TestVideoInfoScannerPythonShows : public TestVideoInfoScannerPython
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScannerPython::SetUp();
+    if (IsSkipped())
+      return;
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    m_showScraper = Folder(addons, PYTHON_SHOW_SCRAPER_ID);
+    File(m_showScraper, "addon.xml", PYTHON_SHOW_SCRAPER_ADDON);
+    File(m_showScraper, "scraper.py");
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(
+        PYTHON_SHOW_SCRAPER_ID, ADDON::ORIGIN_SYSTEM, ADDON::CAddonVersion{"1.0.0"}));
+    // Each of the source's folders holds a show
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='tvshows', strScraper='%s', strSettings='', useFolderNames=0, "
+        "scanRecursive=0 WHERE idPath=%i",
+        PYTHON_SHOW_SCRAPER_ID, m_db.GetPathId(m_root))));
+    // An episode is given a thumbnail generated from the video, and a test has no texture cache to
+    // cache it in
+    Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, false);
+  }
+
+  void TearDown() override
+  {
+    if (!m_showScraper.empty())
+    {
+      Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+      CServiceBroker::GetAddonMgr().UnloadAddon(PYTHON_SHOW_SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_showScraper);
+    }
+    TestVideoInfoScannerPython::TearDown();
+  }
+
+  static std::shared_ptr<CSettings> Settings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetSettings();
+  }
+
+  //! How many of the scraper's calls hold each of \p parts
+  size_t Calls(const std::vector<std::string>& parts)
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    return std::ranges::count_if(m_handler.m_runs.calls,
+                                 [&parts](const std::string& call)
+                                 {
+                                   return std::ranges::all_of(
+                                       parts, [&call](const std::string& part)
+                                       { return call.find(part) != std::string::npos; });
+                                 });
+  }
+
+  const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
+  std::string m_showScraper;
+};
 } // namespace
 
 // A python scraper's call can't be cancelled, and the stop of a scan can't interrupt a socket read
@@ -3893,4 +4096,25 @@ TEST_F(TestVideoInfoScannerPython, AScanStoppedBetweenBatchesKeepsTheFoldersAdde
   EXPECT_FALSE(Record(folders[2]).starts_with("2|"));
   EXPECT_FALSE(Record(folders[3]).starts_with("2|"));
   EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+// A scan's scraper calls keep to one interpreter, those that wait for no turn too: an episode's nfo,
+// read once its show has been looked up, is asked for the url it holds on the show's interpreter
+TEST_F(TestVideoInfoScannerPythonShows, AnEpisodesNfoIsAskedForItsUrlOnTheScansInterpreter)
+{
+  const std::string season{Folder(Folder(m_root, "Show"), "Season 1")};
+  File(season, "Show S01E01.mkv");
+  File(season, "Show S01E01.nfo", "<episodedetails><title>First</title></episodedetails>");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  ASSERT_EQ(1u, Calls({"action=NfoUrl"}));
+  std::unique_lock lock(m_handler.m_runs.lock);
+  EXPECT_EQ(1u, m_handler.m_runs.threads.size());
 }

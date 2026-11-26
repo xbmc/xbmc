@@ -225,6 +225,27 @@ void CVideoLookups::CRun::End()
   m_threads.clear();
 }
 
+namespace
+{
+//! The place in its run, from 1, of the video the thread looks up, or 0 for the video being added
+//! (CVideoLookups::CPlace)
+thread_local size_t lookUpPlace{0};
+} // namespace
+
+CVideoLookups::CPlace::CPlace(size_t place) : m_previous(std::exchange(lookUpPlace, place + 1))
+{
+}
+
+CVideoLookups::CPlace::~CPlace()
+{
+  lookUpPlace = m_previous;
+}
+
+size_t CVideoLookups::Place()
+{
+  return lookUpPlace;
+}
+
 bool IsDiscByName(const std::string& path)
 {
   return URIUtils::IsDiscImage(path) || URIUtils::IsBDFile(path);
