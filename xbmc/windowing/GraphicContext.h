@@ -15,6 +15,7 @@
 #include "utils/Geometry.h" // for CRect/CPoint
 #include "utils/TransformMatrix.h" // for the members m_guiTransform etc.
 
+#include <optional>
 #include <stack>
 #include <string>
 #include <vector>
@@ -85,7 +86,19 @@ public:
   float GetDisplayLatency() const;
   bool IsFullScreenRoot() const;
   void ToggleFullScreen();
+  /*!
+   * \brief Set whether video is shown full screen, changing the display mode as the video
+   * setting says. Leaving full screen follows the setting it was entered with.
+   */
   void SetFullScreenVideo(bool bOnOff);
+  /*!
+   * \brief As SetFullScreenVideo(bool), changing the display mode as adjustRefreshRate says
+   */
+  void SetFullScreenVideo(bool bOnOff, AdjustRefreshRate adjustRefreshRate);
+  /*!
+   * \brief Set whether video is rendered full screen, without changing the display mode
+   */
+  void SetFullScreenVideoRendering(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION res, bool forceUpdate);
@@ -267,6 +280,7 @@ protected:
   CRect m_videoRect;
   bool m_bFullScreenRoot = true;
   bool m_bFullScreenVideo = false;
+  std::optional<AdjustRefreshRate> m_fullScreenVideoAdjustRefreshRate;
   bool m_bCalibrating = false;
   RESOLUTION m_Resolution = RES_INVALID;
   float m_fFPSOverride = 0.0f;

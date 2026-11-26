@@ -19325,7 +19325,13 @@ msgctxt "#35243"
 msgid "How far a game's own rate may be from the display's and still run in step with it. Its speed and sound change by up to this much."
 msgstr ""
 
-#empty strings from id 35244 to 35248
+#. Help text for setting "Games -> General -> Adjust display refresh rate" of label #170
+#: system/settings/settings.xml
+msgctxt "#35244"
+msgid "Allow the refresh rate of the display to be changed to the one closest to the game's frame rate. \"On start / stop\" changes it back when the game stops."
+msgstr ""
+
+#empty strings from id 35245 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml

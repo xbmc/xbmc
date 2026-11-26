@@ -2869,6 +2869,18 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
+        <setting id="gamesgeneral.adjustrefreshrate" type="integer" label="170" help="35244">
+          <level>1</level>
+          <default>2</default> <!-- ADJUST_REFRESHRATE_ON_STARTSTOP -->
+          <constraints>
+            <options>
+              <option label="351">0</option> <!-- ADJUST_REFRESHRATE_OFF -->
+              <option label="36036">2</option> <!-- ADJUST_REFRESHRATE_ON_STARTSTOP -->
+              <option label="36050">3</option> <!-- ADJUST_REFRESHRATE_ON_START -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="gamesgeneral.synctodisplay" type="boolean" label="13510" help="35202">
           <level>1</level>
           <default>true</default>

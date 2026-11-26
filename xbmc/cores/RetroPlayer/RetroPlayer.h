@@ -162,6 +162,7 @@ private:
 
   // Game parameters
   GAME::GameClientPtr m_gameClient;
+  double m_displayModeFps{0.0}; // The frame rate the display mode was last chosen for
 
   // Synchronization parameters
   CCriticalSection m_mutex;

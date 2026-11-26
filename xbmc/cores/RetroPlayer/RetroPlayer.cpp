@@ -50,7 +50,6 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -502,6 +501,10 @@ void CRetroPlayer::FrameMove()
 
   if (m_processInfo)
     m_processInfo->SetPlayTimes(0, GetTime(), 0, GetTotalTime());
+
+  // Another game opened in the same window, or the game changed its timing
+  if (m_gameClient && m_gameClient->GetFrameRate() != m_displayModeFps)
+    TriggerUpdateResolution();
 }
 
 void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = true */)
@@ -520,12 +523,10 @@ void CRetroPlayer::TriggerUpdateResolution()
   if (!gfx.IsFullScreenRoot() || !gfx.IsFullScreenVideo())
     return;
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-          CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
-    return;
-
   const double fps = m_gameClient ? m_gameClient->GetFrameRate() : 0.0;
-  if (fps <= 0.0)
+  m_displayModeFps = fps;
+  if (fps <= 0.0 ||
+      m_gameServices.GameSettings().AdjustRefreshRate() == ADJUST_REFRESHRATE_OFF)
     return;
 
   // The mode closest to the game's own rate, as long as the game can be kept in step

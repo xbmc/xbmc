@@ -322,7 +322,23 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
   std::unique_lock lock(*this);
 
+  // A game is stopped without knowing that it was a game, so remember how it was entered
+  if (!bOnOff && m_fullScreenVideoAdjustRefreshRate)
+    SetFullScreenVideo(bOnOff, *m_fullScreenVideoAdjustRefreshRate);
+  else
+    SetFullScreenVideo(bOnOff,
+                       static_cast<AdjustRefreshRate>(
+                           CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                               CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE)));
+}
+
+void CGraphicContext::SetFullScreenVideo(bool bOnOff, AdjustRefreshRate adjustRefreshRate)
+{
+  std::unique_lock lock(*this);
+
   m_bFullScreenVideo = bOnOff;
+  if (bOnOff)
+    m_fullScreenVideoAdjustRefreshRate = adjustRefreshRate;
 
   if (m_bFullScreenRoot)
   {
@@ -333,7 +349,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
       bTriggerUpdateRes = true;
     else
     {
-      bool allowDesktopRes = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
+      bool allowDesktopRes = adjustRefreshRate == ADJUST_REFRESHRATE_ALWAYS;
       if (!allowDesktopRes)
       {
         if (appPlayer->IsPlayingVideo())
@@ -341,7 +357,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
       }
     }
 
-    bool allowResolutionChangeOnStop = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_ON_START;
+    bool allowResolutionChangeOnStop = adjustRefreshRate != ADJUST_REFRESHRATE_ON_START;
     RESOLUTION targetResolutionOnStop = RES_DESKTOP;
     if (bTriggerUpdateRes)
       appPlayer->TriggerUpdateResolution();
@@ -357,6 +373,13 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   }
   else
     SetVideoResolution(RES_WINDOW, false);
+}
+
+void CGraphicContext::SetFullScreenVideoRendering(bool bOnOff)
+{
+  std::unique_lock lock(*this);
+
+  m_bFullScreenVideo = bOnOff;
 }
 
 bool CGraphicContext::IsFullScreenVideo() const
