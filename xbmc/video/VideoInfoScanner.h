@@ -191,6 +191,8 @@ class ISetInfoTagLoader;
       bool lookupFailed{false};
       //! Whether it holds nothing but folders to scan, and so takes no share of the progress
       bool leftOut{false};
+      //! Whether the discs in its folders of extras are queued to be read ahead
+      bool extrasReadAhead{false};
       //! The folders it holds to scan, by path, planned before its turn so that their movies are
       //! looked up ahead
       std::vector<std::pair<std::string, std::unique_ptr<DirectoryScan>>> plannedAhead;
@@ -203,6 +205,7 @@ class ISetInfoTagLoader;
     std::unique_ptr<DirectoryScan> PlanDirectory(const std::string& strDirectory);
     //! \brief The second part of DoScan(): the directory's items looked up and added
     void RetrieveDirectory(DirectoryScan& scan);
+    void SetUpLookups(const DirectoryScan& scan, ItemLookups& batch);
     void EndRetrieve(DirectoryScan& scan, bool foundSomething, unsigned int failedLookups);
     //! \brief The last part of DoScan(): extras, discs, the folders below and the record
     std::pair<ScanComplete, ContentFound> FinishDirectory(DirectoryScan& scan);
@@ -405,6 +408,15 @@ class ISetInfoTagLoader;
      what its search returned: the scan stopped, or the video not found
      */
     InfoRet LookupNotFound(const VideoLookup& lookup, CGUIDialogProgress* pDlgProgress);
+
+    //! \brief Have the discs of a directory's movies about to be looked up read ahead
+    void ReadDiscsAhead(const ItemLookups& batch);
+    //! \brief Have the discs in a directory's folders of extras read ahead
+    void ReadExtrasDiscsAhead(DirectoryScan& scan);
+    //! \brief Read what adding a disc's movie reads of the disc, into the disc cache
+    void ReadMovieDisc(const CFileItem& movie) const;
+    //! \brief Read what adding a folder of extras reads of the discs in it, into the disc cache
+    void ReadExtrasDiscs(const std::string& folder) const;
 
     //! \brief The edition a movie's file or folder name gives
     std::string MovieEdition(const CFileItem& item,
@@ -811,5 +823,9 @@ class ISetInfoTagLoader;
     //! Editions known to the library, cached for the duration of a scan
     std::vector<std::string> m_videoVersionTypes;
     bool m_videoVersionTypesCached{false};
+
+    //! Last, so that its threads are joined before the members they use go. Mutable, as a look-up
+    //! drops a disc the scan turns out not to need.
+    mutable CDiscReadAhead m_discReadAhead{4, 2};
   };
   } // namespace KODI::VIDEO

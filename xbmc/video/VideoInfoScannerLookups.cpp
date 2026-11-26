@@ -8,8 +8,10 @@
 
 #include "VideoInfoScannerLookups.h"
 
+#include "URL.h"
 #include "interfaces/generic/ScriptRunner.h"
 #include "threads/Thread.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -17,6 +19,7 @@
 #include <condition_variable>
 #include <iterator>
 #include <mutex>
+#include <utility>
 #include <vector>
 
 namespace KODI::VIDEO
@@ -220,5 +223,158 @@ void CVideoLookups::CRun::End()
   }
   m_changed.notify_all();
   m_threads.clear();
+}
+
+bool IsDiscByName(const std::string& path)
+{
+  return URIUtils::IsDiscImage(path) || URIUtils::IsBDFile(path);
+}
+
+CDiscReadAhead::CDiscReadAhead(size_t ahead, size_t readers) : m_ahead(ahead), m_readers(readers)
+{
+}
+
+CDiscReadAhead::~CDiscReadAhead()
+{
+  Stop();
+}
+
+void CDiscReadAhead::Queue(const std::string& disc, std::function<void()> read, bool held)
+{
+  std::unique_lock lock(m_lock);
+  if (m_stopping || std::ranges::find(m_discs, disc, &Disc::path) != m_discs.end())
+    return;
+
+  m_discs.push_back(
+      {.path = disc, .read = std::move(read), .state = held ? State::HELD : State::QUEUED});
+  if (m_threads.size() < m_readers)
+    m_threads.push_back(std::make_unique<CScanThread>("VideoDiscReader", [this] { Work(); }));
+  m_changed.notify_all();
+}
+
+void CDiscReadAhead::Allow(const std::string& disc)
+{
+  std::unique_lock lock(m_lock);
+  if (const auto held{std::ranges::find(m_discs, disc, &Disc::path)};
+      held != m_discs.end() && held->state == State::HELD)
+  {
+    held->state = State::QUEUED;
+    m_changed.notify_all();
+  }
+}
+
+void CDiscReadAhead::Drop(const std::string& disc)
+{
+  std::unique_lock lock(m_lock);
+  std::erase_if(m_discs,
+                [&disc](const Disc& queued) { return queued.path == disc && queued.Waiting(); });
+}
+
+bool CDiscReadAhead::Take(const std::string& disc)
+{
+  std::unique_lock lock(m_lock);
+  const auto taken{std::ranges::find(m_discs, disc, &Disc::path)};
+  if (taken == m_discs.end())
+    return false;
+
+  for (auto passed{m_discs.begin()}; passed != taken;)
+  {
+    if (passed->state == State::READING)
+    {
+      passed->passed = true;
+      ++passed;
+      continue;
+    }
+    if (passed->state == State::READ)
+      --m_held;
+    passed = m_discs.erase(passed);
+  }
+
+  if (taken->Waiting())
+  {
+    m_discs.erase(taken);
+    m_changed.notify_all();
+    return false;
+  }
+  // One passed by a disc taken before it, which the scan has come back to, is kept for it
+  taken->passed = false;
+  // Those let go of above leave room for another to be read meanwhile
+  m_changed.notify_all();
+  m_changed.wait(lock, [&taken] { return taken->state == State::READ; });
+  return true;
+}
+
+void CDiscReadAhead::Release(const std::string& disc)
+{
+  std::unique_lock lock(m_lock);
+  if (const auto taken{std::ranges::find(m_discs, disc, &Disc::path)};
+      taken != m_discs.end() && taken->state == State::READ)
+  {
+    m_discs.erase(taken);
+    --m_held;
+    m_changed.notify_all();
+  }
+}
+
+void CDiscReadAhead::Abandon()
+{
+  std::unique_lock lock(m_lock);
+  m_stopping = true;
+  std::erase_if(m_discs, [](const Disc& queued) { return queued.Waiting(); });
+  m_changed.notify_all();
+}
+
+void CDiscReadAhead::Stop()
+{
+  Abandon();
+  m_threads.clear();
+
+  std::unique_lock lock(m_lock);
+  m_discs.clear();
+  m_held = 0;
+  m_stopping = false;
+}
+
+void CDiscReadAhead::Work()
+{
+  std::unique_lock lock(m_lock);
+  while (true)
+  {
+    auto next{m_discs.end()};
+    m_changed.wait(lock,
+                   [this, &next]
+                   {
+                     if (m_stopping)
+                       return true;
+                     next = std::ranges::find_if(m_discs, [](const Disc& queued)
+                                                 { return queued.state == State::QUEUED; });
+                     return next != m_discs.end() && m_held < m_ahead;
+                   });
+    if (m_stopping)
+      return;
+
+    // Being read, it stays in the list until read, so the iterator does too
+    next->state = State::READING;
+    ++m_held;
+    const std::function<void()> read{std::move(next->read)};
+    lock.unlock();
+    try
+    {
+      read();
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Reading disc {} ahead failed", CURL::GetRedacted(next->path));
+    }
+    lock.lock();
+
+    next->state = State::READ;
+    if (next->passed)
+    {
+      m_discs.erase(next);
+      --m_held;
+    }
+    m_changed.notify_all();
+  }
 }
 } // namespace KODI::VIDEO
