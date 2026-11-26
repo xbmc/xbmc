@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -465,16 +466,22 @@ void AddLocalItemArtwork(Artwork& itemArt,
                          const std::string& itemPath,
                          bool addAll,
                          bool exactName,
-                         bool isInFolder)
+                         bool isInFolder,
+                         CFolderListings* listings /* = nullptr */)
 {
   std::string path = URIUtils::GetDirectory(itemPath);
   if (path.empty())
     return;
 
   CFileItemList availableArtFiles;
-  CDirectory::GetDirectory(path, availableArtFiles,
-                           CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
-                           DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  CFolderListings::Get(listings, path, "art", availableArtFiles,
+                       [&path](CFileItemList& listed)
+                       {
+                         return CDirectory::GetDirectory(
+                             path, listed,
+                             CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+                             DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+                       });
 
   std::string baseFilename{URIUtils::GetFileName(itemPath)};
   if (!baseFilename.empty())

@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "InfoScanner.h"
+#include "Util.h"
 #include "VideoDatabase.h"
 #include "VideoManagerTypes.h"
 #include "XBDateTime.h"
@@ -705,6 +706,8 @@ class ISetInfoTagLoader;
 
     //! \brief Forget the listings of a folder and of those below it, once the scan has left them
     void ForgetListings(const std::string& folder);
+    //! \brief Forget what the look-ups listed of a folder and of those below it, once all are done
+    void ForgetLookUps(const std::string& folder);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
@@ -872,6 +875,8 @@ class ISetInfoTagLoader;
       std::unique_lock lock(m_listedFoldersLock);
       return m_listedFolders.contains(folder);
     }
+
+    mutable CFolderListings m_subtitleFolders;
 
     //! The movies of the folder whose items are being added
     const CVideoDatabase::FolderMovies* m_folderMovies{nullptr};

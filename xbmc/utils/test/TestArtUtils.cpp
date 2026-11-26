@@ -10,6 +10,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
@@ -1273,4 +1274,44 @@ TEST_F(AddLocalItemArtworkTest, AFilesOwnArtWinsOverTheFoldersWhicheverIsListedF
     EXPECT_EQ(Path("Movie-poster.jpg"), art[ART::TYPE::POSTER]);
     EXPECT_EQ(Path("fanart.jpg"), art[ART::TYPE::FANART]);
   }
+}
+
+// The episodes of a file, with art named for each (-SxxEyy), and another video find their own art
+// in the one listing of their folder
+TEST_F(AddLocalItemArtworkTest, EachVideoFindsItsOwnArtInTheScansListing)
+{
+  List({"Show-S01E01-thumb.jpg", "Show-S01E02-thumb.jpg", "Other-thumb.jpg"});
+  CFolderListings listings;
+
+  for (const auto& [video, thumb] : {std::pair{"Show-S01E01.mkv", "Show-S01E01-thumb.jpg"},
+                                     std::pair{"Show-S01E02.mkv", "Show-S01E02-thumb.jpg"},
+                                     std::pair{"Other.mkv", "Other-thumb.jpg"}})
+  {
+    ART::Artwork art;
+    ART::AddLocalItemArtwork(art, {ART::TYPE::THUMB}, Path(video), false, false, false, &listings);
+
+    EXPECT_EQ(Path(thumb), art[ART::TYPE::THUMB]) << video;
+  }
+}
+
+// A folder is listed for the first video of a scan only
+TEST_F(AddLocalItemArtworkTest, AScanListsAFolderForItsFirstVideoOnly)
+{
+  List({"Movie-poster.jpg"});
+  CFolderListings listings;
+  ART::Artwork movie;
+  ART::AddLocalItemArtwork(movie, {ART::TYPE::POSTER}, Path("Movie.mkv"), false, false, false,
+                           &listings);
+  List({"Movie-poster.jpg", "Other-poster.jpg"});
+
+  ART::Artwork inTheScan;
+  ART::AddLocalItemArtwork(inTheScan, {ART::TYPE::POSTER}, Path("Other.mkv"), false, false, false,
+                           &listings);
+  ART::Artwork listedAgain;
+  ART::AddLocalItemArtwork(listedAgain, {ART::TYPE::POSTER}, Path("Other.mkv"), false, false,
+                           false);
+
+  EXPECT_EQ(Path("Movie-poster.jpg"), movie[ART::TYPE::POSTER]);
+  EXPECT_FALSE(inTheScan.contains(ART::TYPE::POSTER));
+  EXPECT_EQ(Path("Other-poster.jpg"), listedAgain[ART::TYPE::POSTER]);
 }

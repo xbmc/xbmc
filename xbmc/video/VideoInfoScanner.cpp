@@ -474,7 +474,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     // What the scan read of this folder and of those below it is of no use once it has left them
     const KODI::UTILS::CScopeGuard<CVideoInfoScanner*, nullptr, void(CVideoInfoScanner*)> leaving(
-        [&strDirectory](CVideoInfoScanner* scanner) { scanner->ForgetListings(strDirectory); },
+        [&strDirectory](CVideoInfoScanner* scanner)
+        {
+          scanner->ForgetListings(strDirectory);
+          scanner->ForgetLookUps(strDirectory);
+        },
         this);
 
     const std::unique_ptr<DirectoryScan> scan{PlanDirectory(strDirectory)};
@@ -1339,6 +1343,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                        }
                        const auto [scanComplete, foundContent] = FinishDirectory(scan);
                        ForgetListings(scan.path);
+                       ForgetLookUps(scan.path);
                        if (scanComplete == ScanComplete::Stopped)
                        {
                          m_bStop = true;
@@ -1640,6 +1645,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   [&folder](const std::string& path) { return path.starts_with(folder); });
     std::erase_if(m_listedTimes,
                   [&folder](const auto& time) { return time.first.starts_with(folder); });
+  }
+
+  void CVideoInfoScanner::ForgetLookUps(const std::string& folder)
+  {
+    m_art.ForgetFolder(folder);
+    m_subtitleFolders.Forget(folder);
   }
 
   void CVideoInfoScanner::CollectShowFiles(
@@ -1960,6 +1971,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       ret = RetrieveInfoForTvShow(pItem.get(), batch.bDirNames, info2, batch.useLocal, batch.pURL,
                                   batch.fetchEpisodes, batch.pDlgProgress, show);
+      ForgetLookUps(pItem->GetPath());
       // Its details, the item's now, aren't held for the rest of the batch
       if (show)
       {
@@ -3874,12 +3886,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // first of them only: each still has its own external subtitles.
         if (lastProbed && lastProbed->first == path)
         {
-          CDVDFileInfo::AddExternalSubtitles(*pItem, lastProbed->second, listingFlags);
+          CDVDFileInfo::AddExternalSubtitles(*pItem, lastProbed->second, listingFlags,
+                                             &m_subtitleFolders);
           CLog::LogF(LOGDEBUG, "Filestream details of video file {} already extracted",
                      CURL::GetRedacted(path));
         }
         else if (CStreamDetails probed;
-                 CScanProbe::GetFileStreamDetails(pItem, listingFlags, &probed))
+                 CScanProbe::GetFileStreamDetails(pItem, listingFlags, &probed, &m_subtitleFolders))
         {
           lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
@@ -3895,7 +3908,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         // A bluray's streams are read from its playlist, so it isn't probed, but the player loads
         // its external subtitles too. A dvd's aren't looked for, as the player loads none.
-        CDVDFileInfo::AddExternalSubtitles(*pItem, movieDetails.m_streamDetails, listingFlags);
+        CDVDFileInfo::AddExternalSubtitles(*pItem, movieDetails.m_streamDetails, listingFlags,
+                                           &m_subtitleFolders);
         CLog::LogF(LOGDEBUG, "Filestream details from the playlist of bluray {}",
                    CURL::GetRedacted(path));
       }
@@ -3912,7 +3926,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                            videoName);
         CDVDFileInfo::AddExternalSubtitles(firstDisc, movieDetails.m_streamDetails,
                                            ListedFolder(subtitleFolder) ? DIR_FLAG_READ_CACHE
-                                                                        : DIR_FLAG_DEFAULTS);
+                                                                        : DIR_FLAG_DEFAULTS,
+                                           &m_subtitleFolders);
         movieDetails.m_streamDetails = firstDisc.GetVideoInfoTag()->m_streamDetails;
         CLog::LogF(LOGDEBUG, "Filestream details from the playlists of bluray stack {}",
                    CURL::GetRedacted(path));

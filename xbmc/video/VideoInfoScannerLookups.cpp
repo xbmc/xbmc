@@ -384,7 +384,8 @@ bool CScanProbe::Scanning()
 
 bool CScanProbe::GetFileStreamDetails(CFileItem* item,
                                       int listingFlags /* = 0 */,
-                                      CStreamDetails* probed /* = nullptr */)
+                                      CStreamDetails* probed /* = nullptr */,
+                                      CFolderListings* listings /* = nullptr */)
 {
   if (!item)
     return false;
@@ -394,9 +395,10 @@ bool CScanProbe::GetFileStreamDetails(CFileItem* item,
     path = item->GetDynPath();
 
   return Run(path,
-             [&] {
+             [&]
+             {
                return CDVDFileInfo::GetFileStreamDetails(item, listingFlags, probed,
-                                                         XFILE::READ_NO_CACHE);
+                                                         XFILE::READ_NO_CACHE, listings);
              });
 }
 

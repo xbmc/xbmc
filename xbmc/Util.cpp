@@ -109,8 +109,11 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
+#include <functional>
 #include <iomanip>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <random>
 #include <ranges>
@@ -1972,18 +1975,19 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
   }
 }
 
-void CUtil::GetItemsToScan(const std::string& videoPath,
+bool CUtil::GetItemsToScan(const std::string& videoPath,
                            const std::string& item_exts,
                            const std::vector<std::string>& sub_dirs,
                            CFileItemList& items,
                            int listingFlags /* = 0 */)
 {
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
+  bool listed{true};
 
   // Only the video's folder is listed with the flags given: a scan that has just listed it can read
   // it from the cache, but hasn't listed the folders of subtitles in it
   if (!videoPath.empty())
-    CDirectory::GetDirectory(videoPath, items, item_exts, flags | listingFlags);
+    listed = CDirectory::GetDirectory(videoPath, items, item_exts, flags | listingFlags);
 
   std::vector<std::string> additionalPaths;
   for (const auto &item : items)
@@ -1998,9 +2002,10 @@ void CUtil::GetItemsToScan(const std::string& videoPath,
   for (std::vector<std::string>::const_iterator it = additionalPaths.begin(); it != additionalPaths.end(); ++it)
   {
     CFileItemList moreItems;
-    CDirectory::GetDirectory(*it, moreItems, item_exts, flags);
+    listed = CDirectory::GetDirectory(*it, moreItems, item_exts, flags) && listed;
     items.Append(moreItems);
   }
+  return listed;
 }
 
 static constexpr int NOT_ARCHIVE{-1};
@@ -2268,10 +2273,69 @@ bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTa
          URIUtils::IsBlurayPath(stored.m_strFileNameAndPath);
 }
 
+struct CFolderListings::Listings
+{
+  struct Listing
+  {
+    std::mutex lock;
+    bool listed{false};
+    CFileItemList items;
+  };
+
+  std::mutex m_lock;
+  //! By folder, and what it is listed for
+  std::map<std::pair<std::string, std::string>, std::shared_ptr<Listing>> m_folders;
+};
+
+CFolderListings::CFolderListings() : m_listings(std::make_unique<Listings>())
+{
+}
+
+CFolderListings::~CFolderListings() = default;
+
+void CFolderListings::Get(CFolderListings* listings,
+                          const std::string& folder,
+                          std::string_view what,
+                          CFileItemList& items,
+                          const std::function<bool(CFileItemList&)>& list)
+{
+  if (!listings)
+  {
+    CFileItemList listed;
+    list(listed);
+    items.Append(listed);
+    return;
+  }
+
+  std::shared_ptr<Listings::Listing> listing;
+  {
+    std::unique_lock lock(listings->m_listings->m_lock);
+    auto& entry{listings->m_listings->m_folders[{folder, std::string{what}}]};
+    if (!entry)
+      entry = std::make_shared<Listings::Listing>();
+    listing = entry;
+  }
+  std::unique_lock lock(listing->lock);
+  if (!listing->listed)
+  {
+    listing->items.Clear();
+    listing->listed = list(listing->items);
+  }
+  items.Append(listing->items);
+}
+
+void CFolderListings::Forget(const std::string& folder)
+{
+  std::unique_lock lock(m_listings->m_lock);
+  std::erase_if(m_listings->m_folders,
+                [&folder](const auto& listing) { return listing.first.first.starts_with(folder); });
+}
+
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
                                      std::vector<std::string>& vecSubtitles,
                                      const CVideoInfoTag* tag /* = nullptr */,
-                                     int listingFlags /* = 0 */)
+                                     int listingFlags /* = 0 */,
+                                     CFolderListings* listings /* = nullptr */)
 {
   auto start = std::chrono::steady_clock::now();
 
@@ -2302,7 +2366,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   const std::string subtitleExtensions = CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
-  GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items, listingFlags);
+  CFolderListings::Get(listings, strBasePath, "subtitles", items,
+                       [&](CFileItemList& listed) {
+                         return GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs,
+                                               listed, listingFlags);
+                       });
 
   // A version (playlist) of a bluray has subtitles of its own beside the disc, and only there, as
   // another folder could be shared by many discs
@@ -2341,11 +2409,10 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   // Not read from the cache, as a scan lists it nowhere else: what the cache holds may be old
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
   for (const std::string& path : strLookInPaths)
-  {
-    CFileItemList moreItems;
-    CDirectory::GetDirectory(path, moreItems, subtitleExtensions, flags);
-    items.Append(moreItems);
-  }
+    CFolderListings::Get(listings, path, "custom subtitles", items,
+                         [&path, &subtitleExtensions, flags](CFileItemList& listed) {
+                           return CDirectory::GetDirectory(path, listed, subtitleExtensions, flags);
+                         });
 
   std::vector<std::string> subtitleExts{StringUtils::Split(subtitleExtensions, '|')};
   const std::string archiveExtensions{

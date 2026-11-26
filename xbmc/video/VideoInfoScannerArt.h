@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "Util.h"
 #include "addons/Scraper.h"
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
@@ -16,6 +17,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -163,6 +165,9 @@ public:
   //! A movie set's information folder, read each time \sa GetMovieSetFolder
   static MovieSetFolder ReadMovieSetFolder(const std::string& setTitle);
 
+  //! \brief Drop the listings of \p folder and of the folders below it, which the scan has left
+  void ForgetFolder(const std::string& folder);
+
 private:
   enum class ArtRetrievalTiming : uint8_t
   {
@@ -188,17 +193,15 @@ private:
     std::map<std::string, std::string, std::less<>> listedHashes;
   };
 
-  //! Each actors folder looked in, listed once rather than for each video, as the episodes of a
-  //! show all look in the show's. Different folders are listed at once, and one being listed is
-  //! waited for.
-  const ActorThumbs& GetActorThumbs(const std::string& actorsDir) const;
+  //! Each actors folder's thumbs, listed once; thread-safe.
+  std::shared_ptr<const ActorThumbs> GetActorThumbs(const std::string& actorsDir) const;
   static void ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs);
   struct ListedActorThumbs
   {
     std::once_flag listed;
     ActorThumbs thumbs;
   };
-  mutable std::map<std::string, ListedActorThumbs, std::less<>> m_actorThumbs;
+  mutable std::map<std::string, std::shared_ptr<ListedActorThumbs>, std::less<>> m_actorThumbs;
   //! Held only to find a folder's entry, not while the folder is listed
   mutable std::mutex m_actorThumbsLock;
 
@@ -211,6 +214,8 @@ private:
   mutable std::map<std::string, ReadMovieSet, std::less<>> m_movieSets;
   //! Held only to find a set's entry, not while its folder is read
   mutable std::mutex m_movieSetsLock;
+
+  mutable CFolderListings m_artFolders;
 };
 
 } // namespace KODI::VIDEO

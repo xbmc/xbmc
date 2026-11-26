@@ -302,12 +302,17 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     if (!pItem->SkipLocalArt())
     {
       bool useFolder = false;
+      std::string lookedUp;
       if (bApplyToDir && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
       {
         std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
         std::string directory = URIUtils::GetDirectory(filename);
         if (filename != directory)
-          ART::AddLocalItemArtwork(art, artTypes, filename, addAll, exactName, bApplyToDir);
+        {
+          ART::AddLocalItemArtwork(art, artTypes, filename, addAll, exactName, bApplyToDir,
+                                   &m_artFolders);
+          lookedUp = filename;
+        }
       }
 
       // Reset useFolder to false as GetLocalArtBaseFilename may modify it in
@@ -335,7 +340,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
                                         StringUtils::Format("S{:02}E{:02}{}", tag.m_iSeason,
                                                             tag.m_iEpisode,
                                                             URIUtils::GetExtension(path))),
-              addAll, exactName, false);
+              addAll, exactName, false, &m_artFolders);
           isInFolder = false;
         }
       }
@@ -354,18 +359,21 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
           const bool isDiscFolder{URIUtils::HasExtension(path, ".bdmv")};
           const bool isExtra{movieDetails.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
           if (!isExtra && (bApplyToDir || isDiscFolder))
-            ART::AddLocalItemArtwork(art, artTypes, directory, addAll, exactName, true);
+            ART::AddLocalItemArtwork(art, artTypes, directory, addAll, exactName, true,
+                                     &m_artFolders);
           if (isDiscFolder)
             ART::AddLocalItemArtwork(
                 art, artTypes,
                 URIUtils::AddFileToFolder(directory, StringUtils::Format("{:05}.bdmv", playlist)),
-                addAll, exactName, false);
+                addAll, exactName, false, &m_artFolders);
           isInFolder = false;
         }
       }
       else
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
-      ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
+      // Not again where it was looked up above, which would find the same
+      if (path != lookedUp || !isInFolder)
+        ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder, &m_artFolders);
     }
 
     if (moviePartOfSet)
@@ -375,7 +383,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       {
         KODI::ART::Artwork movieSetArt;
         ART::AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, addAll, exactName,
-                                 true);
+                                 true, &m_artFolders);
         for (const auto& artItem : movieSetArt)
         {
           art["set." + artItem.first] = artItem.second;
@@ -569,16 +577,29 @@ void CVideoInfoScannerArt::GetSeasonThumbs(const CVideoInfoTag& show,
   }
 }
 
-const CVideoInfoScannerArt::ActorThumbs& CVideoInfoScannerArt::GetActorThumbs(
+std::shared_ptr<const CVideoInfoScannerArt::ActorThumbs> CVideoInfoScannerArt::GetActorThumbs(
     const std::string& actorsDir) const
 {
-  ListedActorThumbs* folder{nullptr};
+  std::shared_ptr<ListedActorThumbs> folder;
   {
     std::unique_lock lock(m_actorThumbsLock);
-    folder = &m_actorThumbs.try_emplace(actorsDir).first->second;
+    auto& entry{m_actorThumbs[actorsDir]};
+    if (!entry)
+      entry = std::make_shared<ListedActorThumbs>();
+    folder = entry;
   }
   std::call_once(folder->listed, [&] { ListActorThumbs(actorsDir, folder->thumbs); });
-  return folder->thumbs;
+  return {folder, &folder->thumbs};
+}
+
+void CVideoInfoScannerArt::ForgetFolder(const std::string& folder)
+{
+  {
+    std::unique_lock lock(m_actorThumbsLock);
+    std::erase_if(m_actorThumbs,
+                  [&folder](const auto& thumbs) { return thumbs.first.starts_with(folder); });
+  }
+  m_artFolders.Forget(folder);
 }
 
 const CVideoInfoScannerArt::MovieSetFolder& CVideoInfoScannerArt::GetMovieSetFolder(
@@ -637,7 +658,8 @@ void CVideoInfoScannerArt::FetchActorThumbs(
     const std::string& actorsDir,
     UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
 {
-  const auto& [thumbs, listedHashes]{GetActorThumbs(actorsDir)};
+  const auto listed{GetActorThumbs(actorsDir)};
+  const auto& [thumbs, listedHashes]{*listed};
 
   for (auto& actor : actors)
   {

@@ -777,6 +777,22 @@ TEST_F(TestVideoInfoScannerArt, AMovieSetsFolderIsReadOnceForEachSet)
   EXPECT_EQ("Read first", second.nfo->GetOverview());
 }
 
+// A movie in a folder of its own has the art named after its file, and the folder's
+TEST_F(TestVideoInfoScannerArt, AMovieInAFolderOfItsOwnHasItsArtAndTheFolders)
+{
+  const std::string folder{Folder(m_root, "Film (2020)")};
+  File(folder, "Film (2020).mkv");
+  File(folder, "Film (2020).nfo", "<movie><title>Film</title></movie>");
+  const std::string poster{File(folder, "Film (2020)-poster.jpg")};
+  const std::string fanart{File(folder, "fanart.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(poster, MovieArt("poster"));
+  EXPECT_EQ(fanart, MovieArt("fanart"));
+}
+
 // The art in a set's information folder follows the artwork level, as a movie's does: none at the
 // NONE level...
 TEST_F(TestVideoInfoScannerArt, ASetHasNoArtAtTheArtworkLevelNone)

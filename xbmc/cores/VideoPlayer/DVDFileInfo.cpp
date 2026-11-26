@@ -459,7 +459,8 @@ bool CDVDFileInfo::IsExtractableLocation(const std::string& path)
 bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
                                         int listingFlags /* = 0 */,
                                         CStreamDetails* probed /* = nullptr */,
-                                        unsigned int fileFlags /* = 0 */)
+                                        unsigned int fileFlags /* = 0 */,
+                                        CFolderListings* listings /* = nullptr */)
 {
   if (!pItem)
     return false;
@@ -500,7 +501,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
       *probed = details;
 
     if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      ProcessExternalSubtitles(*pItem, details, listingFlags);
+      ProcessExternalSubtitles(*pItem, details, listingFlags, listings);
 
     pItem->GetVideoInfoTag()->m_streamDetails = details;
 
@@ -707,22 +708,24 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
 
 void CDVDFileInfo::AddExternalSubtitles(CFileItem& item,
                                         CStreamDetails streams,
-                                        int listingFlags /* = 0 */)
+                                        int listingFlags /* = 0 */,
+                                        CFolderListings* listings /* = nullptr */)
 {
-  ProcessExternalSubtitles(item, streams, listingFlags);
+  ProcessExternalSubtitles(item, streams, listingFlags, listings);
   item.GetVideoInfoTag()->m_streamDetails = streams;
 }
 
 void CDVDFileInfo::ProcessExternalSubtitles(const CFileItem& item,
                                             CStreamDetails& details,
-                                            int listingFlags /* = 0 */)
+                                            int listingFlags /* = 0 */,
+                                            CFolderListings* listings /* = nullptr */)
 {
   std::vector<std::string> externalSubtitles;
   const std::string videoPath = item.GetSubtitleAnchorPath();
 
   CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles,
                                   item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr,
-                                  listingFlags);
+                                  listingFlags, listings);
 
   for (const auto& externalSubtitle : externalSubtitles)
   {

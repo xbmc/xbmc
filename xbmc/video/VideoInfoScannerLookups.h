@@ -22,6 +22,7 @@
 
 class CFileItem;
 class CStreamDetails;
+class CFolderListings;
 class CThread;
 
 namespace KODI::VIDEO
@@ -148,7 +149,8 @@ public:
   //! CDVDFileInfo::GetFileStreamDetails(), as a scan probes
   static bool GetFileStreamDetails(CFileItem* item,
                                    int listingFlags = 0,
-                                   CStreamDetails* probed = nullptr);
+                                   CStreamDetails* probed = nullptr,
+                                   CFolderListings* listings = nullptr);
   //! CDVDFileInfo::GetFileDuration(), as a scan probes
   static bool GetFileDuration(const std::string& path, int& duration);
 

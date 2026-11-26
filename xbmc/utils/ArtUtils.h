@@ -15,6 +15,7 @@
 #include <vector>
 
 class CFileItem;
+class CFolderListings;
 
 namespace KODI::ART
 {
@@ -80,6 +81,7 @@ std::string GetLocalFanart(const CFileItem& item);
  \param exactName whether an art type has to match a wanted one exactly
  \param isInFolder whether the item is alone in its folder, so unprefixed art belongs to it. Art
  named for the item wins over it.
+ \param listings shared listings of the folder, or nullptr to list it afresh
  \sa GetLocalArtBaseFilename
  */
 void AddLocalItemArtwork(Artwork& itemArt,
@@ -87,7 +89,8 @@ void AddLocalItemArtwork(Artwork& itemArt,
                          const std::string& itemPath,
                          bool addAll,
                          bool exactName,
-                         bool isInFolder);
+                         bool isInFolder,
+                         CFolderListings* listings = nullptr);
 
 /*! \brief Get the .tbn file associated with an item.
  \param item CFileItem containing the item path.
