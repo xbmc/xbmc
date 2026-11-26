@@ -42,6 +42,7 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/linux/OSScreenSaverFreedesktop.h"
 
 #include "platform/linux/TimeUtils.h"
@@ -795,8 +796,16 @@ void CWinSystemWayland::ProcessMessages()
       {
         CLog::LogF(LOGDEBUG, "Output hotplug, re-reading resolutions");
         UpdateResolutions();
+        // Copy, FindOrAddCustomResolution() may reallocate the resolution list
+        auto const desktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+        if (m_bFullScreen)
+        {
+          // UpdateResolutions() dropped the custom resolutions, so the GUI may be on an index
+          // that no longer exists or now describes another mode
+          GetGfxContext().ApplyModeChange(
+              FindOrAddCustomResolution(m_bufferSize, m_fRefreshRate, desktopRes.strOutput));
+        }
         std::unique_lock lock(m_outputsMutex);
-        auto const& desktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
         auto output = FindOutputByUserFriendlyName(desktopRes.strOutput);
         auto const& wlOutput = output->GetWaylandOutput();
         // Maybe the output that was added was the one we should be on?
@@ -997,18 +1006,10 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size,
     }
     else
     {
-      // Find matching Kodi resolution member
-      RESOLUTION res{FindMatchingCustomResolution(sizes.bufferSize, refreshRate)};
-      if (res == RES_INVALID)
-      {
-        // Add new resolution if none found
-        RESOLUTION_INFO newResInfo;
-        // we just assume the compositor put us on the right output
-        UpdateDesktopResolution(newResInfo, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput, sizes.bufferSize.Width(), sizes.bufferSize.Height(), refreshRate, 0);
-        CDisplaySettings::GetInstance().AddResolutionInfo(newResInfo);
-        CDisplaySettings::GetInstance().ApplyCalibrations();
-        res = static_cast<RESOLUTION> (CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
-      }
+      // we just assume the compositor put us on the right output
+      RESOLUTION res{FindOrAddCustomResolution(
+          sizes.bufferSize, refreshRate,
+          CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput)};
 
       XBMC_Event msg{};
       msg.type = XBMC_MODECHANGE;
@@ -1026,6 +1027,24 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size,
     // Apply directly, Kodi resolution does not change
     ApplyNextState();
   }
+}
+
+RESOLUTION CWinSystemWayland::FindOrAddCustomResolution(CSizeInt size,
+                                                        float refreshRate,
+                                                        std::string const& output)
+{
+  // Find matching Kodi resolution member
+  RESOLUTION res{FindMatchingCustomResolution(size, refreshRate)};
+  if (res == RES_INVALID)
+  {
+    // Add new resolution if none found
+    RESOLUTION_INFO newResInfo;
+    UpdateDesktopResolution(newResInfo, output, size.Width(), size.Height(), refreshRate, 0);
+    CDisplaySettings::GetInstance().AddResolutionInfo(newResInfo);
+    CDisplaySettings::GetInstance().ApplyCalibrations();
+    res = static_cast<RESOLUTION>(CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
+  }
+  return res;
 }
 
 void CWinSystemWayland::FinishModeChange(RESOLUTION res)
