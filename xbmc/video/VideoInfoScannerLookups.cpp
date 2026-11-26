@@ -13,6 +13,7 @@
 #include "threads/Thread.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/Episode.h"
 
 #include <algorithm>
 #include <chrono>
@@ -52,17 +53,18 @@ void CVideoLookups::Run(size_t count,
                         size_t workers,
                         const std::function<void(size_t)>& lookUp,
                         const std::function<bool(size_t)>& handBack,
-                        const std::atomic<bool>& stop)
+                        const std::atomic<bool>& stop,
+                        size_t window /* = 0 */)
 {
-  CRun run{std::min(workers, count), stop};
+  CRun run{std::min(workers, count), stop, window};
   run.Add(count, [&lookUp](size_t i, size_t) { lookUp(i); });
   run.HandBack(count, handBack);
 }
 
-CVideoLookups::CRun::CRun(size_t workers, const std::atomic<bool>& stop)
+CVideoLookups::CRun::CRun(size_t workers, const std::atomic<bool>& stop, size_t window /* = 0 */)
   : m_workers(workers),
     m_stop(stop),
-    m_window(workers * 8)
+    m_window(window > 0 ? window : workers * 8)
 {
   // With one, each video is looked up on the calling thread as it is handed back
   if (m_workers <= 1)
@@ -397,5 +399,16 @@ void CDiscReadAhead::Work()
     }
     m_changed.notify_all();
   }
+}
+
+std::vector<std::string> EpisodeDiscs(const std::vector<const EPISODE*>& files)
+{
+  std::vector<std::string> discs;
+  for (const EPISODE* file : files)
+  {
+    if (IsDiscByName(file->strPath) && std::ranges::find(discs, file->strPath) == discs.end())
+      discs.push_back(file->strPath);
+  }
+  return discs;
 }
 } // namespace KODI::VIDEO

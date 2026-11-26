@@ -411,6 +411,7 @@ public:
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using CVideoInfoScanner::FolderSettings;
   using CVideoInfoScanner::GetMovieIdentifier;
+  using CVideoInfoScanner::ShowDiscs;
   using CVideoInfoScanner::SourceName;
   using CScraperCalls = CVideoInfoScanner::CScraperCalls;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
@@ -3380,6 +3381,112 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
   EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
 }
 
+// A show is looked up ahead of its turn, so a search that failed is reported as it is added
+TEST_F(TestVideoInfoScannerTvShows, AShowWhoseSearchFailedIsLookedUpAgain)
+{
+  UseTestScraper();
+  SearchFails("Show");
+  const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
+  const auto summary{Scan()};
+  ASSERT_EQ(0, CountShows());
+  ASSERT_EQ(1u, summary.failed.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::TV_SHOW, summary.failed[0].type);
+  EXPECT_TRUE(summary.notFound.empty());
+
+  Found("Show");
+  Details("Show", "<details><title>Show</title></details>");
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
+
+TEST_F(TestVideoInfoScannerTvShows, TheShowsOfASourceAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  const std::vector<std::string> names{"Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"};
+  std::vector<std::string> episodes;
+  for (const std::string& name : names)
+  {
+    Found(name);
+    Details(name, "<details><title>Title of " + name + "</title></details>");
+    episodes.push_back(Episode(Folder(Folder(m_root, name), "Season 1"), name + " S01E01.mkv"));
+  }
+
+  Scan();
+
+  ASSERT_EQ(6, CountShows());
+  int previous{0};
+  for (const std::string& name : names)
+  {
+    const int idShow{m_db.GetTvShowId(URIUtils::AddFileToFolder(m_root, name + "/"))};
+    EXPECT_GT(idShow, previous) << name;
+    previous = idShow;
+    CVideoInfoTag show;
+    ASSERT_TRUE(m_db.GetTvShowInfo("", show, idShow)) << name;
+    EXPECT_EQ("Title of " + name, show.m_strTitle);
+  }
+  for (const std::string& episode : episodes)
+    EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0) << episode;
+}
+
+#ifdef HAVE_LIBBLURAY
+// The discs of a show new to the scan are read ahead of its turn, in the order its episodes are
+// found when it comes
+TEST_F(TestVideoInfoScannerTvShows, TheDiscsOfAShowAreReadAheadInTheOrderItsEpisodesAreFound)
+{
+  const std::string show{Folder(m_root, "Show")};
+  const std::string second{File(Folder(show, "Season 2"), "B S02E01.iso")};
+  const std::string first{File(Folder(show, "Season 1"), "A S01E01E02.iso")};
+  File(Folder(show, "Season 1"), "Show S01E03.mkv");
+  const std::string third{BlurayRip(Folder(show, "Show.S02E02"))};
+
+  TestScanner scanner{m_settings};
+  const std::vector<std::string> discs{scanner.ShowDiscs(show)};
+  CFileItem item{show, true};
+  EPISODELIST episodes;
+  ASSERT_EQ(TestScanner::EpisodeResult::FOUND_EPISODES,
+            scanner.EnumerateSeriesFolder(&item, episodes));
+
+  // The discs among the files the episodes are found on
+  std::vector<std::string> found;
+  for (const EPISODE& episode : episodes)
+  {
+    if (!episode.strPath.ends_with(".mkv") && (found.empty() || found.back() != episode.strPath))
+      found.push_back(episode.strPath);
+  }
+  ASSERT_EQ((std::vector<std::string>{first, second, third}), found);
+  EXPECT_EQ(found, discs);
+}
+#endif
+
+// A show looked up ahead has its discs read while it is added, and the next show's while its
+// episodes are. Each disc's episodes are still added, whether or not it could be read.
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOnTheDiscsOfShowsLookedUpAheadAreEachAdded)
+{
+  UseTestScraper();
+  const std::vector<std::string> names{"Alpha", "Bravo", "Charlie"};
+  std::vector<std::string> discs;
+  for (const std::string& name : names)
+  {
+    Found(name);
+    Details(name, "<details><title>" + name + "</title></details>");
+    const std::string season{Folder(Folder(m_root, name), "Season 1")};
+    discs.push_back(Episode(season, name + " S01E01E02.iso"));
+    discs.push_back(Episode(season, name + " S01E03.iso"));
+  }
+
+  Scan();
+
+  ASSERT_EQ(3, CountShows());
+  for (size_t i = 0; i < discs.size(); i += 2)
+  {
+    EXPECT_GT(m_db.GetEpisodeId(discs[i], 1, 1), 0) << discs[i];
+    EXPECT_GT(m_db.GetEpisodeId(discs[i], 2, 1), 0) << discs[i];
+    EXPECT_GT(m_db.GetEpisodeId(discs[i + 1], 3, 1), 0) << discs[i + 1];
+  }
+}
+
 // A refresh of a show with all its episodes removes it before adding it again, so one whose
 // details can't be read is kept
 TEST_F(TestVideoInfoScannerTvShows, ARefreshThatCantReadTheDetailsKeepsTheShow)
@@ -4096,6 +4203,49 @@ TEST_F(TestVideoInfoScannerPython, AScanStoppedBetweenBatchesKeepsTheFoldersAdde
   EXPECT_FALSE(Record(folders[2]).starts_with("2|"));
   EXPECT_FALSE(Record(folders[3]).starts_with("2|"));
   EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+// A show's folder holding no episode is recorded, and a later scan doesn't look the show up again
+TEST_F(TestVideoInfoScannerPythonShows, AShowWithoutEpisodesIsNotLookedUpAgain)
+{
+  File(Folder(Folder(m_root, "Show"), "Season 1"), "Behind the scenes.mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  const size_t calls{Calls({"action="})};
+
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+
+  EXPECT_EQ(calls, Calls({"action="}));
+}
+
+// A guide that couldn't be fetched as its show was looked up ahead is fetched by its episodes
+TEST_F(TestVideoInfoScannerPythonShows, AGuideThatFailedAheadIsFetchedByTheEpisodes)
+{
+  const std::string episode{File(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
+  int lists{0};
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [&lists](int handle, const CURL& call)
+    {
+      if (call.GetOption("action") == "getepisodelist" && lists++ == 0)
+        XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+      else
+        AnswerAsAShowScraper(handle, call);
+    };
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(2, lists);
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
 }
 
 // A scan's scraper calls keep to one interpreter, those that wait for no turn too: an episode's nfo,

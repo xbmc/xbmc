@@ -308,13 +308,17 @@ class ISetInfoTagLoader;
                     const CVideoInfoTag* showInfo,
                     bool libraryImport);
 
+    struct ShowLookup;
+    /*! \param lookup the show as it was looked up already, or nullptr to look it up now
+     */
     InfoRet RetrieveInfoForTvShow(CFileItem* pItem,
                                   bool bDirNames,
                                   ADDON::ScraperPtr& scraper,
                                   bool useLocal,
                                   CScraperUrl* pURL,
                                   bool fetchEpisodes,
-                                  CGUIDialogProgress* pDlgProgress);
+                                  CGUIDialogProgress* pDlgProgress,
+                                  ShowLookup* lookup = nullptr);
     //! \brief How many threads a scan looks videos up on: enough to keep a scraper busy while the
     //! others read and probe
     static size_t LookUpThreads() { return 4; }
@@ -411,6 +415,22 @@ class ISetInfoTagLoader;
      */
     InfoRet LookupNotFound(const VideoLookup& lookup, CGUIDialogProgress* pDlgProgress);
 
+    //! \brief What looking a show up found on a thread of its own, for RetrieveInfoForTvShow() to add
+    struct ShowLookup : VideoLookup
+    {
+      //! The show's episode guide, where it could be fetched
+      std::optional<EPISODELIST> guide;
+    };
+
+    /*! \brief The part of RetrieveInfoForTvShow() that reads the show's nfo, asks the scraper for it
+     and fetches its episode guide, which neither writes to the database nor shows a dialog.
+     */
+    void LookUpShow(const CFileItem& source,
+                    bool bDirNames,
+                    const ADDON::ScraperPtr& info2,
+                    bool useLocal,
+                    ShowLookup& lookup) const;
+
     //! \brief Have the discs of a directory's movies about to be looked up read ahead
     void ReadDiscsAhead(const ItemLookups& batch);
     //! \brief Have the discs in a directory's folders of extras read ahead
@@ -419,6 +439,14 @@ class ISetInfoTagLoader;
     void ReadMovieDisc(const CFileItem& movie) const;
     //! \brief Read what adding a folder of extras reads of the discs in it, into the disc cache
     void ReadExtrasDiscs(const std::string& folder) const;
+    //! \brief Have the discs of a show's episodes read ahead, in the order the episodes are added
+    void ReadEpisodeDiscsAhead(const std::vector<std::string>& discs);
+    /*! \brief The discs of a show new to the scan, in the order its episodes are added, from the
+     listings EnumerateSeriesFolder() then lists the show from
+     */
+    std::vector<std::string> ShowDiscs(const std::string& show);
+    //! \brief Read what choosing the playlists of a disc's episodes reads, into the disc cache
+    void ReadEpisodeDisc(const std::string& disc) const;
 
     //! \brief The edition a movie's file or folder name gives
     std::string MovieEdition(const CFileItem& item,
@@ -443,9 +471,12 @@ class ISetInfoTagLoader;
       {
         ADDON::ScraperPtr info2;
         bool lookUpAlongside{false};
+        //! Whether the show is looked up ahead of its turn
+        bool lookUpShow{false};
       };
       std::vector<std::optional<Candidate>> candidates;
       std::vector<MovieLookup> lookups;
+      std::vector<ShowLookup> shows;
       bool foundSomeInfo{false};
       std::vector<int> seenPaths;
     };
@@ -479,7 +510,8 @@ class ISetInfoTagLoader;
                                     const ADDON::ScraperPtr& scraper,
                                     bool useLocal,
                                     CGUIDialogProgress* progress = nullptr,
-                                    bool alreadyHasArt = false);
+                                    bool alreadyHasArt = false,
+                                    const EPISODELIST* guide = nullptr);
 
     /*! \brief Update the progress bar with the heading and line and check for cancellation
      \param progress CGUIDialogProgress bar
@@ -572,7 +604,8 @@ class ISetInfoTagLoader;
                                   const ADDON::ScraperPtr& scraper,
                                   bool useLocal,
                                   const CVideoInfoTag& showInfo,
-                                  CGUIDialogProgress* pDlgProgress = nullptr);
+                                  CGUIDialogProgress* pDlgProgress = nullptr,
+                                  const EPISODELIST* fetchedGuide = nullptr);
 
     enum class EpisodeResult
     {
@@ -584,6 +617,11 @@ class ISetInfoTagLoader;
     };
 
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+
+    /*! \brief The episodes of the files listed for a show, of which a disc structure gives its index
+     \return whether any of the files could hold an episode
+     */
+    bool EnumerateShowFiles(CFileItemList& items, EPISODELIST& episodeList);
 
     //! \brief As CVideoDatabase::GetScraperForPath(), from the rows of the path table the scan read
     ADDON::ScraperPtr ScraperForPath(const std::string& path,

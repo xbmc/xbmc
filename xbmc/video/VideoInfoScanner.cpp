@@ -25,6 +25,7 @@
 #include "events/MediaLibraryEvent.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -97,6 +98,9 @@ namespace
 //! The most folders whose movies are looked up together, so that a first scan of a large source
 //! doesn't list and hold every folder before its first movie is added
 constexpr size_t FOLDERS_LOOKED_UP_TOGETHER{64};
+//! Shows looked up ahead of the one being added, so that the scraper has calls to make while a
+//! show's episodes are probed and added
+constexpr size_t SHOWS_LOOKED_UP_AHEAD{8};
 
 /*!
  * \brief Get the video extras folder directly below \p directory that \p path belongs to.
@@ -855,10 +859,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     SetUpLookups(scan, batch);
     PlanLookups(batch);
     ReadDiscsAhead(batch);
+    const size_t window{scan.content == ContentType::TVSHOWS ? SHOWS_LOOKED_UP_AHEAD + 1 : 0};
     CVideoLookups::Run(
         static_cast<size_t>(scan.items.Size()), LookUpThreads(),
         [this, &batch](size_t i) { LookUpItem(batch, i, i); },
-        [this, &batch](size_t i) { return HandBackItem(batch, i); }, m_bStop);
+        [this, &batch](size_t i) { return HandBackItem(batch, i); }, m_bStop, window);
     EndLookups(batch);
     m_database.Close();
     EndRetrieve(scan, batch.foundSomeInfo, failedLookups);
@@ -1832,6 +1837,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::vector<std::optional<ItemLookups::Candidate>>& candidates{batch.candidates};
     candidates.resize(items.Size());
     batch.lookups.resize(items.Size());
+    batch.shows.resize(items.Size());
     bool first{true};
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -1864,6 +1870,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
           info2->Content() == ContentType::MOVIES && !pDlgProgress && !(first && pURL) &&
           CanLookUpMovieAlongside(*pItem) &&
           m_database.GetMovieId(pItem->GetDynPath(), batch.folderMovies) <= 0;
+      // Not a show folder recorded without episodes, which its record decides
+      candidate.lookUpShow =
+          info2->Content() == ContentType::TVSHOWS && !pDlgProgress && !(first && pURL) &&
+          m_uniqueIDs.empty() && batch.fetchEpisodes && pItem->IsFolder() && !pItem->IsPlugin() &&
+          m_database.GetTvShowId(pItem->GetPath()) < 0 && !m_pathTable->Record(pItem->GetPath());
       candidate.info2 = std::move(info2);
       first = false;
     }
@@ -1871,14 +1882,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::LookUpItem(ItemLookups& batch, size_t i, size_t place) const
   {
+    const std::optional<ItemLookups::Candidate>& candidate{batch.candidates[i]};
+    if (!candidate || m_bStop)
+      return;
+
     const CScraperCalls::CInterpreter interpreter{m_scraperCalls};
-    if (const std::optional<ItemLookups::Candidate>& candidate{batch.candidates[i]};
-        candidate && candidate->lookUpAlongside && !batch.lookups[i].done && !m_bStop)
+    const CVideoLookups::CPlace turn{place};
+    if (candidate->lookUpAlongside && !batch.lookups[i].done)
     {
-      const CVideoLookups::CPlace turn{place};
+
       LookUpMovie(*(*batch.items)[static_cast<int>(i)], batch.bDirNames, candidate->info2,
                   batch.useLocal, batch.useFolderNames, batch.lookups[i]);
       batch.lookups[i].done = true;
+    }
+    else if (candidate->lookUpShow && !batch.shows[i].done)
+    {
+      LookUpShow(*(*batch.items)[static_cast<int>(i)], batch.bDirNames, candidate->info2,
+                 batch.useLocal, batch.shows[i]);
+      batch.shows[i].done = true;
     }
   }
 
@@ -1914,8 +1935,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
     InfoRet ret = InfoRet::CANCELLED;
     if (info2->Content() == ContentType::TVSHOWS)
     {
+      ShowLookup* const show{
+          index < batch.shows.size() && batch.shows[index].done ? &batch.shows[index] : nullptr};
+      // A show looked up ahead has its discs read while it is added, and then those of the next
+      // show looked up ahead, so that the readers keep ahead of the scan from show to show. A show
+      // after another looked up ahead was listed already, as that one's next.
+      if (show)
+      {
+        if ((show->found || show->nfoResult == InfoType::FULL) &&
+            !(index > 0 && batch.shows[index - 1].done))
+          ReadEpisodeDiscsAhead(ShowDiscs(pItem->GetPath()));
+        if (index + 1 < batch.candidates.size() && batch.candidates[index + 1] &&
+            batch.candidates[index + 1]->lookUpShow)
+          ReadEpisodeDiscsAhead(ShowDiscs(items[i + 1]->GetPath()));
+      }
       ret = RetrieveInfoForTvShow(pItem.get(), batch.bDirNames, info2, batch.useLocal, batch.pURL,
-                                  batch.fetchEpisodes, batch.pDlgProgress);
+                                  batch.fetchEpisodes, batch.pDlgProgress, show);
+      // Its details, the item's now, aren't held for the rest of the batch
+      if (show)
+      {
+        show->guide.reset();
+        show->item = CFileItem{};
+      }
       if (m_progressShows.erase(pItem->GetPath()))
       {
         m_progress.Finished(RemoveSubDirectories(m_pathsToScan, pItem->GetPath(),
@@ -2047,7 +2088,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                  bool useLocal,
                                                                  CScraperUrl* pURL,
                                                                  bool fetchEpisodes,
-                                                                 CGUIDialogProgress* pDlgProgress)
+                                                                 CGUIDialogProgress* pDlgProgress,
+                                                                 ShowLookup* lookup /* = nullptr */)
   {
     const bool isSeason =
         pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON;
@@ -2148,7 +2190,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CScraperUrl scrUrl;
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
-    if (useLocal)
+    if (lookup)
+    {
+      result = lookup->nfoResult;
+      loader = std::move(lookup->loader);
+      if (result == InfoType::FULL)
+        *pItem = std::move(lookup->item);
+    }
+    else if (useLocal)
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
 
     if (result == InfoType::FULL && (idTvShow < 0 || refreshShowInfoOnly))
@@ -2168,6 +2217,31 @@ CVideoInfoScanner::~CVideoInfoScanner()
         setFolderHash();
       return InfoRet::ADDED;
     }
+
+    if (lookup)
+    {
+      if (!lookup->found)
+        return LookupNotFound(*lookup, pDlgProgress);
+
+      *pItem = std::move(lookup->item);
+      const long showId{AddVideo(pItem, info2, false, useLocal)};
+      if (showId < 0)
+        return InfoRet::INFO_ERROR;
+      if (fetchEpisodes && !files.empty())
+      {
+        const InfoRet ret{RetrieveInfoForEpisodes(pItem, showId, files, info2, useLocal,
+                                                  pDlgProgress, true,
+                                                  lookup->guide ? &*lookup->guide : nullptr)};
+        if (ret == InfoRet::ADDED)
+          setFolderHash();
+      }
+      else if (files.empty())
+      {
+        setFolderHash();
+      }
+      return InfoRet::ADDED;
+    }
+
     if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       scrUrl = loader->ScraperUrl();
@@ -2939,6 +3013,47 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                 });
   }
 
+  void CVideoInfoScanner::ReadEpisodeDiscsAhead(const std::vector<std::string>& discs)
+  {
+    for (const std::string& disc : discs)
+      m_discReadAhead.Queue(disc, [this, disc] { ReadEpisodeDisc(disc); });
+  }
+
+  std::vector<std::string> CVideoInfoScanner::ShowDiscs(const std::string& show)
+  {
+    // A show scanned before may be unchanged, so isn't listed until its turn
+    if (m_pathTable->Record(show))
+      return {};
+
+    CFileItemList items;
+    std::vector<std::pair<std::string, FolderRecord>> records;
+    CollectShowFiles(show, items, records, false);
+    // Most shows have no disc, so their files aren't parsed for episodes here
+    if (std::ranges::none_of(items, [](const auto& item) { return IsDiscByName(item->GetPath()); }))
+      return {};
+
+    EPISODELIST files;
+    EnumerateShowFiles(items, files);
+    std::vector<const EPISODE*> episodes;
+    std::ranges::transform(files, std::back_inserter(episodes),
+                           [](const EPISODE& file) { return &file; });
+    return EpisodeDiscs(episodes);
+  }
+
+  void CVideoInfoScanner::ReadEpisodeDisc(const std::string& disc) const
+  {
+    if (!IsBluray(disc))
+      return;
+
+    // Listed without CDirectory, as a disc on which no episode is found is no error
+    const CURL episodes{URIUtils::GetBlurayAllEpisodesPath(disc)};
+    if (const std::unique_ptr<IDirectory> directory{CDirectoryFactory::Create(episodes)}; directory)
+    {
+      CFileItemList playlists;
+      directory->GetDirectory(episodes, playlists);
+    }
+  }
+
   std::string CVideoInfoScanner::MovieEdition(const CFileItem& item,
                                               bool bDirNames,
                                               bool useFolderNames,
@@ -3119,6 +3234,41 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return InfoRet::NOT_FOUND;
   }
 
+  void CVideoInfoScanner::LookUpShow(const CFileItem& source,
+                                     bool bDirNames,
+                                     const ScraperPtr& info2,
+                                     bool useLocal,
+                                     ShowLookup& lookup) const
+  {
+    KODI::REGEXP::RegExpCache regexps;
+
+    CFileItem item{source};
+    if (useLocal)
+      std::tie(lookup.nfoResult, lookup.loader) = ReadInfoTag(item, info2, bDirNames, true);
+    if (lookup.nfoResult == InfoType::FULL)
+    {
+      lookup.item = std::move(item);
+      return;
+    }
+
+    CFileItem show{source};
+    if (!FindVideoAhead(source, item, IdentifierIn::TITLE, bDirNames, info2, lookup, show, regexps))
+      return;
+
+    lookup.found = true;
+    // A guide that can't be fetched now is fetched by the show's episodes, which report it
+    if (const std::string & episodeGuide{show.GetVideoInfoTag()->m_strEpisodeGuide};
+        !episodeGuide.empty() && !info2->IsLocalInformationOnly() && !m_bStop)
+    {
+      CScraperUrl guideUrl;
+      guideUrl.ParseAndAppendUrlsFromEpisodeGuide(episodeGuide);
+      const CScraperCalls::CRegistration call{m_scraperCalls};
+      if (EPISODELIST episodes{info2->GetEpisodeList(guideUrl)}; !episodes.empty())
+        lookup.guide = std::move(episodes);
+    }
+    lookup.item = std::move(show);
+  }
+
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForMusicVideo(
       CFileItem* pItem,
       bool bDirNames,
@@ -3210,13 +3360,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return InfoRet::NOT_FOUND;
   }
 
-  CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItem* item,
-                                                                   long showID,
-                                                                   EPISODELIST& files,
-                                                                   const ADDON::ScraperPtr& scraper,
-                                                                   bool useLocal,
-                                                                   CGUIDialogProgress* progress,
-                                                                   bool alreadyHasArt /* = false */)
+  CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForEpisodes(
+      CFileItem* item,
+      long showID,
+      EPISODELIST& files,
+      const ADDON::ScraperPtr& scraper,
+      bool useLocal,
+      CGUIDialogProgress* progress,
+      bool alreadyHasArt /* = false */,
+      const EPISODELIST* guide /* = nullptr */)
   {
     if (m_bStop || (progress && progress->IsCanceled()))
       return InfoRet::CANCELLED;
@@ -3236,7 +3388,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         showInfo.m_strPath = *showPath;
     }
 
-    InfoRet ret = OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress);
+    InfoRet ret{OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress, guide)};
 
     if (ret == InfoRet::ADDED)
     {
@@ -3278,7 +3430,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
-    const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
 
     if (item->IsFolder())
     {
@@ -3387,6 +3538,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       items.Add(newItem);
     }
 
+    if (!EnumerateShowFiles(items, episodeList))
+      return EpisodeResult::NO_FILES;
+    return episodeList.empty() ? EpisodeResult::NO_EPISODES : EpisodeResult::FOUND_EPISODES;
+  }
+
+  bool CVideoInfoScanner::EnumerateShowFiles(CFileItemList& items, EPISODELIST& episodeList)
+  {
+    const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
+
     /*
     stack down any dvd folders
     need to sort using the full path since this is a collapsed recursive listing of all subdirs
@@ -3473,9 +3633,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file {}",
                   CURL::GetRedacted(items[i]->GetPath()));
     }
-    if (!hasEpisodeCandidates)
-      return EpisodeResult::NO_FILES;
-    return episodeList.empty() ? EpisodeResult::NO_EPISODES : EpisodeResult::FOUND_EPISODES;
+    return hasEpisodeCandidates;
   }
 
   bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList)
@@ -4118,7 +4276,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const ADDON::ScraperPtr& scraper,
       bool useLocal,
       const CVideoInfoTag& showInfo,
-      CGUIDialogProgress* pDlgProgress /* = NULL */)
+      CGUIDialogProgress* pDlgProgress /* = NULL */,
+      const EPISODELIST* fetchedGuide /* = nullptr */)
   {
     if (pDlgProgress)
     {
@@ -4172,7 +4331,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
         lookups.push_back({file});
     }
 
-    // The show's episode guide, fetched by the first episode that needs it
+    if (!pDlgProgress)
+    {
+      std::vector<const EPISODE*> toAdd;
+      for (const auto& lookup : lookups)
+        std::ranges::transform(lookup, std::back_inserter(toAdd),
+                               [](const EPISODELIST::const_iterator& file) { return &*file; });
+      ReadEpisodeDiscsAhead(EpisodeDiscs(toAdd));
+    }
+
+    // The show's episode guide, fetched by the first episode that needs it, unless it was with the
+    // show
     struct
     {
       std::mutex lock;
@@ -4180,6 +4349,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       bool failed{false};
       EPISODELIST episodes;
     } guide;
+    if (fetchedGuide)
+    {
+      guide.fetched = true;
+      guide.episodes = *fetchedGuide;
+    }
 
     struct FoundEpisode
     {
@@ -4504,6 +4678,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_failedLookups += lookup.failedLookups;
           for (const auto& [path, lookupFailed] : lookup.notAdded)
             NotAdded(ScanSummary::Type::EPISODE, path, lookupFailed);
+          // Its disc, where read ahead, is held until its episodes are added
+          const CDiscReadAhead::CTaken disc{m_discReadAhead, lookups[index].front()->strPath};
           for (FoundEpisode& episode : lookup.found)
           {
             // The library was looked at for each episode before any was looked up, so an episode

@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "video/Episode.h"
 #include "video/VideoInfoScannerLookups.h"
 
 #include <algorithm>
@@ -13,6 +14,7 @@
 #include <chrono>
 #include <functional>
 #include <future>
+#include <iterator>
 #include <mutex>
 #include <set>
 #include <stdexcept>
@@ -64,6 +66,32 @@ TEST(TestVideoInfoScannerLookups, VideosAreHandedBackInTheOrderTheyWereGivenOnTh
     EXPECT_EQ(i, handedBack[i]);
   EXPECT_TRUE(onCaller);
   EXPECT_GT(lookingUp.size(), 1U);
+}
+
+// No more are looked up than the window holds, the one being handed back among them
+TEST(TestVideoInfoScannerLookups, NoMoreAreLookedUpThanTheWindowHolds)
+{
+  constexpr size_t count{12};
+  constexpr size_t window{3};
+  std::atomic<size_t> started{0};
+  size_t handedBack{0};
+  size_t most{0};
+  const std::atomic<bool> stop{false};
+
+  CVideoLookups::Run(
+      count, 4, [&started](size_t) { ++started; },
+      [&started, &handedBack, &most](size_t)
+      {
+        // Slow, so that the threads look up as far ahead as they may meanwhile
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        most = std::max(most, started - handedBack);
+        ++handedBack;
+        return true;
+      },
+      stop, window);
+
+  EXPECT_EQ(count, handedBack);
+  EXPECT_EQ(window, most);
 }
 
 // Once a video is refused, none after it is handed back, and no more are looked up than are already
@@ -625,4 +653,29 @@ TEST(TestVideoInfoScannerLookups, DiscsAreReadAsManyAtATimeAsThereAreReaders)
 
   std::unique_lock guard(lock);
   EXPECT_EQ(2, most);
+}
+
+// A disc's episodes are added together, so it is read once, in the turn of the first of them
+TEST(TestVideoInfoScannerLookups, TheDiscsOfAShowAreReadInTheOrderItsEpisodesAreAdded)
+{
+  const auto episode{[](const std::string& path, int season, int number)
+                     {
+                       EPISODE file{season, number};
+                       file.strPath = path;
+                       return file;
+                     }};
+  const EPISODELIST files{episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 1),
+                          episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 2),
+                          episode("/tv/Show/Season 1/Show S01E03.mkv", 1, 3),
+                          episode("/tv/Show/Season 2/Show.S02E01/BDMV/index.bdmv", 2, 1),
+                          episode("/tv/Show/Specials/Show 2023-11-05.iso", -1, -1),
+                          episode("/tv/Show/Season 2/B S02E02.iso", 2, 2),
+                          episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 1)};
+  std::vector<const EPISODE*> toAdd;
+  std::ranges::transform(files, std::back_inserter(toAdd),
+                         [](const EPISODE& file) { return &file; });
+
+  EXPECT_EQ((std::vector<std::string>{files[0].strPath, files[3].strPath, files[4].strPath,
+                                      files[5].strPath}),
+            EpisodeDiscs(toAdd));
 }

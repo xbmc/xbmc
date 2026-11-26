@@ -42,12 +42,15 @@ public:
    thread, and returns false to look up no more
    \param stop whether to look up no more, as the scan is cancelled. A look-up waiting for an
    add-on's script, such as a python scraper's call, stops waiting once it is set.
+   \param window the most videos looked up and not yet handed back, the one being handed back
+   among them; 0 for 8 a thread
    */
   static void Run(size_t count,
                   size_t workers,
                   const std::function<void(size_t)>& lookUp,
                   const std::function<bool(size_t)>& handBack,
-                  const std::atomic<bool>& stop);
+                  const std::atomic<bool>& stop,
+                  size_t window = 0);
 
   /*!
    \brief A run that videos are added to while those added before are handed back, so that the
@@ -58,8 +61,8 @@ public:
   class CRun
   {
   public:
-    //! \param workers, stop as Run()'s
-    CRun(size_t workers, const std::atomic<bool>& stop);
+    //! \param workers, stop, window as Run()'s
+    CRun(size_t workers, const std::atomic<bool>& stop, size_t window = 0);
     //! Looks up no more, and waits for the look-ups running
     ~CRun();
     CRun(const CRun&) = delete;
@@ -225,4 +228,11 @@ private:
   bool m_stopping{false};
   std::vector<std::unique_ptr<CThread>> m_threads;
 };
+
+struct EPISODE;
+
+/*!
+ \brief The discs among a show's episode files, each once, in the order the scan comes to them
+ */
+std::vector<std::string> EpisodeDiscs(const std::vector<const EPISODE*>& files);
 } // namespace KODI::VIDEO
