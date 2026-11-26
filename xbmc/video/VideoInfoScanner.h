@@ -319,9 +319,9 @@ class ISetInfoTagLoader;
                                   bool fetchEpisodes,
                                   CGUIDialogProgress* pDlgProgress,
                                   ShowLookup* lookup = nullptr);
-    //! \brief How many threads a scan looks videos up on: enough to keep a scraper busy while the
-    //! others read and probe
-    static size_t LookUpThreads() { return 4; }
+    //! \brief How many threads a scan looks videos up on: enough to keep a scraper busy while up to
+    //! CScanProbe::ProbesAtOnce() of them probe, and others read
+    static size_t LookUpThreads() { return 8; }
 
     //! \brief What looking a video up found on a thread of its own, for the scan thread to add
     struct VideoLookup

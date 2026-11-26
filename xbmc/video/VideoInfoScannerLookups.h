@@ -20,6 +20,8 @@
 #include <utility>
 #include <vector>
 
+class CFileItem;
+class CStreamDetails;
 class CThread;
 
 namespace KODI::VIDEO
@@ -129,6 +131,53 @@ public:
   //! \brief The place in its run, from 1, of the video the calling thread looks up, or 0 for the
   //! video being added
   static size_t Place();
+};
+
+/*!
+ \brief The probes a scan makes of a video's file. A probe reads the start of a file, and its index
+ where that is elsewhere, so it opens the file without the file cache, whose thread would read on
+ ahead of that into buffers of its own for as long as the file is open.
+
+ No more than ProbesAtOnce() run at once, as each holds a file open and reads it into buffers of its
+ own, the probe of the video the scan needs soonest first. Where the file's client makes one network
+ call at a time, the probes take turns.
+ */
+class CScanProbe
+{
+public:
+  //! CDVDFileInfo::GetFileStreamDetails(), as a scan probes
+  static bool GetFileStreamDetails(CFileItem* item,
+                                   int listingFlags = 0,
+                                   CStreamDetails* probed = nullptr);
+  //! CDVDFileInfo::GetFileDuration(), as a scan probes
+  static bool GetFileDuration(const std::string& path, int& duration);
+
+  //! Whether a file, or any file of a stack, is read through libsmbclient
+  static bool ReadsOneAtATime(const std::string& path);
+
+  /*!
+   \brief Runs a probe of the file at path once it has its turn, alone among the scan's probes where
+   it ReadsOneAtATime()
+   \return what the probe returns, or false, without probing, where it waited for its turn in a
+   look-up of a scan that stopped meanwhile, whose video the scan won't add
+   */
+  static bool Run(const std::string& path, const std::function<bool()>& probe);
+
+  //! \brief How many probes run at once
+  static size_t ProbesAtOnce();
+  //! \brief The probes waiting for their turn
+  static size_t Waiting();
+
+  //! \brief A scan running, for as long as it lives
+  class CScanning
+  {
+  public:
+    CScanning();
+    ~CScanning();
+    CScanning(const CScanning&) = delete;
+    CScanning& operator=(const CScanning&) = delete;
+  };
+  static bool Scanning();
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it

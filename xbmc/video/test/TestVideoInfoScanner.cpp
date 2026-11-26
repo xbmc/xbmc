@@ -4130,7 +4130,135 @@ bool Eventually(const std::function<bool()>& condition)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   return condition();
 }
+
+//! Probes of the video being added that take every turn to probe, and hold them until let go
+class CHeldProbes
+{
+public:
+  CHeldProbes()
+  {
+    const size_t count{CScanProbe::ProbesAtOnce()};
+    for (size_t probe = 0; probe < count; ++probe)
+      m_probes.emplace_back(
+          [this]
+          {
+            CScanProbe::Run("/videos/held.mkv",
+                            [this]
+                            {
+                              std::unique_lock guard(m_lock);
+                              ++m_holding;
+                              m_changed.notify_all();
+                              m_changed.wait_for(guard, std::chrono::seconds(30),
+                                                 [this] { return m_letGo; });
+                              return true;
+                            });
+          });
+    std::unique_lock guard(m_lock);
+    m_held = m_changed.wait_for(guard, std::chrono::seconds(5),
+                                [this, count] { return m_holding == count; });
+  }
+  ~CHeldProbes() { LetGo(); }
+  CHeldProbes(const CHeldProbes&) = delete;
+  CHeldProbes& operator=(const CHeldProbes&) = delete;
+
+  //! Whether every turn is held
+  bool Held() const { return m_held; }
+  void LetGo()
+  {
+    {
+      std::unique_lock guard(m_lock);
+      m_letGo = true;
+    }
+    m_changed.notify_all();
+    for (std::thread& probe : m_probes)
+    {
+      if (probe.joinable())
+        probe.join();
+    }
+  }
+
+private:
+  std::mutex m_lock;
+  std::condition_variable m_changed;
+  size_t m_holding{0};
+  bool m_letGo{false};
+  bool m_held{false};
+  std::vector<std::thread> m_probes;
+};
 } // namespace
+
+// While every turn to probe is taken, the look-up threads not waiting for one go on asking the
+// scraper for the movies after those waiting
+TEST_F(TestVideoInfoScannerPython, TheScraperIsAskedForMoreMoviesThanAreProbedAtOnce)
+{
+  constexpr int count{10};
+  for (int movie = 1; movie <= count; ++movie)
+    File(m_root, StringUtils::Format("Film{:02} (2001).mkv", movie));
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAMovieScraper;
+  }
+  LetRunsEnd();
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const auto searches{
+      [this]
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        return std::ranges::count_if(m_handler.m_runs.calls, [](const std::string& call)
+                                     { return call.find("action=find") != std::string::npos; });
+      }};
+
+  TestScanner scanner{m_settings};
+  std::future<void> scan;
+  CHeldProbes held;
+  ASSERT_TRUE(held.Held());
+  scan = std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); });
+  // Each found its movie before it waited to probe its file
+  const bool waiting{Eventually([] { return CScanProbe::Waiting() > CScanProbe::ProbesAtOnce(); })};
+  const auto searched{searches()};
+  held.LetGo();
+  scan.wait();
+
+  EXPECT_TRUE(waiting);
+  EXPECT_GT(searched, static_cast<std::ptrdiff_t>(CScanProbe::ProbesAtOnce()));
+  EXPECT_EQ(count, CountMovies());
+}
+
+// The folders of the next batch are looked up while those of the batch before wait to be probed,
+// so that the scraper has calls to make meanwhile
+TEST_F(TestVideoInfoScannerPython, TheNextBatchIsLookedUpWhileTheOneBeforeWaitsToBeProbed)
+{
+  for (const std::string name : {"Alpha", "Beta", "Gamma", "Kappa"})
+    File(Folder(m_root, name + " (2001)"), name + " (2001).mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAMovieScraper;
+  }
+  LetRunsEnd();
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+
+  TestScanner scanner{m_settings};
+  scanner.LimitFoldersLookedUpTogether(2);
+  std::future<void> scan;
+  CHeldProbes held;
+  ASSERT_TRUE(held.Held());
+  scan = std::async(std::launch::async, [this, &scanner] { scanner.Scan(m_root); });
+  // Gamma is the first of the second batch
+  const bool searched{Eventually(
+      [this]
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        return std::ranges::any_of(m_handler.m_runs.calls, [](const std::string& call)
+                                   { return call.find("title=Gamma") != std::string::npos; });
+      })};
+  held.LetGo();
+  scan.wait();
+
+  EXPECT_TRUE(searched);
+  EXPECT_EQ(4, CountMovies());
+}
 
 // A scan stopped while the next batch is looked up, the batch before it added, ends, keeping the
 // movies added and the records of their folders, and recording none after them

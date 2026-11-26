@@ -238,6 +238,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       auto start = std::chrono::steady_clock::now();
+      const CScanProbe::CScanning scanning;
 
       m_database.Open();
 
@@ -245,7 +246,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       CLog::Log(LOGINFO, "VideoInfoScanner: Starting scan .. (grouping of similar videos is {})",
                 SimilarVideoScanActionToStr(m_similarVideoAction));
-      CLog::Log(LOGINFO, "VideoInfoScanner: Looking videos up on {} threads", LookUpThreads());
+      CLog::Log(LOGINFO,
+                "VideoInfoScanner: Looking videos up on {} threads, at most {} probing at once",
+                LookUpThreads(), CScanProbe::ProbesAtOnce());
       CServiceBroker::GetAnnouncementManager()->Announce(
           ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::ScanStarted{}});
 
@@ -2435,7 +2438,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     for (const size_t part : fileParts)
     {
       int duration{0}; // milliseconds
-      if (CDVDFileInfo::GetFileDuration(paths[part], duration) && duration > 0)
+      if (CScanProbe::GetFileDuration(paths[part], duration) && duration > 0)
       {
         totalDuration += duration / 1000;
         partDurations[part] = std::chrono::milliseconds{duration};
@@ -3862,7 +3865,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                      CURL::GetRedacted(path));
         }
         else if (CStreamDetails probed;
-                 CDVDFileInfo::GetFileStreamDetails(pItem, listingFlags, &probed))
+                 CScanProbe::GetFileStreamDetails(pItem, listingFlags, &probed))
         {
           lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
@@ -3911,9 +3914,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (const std::optional<GEOMETRY::FileIdentity> identity{
               GEOMETRY::MeasurableIdentity(*pItem)})
       {
-        const std::optional<GEOMETRY::ContentGeometryRecord> geometry{
-            GEOMETRY::MeasureContentGeometry(*pItem, *identity, GEOMETRY::SamplingDepth::Normal,
-                                             [this]() { return m_bStop.load(); })};
+        // It reads frames from across the file, so takes its turn with the scan's probes
+        std::optional<GEOMETRY::ContentGeometryRecord> geometry;
+        CScanProbe::Run(pItem->GetDynPath(),
+                        [&]
+                        {
+                          geometry = GEOMETRY::MeasureContentGeometry(
+                              *pItem, *identity, GEOMETRY::SamplingDepth::Normal,
+                              [this]() { return m_bStop.load(); });
+                          return geometry.has_value();
+                        });
 
         if (geometry && geometry->HasReading())
           movieDetails.m_contentGeometry.Set(*geometry);

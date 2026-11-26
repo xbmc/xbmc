@@ -8,18 +8,25 @@
 
 #include "VideoInfoScannerLookups.h"
 
+#include "FileItem.h"
 #include "URL.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
+#include "filesystem/IFileTypes.h"
+#include "filesystem/StackDirectory.h"
 #include "interfaces/generic/ScriptRunner.h"
 #include "threads/Thread.h"
+#include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/Episode.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <iterator>
 #include <mutex>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -46,6 +53,24 @@ protected:
 
 private:
   const std::function<void()> m_work;
+};
+
+//! The stop flag of the scan whose video the thread looks up, for as long as it does
+thread_local const std::atomic<bool>* lookUpStop{nullptr};
+
+//! A look-up of a run, on the calling thread, for as long as it lives
+class CLookingUp
+{
+public:
+  explicit CLookingUp(const std::atomic<bool>& stop) : m_previous(std::exchange(lookUpStop, &stop))
+  {
+  }
+  ~CLookingUp() { lookUpStop = m_previous; }
+  CLookingUp(const CLookingUp&) = delete;
+  CLookingUp& operator=(const CLookingUp&) = delete;
+
+private:
+  const std::atomic<bool>* const m_previous;
 };
 } // namespace
 
@@ -209,6 +234,7 @@ void CVideoLookups::CRun::LookUp(size_t index)
   try
   {
     const CScriptRunner::CAbandonWhen abandonOnStop{m_stop};
+    const CLookingUp lookingUp{m_stop};
     added->lookUp(index - added->first, index);
   }
   catch (...)
@@ -246,6 +272,183 @@ CVideoLookups::CPlace::~CPlace()
 size_t CVideoLookups::Place()
 {
   return lookUpPlace;
+}
+
+namespace
+{
+//! Held by a scan's probe of a file read through a client that makes one network call at a time
+std::mutex probeTurn;
+std::atomic<int> scansRunning{0};
+
+//! The probes at once: enough to keep reading while a probe waits on its file, few enough that the
+//! files open, and the buffers they are read into, stay few
+constexpr size_t PROBES_AT_ONCE{4};
+
+/*!
+ \brief The probes' turns, given in the scan's order as its scraper calls are: of those waiting, the
+ probe of the video the scan needs soonest goes first
+ */
+class CProbeSlots
+{
+public:
+  //! \brief A turn, held for as long as it lives, unless the thread's scan stopped while it waited
+  class CSlot
+  {
+  public:
+    CSlot(CProbeSlots& slots, size_t place) : m_slots(slots), m_taken(slots.Take(place)) {}
+    ~CSlot()
+    {
+      if (m_taken)
+        m_slots.Give();
+    }
+    CSlot(const CSlot&) = delete;
+    CSlot& operator=(const CSlot&) = delete;
+
+    bool Taken() const { return m_taken; }
+
+  private:
+    CProbeSlots& m_slots;
+    const bool m_taken;
+  };
+
+  size_t Waiting()
+  {
+    std::unique_lock lock(m_lock);
+    return m_waiting.size();
+  }
+
+private:
+  bool Take(size_t place)
+  {
+    const size_t slots{CScanProbe::ProbesAtOnce()};
+    std::unique_lock lock(m_lock);
+    const auto waiting{m_waiting.insert(place)};
+    // The stop flag is set without waking anyone, so it is looked at again now and then
+    bool taken{true};
+    while (m_taken >= slots || place > *m_waiting.begin())
+    {
+      // Only a look-up gives up, as the scan adds no video looked up once it stopped, where it
+      // may add one whose file it probes itself
+      if (lookUpStop && *lookUpStop)
+      {
+        taken = false;
+        break;
+      }
+      m_freed.wait_for(lock, std::chrono::milliseconds(100));
+    }
+    m_waiting.erase(waiting);
+    if (taken)
+      ++m_taken;
+    // The next in line may go too, where a slot is left
+    const bool next{!m_waiting.empty() && m_taken < slots};
+    lock.unlock();
+    if (next)
+      m_freed.notify_all();
+    return taken;
+  }
+
+  void Give()
+  {
+    {
+      std::unique_lock lock(m_lock);
+      --m_taken;
+    }
+    // All, as only the probe next in line may go
+    m_freed.notify_all();
+  }
+
+  std::mutex m_lock;
+  std::condition_variable m_freed;
+  //! The places of the probes waiting, 0 for those of the video being added
+  std::multiset<size_t> m_waiting;
+  size_t m_taken{0};
+};
+
+CProbeSlots probeSlots;
+} // namespace
+
+CScanProbe::CScanning::CScanning()
+{
+  ++scansRunning;
+}
+
+CScanProbe::CScanning::~CScanning()
+{
+  --scansRunning;
+}
+
+bool CScanProbe::Scanning()
+{
+  return scansRunning > 0;
+}
+
+bool CScanProbe::GetFileStreamDetails(CFileItem* item,
+                                      int listingFlags /* = 0 */,
+                                      CStreamDetails* probed /* = nullptr */)
+{
+  if (!item)
+    return false;
+
+  std::string path{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strFileNameAndPath : ""};
+  if (path.empty())
+    path = item->GetDynPath();
+
+  return Run(path,
+             [&] {
+               return CDVDFileInfo::GetFileStreamDetails(item, listingFlags, probed,
+                                                         XFILE::READ_NO_CACHE);
+             });
+}
+
+bool CScanProbe::GetFileDuration(const std::string& path, int& duration)
+{
+  return Run(path,
+             [&] { return CDVDFileInfo::GetFileDuration(path, duration, XFILE::READ_NO_CACHE); });
+}
+
+bool CScanProbe::ReadsOneAtATime(const std::string& path)
+{
+  // A stack of files on a share has no protocol of its own: its files are what are read
+  if (URIUtils::IsStack(path))
+  {
+    std::vector<std::string> files;
+    return XFILE::CStackDirectory::GetPaths(path, files) &&
+           std::ranges::any_of(files,
+                               [](const std::string& file) { return ReadsOneAtATime(file); });
+  }
+
+#if defined(TARGET_POSIX)
+  // libsmbclient makes one call at a time
+  return URIUtils::IsSmb(path);
+#else
+  return false;
+#endif
+}
+
+bool CScanProbe::Run(const std::string& path, const std::function<bool()>& probe)
+{
+  const CProbeSlots::CSlot slot{probeSlots, CVideoLookups::Place()};
+  if (!slot.Taken())
+    return false;
+
+  if (!ReadsOneAtATime(path))
+    return probe();
+
+  std::unique_lock turn(probeTurn);
+  // As for a slot, a look-up gives up where its scan stopped while it waited
+  if (lookUpStop && *lookUpStop)
+    return false;
+  return probe();
+}
+
+size_t CScanProbe::ProbesAtOnce()
+{
+  return PROBES_AT_ONCE;
+}
+
+size_t CScanProbe::Waiting()
+{
+  return probeSlots.Waiting();
 }
 
 bool IsDiscByName(const std::string& path)

@@ -14,7 +14,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Scraper.h"
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
@@ -35,6 +34,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerLookups.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
@@ -220,7 +220,7 @@ bool CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
           if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                   CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
           {
-            CDVDFileInfo::GetFileStreamDetails(item.get());
+            CScanProbe::GetFileStreamDetails(item.get());
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
                       CURL::GetRedacted(item->GetPath()));
           }

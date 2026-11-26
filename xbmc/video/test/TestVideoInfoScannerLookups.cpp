@@ -6,20 +6,33 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
+#include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
+#include "interfaces/generic/ScriptRunner.h"
+#include "test/TestUtils.h"
+#include "utils/StreamDetails.h"
+#include "utils/URIUtils.h"
 #include "video/Episode.h"
+#include "video/VideoGeneratedImageFileLoader.h"
 #include "video/VideoInfoScannerLookups.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <functional>
 #include <future>
 #include <iterator>
 #include <mutex>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -678,4 +691,353 @@ TEST(TestVideoInfoScannerLookups, TheDiscsOfAShowAreReadInTheOrderItsEpisodesAre
   EXPECT_EQ((std::vector<std::string>{files[0].strPath, files[3].strPath, files[4].strPath,
                                       files[5].strPath}),
             EpisodeDiscs(toAdd));
+}
+
+// A scan's probe, which opens the file without the file cache, finds what any other probe does
+TEST(TestVideoInfoScannerLookups, AScanProbeFindsTheStreamsAnotherProbeFinds)
+{
+  const std::string file{
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv")};
+  CFileItem plain{file, false};
+  CFileItem scanned{file, false};
+  CStreamDetails probed;
+  ASSERT_TRUE(CDVDFileInfo::GetFileStreamDetails(&plain));
+  ASSERT_TRUE(CScanProbe::GetFileStreamDetails(&scanned, 0, &probed));
+
+  const CStreamDetails& expected{plain.GetVideoInfoTag()->m_streamDetails};
+  EXPECT_EQ(expected.GetVideoCodec(), scanned.GetVideoInfoTag()->m_streamDetails.GetVideoCodec());
+  EXPECT_EQ(expected.GetVideoWidth(), probed.GetVideoWidth());
+  EXPECT_EQ(expected.GetVideoDuration(), probed.GetVideoDuration());
+
+  int plainDuration{0};
+  int scannedDuration{0};
+  ASSERT_TRUE(CDVDFileInfo::GetFileDuration(file, plainDuration));
+  ASSERT_TRUE(CScanProbe::GetFileDuration(file, scannedDuration));
+  EXPECT_EQ(plainDuration, scannedDuration);
+}
+
+TEST(TestVideoInfoScannerLookups, AFileReadThroughAClientOfOneCallAtATimeIsKnown)
+{
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("nfs://server/export/Film.mkv"));
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("stack:///videos/Film CD1.mkv , /videos/Film CD2.mkv"));
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("/videos/Film.mkv"));
+#if defined(TARGET_POSIX)
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime("smb://server/share/Film.mkv"));
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime(
+      URIUtils::GetBlurayPlaylistPath("smb://server/share/Film/BDMV/index.bdmv", 800)));
+  // A stack is read through the clients of its files
+  EXPECT_TRUE(CScanProbe::ReadsOneAtATime(
+      "stack:///videos/Film CD1.mkv , smb://server/share/Film CD2.mkv"));
+#else
+  EXPECT_FALSE(CScanProbe::ReadsOneAtATime("smb://server/share/Film.mkv"));
+#endif
+}
+
+#if defined(TARGET_POSIX)
+TEST(TestVideoInfoScannerLookups, ProbesOfFilesReadOneCallAtATimeTakeTurns)
+{
+  std::atomic<int> inside{0};
+  std::atomic<int> most{0};
+  const auto probe{[&]
+                   {
+                     const int now{++inside};
+                     int seen{most};
+                     while (now > seen && !most.compare_exchange_weak(seen, now))
+                     {
+                     }
+                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                     --inside;
+                     return true;
+                   }};
+
+  std::thread other{[&] { CScanProbe::Run("smb://server/share/a.mkv", probe); }};
+  CScanProbe::Run("smb://server/share/b.mkv", probe);
+  other.join();
+
+  EXPECT_EQ(1, most);
+}
+
+// A look-up that has its turn to probe, and waits for another probe's calls through libsmbclient,
+// gives up without probing where its scan stopped meanwhile
+TEST(TestVideoInfoScannerLookups, AStoppedLookupDoesNotStartAnotherSmbProbe)
+{
+  std::atomic<bool> stop{false};
+  std::atomic<bool> probed{false};
+  std::promise<void> ownerEntered;
+  std::promise<void> lookupEntered;
+  std::promise<void> releaseOwner;
+  const std::future<void> release{releaseOwner.get_future()};
+  std::thread owner{[&]
+                    {
+                      CScanProbe::Run("smb://server/share/a.mkv",
+                                      [&]
+                                      {
+                                        ownerEntered.set_value();
+                                        release.wait();
+                                        return true;
+                                      });
+                    }};
+  ownerEntered.get_future().wait();
+  std::thread lookup{[&]
+                     {
+                       CVideoLookups::Run(
+                           1, 1,
+                           [&](size_t)
+                           {
+                             lookupEntered.set_value();
+                             CScanProbe::Run("smb://server/share/b.mkv",
+                                             [&] { return probed = true; });
+                           },
+                           [](size_t) { return true; }, stop);
+                     }};
+  lookupEntered.get_future().wait();
+  stop = true;
+  releaseOwner.set_value();
+  owner.join();
+  lookup.join();
+
+  EXPECT_FALSE(probed);
+}
+#endif
+
+TEST(TestVideoInfoScannerLookups, AScanRunsForAsLongAsItsMarkLives)
+{
+  EXPECT_FALSE(CScanProbe::Scanning());
+  {
+    const CScanProbe::CScanning scanning;
+    EXPECT_TRUE(CScanProbe::Scanning());
+  }
+  EXPECT_FALSE(CScanProbe::Scanning());
+}
+
+TEST(TestVideoInfoScannerLookups, ProbesOfOtherFilesRunAtOnce)
+{
+  std::mutex lock;
+  std::condition_variable changed;
+  int entered{0};
+  // Each waits for the other to be inside too
+  const auto probe{[&]
+                   {
+                     std::unique_lock guard(lock);
+                     ++entered;
+                     changed.notify_all();
+                     return changed.wait_for(guard, std::chrono::seconds(5),
+                                             [&] { return entered == 2; });
+                   }};
+
+  bool otherMet{false};
+  std::thread other{[&] { otherMet = CScanProbe::Run("/videos/a.mkv", probe); }};
+  const bool met{CScanProbe::Run("/videos/b.mkv", probe)};
+  other.join();
+
+  EXPECT_TRUE(met);
+  EXPECT_TRUE(otherMet);
+}
+
+namespace
+{
+//! Probes of the video being added that take every turn, and hold them until let go
+class CHeldProbes
+{
+public:
+  CHeldProbes()
+  {
+    const size_t count{CScanProbe::ProbesAtOnce()};
+    for (size_t probe = 0; probe < count; ++probe)
+      m_probes.emplace_back([this]
+                            { CScanProbe::Run("/videos/held.mkv", [this] { return Hold(); }); });
+    std::unique_lock guard(m_lock);
+    m_held = m_changed.wait_for(guard, std::chrono::seconds(5),
+                                [this, count] { return m_holding == count; });
+  }
+  ~CHeldProbes()
+  {
+    LetGo(m_probes.size());
+    for (std::thread& probe : m_probes)
+      probe.join();
+  }
+  CHeldProbes(const CHeldProbes&) = delete;
+  CHeldProbes& operator=(const CHeldProbes&) = delete;
+
+  //! Whether every turn is held
+  bool Held() const { return m_held; }
+  //! Lets \p count of them end, and give their turns back
+  void LetGo(size_t count = 1)
+  {
+    {
+      std::unique_lock guard(m_lock);
+      m_letGo += count;
+    }
+    m_changed.notify_all();
+  }
+
+private:
+  bool Hold()
+  {
+    std::unique_lock guard(m_lock);
+    ++m_holding;
+    m_changed.notify_all();
+    if (m_changed.wait_for(guard, std::chrono::seconds(30), [this] { return m_letGo > 0; }))
+      --m_letGo;
+    return true;
+  }
+
+  std::mutex m_lock;
+  std::condition_variable m_changed;
+  size_t m_holding{0};
+  size_t m_letGo{0};
+  bool m_held{false};
+  std::vector<std::thread> m_probes;
+};
+} // namespace
+
+TEST(TestVideoInfoScannerLookups, NoMoreProbesRunAtOnceThanThereAreTurns)
+{
+  const size_t turns{CScanProbe::ProbesAtOnce()};
+  std::mutex lock;
+  std::condition_variable changed;
+  size_t inside{0};
+  size_t most{0};
+  // Each waits a while for the others to be inside too
+  const auto probe{[&]
+                   {
+                     std::unique_lock guard(lock);
+                     most = std::max(most, ++inside);
+                     changed.notify_all();
+                     changed.wait_for(guard, std::chrono::seconds(1),
+                                      [&] { return inside >= turns; });
+                     guard.unlock();
+                     std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                     guard.lock();
+                     --inside;
+                     return true;
+                   }};
+
+  std::vector<std::thread> probes;
+  for (size_t file = 0; file < 2 * turns; ++file)
+    probes.emplace_back([&probe, file]
+                        { CScanProbe::Run("/videos/" + std::to_string(file) + ".mkv", probe); });
+  for (std::thread& running : probes)
+    running.join();
+
+  EXPECT_EQ(turns, most);
+}
+
+// Of the probes waiting, the one for the video being added goes first, then those of the videos
+// looked up ahead of it in the order the scan adds them
+TEST(TestVideoInfoScannerLookups, TheProbeForTheVideoNeededSoonestGoesFirst)
+{
+  std::mutex lock;
+  std::vector<std::string> turns;
+  std::vector<std::future<void>> waiting;
+  CHeldProbes held;
+  ASSERT_TRUE(held.Held());
+  const auto probe{[&lock, &turns](std::optional<size_t> place, const std::string& name)
+                   {
+                     return std::async(std::launch::async,
+                                       [&lock, &turns, place, name]
+                                       {
+                                         std::optional<CVideoLookups::CPlace> ahead;
+                                         if (place)
+                                           ahead.emplace(*place);
+                                         CScanProbe::Run("/videos/" + name + ".mkv",
+                                                         [&lock, &turns, &name]
+                                                         {
+                                                           std::unique_lock guard(lock);
+                                                           turns.push_back(name);
+                                                           return true;
+                                                         });
+                                       });
+                   }};
+  for (const auto& [place, name] : {std::pair<std::optional<size_t>, std::string>{8, "ninth"},
+                                    {std::nullopt, "added"},
+                                    {4, "fifth"},
+                                    {1, "second"},
+                                    {6, "seventh"}})
+  {
+    waiting.push_back(probe(place, name));
+    ASSERT_TRUE(Eventually([&waiting] { return CScanProbe::Waiting() == waiting.size(); }));
+  }
+
+  // One turn, which each takes in its turn
+  held.LetGo();
+  for (std::future<void>& probed : waiting)
+    EXPECT_EQ(std::future_status::ready, probed.wait_for(std::chrono::seconds(5)));
+
+  std::unique_lock guard(lock);
+  EXPECT_EQ((std::vector<std::string>{"added", "second", "fifth", "seventh", "ninth"}), turns);
+}
+
+// A probe that waits for its turn in a look-up of a scan that stops gives up, without probing, as the
+// scan won't add the video, but one the scan thread makes, for a video it may add, waits on
+TEST(TestVideoInfoScannerLookups, AProbeWaitingForItsTurnGivesUpOnceItsScanStopsOnlyInALookUp)
+{
+  std::atomic<bool> stop{false};
+  std::atomic<bool> lookUpProbed{false};
+  std::atomic<bool> scanProbed{false};
+  // Made before the turns are held, so that they end once those are let go of
+  std::future<bool> lookUp;
+  std::future<bool> scanThread;
+  CHeldProbes held;
+  ASSERT_TRUE(held.Held());
+  lookUp = std::async(std::launch::async,
+                      [&stop, &lookUpProbed]
+                      {
+                        bool probed{false};
+                        CVideoLookups::Run(
+                            1, 1,
+                            [&lookUpProbed, &probed](size_t)
+                            {
+                              probed = CScanProbe::Run("/videos/a.mkv",
+                                                       [&lookUpProbed]
+                                                       {
+                                                         lookUpProbed = true;
+                                                         return true;
+                                                       });
+                            },
+                            [](size_t) { return true; }, stop);
+                        return probed;
+                      });
+  ASSERT_TRUE(Eventually([] { return CScanProbe::Waiting() == 1; }));
+  scanThread = std::async(std::launch::async,
+                          [&stop, &scanProbed]
+                          {
+                            const CScriptRunner::CAbandonWhen abandonOnStop{stop};
+                            return CScanProbe::Run("/videos/b.mkv",
+                                                   [&scanProbed]
+                                                   {
+                                                     scanProbed = true;
+                                                     return true;
+                                                   });
+                          });
+  ASSERT_TRUE(Eventually([] { return CScanProbe::Waiting() == 2; }));
+
+  stop = true;
+  const bool gaveUp{lookUp.wait_for(std::chrono::seconds(5)) == std::future_status::ready};
+  const bool scanWaits{scanThread.wait_for(std::chrono::milliseconds(300)) ==
+                       std::future_status::timeout};
+  held.LetGo();
+
+  EXPECT_TRUE(gaveUp);
+  EXPECT_FALSE(lookUp.get());
+  EXPECT_FALSE(lookUpProbed);
+  EXPECT_TRUE(scanWaits);
+  EXPECT_TRUE(scanThread.get());
+  EXPECT_TRUE(scanProbed);
+}
+
+// A thumb decoded from a video's frame while a scan runs, as the GUI asks for one, doesn't wait for
+// the scan's probes
+TEST(TestVideoInfoScannerLookups, AThumbDecodedDuringAScanDoesntWaitForItsProbes)
+{
+  const IMAGE_FILES::CImageFileURL thumb{IMAGE_FILES::URLFromFile("/videos/thumb.mkv", "video")};
+  const CVideoGeneratedImageFileLoader loader;
+  const CScanProbe::CScanning scanning;
+  CHeldProbes held;
+  ASSERT_TRUE(held.Held());
+  std::future<void> decoding{
+      std::async(std::launch::async, [&loader, &thumb] { static_cast<void>(loader.Load(thumb)); })};
+
+  EXPECT_EQ(std::future_status::ready, decoding.wait_for(std::chrono::seconds(5)));
+  held.LetGo(CScanProbe::ProbesAtOnce());
 }

@@ -375,7 +375,8 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 } // namespace
 
 std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
-                                                              int chapterNumber)
+                                                              int chapterNumber,
+                                                              unsigned int fileFlags)
 {
   if (!CanExtract(fileItem))
     return {};
@@ -384,7 +385,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
   auto start = std::chrono::steady_clock::now();
 
   std::optional<VideoDecodeSession> session =
-      OpenVideoDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath);
+      OpenVideoDecodeSession(fileItem, CODEC_FORCE_SOFTWARE, redactPath, fileFlags);
   if (!session)
     return {};
 
