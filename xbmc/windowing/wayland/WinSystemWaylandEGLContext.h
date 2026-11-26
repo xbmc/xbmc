@@ -67,6 +67,10 @@ protected:
   virtual bool CreateContext() = 0;
 
   wayland::egl_window_t m_nativeWindow;
+
+private:
+  /// Number of consecutive eglSwapBuffers() failures, reset on success
+  unsigned int m_swapFailures{0};
 };
 
 }

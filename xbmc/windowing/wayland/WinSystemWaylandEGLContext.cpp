@@ -16,6 +16,13 @@
 
 #include <EGL/eglext.h>
 
+namespace
+{
+/// Consecutive failed swaps tolerated before treating the failure as permanent
+/// (about one second at 60 Hz)
+constexpr unsigned int MAX_CONSECUTIVE_SWAP_FAILURES = 60;
+} // namespace
+
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace KODI::WINDOWING::LINUX;
 
@@ -140,13 +147,48 @@ void CWinSystemWaylandEGLContext::PresentFrame(bool rendered)
 
   if (rendered)
   {
-    if (!m_eglContext.TrySwapBuffers())
+    if (m_eglContext.TrySwapBuffers())
     {
-      // For now we just hard fail if this fails
-      // Theoretically, EGL_CONTEXT_LOST could be handled, but it needs to be checked
-      // whether egl implementations actually use it (mesa does not)
-      CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
-      throw std::runtime_error("eglSwapBuffers failed");
+      if (m_swapFailures > 0)
+      {
+        CLog::LogF(LOGINFO, "eglSwapBuffers succeeded again after {} failed frame(s)",
+                   m_swapFailures);
+        m_swapFailures = 0;
+      }
+    }
+    else
+    {
+      // Read the error first, CEGLUtils::Log() would consume it
+      const EGLint error = eglGetError();
+
+      // Errors that mean the display, context or surface is gone. Recovering
+      // from these would require recreating them, which is not implemented.
+      const bool fatal = error == EGL_CONTEXT_LOST || error == EGL_BAD_CONTEXT ||
+                         error == EGL_BAD_SURFACE || error == EGL_BAD_NATIVE_WINDOW ||
+                         error == EGL_BAD_DISPLAY || error == EGL_NOT_INITIALIZED;
+
+      // Anything else (e.g. EGL_BAD_ALLOC, or EGL_FALSE without any error set)
+      // can be transient: NVIDIA's egl-wayland2 fails a swap without setting an
+      // error when it cannot get the next back buffer, and reallocates its
+      // swapchain on the next call. Drop the frame and keep going, but do not
+      // spin forever if the failure turns out to be persistent.
+      ++m_swapFailures;
+      if (fatal || m_swapFailures > MAX_CONSECUTIVE_SWAP_FAILURES)
+      {
+        CLog::LogF(LOGFATAL, "eglSwapBuffers failed ({:#06x}) {} time(s) in a row, giving up",
+                   error, m_swapFailures);
+        throw std::runtime_error("eglSwapBuffers failed");
+      }
+      if (m_swapFailures == 1)
+      {
+        CLog::LogF(LOGWARNING, "eglSwapBuffers failed ({:#06x}), dropping frame", error);
+      }
+
+      // The swap may have failed before committing the surface. Commit anyway,
+      // as for a frame that was not rendered, so the presentation feedback and
+      // frame callback requested for this frame are not left pending.
+      GetMainSurface().commit();
+      GetConnection()->GetDisplay().flush();
     }
     // eglSwapBuffers() (hopefully) calls commit on the surface and flushes
     // ... well mesa does anyway
