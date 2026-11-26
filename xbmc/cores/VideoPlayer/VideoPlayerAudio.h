@@ -91,6 +91,7 @@ protected:
   CDVDStreamInfo m_streaminfo;
 
   double m_audioClock;
+  bool m_hasAudioTimestamp{false};
 
   CAudioSinkAE m_audioSink; // audio output device
   CDVDClock* m_pClock; // dvd master clock
