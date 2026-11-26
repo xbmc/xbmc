@@ -1049,14 +1049,12 @@ void CTCPServer::CTCPClient::Copy(const CTCPClient& client)
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket)
 {
   m_websocket = websocket;
-  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(const CWebSocketClient& client)
   : CTCPServer::CTCPClient(client)
 {
   *this = client;
-  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCPClient& client)
@@ -1064,7 +1062,6 @@ CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCP
   Copy(client);
 
   m_websocket = websocket;
-  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::~CWebSocketClient()
