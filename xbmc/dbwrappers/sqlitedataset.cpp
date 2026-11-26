@@ -18,11 +18,14 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
+#include <mutex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 
 #include <sqlite3.h>
@@ -202,11 +205,19 @@ int callback(void* res_ptr, int ncol, char** result, char** cols)
   return 0;
 }
 
-int busy_callback(void*, int /*busyCount*/)
+int busy_callback(void* database, int /*busyCount*/)
 {
+  if (database)
+    static_cast<dbiplus::SqliteDatabase*>(database)->waited();
   KODI::TIME::Sleep(100ms);
   return 1;
 }
+
+//! When each connection to a database file last had to wait for a lock
+std::mutex lockWaitsMutex;
+std::unordered_map<std::string,
+                   std::unordered_map<const void*, std::chrono::steady_clock::time_point>>
+    lockWaits;
 } // unnamed namespace
 
 namespace dbiplus
@@ -354,7 +365,7 @@ int SqliteDatabase::connect(bool create)
     else if (errorCode == SQLITE_OK)
     {
       sqlite3_extended_result_codes(conn, 1);
-      sqlite3_busy_handler(conn, busy_callback, nullptr);
+      sqlite3_busy_handler(conn, busy_callback, this);
       static const char* sqlcmd{"PRAGMA empty_result_callbacks=ON"};
       if (setErr(sqlite3_exec(getHandle(), sqlcmd, nullptr, nullptr, nullptr), sqlcmd) != SQLITE_OK)
       {
@@ -669,6 +680,26 @@ bool SqliteDatabase::transaction_lost()
     _transaction_lost = true;
   }
   return _in_transaction && _transaction_lost;
+}
+
+void SqliteDatabase::waited()
+{
+  const auto now{std::chrono::steady_clock::now()};
+  std::unique_lock lock(lockWaitsMutex);
+  auto& waits{lockWaits[host + db]};
+  // Connections that have gone, or haven't waited for a while, are of no interest
+  std::erase_if(waits,
+                [&now](const auto& wait) { return now - wait.second > std::chrono::minutes{1}; });
+  waits.insert_or_assign(this, now);
+}
+
+bool SqliteDatabase::others_waited_since(std::chrono::steady_clock::time_point since)
+{
+  std::unique_lock lock(lockWaitsMutex);
+  const auto waits{lockWaits.find(host + db)};
+  return waits != lockWaits.end() &&
+         std::ranges::any_of(waits->second, [this, since](const auto& wait)
+                             { return wait.first != this && wait.second >= since; });
 }
 
 // methods for formatting

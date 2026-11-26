@@ -11,6 +11,7 @@
 #include "media/MediaType.h"
 #include "utils/Artwork.h"
 
+#include <chrono>
 #include <memory>
 #include <set>
 #include <string>
@@ -134,6 +135,23 @@ public:
   virtual bool CommitTransaction();
   void RollbackTransaction();
   bool InTransaction() const;
+
+  /*!
+   \brief Mark a point in the transaction begun, so that what is written after it can be undone
+   alone, keeping what was written before it
+   \return false where it can't be marked: outside a transaction, or in one that was lost
+   */
+  bool BeginSavepoint(const std::string& name);
+  //! \brief Keep what was written since the savepoint \p name, as if there had been no savepoint
+  bool ReleaseSavepoint(const std::string& name);
+  //! \brief Undo what was written since the savepoint \p name, and end it
+  bool RollbackToSavepoint(const std::string& name);
+
+  /*!
+   \brief Whether a connection other than this one to the same database has had to wait for a
+   lock since \p since, as a writer waits for a transaction to end. Known of SQLite only.
+   */
+  bool OthersWaitedSince(std::chrono::steady_clock::time_point since) const;
   void CopyDB(const std::string& latestDb);
   void DropAnalytics();
 

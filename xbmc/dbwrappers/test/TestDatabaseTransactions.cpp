@@ -11,8 +11,11 @@
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
 
+#include <atomic>
+#include <chrono>
 #include <cstdlib>
 #include <string>
+#include <thread>
 
 #include <gtest/gtest.h>
 
@@ -162,6 +165,66 @@ TEST_F(TestDatabaseTransactions, ATransactionOfADatabaseNeverOpenedIsNeitherBegu
   EXPECT_FALSE(missing.BeginTransaction());
   EXPECT_FALSE(missing.CommitTransaction());
   EXPECT_FALSE(missing.InTransaction());
+}
+
+TEST_F(TestDatabaseTransactions, WhatFollowsASavepointRolledBackToIsUndoneAlone)
+{
+  ASSERT_TRUE(m_db.BeginTransaction());
+  EXPECT_TRUE(Write(1));
+  ASSERT_TRUE(m_db.BeginSavepoint("video"));
+  EXPECT_TRUE(Write(2));
+  EXPECT_TRUE(m_db.RollbackToSavepoint("video"));
+  // It ends with the rollback, so that what follows is kept
+  EXPECT_TRUE(Write(4));
+  EXPECT_FALSE(m_db.RollbackToSavepoint("video"));
+  ASSERT_TRUE(m_db.BeginSavepoint("video"));
+  EXPECT_TRUE(Write(3));
+  EXPECT_TRUE(m_db.ReleaseSavepoint("video"));
+
+  EXPECT_TRUE(m_db.CommitTransaction());
+
+  EXPECT_EQ(1, Count(m_db, "kept WHERE id=1"));
+  EXPECT_EQ(0, Count(m_db, "kept WHERE id=2"));
+  EXPECT_EQ(1, Count(m_db, "kept WHERE id=3"));
+  EXPECT_EQ(1, Count(m_db, "kept WHERE id=4"));
+}
+
+TEST_F(TestDatabaseTransactions, NoSavepointIsMarkedOutsideATransaction)
+{
+  // SQLite would begin a transaction with it, which nothing would end
+  EXPECT_FALSE(m_db.BeginSavepoint("video"));
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_TRUE(Write(1));
+  CVideoDatabase other;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, other.Connect(m_name, m_settings, false));
+  EXPECT_EQ(1, Count(other, "kept"));
+}
+
+TEST_F(TestDatabaseTransactions, AWriterWaitingForATransactionToEndIsSeen)
+{
+  CVideoDatabase other;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, other.Connect(m_name, m_settings, false));
+  const auto start{std::chrono::steady_clock::now()};
+  ASSERT_TRUE(m_db.BeginTransaction());
+  EXPECT_TRUE(Write(1));
+  EXPECT_FALSE(m_db.OthersWaitedSince(start));
+
+  std::atomic<bool> written{false};
+  std::thread writer{[&other, &written]
+                     { written = other.ExecuteQuery("INSERT INTO kept (id) VALUES (2)"); }};
+  const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+  while (!m_db.OthersWaitedSince(start) && std::chrono::steady_clock::now() < end)
+    std::this_thread::sleep_for(std::chrono::milliseconds{10});
+
+  EXPECT_TRUE(m_db.OthersWaitedSince(start));
+  // A connection's own wait is no other's
+  EXPECT_FALSE(other.OthersWaitedSince(start));
+  EXPECT_TRUE(m_db.CommitTransaction());
+  writer.join();
+  EXPECT_TRUE(written);
+  EXPECT_EQ(2, Kept());
+  EXPECT_FALSE(m_db.OthersWaitedSince(std::chrono::steady_clock::now()));
 }
 
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)

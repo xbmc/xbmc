@@ -850,6 +850,62 @@ bool CDatabase::InTransaction() const
   return false;
 }
 
+bool CDatabase::BeginSavepoint(const std::string& name)
+{
+  // Outside a transaction, SQLite would begin one
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::ReleaseSavepoint(const std::string& name)
+{
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("RELEASE SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "release of savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::RollbackToSavepoint(const std::string& name)
+{
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("ROLLBACK TO SAVEPOINT " + name);
+    // A savepoint rolled back to is kept, until released
+    m_pDS->exec("RELEASE SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "rollback to savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::OthersWaitedSince(std::chrono::steady_clock::time_point since) const
+{
+  return nullptr != m_pDB && m_pDB->others_waited_since(since);
+}
+
 bool CDatabase::CreateDatabase()
 {
   BeginTransaction();

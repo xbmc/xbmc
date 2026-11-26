@@ -90,6 +90,11 @@ public:
    written now would be committed alone, statement by statement
    */
   bool transaction_lost();
+
+  bool others_waited_since(std::chrono::steady_clock::time_point since) override;
+
+  //! \brief The connection had to wait for a lock, as its busy handler is called
+  void waited();
 };
 
 /***************** Class SqliteDataset definition *******************
