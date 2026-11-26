@@ -122,7 +122,15 @@ public:
   bool Compress(bool bForce = true);
   void Interrupt();
 
-  void BeginTransaction();
+  /*!
+   \brief Begin a transaction
+   \return false where it couldn't be begun: nothing is written in it, and its commit fails
+   */
+  bool BeginTransaction();
+  /*!
+   \brief Commit the transaction begun
+   \return true only where the engine says the whole transaction was committed
+   */
   virtual bool CommitTransaction();
   void RollbackTransaction();
   bool InTransaction() const;
