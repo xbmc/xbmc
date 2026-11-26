@@ -108,8 +108,10 @@ TEST(TestAdvancedSettings, LoadingAgainResetsWhatAScanLeavesUntilItIsDone)
 {
   CAdvancedSettings settings;
   settings.m_bVideoLibraryExtractFramesAfterScrape = true;
+  settings.m_bVideoLibraryExtractStreamDetailsAfterScrape = true;
 
   ASSERT_TRUE(settings.Load(*CServiceBroker::GetSettingsComponent()->GetProfileManager()));
 
   EXPECT_FALSE(settings.m_bVideoLibraryExtractFramesAfterScrape);
+  EXPECT_FALSE(settings.m_bVideoLibraryExtractStreamDetailsAfterScrape);
 }

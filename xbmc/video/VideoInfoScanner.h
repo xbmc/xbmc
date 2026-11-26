@@ -23,6 +23,7 @@
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoScannerExtras.h"
 #include "video/VideoInfoScannerLookups.h"
+#include "video/VideoInfoScannerStreams.h"
 #include "video/VideoInfoScannerWalk.h"
 
 #include <atomic>
@@ -168,6 +169,8 @@ class ISetInfoTagLoader;
 
   protected:
     virtual void Process();
+    //! \brief Have the files the scan left to probe read once it is done, unless it was stopped
+    void ReadDeferredStreams();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
 
     //! \brief The name of the video source holding \p folder, else the folder's own name
@@ -286,6 +289,8 @@ class ISetInfoTagLoader;
       //! A measurement of the picture's shape that found nothing, stored too so that the file isn't
       //! measured again
       std::optional<GEOMETRY::ContentGeometryRecord> unreadGeometry;
+      //! Whether its file is probed for its streams once the scan is done, rather than now
+      bool streamsAfterScan{false};
     };
 
     /*! \brief The first half of AddVideo(): the item's playlist, art, streams, trailer and date added
@@ -867,7 +872,9 @@ class ISetInfoTagLoader;
 
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
-    CVideoInfoScannerExtras m_extras{m_database, m_art};
+    //! The streams side of the scan
+    CVideoInfoScannerStreams m_streams;
+    CVideoInfoScannerExtras m_extras{m_database, m_art, &m_streams};
 
     /*!
      \brief The scan's calls to the scraper. They are made one at a time, as a scraper's provider

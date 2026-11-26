@@ -13,6 +13,7 @@
 #include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "video/VideoInfoScannerStreams.h"
 #include "video/geometry/ContentGeometryScanner.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
@@ -272,22 +273,28 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
 
 void CVideoLibraryQueue::CancelAllJobs()
 {
-  std::unique_lock lock(m_critical);
-
-  // Ask any job that is already being processed to stop to prevent slow shutdown
-  for (const auto& jobs : m_jobs | std::views::values)
   {
-    for (const auto& job : jobs)
+    std::unique_lock lock(m_critical);
+
+    // Ask any job that is already being processed to stop to prevent slow shutdown
+    for (const auto& jobs : m_jobs | std::views::values)
     {
-      if (job->CanBeCancelled())
-        job->Cancel();
+      for (const auto& job : jobs)
+      {
+        if (job->CanBeCancelled())
+          job->Cancel();
+      }
     }
+
+    CJobQueue::CancelJobs();
+
+    // remove all scanning jobs
+    m_jobs.clear();
   }
 
-  CJobQueue::CancelJobs();
-
-  // remove all scanning jobs
-  m_jobs.clear();
+  // The files whose streams scans left to read once they were done are dropped too, once the scans
+  // are told to stop, as a stopped scan queues none
+  KODI::VIDEO::CStreamsAfterScan::GetInstance().Stop();
 }
 
 bool CVideoLibraryQueue::IsRunning() const

@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Scraper.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
@@ -35,6 +36,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoScannerLookups.h"
+#include "video/VideoInfoScannerStreams.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
@@ -127,10 +129,13 @@ bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
 }
 } // namespace
 
-CVideoInfoScannerExtras::CVideoInfoScannerExtras(CVideoDatabase& database,
-                                                 const CVideoInfoScannerArt& art)
+CVideoInfoScannerExtras::CVideoInfoScannerExtras(
+    CVideoDatabase& database,
+    const CVideoInfoScannerArt& art,
+    const CVideoInfoScannerStreams* streams /* = nullptr */)
   : m_database(database),
-    m_art(art)
+    m_art(art),
+    m_streams(streams)
 {
 }
 
@@ -217,12 +222,19 @@ bool CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
 
         if (idMovie <= 0)
         {
+          bool streamsAfterScan{false};
           if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                   CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
           {
-            CScanProbe::GetFileStreamDetails(item.get());
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                      CURL::GetRedacted(item->GetPath()));
+            if (m_streams && m_streams->ReadsAfterScan())
+              streamsAfterScan = CDVDFileInfo::CanExtract(*item);
+            else
+            {
+              CScanProbe::GetFileStreamDetails(item.get());
+              CLog::Log(LOGDEBUG,
+                        "VideoInfoScanner: Extracted filestream details from video file {}",
+                        CURL::GetRedacted(item->GetPath()));
+            }
           }
 
           m_art.GetArtwork(item.get(), ADDON::ContentType::MOVIES, true, true, "");
@@ -235,6 +247,8 @@ bool CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
             const CBookmark& resume{item->GetVideoInfoTag()->GetResumePoint()};
             if (resume.IsSet())
               m_database.AddBookMarkToFile(item->GetPath(), resume, CBookmark::RESUME);
+            if (streamsAfterScan)
+              m_streams->Defer(*item);
           }
           else
           {

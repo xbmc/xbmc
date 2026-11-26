@@ -161,6 +161,11 @@ void CTextureCache::BackgroundCacheImage(const std::string& url, const std::stri
   m_cachingQueue.AddJob(new CTextureCacheJob(path, details, knownHash));
 }
 
+bool CTextureCache::IsCaching() const
+{
+  return m_cachingQueue.IsProcessing();
+}
+
 bool CTextureCache::StartCacheImage(const std::string& image)
 {
   std::unique_lock lock(m_processingSection);

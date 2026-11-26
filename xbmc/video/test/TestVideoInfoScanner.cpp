@@ -24,6 +24,7 @@
 #include "filesystem/File.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
@@ -49,8 +50,11 @@
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerStreams.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoThumbLoader.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
@@ -331,9 +335,16 @@ public:
     m_similarVideoAction = SimilarVideoScanAction::NONE;
     m_ignoreVideoExtras = ignoreVideoExtras;
     m_bClean = clean;
+    // As Process() has a scan read the streams
+    m_streams.ReadAfterScan(m_advancedSettings->m_bVideoLibraryExtractStreamDetailsAfterScrape);
   }
 
   using CVideoInfoScanner::CanLookUpMovieAlongside;
+
+  //! The files whose streams the scan has left to read once it is done
+  std::vector<StreamsToRead> StreamsLeftToRead() const { return m_streams.Deferred(); }
+  //! Has them read in the background, as Process() does once the scan is done
+  void ReadLeftStreams() { ReadDeferredStreams(); }
 
   //! Keeps a show's episodes in one transaction while the scan waits for the next, so that a test
   //! knows which of them it holds
@@ -506,6 +517,9 @@ protected:
         m_fastHash;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps =
         m_excludes;
+    CServiceBroker::GetSettingsComponent()
+        ->GetAdvancedSettings()
+        ->m_bVideoLibraryExtractStreamDetailsAfterScrape = m_streamsAfterScrape;
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
         CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, m_extractFlags);
     if (m_standIn)
@@ -582,6 +596,39 @@ protected:
   {
     Nfo(folder, "movie.nfo", URIUtils::GetFileName(folder.substr(0, folder.size() - 1)));
     return File(folder, file);
+  }
+
+  //! A video file that can be probed, of one video stream 320 pixels wide
+  static std::string Video(const std::string& folder, const std::string& name)
+  {
+    const std::string path{URIUtils::AddFileToFolder(folder, name)};
+    EXPECT_TRUE(XFILE::CFile::Copy(
+        XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv"), path));
+    return path;
+  }
+
+  //! An English subtitle for a video, named by it
+  static void Subtitle(const std::string& video)
+  {
+    File(URIUtils::GetDirectory(video),
+         URIUtils::ReplaceExtension(URIUtils::GetFileName(video), ".en.srt"),
+         "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+  }
+
+  //! Has a scan read the streams of the videos it adds once it is done
+  static void ReadStreamsAfterScrape()
+  {
+    CServiceBroker::GetSettingsComponent()
+        ->GetAdvancedSettings()
+        ->m_bVideoLibraryExtractStreamDetailsAfterScrape = true;
+  }
+
+  //! The streams the library holds for a file, none where it holds none
+  CStreamDetails Streams(const std::string& file)
+  {
+    CStreamDetails streams;
+    m_db.GetStreamDetails(file, streams);
+    return streams;
   }
 
   //! A dvd folder rip
@@ -1007,6 +1054,9 @@ protected:
                                                 ->m_moviesExcludeFromScanRegExps};
   const bool m_extractFlags{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)};
+  const bool m_streamsAfterScrape{CServiceBroker::GetSettingsComponent()
+                                      ->GetAdvancedSettings()
+                                      ->m_bVideoLibraryExtractStreamDetailsAfterScrape};
   CSiteHandler m_handler;
   bool m_standIn{false};
   std::vector<std::pair<std::string, std::string>> m_installedScrapers;
@@ -1434,6 +1484,97 @@ TEST_F(TestVideoInfoScanner, ABlurayStackHasItsFirstDiscsSubtitle)
   EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
   EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
   EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1).AsIso6392B());
+}
+
+// A scan reading the streams once it is done adds its videos without them, and reading their files
+// then writes what a scan probing them as it adds the videos does, their subtitles too. The file of
+// a movie's extra is read then too.
+TEST_F(TestVideoInfoScanner, StreamsReadOnceTheScanIsDoneAreThoseReadAsAVideoIsAdded)
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const std::string first{Folder(m_root, "First (2010)")};
+  Nfo(first, "movie.nfo", "First");
+  const std::string firstMovie{Video(first, "First (2010).mkv")};
+  Subtitle(firstMovie);
+  Scan();
+  const CStreamDetails probedAsAdded{Streams(firstMovie)};
+  ASSERT_EQ(320, probedAsAdded.GetVideoWidth());
+  ASSERT_EQ(1, probedAsAdded.GetSubtitleStreamCount());
+
+  ReadStreamsAfterScrape();
+  const std::string second{Folder(m_root, "Second (2011)")};
+  Nfo(second, "movie.nfo", "Second");
+  const std::string secondMovie{Video(second, "Second (2011).mkv")};
+  Subtitle(secondMovie);
+  const std::string trailer{Video(Folder(second, "Extras"), "Trailer.mkv")};
+  Touch(m_root);
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  const int idMovie{m_db.GetMovieId(secondMovie)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(IsExtraOf(trailer, idMovie));
+  EXPECT_FALSE(Streams(secondMovie).HasItems());
+  EXPECT_FALSE(Streams(trailer).HasItems());
+
+  const std::vector<StreamsToRead> files{scanner.StreamsLeftToRead()};
+  ASSERT_EQ(2U, files.size());
+  for (const StreamsToRead& file : files)
+    EXPECT_TRUE(CStreamsAfterScan::Read(file)) << file.file;
+
+  EXPECT_TRUE(probedAsAdded == Streams(secondMovie));
+  EXPECT_EQ(320, Streams(trailer).GetVideoWidth());
+  // Read once
+  EXPECT_FALSE(CStreamsAfterScan::Read(files.front()));
+}
+
+// The streams an nfo gives are written as the scan adds the movie, and its file is left alone
+TEST_F(TestVideoInfoScanner, AScanReadingTheStreamsOnceDoneWritesAnNfosAsItAddsTheMovie)
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  File(folder, "movie.nfo",
+       "<movie><title>Film</title><fileinfo><streamdetails><video><codec>hevc</codec>"
+       "<width>3840</width><height>2160</height></video></streamdetails></fileinfo></movie>");
+  const std::string movie{Video(folder, "Film (2010).mkv")};
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(3840, Streams(movie).GetVideoWidth());
+  EXPECT_TRUE(scanner.StreamsLeftToRead().empty());
+}
+
+// A bluray's streams are read from its playlist as the scan chooses it, and are written as the scan
+// adds the movie, with the subtitle beside it
+TEST_F(TestVideoInfoScanner, AScanReadingTheStreamsOnceDoneWritesABlurayPlaylistsAsItAddsTheMovie)
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string disc{BlurayRip(folder)};
+  File(folder, "Film (2010).en.srt", "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+  const auto playlist{std::make_shared<CFileItem>(URIUtils::GetBlurayPlaylistPath(disc, 0), false)};
+  playlist->GetVideoInfoTag()->SetTitle("Film");
+  auto* video{new CStreamDetailVideo()};
+  video->m_iWidth = 1920;
+  playlist->GetVideoInfoTag()->m_streamDetails.AddStream(video);
+  CFileItemList playlists;
+  playlists.Add(playlist);
+
+  TestScanner scanner{m_settings};
+  ASSERT_EQ(CInfoScanner::InfoRet::ADDED, scanner.AddPlaylists(playlists));
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, m_db.GetMovieId(playlist->GetDynPath())));
+  ASSERT_TRUE(m_db.GetStreamDetails(tag));
+  EXPECT_EQ(1920, tag.m_streamDetails.GetVideoWidth());
+  EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount());
+  EXPECT_TRUE(scanner.StreamsLeftToRead().empty());
 }
 
 TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)
@@ -2983,6 +3124,9 @@ protected:
   {
     if (m_textureCache)
     {
+      // The streams left to read once the scans are done first, as they are read with the job
+      // manager and wait for the texture cache
+      CStreamsAfterScan::GetInstance().Stop();
       // First, as its jobs are cancelled with the job manager
       CServiceBroker::UnregisterTextureCache();
       CServiceBroker::GetJobManager()->CancelJobs();
@@ -3023,6 +3167,28 @@ protected:
     CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
     CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
     m_textureCache = true;
+  }
+
+  //! A show of one file of two episodes that can be probed, each with an nfo of its own, and the
+  //! file's subtitle
+  //! \return the file
+  std::string ShowOfAFileOfTwoEpisodes()
+  {
+    const std::string season{Folder(Show("Show"), "Season 1")};
+    const std::string episodes{Video(season, "Show S01E01E02.mkv")};
+    File(season, "Show S01E01E02-S01E01.nfo", "<episodedetails><title>1</title></episodedetails>");
+    File(season, "Show S01E01E02-S01E02.nfo", "<episodedetails><title>2</title></episodedetails>");
+    Subtitle(episodes);
+    return episodes;
+  }
+
+  //! Waits for the streams left to read once the scans are done to be read
+  static bool StreamsRead()
+  {
+    const CStreamsAfterScan& reads{CStreamsAfterScan::GetInstance()};
+    for (int i = 0; i < 1000 && !reads.IsIdle(); ++i)
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    return reads.IsIdle();
   }
 
   //! A refresh of a show with all its episodes removes it before adding it again, so one whose
@@ -3461,6 +3627,166 @@ TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAFileHaveItsStreamsAndSubtitles
     EXPECT_EQ(320, tag.m_streamDetails.GetVideoWidth()) << episode;
     EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount()) << episode;
   }
+}
+
+// Read once the scan is done, the file is read once, and its episodes have its streams and
+// subtitles, as when it is probed as they are added
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAFileHaveItsStreamsAndSubtitlesOnceTheScanIsDone)
+{
+  UseTextureCache();
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string episodes{ShowOfAFileOfTwoEpisodes()};
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  ASSERT_GT(m_db.GetEpisodeId(episodes, 2, 1), 0);
+  EXPECT_FALSE(Streams(episodes).HasItems());
+  const std::vector<StreamsToRead> files{scanner.StreamsLeftToRead()};
+  ASSERT_EQ(1U, files.size());
+  EXPECT_EQ(episodes, files[0].file);
+
+  scanner.ReadLeftStreams();
+  ASSERT_TRUE(StreamsRead());
+
+  for (const int episode : {1, 2})
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(episodes, tag, m_db.GetEpisodeId(episodes, episode, 1)));
+    ASSERT_TRUE(m_db.GetStreamDetails(tag));
+    EXPECT_EQ(320, tag.m_streamDetails.GetVideoWidth()) << episode;
+    EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount()) << episode;
+  }
+}
+
+// The streams are read once the texture cache has cached the images queued to it, those a scan
+// queued as it finished among them: until then, no read is handed to the job manager
+TEST_F(TestVideoInfoScannerTvShows, StreamsAreReadOnceTheImagesQueuedAreCached)
+{
+  UseTextureCache();
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string episodes{ShowOfAFileOfTwoEpisodes()};
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+  ASSERT_EQ(1U, scanner.StreamsLeftToRead().size());
+
+  // A thumb made from a frame of the file, as a scan queues it, held in the queue as pausable jobs
+  // are paused. An image in special://temp, where the test's files are, isn't cached.
+  const auto jobManager{CServiceBroker::GetJobManager()};
+  const auto textureCache{CServiceBroker::GetTextureCache()};
+  jobManager->PauseJobs();
+  textureCache->BackgroundCacheImage(IMAGE_FILES::URLFromFile(episodes, "video"));
+  ASSERT_TRUE(textureCache->IsCaching());
+
+  scanner.ReadLeftStreams();
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+  const CStreamsAfterScan& reads{CStreamsAfterScan::GetInstance()};
+  EXPECT_EQ(1U, reads.Pending());
+  EXPECT_FALSE(reads.IsReading());
+
+  jobManager->UnPauseJobs();
+  ASSERT_TRUE(StreamsRead());
+  EXPECT_FALSE(textureCache->IsCaching());
+  EXPECT_EQ(320, Streams(episodes).GetVideoWidth());
+}
+
+// A read is a job of the priority playback pauses, so none starts while a video plays
+TEST_F(TestVideoInfoScannerTvShows, StreamsAreNotReadWhilePlaybackPausesTheirJobs)
+{
+  UseTextureCache();
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string episodes{ShowOfAFileOfTwoEpisodes()};
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  const auto jobManager{CServiceBroker::GetJobManager()};
+  jobManager->PauseJobs();
+  scanner.ReadLeftStreams();
+  const CStreamsAfterScan& reads{CStreamsAfterScan::GetInstance()};
+  for (int i = 0; i < 500 && !reads.IsReading(); ++i)
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  ASSERT_TRUE(reads.IsReading());
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  EXPECT_FALSE(Streams(episodes).HasItems());
+  EXPECT_FALSE(reads.IsIdle());
+
+  jobManager->UnPauseJobs();
+  ASSERT_TRUE(StreamsRead());
+  EXPECT_EQ(320, Streams(episodes).GetVideoWidth());
+}
+
+// No file is read while a scan runs
+TEST_F(TestVideoInfoScannerTvShows, StreamsAreNotReadWhileAScanRuns)
+{
+  UseTextureCache();
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  const std::string episodes{ShowOfAFileOfTwoEpisodes()};
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  const CStreamsAfterScan& reads{CStreamsAfterScan::GetInstance()};
+  {
+    const CScanProbe::CScanning scanning;
+    scanner.ReadLeftStreams();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    EXPECT_EQ(1U, reads.Pending());
+  }
+  ASSERT_TRUE(StreamsRead());
+  EXPECT_EQ(320, Streams(episodes).GetVideoWidth());
+}
+
+// A stopped scan leaves the streams it held back unread, as Kodi may be exiting or logging off
+TEST_F(TestVideoInfoScannerTvShows, AStoppedScanReadsNoStreamsOnceItIsDone)
+{
+  UseTextureCache();
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  ReadStreamsAfterScrape();
+  ShowOfAFileOfTwoEpisodes();
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+  // What is queued stays queued while a scan runs
+  const CScanProbe::CScanning scanning;
+
+  scanner.Stop();
+  scanner.ReadLeftStreams();
+
+  EXPECT_EQ(0U, CStreamsAfterScan::GetInstance().Pending());
+}
+
+// A thumb made from a frame of the video is held back until the scan is done where frames are
+// extracted after the scrape
+TEST_F(TestVideoInfoScannerTvShows, AThumbMadeFromAFrameIsCachedOnceTheScanIsDone)
+{
+  UseTextureCache();
+  // What is queued stays queued while the texture cache's jobs are paused
+  CServiceBroker::GetJobManager()->PauseJobs();
+  const auto advanced{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const bool framesAfterScrape{advanced->m_bVideoLibraryExtractFramesAfterScrape};
+  const int timing{Settings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING)};
+  // In the background, after the scrape
+  Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING, 1);
+  advanced->m_bVideoLibraryExtractFramesAfterScrape = true;
+  const auto textureCache{CServiceBroker::GetTextureCache()};
+  {
+    const KODI::ART::Artwork thumb{
+        {"thumb", CVideoThumbLoader::GetEmbeddedThumbURL(CFileItem{"/videos/frame.mkv", false})}};
+    CVideoInfoScannerArt art;
+    art.Cache(thumb);
+    EXPECT_FALSE(textureCache->IsCaching());
+    art.FlushDeferred();
+    EXPECT_TRUE(textureCache->IsCaching());
+  }
+  advanced->m_bVideoLibraryExtractFramesAfterScrape = framesAfterScrape;
+  Settings()->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING, timing);
+  // Done before the test's texture cache goes, which a job still running would use
+  CServiceBroker::GetJobManager()->UnPauseJobs();
+  for (int i = 0; i < 1000 && textureCache->IsCaching(); ++i)
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  EXPECT_FALSE(textureCache->IsCaching());
 }
 
 TEST_F(TestVideoInfoScannerTvShows, ASpecialIsInSeasonZero)

@@ -18,6 +18,7 @@ class CVideoDatabase;
 namespace KODI::VIDEO
 {
 class CVideoInfoScannerArt;
+class CVideoInfoScannerStreams;
 
 /*!
  \brief The extra a movie already has that is the same as one of a disc of it. A movie on more than
@@ -37,7 +38,13 @@ const CFileItem* FindExtraOnAnotherDisc(const CFileItemList& existing, const CFi
 class CVideoInfoScannerExtras
 {
 public:
-  CVideoInfoScannerExtras(CVideoDatabase& database, const CVideoInfoScannerArt& art);
+  /*!
+   \param streams the scan's, which says whether an extra's file is probed for its streams once the
+   scan is done; without it, the file is probed as the extra is added
+   */
+  CVideoInfoScannerExtras(CVideoDatabase& database,
+                          const CVideoInfoScannerArt& art,
+                          const CVideoInfoScannerStreams* streams = nullptr);
 
   /*!
    \brief Add the videos in an extras folder, and in the folders below it, as extras of a movie.
@@ -103,5 +110,6 @@ private:
 
   CVideoDatabase& m_database;
   const CVideoInfoScannerArt& m_art;
+  const CVideoInfoScannerStreams* const m_streams;
 };
 } // namespace KODI::VIDEO

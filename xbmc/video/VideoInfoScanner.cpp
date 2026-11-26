@@ -244,6 +244,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       auto start = std::chrono::steady_clock::now();
       const CScanProbe::CScanning scanning;
+      // Only a scan leaves the probes of its videos' files to once it is done, not a refresh
+      m_streams.ReadAfterScan(m_advancedSettings->m_bVideoLibraryExtractStreamDetailsAfterScrape);
 
       m_database.Open();
 
@@ -363,6 +365,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Deliberately after the scan is timed and the library is browsable, so that fetching the
       // art doesn't hold either back
       m_art.FlushDeferred();
+      // After the art, which is cached first
+      ReadDeferredStreams();
     }
     catch (...)
     {
@@ -376,6 +380,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->MarkFinished();
     m_handle = NULL;
+  }
+
+  void CVideoInfoScanner::ReadDeferredStreams()
+  {
+    // Not those of a stopped scan, as Kodi may be exiting, or logging off to load another profile,
+    // whose library the reads would write to
+    if (!m_bStop)
+      m_streams.ReadDeferred();
   }
 
   void CVideoInfoScanner::Start(const std::string& strDirectory, bool scanAll)
@@ -3923,9 +3935,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                           : DIR_FLAG_DEFAULTS};
       if (!movieDetails.HasStreamDetails())
       {
+        // Probed once the scan is done, where it reads the streams then: the file once for all of
+        // its videos, their external subtitles looked for then too
+        if (m_streams.ReadsAfterScan())
+        {
+          video.streamsAfterScan = CDVDFileInfo::CanExtract(*pItem);
+          if (video.streamsAfterScan)
+            CLog::LogF(LOGDEBUG,
+                       "Filestream details of video file {} to be extracted once the scan is done",
+                       CURL::GetRedacted(path));
+        }
         // The episodes of a file are added one after the other, and the file is probed for the
         // first of them only: each still has its own external subtitles.
-        if (lastProbed && lastProbed->first == path)
+        else if (lastProbed && lastProbed->first == path)
         {
           CDVDFileInfo::AddExternalSubtitles(*pItem, lastProbed->second, listingFlags,
                                              &m_subtitleFolders);
@@ -4272,6 +4294,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     m_database.Close();
 
+    if (lResult > -1 && video.streamsAfterScan)
+      m_streams.Defer(*pItem);
     if (lResult > -1 && !batch)
       Added({type, path, strTitle}, *pItem);
     return lResult;
