@@ -166,6 +166,9 @@ class ISetInfoTagLoader;
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
 
+    //! \brief The name of the video source holding \p folder, else the folder's own name
+    static std::string SourceName(const std::string& folder);
+
     struct ItemLookups;
     //! \brief A directory a scan visits, from its listing to its record
     struct DirectoryScan
@@ -186,6 +189,8 @@ class ISetInfoTagLoader;
       bool extrasAddedAgain{false};
       bool foundSomething{false};
       bool lookupFailed{false};
+      //! Whether it holds nothing but folders to scan, and so takes no share of the progress
+      bool leftOut{false};
       //! The folders it holds to scan, by path, planned before its turn so that their movies are
       //! looked up ahead
       std::vector<std::pair<std::string, std::unique_ptr<DirectoryScan>>> plannedAhead;
@@ -201,6 +206,8 @@ class ISetInfoTagLoader;
     void EndRetrieve(DirectoryScan& scan, bool foundSomething, unsigned int failedLookups);
     //! \brief The last part of DoScan(): extras, discs, the folders below and the record
     std::pair<ScanComplete, ContentFound> FinishDirectory(DirectoryScan& scan);
+    void RemoveExtrasFolder(const std::string& folder);
+    void AddExtrasFolder(DirectoryScan& scan, const std::string& folder);
 
     //! \brief Whether a directory is scanned with the folders beside it, its movies looked up
     //! alongside theirs
@@ -218,6 +225,15 @@ class ISetInfoTagLoader;
     void PlanAhead(DirectoryScan& scan, size_t& budget);
     //! \brief The folders a directory stands for: itself and those it planned ahead
     static size_t CountPlanned(const DirectoryScan& scan);
+
+    /*!
+     \brief Count the folders a directory holds to scan, which its listing has found, and leave the
+     directory out of the progress where it holds nothing else
+     */
+    void CountFoldersFound(DirectoryScan& scan);
+    void FolderFinished();
+    //! \brief Show the progress of the whole scan \param share how much of the folder in hand is done
+    void ReportProgress(float share = 0.f);
 
     /*! \brief Folders beside each other scanned together: their movies are looked up alongside each
      other, and each folder is finished once its own are added. One holding folders to scan scans
@@ -713,6 +729,11 @@ class ISetInfoTagLoader;
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
+
+    //! The progress of the whole scan, by folder
+    CScanProgress m_progress;
+    //! The shows of a source counted as found, finished once their episodes are added
+    std::set<std::string, std::less<>> m_progressShows;
 
     std::unique_ptr<CScanPathTable> m_pathTable{std::make_unique<CScanPathTable>(m_database)};
     //! Listings taken of folders the scan has yet to leave

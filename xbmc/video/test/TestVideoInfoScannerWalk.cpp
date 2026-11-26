@@ -241,6 +241,28 @@ TEST_F(TestDirectorySnapshot, AFolderOfFilesIsNoDisc)
   EXPECT_TRUE(CDirectorySnapshot::Take(m_folder)->GetDiscPath().empty());
 }
 
+TEST(TestVideoInfoScannerWalk, ProgressRunsOnceOverASource)
+{
+  CScanProgress progress;
+  progress.Start({"smb://host/Movies/"}, "smb://host/Movies/");
+  progress.Found(3);
+  EXPECT_FLOAT_EQ(0.f, progress.Percentage());
+
+  progress.Finished();
+  EXPECT_FLOAT_EQ(25.f, progress.Percentage());
+
+  // Folders found make the whole larger, which holds the bar where it is
+  progress.Found(4);
+  EXPECT_FLOAT_EQ(25.f, progress.Percentage());
+
+  progress.Finished(3);
+  EXPECT_FLOAT_EQ(50.f, progress.Percentage());
+  EXPECT_FLOAT_EQ(56.25f, progress.Percentage(0.5f));
+
+  progress.Finished(4);
+  EXPECT_FLOAT_EQ(100.f, progress.Percentage());
+}
+
 TEST(TestVideoInfoScannerWalk, AFileListedWithoutItsStatHasTheTimeTheListingReports)
 {
   CFileItem file{"ftp://host/Film.mkv", false};
@@ -251,4 +273,47 @@ TEST(TestVideoInfoScannerWalk, AFileListedWithoutItsStatHasTheTimeTheListingRepo
 
   file.SetProperty(XFILE::DIR_PROPERTY_STAT_MTIME, int64_t{100});
   EXPECT_EQ(100, ListedFileTime(file));
+}
+
+TEST(TestVideoInfoScannerWalk, EachSourceHasABarOfItsOwn)
+{
+  CScanProgress progress;
+  progress.Start({"smb://host/Films/", "smb://host/Movies/"}, "smb://host/Films/");
+  progress.Found(99);
+  progress.Finished(100);
+  EXPECT_FLOAT_EQ(100.f, progress.Percentage());
+
+  // The next source starts again, its folders found as it is listed
+  progress.Start({"smb://host/Movies/"}, "smb://host/Movies/");
+  EXPECT_FLOAT_EQ(0.f, progress.Percentage());
+  progress.Found(9);
+  progress.Finished(5);
+  EXPECT_FLOAT_EQ(50.f, progress.Percentage());
+  progress.Finished(5);
+  EXPECT_FLOAT_EQ(100.f, progress.Percentage());
+}
+
+TEST(TestVideoInfoScannerWalk, TheFoldersBelowASourceTheScanWasAskedToScanAreKnown)
+{
+  CScanProgress progress;
+  // A source of the library, rescanned with the folders of it the library holds
+  progress.Start({"smb://host/Movies/", "smb://host/Movies/A/", "smb://host/Movies/B/",
+                  "smb://host/Movies/B/Disc 1/", "smb://host/TV/"},
+                 "smb://host/Movies/");
+  progress.Finished(2);
+  EXPECT_FLOAT_EQ(50.f, progress.Percentage());
+  progress.Finished(2);
+  EXPECT_FLOAT_EQ(100.f, progress.Percentage());
+}
+
+TEST(TestVideoInfoScannerWalk, AFolderLeftOutTakesNoShareOfTheBar)
+{
+  CScanProgress progress;
+  progress.Start({"smb://host/Collections/"}, "smb://host/Collections/");
+  progress.Found();
+  progress.LeaveOut();
+  EXPECT_FLOAT_EQ(50.f, progress.Percentage(0.5f));
+
+  progress.Finished();
+  EXPECT_FLOAT_EQ(100.f, progress.Percentage());
 }
