@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "cores/RetroPlayer/rendering/IRenderManager.h"
+
 namespace KODI
 {
 namespace RETRO
@@ -49,11 +51,19 @@ public:
   /*!
    * \brief Check of the rendering area is dirty
    */
-  virtual bool IsDirty() { return true; } //! @todo
+  virtual bool IsDirty();
 
 protected:
+  /*!
+   * \brief The settings the game is drawn with, or nullptr for the fullscreen
+   *        window's
+   */
+  virtual const IGUIRenderSettings* GetRenderSettings() const { return nullptr; }
+
   // Construction parameters
   IRenderManager* const m_renderManager;
+
+  RenderTargetState m_state;
 };
 
 // --- CGUIRenderControl -----------------------------------------------------
@@ -67,6 +77,9 @@ public:
   // implementation of CGUIRenderTarget
   void Render() override;
   void RenderEx() override;
+
+protected:
+  const IGUIRenderSettings* GetRenderSettings() const override;
 
 private:
   // Construction parameters

@@ -128,11 +128,12 @@ public:
 
   // Implementation of IRenderManager
   void RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes, bool videoLayer) override;
-  void RenderControl(bool bClear,
+  bool RenderControl(bool bClear,
                      bool bUseAlpha,
                      const CRect& renderRegion,
                      const IGUIRenderSettings* renderSettings) override;
   void ClearBackground() override;
+  bool NeedsDrawing(const IGUIRenderSettings* renderSettings, RenderTargetState& state) override;
 
   // Implementation of IRenderCallback
   bool SupportsRenderFeature(RENDERFEATURE feature) const override;

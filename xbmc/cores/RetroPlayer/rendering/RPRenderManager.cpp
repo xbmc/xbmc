@@ -794,7 +794,7 @@ void CRPRenderManager::SetHdrOutput(bool hdr)
             HDR_REFERENCE_WHITE, peak);
 }
 
-void CRPRenderManager::RenderControl(bool bClear,
+bool CRPRenderManager::RenderControl(bool bClear,
                                      bool bUseAlpha,
                                      const CRect& renderRegion,
                                      const IGUIRenderSettings* renderSettings)
@@ -809,12 +809,12 @@ void CRPRenderManager::RenderControl(bool bClear,
   // Get a renderer for the control
   std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(renderSettings);
   if (!renderer)
-    return;
+    return false;
 
   // Get a render buffer for the renderer
   IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
   if (renderBuffer == nullptr)
-    return;
+    return false;
 
   // Calculate alpha (before SetTransform overrides the accumulated alpha)
   UTILS::COLOR::Color alpha = 255;
@@ -852,6 +852,25 @@ void CRPRenderManager::RenderControl(bool bClear,
   // Restore fullscreen
   if (bWasFullscreen)
     m_renderContext.SetFullScreenVideo(true);
+
+  return true;
+}
+
+bool CRPRenderManager::NeedsDrawing(const IGUIRenderSettings* renderSettings,
+                                    RenderTargetState& state)
+{
+  const uint64_t frame = m_framesGiven.load();
+  const CRenderVideoSettings settings = GetEffectiveSettings(renderSettings);
+  const bool hdrWithVideoFilters =
+      CServiceBroker::GetGameServices().GameSettings().HdrWithVideoFilters();
+
+  const bool changed = !state.drawn || frame != state.frame || !(settings == state.settings) ||
+                       hdrWithVideoFilters != state.hdrWithVideoFilters;
+  state = {true, frame, settings, hdrWithVideoFilters};
+
+  // Display pacing takes its timing from RenderWindow() on every refresh, and
+  // the HDR output (on or refused) is reconsidered when the window isn't drawn
+  return changed || m_speed != 0.0 || m_hdrOutput || m_hdrRefused;
 }
 
 void CRPRenderManager::ClearBackground()

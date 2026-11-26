@@ -21,6 +21,11 @@ CGUIRenderTarget::CGUIRenderTarget(IRenderManager* renderManager) : m_renderMana
 {
 }
 
+bool CGUIRenderTarget::IsDirty()
+{
+  return m_renderManager->NeedsDrawing(GetRenderSettings(), m_state);
+}
+
 // --- CGUIRenderControl -------------------------------------------------------
 
 CGUIRenderControl::CGUIRenderControl(IRenderManager* renderManager, CGUIGameControl& gameControl)
@@ -31,8 +36,14 @@ CGUIRenderControl::CGUIRenderControl(IRenderManager* renderManager, CGUIGameCont
 
 void CGUIRenderControl::Render()
 {
-  m_renderManager->RenderControl(false, true, m_gameControl.GetRenderRegion(),
-                                 m_gameControl.GetRenderSettings());
+  if (!m_renderManager->RenderControl(false, true, m_gameControl.GetRenderRegion(),
+                                      m_gameControl.GetRenderSettings()))
+    m_state = {};
+}
+
+const IGUIRenderSettings* CGUIRenderControl::GetRenderSettings() const
+{
+  return m_gameControl.GetRenderSettings();
 }
 
 void CGUIRenderControl::RenderEx()
