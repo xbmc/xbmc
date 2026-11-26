@@ -15,8 +15,8 @@
 #include "utils/GLBufferObject.h"
 #include "utils/Map.h"
 
+#include <array>
 #include <cstddef>
-#include <map>
 #include <vector>
 
 #include <fmt/format.h>
@@ -189,7 +189,13 @@ protected:
 
   std::string m_RenderExtensions;
 
-  std::map<ShaderMethodGLES, std::unique_ptr<CGLESShader>> m_pShader;
+  std::unique_ptr<CGLESShader>& Shader(ShaderMethodGLES method)
+  {
+    return m_pShader[static_cast<std::size_t>(method)];
+  }
+
+  std::array<std::unique_ptr<CGLESShader>, static_cast<std::size_t>(ShaderMethodGLES::SM_MAX)>
+      m_pShader;
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];

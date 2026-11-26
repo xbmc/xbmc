@@ -526,20 +526,20 @@ void CRenderSystemGL::SetViewPort(const CRect& viewPort)
 
 bool CRenderSystemGL::ScissorsCanEffectClipping()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->HardwareClipIsPossible();
+  if (Shader(m_method))
+    return Shader(m_method)->HardwareClipIsPossible();
 
   return false;
 }
 
 CRect CRenderSystemGL::ClipRectToScissorRect(const CRect &rect)
 {
-  if (!m_pShader[m_method])
+  if (!Shader(m_method))
     return CRect();
-  float xFactor = m_pShader[m_method]->GetClipXFactor();
-  float xOffset = m_pShader[m_method]->GetClipXOffset();
-  float yFactor = m_pShader[m_method]->GetClipYFactor();
-  float yOffset = m_pShader[m_method]->GetClipYOffset();
+  float xFactor = Shader(m_method)->GetClipXFactor();
+  float xOffset = Shader(m_method)->GetClipXOffset();
+  float yFactor = Shader(m_method)->GetClipYFactor();
+  float yOffset = Shader(m_method)->GetClipYOffset();
   return CRect(rect.x1 * xFactor + xOffset,
                rect.y1 * yFactor + yOffset,
                rect.x2 * xFactor + xOffset,
@@ -726,166 +726,166 @@ void CRenderSystemGL::InitialiseShaders()
     defines += "#define KODI_LIMITED_RANGE 1\n";
   }
 
-  m_pShader[ShaderMethodGL::SM_DEFAULT] = std::make_unique<CGLShader>(
+  Shader(ShaderMethodGL::SM_DEFAULT) = std::make_unique<CGLShader>(
       "gl_shader_vert_default.glsl", "gl_shader_frag_default.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_DEFAULT]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_DEFAULT)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_DEFAULT]->Free();
-    m_pShader[ShaderMethodGL::SM_DEFAULT].reset();
+    Shader(ShaderMethodGL::SM_DEFAULT)->Free();
+    Shader(ShaderMethodGL::SM_DEFAULT).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_default.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_TEXTURE] =
+  Shader(ShaderMethodGL::SM_TEXTURE) =
       std::make_unique<CGLShader>("gl_shader_frag_texture.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_TEXTURE]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_TEXTURE)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_TEXTURE]->Free();
-    m_pShader[ShaderMethodGL::SM_TEXTURE].reset();
+    Shader(ShaderMethodGL::SM_TEXTURE)->Free();
+    Shader(ShaderMethodGL::SM_TEXTURE).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_TEXTURE_LIM] =
+  Shader(ShaderMethodGL::SM_TEXTURE_LIM) =
       std::make_unique<CGLShader>("gl_shader_frag_texture_lim.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_TEXTURE_LIM]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_TEXTURE_LIM)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_TEXTURE_LIM]->Free();
-    m_pShader[ShaderMethodGL::SM_TEXTURE_LIM].reset();
+    Shader(ShaderMethodGL::SM_TEXTURE_LIM)->Free();
+    Shader(ShaderMethodGL::SM_TEXTURE_LIM).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture_lim.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_MULTI] =
+  Shader(ShaderMethodGL::SM_MULTI) =
       std::make_unique<CGLShader>("gl_shader_frag_multi.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_MULTI]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_MULTI)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_MULTI]->Free();
-    m_pShader[ShaderMethodGL::SM_MULTI].reset();
+    Shader(ShaderMethodGL::SM_MULTI)->Free();
+    Shader(ShaderMethodGL::SM_MULTI).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_FONTS] = std::make_unique<CGLShader>(
+  Shader(ShaderMethodGL::SM_FONTS) = std::make_unique<CGLShader>(
       "gl_shader_vert_simple.glsl", "gl_shader_frag_fonts.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_FONTS]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_FONTS)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_FONTS]->Free();
-    m_pShader[ShaderMethodGL::SM_FONTS].reset();
+    Shader(ShaderMethodGL::SM_FONTS)->Free();
+    Shader(ShaderMethodGL::SM_FONTS).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_simple.glsl + gl_shader_frag_fonts.glsl - "
                         "compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP] =
+  Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP) =
       std::make_unique<CGLShader>("gl_shader_vert_clip.glsl", "gl_shader_frag_fonts.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->Free();
-    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP].reset();
+    Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP)->Free();
+    Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_clip.glsl + gl_shader_frag_fonts.glsl - compile "
                         "and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND] =
+  Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND) =
       std::make_unique<CGLShader>("gl_shader_frag_texture_noblend.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND]->Free();
-    m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND].reset();
+    Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND)->Free();
+    Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture_noblend.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR] =
+  Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR) =
       std::make_unique<CGLShader>("gl_shader_frag_multi_blendcolor.glsl", defines);
-  if (!m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR]->Free();
-    m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
+    Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR)->Free();
+    Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi_blendcolor.glsl - compile and link failed");
   }
 
   const std::string definesFontsRGBA = defines + "#define KODI_FONTS_RGBA 1\n";
 
-  m_pShader[ShaderMethodGL::SM_FONTS_RGBA] = std::make_unique<CGLShader>(
+  Shader(ShaderMethodGL::SM_FONTS_RGBA) = std::make_unique<CGLShader>(
       "gl_shader_vert_simple.glsl", "gl_shader_frag_fonts.glsl", definesFontsRGBA);
-  if (!m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_FONTS_RGBA)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->Free();
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA].reset();
+    Shader(ShaderMethodGL::SM_FONTS_RGBA)->Free();
+    Shader(ShaderMethodGL::SM_FONTS_RGBA).reset();
     CLog::Log(LOGERROR,
               "GUI Shader gl_shader_vert_simple.glsl + gl_shader_frag_fonts.glsl (RGBA) - "
               "compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP] = std::make_unique<CGLShader>(
+  Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP) = std::make_unique<CGLShader>(
       "gl_shader_vert_clip.glsl", "gl_shader_frag_fonts.glsl", definesFontsRGBA);
-  if (!m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->Free();
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP].reset();
+    Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP)->Free();
+    Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP).reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_clip.glsl + gl_shader_frag_fonts.glsl (RGBA) - "
                         "compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_STENCIL] =
+  Shader(ShaderMethodGL::SM_STENCIL) =
       std::make_unique<CGLShader>("gl_shader_stencil.vert", "gl_shader_stencil.frag", defines);
-  if (!m_pShader[ShaderMethodGL::SM_STENCIL]->CompileAndLink())
+  if (!Shader(ShaderMethodGL::SM_STENCIL)->CompileAndLink())
   {
-    m_pShader[ShaderMethodGL::SM_STENCIL]->Free();
-    m_pShader[ShaderMethodGL::SM_STENCIL].reset();
+    Shader(ShaderMethodGL::SM_STENCIL)->Free();
+    Shader(ShaderMethodGL::SM_STENCIL).reset();
     CLog::Log(LOGERROR, "GUI Shader SM_STENCIL - compile and link failed");
   }
 }
 
 void CRenderSystemGL::ReleaseShaders()
 {
-  if (m_pShader[ShaderMethodGL::SM_DEFAULT])
-    m_pShader[ShaderMethodGL::SM_DEFAULT]->Free();
-  m_pShader[ShaderMethodGL::SM_DEFAULT].reset();
+  if (Shader(ShaderMethodGL::SM_DEFAULT))
+    Shader(ShaderMethodGL::SM_DEFAULT)->Free();
+  Shader(ShaderMethodGL::SM_DEFAULT).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_TEXTURE])
-    m_pShader[ShaderMethodGL::SM_TEXTURE]->Free();
-  m_pShader[ShaderMethodGL::SM_TEXTURE].reset();
+  if (Shader(ShaderMethodGL::SM_TEXTURE))
+    Shader(ShaderMethodGL::SM_TEXTURE)->Free();
+  Shader(ShaderMethodGL::SM_TEXTURE).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_TEXTURE_LIM])
-    m_pShader[ShaderMethodGL::SM_TEXTURE_LIM]->Free();
-  m_pShader[ShaderMethodGL::SM_TEXTURE_LIM].reset();
+  if (Shader(ShaderMethodGL::SM_TEXTURE_LIM))
+    Shader(ShaderMethodGL::SM_TEXTURE_LIM)->Free();
+  Shader(ShaderMethodGL::SM_TEXTURE_LIM).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_MULTI])
-    m_pShader[ShaderMethodGL::SM_MULTI]->Free();
-  m_pShader[ShaderMethodGL::SM_MULTI].reset();
+  if (Shader(ShaderMethodGL::SM_MULTI))
+    Shader(ShaderMethodGL::SM_MULTI)->Free();
+  Shader(ShaderMethodGL::SM_MULTI).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_FONTS])
-    m_pShader[ShaderMethodGL::SM_FONTS]->Free();
-  m_pShader[ShaderMethodGL::SM_FONTS].reset();
+  if (Shader(ShaderMethodGL::SM_FONTS))
+    Shader(ShaderMethodGL::SM_FONTS)->Free();
+  Shader(ShaderMethodGL::SM_FONTS).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP])
-    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->Free();
-  m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP].reset();
+  if (Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP))
+    Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP)->Free();
+  Shader(ShaderMethodGL::SM_FONTS_SHADER_CLIP).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND])
-    m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND]->Free();
-  m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND].reset();
+  if (Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND))
+    Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND)->Free();
+  Shader(ShaderMethodGL::SM_TEXTURE_NOBLEND).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR])
-    m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR]->Free();
-  m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
+  if (Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR))
+    Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR)->Free();
+  Shader(ShaderMethodGL::SM_MULTI_BLENDCOLOR).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_FONTS_RGBA])
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->Free();
-  m_pShader[ShaderMethodGL::SM_FONTS_RGBA].reset();
+  if (Shader(ShaderMethodGL::SM_FONTS_RGBA))
+    Shader(ShaderMethodGL::SM_FONTS_RGBA)->Free();
+  Shader(ShaderMethodGL::SM_FONTS_RGBA).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP])
-    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->Free();
-  m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP].reset();
+  if (Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP))
+    Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP)->Free();
+  Shader(ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP).reset();
 
-  if (m_pShader[ShaderMethodGL::SM_STENCIL])
-    m_pShader[ShaderMethodGL::SM_STENCIL]->Free();
-  m_pShader[ShaderMethodGL::SM_STENCIL].reset();
+  if (Shader(ShaderMethodGL::SM_STENCIL))
+    Shader(ShaderMethodGL::SM_STENCIL)->Free();
+  Shader(ShaderMethodGL::SM_STENCIL).reset();
 }
 
 void CRenderSystemGL::EnableShader(ShaderMethodGL method)
 {
   m_method = method;
-  if (m_pShader[m_method])
+  if (Shader(m_method))
   {
-    m_pShader[m_method]->Enable();
+    Shader(m_method)->Enable();
   }
   else
   {
@@ -895,89 +895,89 @@ void CRenderSystemGL::EnableShader(ShaderMethodGL method)
 
 void CRenderSystemGL::DisableShader()
 {
-  if (m_pShader[m_method])
+  if (Shader(m_method))
   {
-    m_pShader[m_method]->Disable();
+    Shader(m_method)->Disable();
   }
   m_method = ShaderMethodGL::SM_DEFAULT;
 }
 
 GLint CRenderSystemGL::ShaderGetPos()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetPosLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetPosLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetCol()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetColLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetColLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetCoord0()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetCord0Loc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetCord0Loc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetCoord1()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetCord1Loc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetCord1Loc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetDepth()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetDepthLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetDepthLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetUniCol()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetUniColLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetUniColLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetModel()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetModelLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetModelLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetMatrix()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetMatrixLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetMatrixLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetClip()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetShaderClipLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetShaderClipLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGL::ShaderGetCoordStep()
 {
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetShaderCoordStepLoc();
+  if (Shader(m_method))
+    return Shader(m_method)->GetShaderCoordStepLoc();
 
   return -1;
 }

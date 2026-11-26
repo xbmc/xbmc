@@ -13,7 +13,8 @@
 #include "utils/ColorUtils.h"
 #include "utils/Map.h"
 
-#include <map>
+#include <array>
+#include <cstddef>
 #include <memory>
 
 #include <fmt/format.h>
@@ -148,7 +149,13 @@ protected:
 
   GLint m_viewPort[4];
 
-  std::map<ShaderMethodGL, std::unique_ptr<CGLShader>> m_pShader;
+  std::unique_ptr<CGLShader>& Shader(ShaderMethodGL method)
+  {
+    return m_pShader[static_cast<std::size_t>(method)];
+  }
+
+  std::array<std::unique_ptr<CGLShader>, static_cast<std::size_t>(ShaderMethodGL::SM_MAX)>
+      m_pShader;
   ShaderMethodGL m_method = ShaderMethodGL::SM_DEFAULT;
   GLuint m_vertexArray = GL_NONE;
 };
