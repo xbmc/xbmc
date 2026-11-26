@@ -50,6 +50,10 @@ CEdl::CEdl()
 void CEdl::Clear()
 {
   m_vecEdits.clear();
+  {
+    std::scoped_lock lock(m_rawEditListSnapshotMutex);
+    m_rawEditListSnapshot = std::make_shared<const std::vector<EDL::Edit>>();
+  }
   m_vecSceneMarkers.clear();
   m_totalCutTime = 0ms;
   m_lastEditTime = std::nullopt;
@@ -124,6 +128,10 @@ bool CEdl::ProcessParserResult(const CEdlParserResult& result,
   ParseEditsForEpisode(multiEpisodeResult, duration);
   MergeShortCommBreaks();
   AddSceneMarkersAtStartAndEndOfEdits();
+  {
+    std::scoped_lock lock(m_rawEditListSnapshotMutex);
+    m_rawEditListSnapshot = std::make_shared<const std::vector<EDL::Edit>>(m_vecEdits);
+  }
   return true;
 }
 

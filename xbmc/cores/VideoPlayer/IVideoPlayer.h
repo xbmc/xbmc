@@ -127,6 +127,8 @@ public:
   virtual double GetCurrentPts() = 0;
   bool IsStalled() const override = 0;
   virtual bool IsPassthrough() const = 0;
+  //! Whether encoded passthrough can be silenced without dropping packets.
+  virtual bool SupportsPassthroughSilence() const { return false; }
   virtual float GetDynamicRangeAmplification() const = 0;
   virtual bool IsEOS() { return false; }
   //! The next audio this player outputs starts a playback

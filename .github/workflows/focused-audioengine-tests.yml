@@ -1,0 +1,58 @@
+name: Focused AudioEngine Tests
+
+on:
+  push:
+    branches:
+      - pr/edl-mute-truehd-passthrough
+    paths:
+      - ".github/workflows/focused-audioengine-tests.yml"
+      - "xbmc/cores/AudioEngine/**"
+      - "xbmc/cores/AudioEngine/Utils/**"
+      - "xbmc/cores/AudioEngine/Utils/test/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: focused-audioengine-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audioengine-tests:
+    name: Build and run focused AudioEngine tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Use reliable Ubuntu package mirrors
+        run: |
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|https://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true
+
+      - name: Enable Kodi build dependency repository and update package indexes
+        run: |
+          sudo add-apt-repository -y -s ppa:team-xbmc/xbmc-nightly
+          sudo timeout 15m apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+
+      - name: Install Kodi build dependencies
+        run: |
+          sudo timeout 30m apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 build-dep -y kodi
+
+      - name: Configure Kodi test build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl -DENABLE_TESTING=ON -DENABLE_INTERNAL_GTEST=ON -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_NLOHMANNJSON=ON -DENABLE_INTERNAL_FMT=ON -DENABLE_PYTHON=OFF -DENABLE_UPNP=OFF -DENABLE_AIRTUNES=OFF -DENABLE_OPTICAL=OFF
+
+      - name: Build focused AudioEngine test executable
+        run: |
+          cmake --build build --target audioengine-focused-test --parallel 4
+
+      - name: Run focused parser and MAT packer tests
+        run: |
+          ./build/kodi-test-audioengine
