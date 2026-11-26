@@ -72,6 +72,7 @@ public:
   bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
   bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
   bool OnAxisMotion(unsigned int axisIndex, float position);
+  void OnMotion(unsigned int motionAxis, float value);
   void OnInputFrame(void);
 
   // implementation of IDriverReceiver
@@ -133,6 +134,9 @@ protected:
   unsigned int m_axisCount = 0;
   unsigned int m_motorCount = 0;
   bool m_supportsPowerOff = false;
+  KODI::JOYSTICK::MotionState m_motion;
+  bool m_motionChanged = false;
+  bool m_motionNeutral = true; // Whether handlers last got neutral motion, or none
   CDateTime m_lastActive;
 
   // Input clients

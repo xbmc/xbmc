@@ -134,7 +134,36 @@ extern "C"
 
     /// @brief set the state for joystick rumble motor
     PERIPHERAL_EVENT_TYPE_SET_MOTOR,
+
+    /// @brief state changed for a joystick motion sensor axis
+    ///
+    /// The driver index is a @ref JOYSTICK_MOTION_AXIS and the axis state
+    /// holds its value.
+    PERIPHERAL_EVENT_TYPE_DRIVER_MOTION,
   } PERIPHERAL_EVENT_TYPE;
+  ///@}
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Motion sensor axes**\n
+  /// The axes of a joystick's accelerometer and gyroscope.
+  ///
+  /// They follow SDL's sensor coordinate system. For a controller held in
+  /// front of you, X points right, Y points up and Z points towards you.
+  /// The accelerometer is in m/s² and includes gravity. The gyroscope is in
+  /// rad/s, positive for counter-clockwise rotation when seen from the
+  /// positive end of the axis.
+  ///@{
+  typedef enum JOYSTICK_MOTION_AXIS
+  {
+    JOYSTICK_MOTION_ACCELEROMETER_X = 0,
+    JOYSTICK_MOTION_ACCELEROMETER_Y = 1,
+    JOYSTICK_MOTION_ACCELEROMETER_Z = 2,
+    JOYSTICK_MOTION_GYROSCOPE_X = 3,
+    JOYSTICK_MOTION_GYROSCOPE_Y = 4,
+    JOYSTICK_MOTION_GYROSCOPE_Z = 5,
+    JOYSTICK_MOTION_AXIS_COUNT = 6,
+  } JOYSTICK_MOTION_AXIS;
   ///@}
   //----------------------------------------------------------------------------
 

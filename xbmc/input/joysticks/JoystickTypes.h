@@ -10,6 +10,7 @@
 
 #include "input/InputTypes.h"
 
+#include <array>
 #include <set>
 #include <string>
 
@@ -80,6 +81,18 @@ enum class FEATURE_CATEGORY
   WHEEL,
   JOYSTICK,
   PADDLE,
+};
+
+/*!
+ * \brief A reading from a joystick's motion sensor
+ *
+ * The axes follow SDL's sensor coordinate system: for a controller held in
+ * front of you, X points right, Y points up and Z points towards you.
+ */
+struct MotionState
+{
+  std::array<float, 3> accelerometer{}; // m/s², including gravity
+  std::array<float, 3> gyroscope{}; // rad/s, counter-clockwise positive
 };
 
 /*!

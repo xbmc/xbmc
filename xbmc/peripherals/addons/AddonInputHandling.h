@@ -78,6 +78,7 @@ public:
                     int center,
                     unsigned int range) override;
   void OnInputFrame(void) override;
+  void OnMotion(const KODI::JOYSTICK::MotionState& state) override;
 
   // implementation of IKeyboardDriverHandler
   bool OnKeyPress(const CKey& key) override;

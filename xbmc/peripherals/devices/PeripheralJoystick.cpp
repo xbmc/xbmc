@@ -217,6 +217,10 @@ void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler,
 
   DriverHandler driverHandler = {handler, bPromiscuous};
   m_driverHandlers.insert(m_driverHandlers.begin(), driverHandler);
+
+  // A new handler gets the live motion state with the next frame
+  if (!m_motionNeutral)
+    m_motionChanged = true;
 }
 
 void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handler)
@@ -454,9 +458,43 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   return bHandled;
 }
 
+void CPeripheralJoystick::OnMotion(unsigned int motionAxis, float value)
+{
+  std::unique_lock lock(m_handlerMutex);
+
+  if (motionAxis < m_motion.accelerometer.size())
+    m_motion.accelerometer[motionAxis] = value;
+  else if (motionAxis - m_motion.accelerometer.size() < m_motion.gyroscope.size())
+    m_motion.gyroscope[motionAxis - m_motion.accelerometer.size()] = value;
+  else
+    return;
+
+  m_motionChanged = true;
+}
+
 void CPeripheralJoystick::OnInputFrame(void)
 {
   std::unique_lock lock(m_handlerMutex);
+
+  // Neutral while controllers are disabled or Kodi is in the background, as
+  // the other input is centred or held back then
+  const bool live =
+      m_manager.GetInputManager().IsControllerEnabled() && g_application.IsAppFocused();
+  if (live && m_motionChanged)
+  {
+    m_motionChanged = false;
+    m_motionNeutral = false;
+    for (auto& it : m_driverHandlers)
+      it.handler->OnMotion(m_motion);
+  }
+  else if (!live && !m_motionNeutral)
+  {
+    m_motionNeutral = true;
+    // So the live state goes out again once input is back, moved or not
+    m_motionChanged = true;
+    for (auto& it : m_driverHandlers)
+      it.handler->OnMotion(MotionState{});
+  }
 
   for (auto& it : m_driverHandlers)
     it.handler->OnInputFrame();
