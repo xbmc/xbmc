@@ -23,8 +23,8 @@
 #include <utility>
 #include <vector>
 
-//! item property set by the video library scanner on subfolders whose fast hash matches
-//! the stored hash; Stack() skips the disc structure probes for such folders
+//! item property set by the video library scanner on subfolders whose record shows them
+//! unchanged; Stack() skips the disc structure probes for such folders
 static constexpr const char* PROPERTY_UNCHANGED{"scanner:unchanged"};
 
 //! item property set by Stack() on a stack: a digest of what each of its parts is,

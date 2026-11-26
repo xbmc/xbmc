@@ -1460,9 +1460,8 @@ protected:
 
   std::string PathHash(const std::string& path)
   {
-    std::string hash;
-    m_db.GetPathHash(path, hash);
-    return hash;
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT strHash FROM path WHERE strPath='%s'", path.c_str()));
   }
 
   void Clean() { m_db.CleanDatabase(nullptr, {}, false); }
@@ -2601,9 +2600,8 @@ TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
 
   ASSERT_TRUE(m_db.UnlinkVideoAsset(idFile, DeleteMovieHashAction::HASH_PRESERVE));
 
-  std::string hash;
-  ASSERT_TRUE(m_db.GetPathHash(folder, hash));
-  EXPECT_EQ("hash", hash);
+  EXPECT_EQ("hash", m_db.GetSingleValue(m_db.PrepareSQL(
+                        "SELECT strHash FROM path WHERE strPath='%s'", folder.c_str())));
 }
 
 // An actor, genre, studio, country or tag is the one of that name, whatever its case, and _ and %

@@ -829,6 +829,40 @@ public:
                                       bool& foundDirectly,
                                       ScraperCache* scraperCache = nullptr);
 
+  //! \brief What a row of the path table stores for scanning a path
+  struct PathScanRow
+  {
+    int idPath{-1};
+    std::string path;
+    std::string content;
+    std::string scraper;
+    std::string settings;
+    int scanRecursive{0};
+    bool useFolderNames{false};
+    bool noUpdate{false};
+    bool exclude{false};
+    bool allAudio{false};
+    std::string hash;
+  };
+
+  //! \brief The row stored for a path, as GetScraperForPath() looks it up
+  using PathScanRowLookup = std::function<std::optional<PathScanRow>(const std::string& path)>;
+
+  //! GetScraperForPath(), with the path rows looked up by \p lookup
+  static ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             KODI::VIDEO::SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache);
+
+  //! \param path the path, with a slash at its end
+  std::optional<PathScanRow> GetPathScanRow(const std::string& path);
+
+  /*! \brief The rows of a path and of those below it, as GetSubPaths() finds them
+   \return true if read, which may be none
+   */
+  bool GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows);
+
   /*! \brief Determine whether the path is using lookup using folders: its source has its items in
    folders of their own, and it isn't in the source's root. A disc's is that of its file, not of its
    playlist.
@@ -867,8 +901,7 @@ public:
   bool ScraperInUse(const std::string &scraperID) const;
 
   // scanning hashes and paths scanned
-  bool SetPathHash(const std::string &path, const std::string &hash);
-  bool GetPathHash(const std::string &path, std::string &hash);
+  bool SetPathHash(const std::string& path, const std::string& hash);
   /*! \brief Clear the hash of the folder of a video's path, and of the folder above it
    where that is what names the video, so that the next scan looks at them again.
    */
