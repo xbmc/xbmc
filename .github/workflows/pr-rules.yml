@@ -1,0 +1,46 @@
+name: Pull request rules
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, labeled, unlabeled, milestoned, demilestoned]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  rules:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    steps:
+      # pull_request_target: never check out or run code from the pull request here
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const pr = context.payload.pull_request
+            const labels = pr.labels.map(label => label.name)
+            const files = (await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo,
+              pull_number: pr.number,
+              per_page: 100
+            }))
+              .filter(file => file.status === 'added' || file.status === 'modified')
+              .map(file => file.filename)
+
+            const errors = []
+            if (!pr.milestone)
+              errors.push('Milestone must be set')
+            else if (/Abandoned/i.test(pr.milestone.title))
+              errors.push('Milestone must not be "Abandoned"')
+            if (!labels.some(label => /^v|Infrastructure/i.test(label)))
+              errors.push('At least version label must be set')
+            const blocking = labels.filter(label =>
+              /^(Don't merge|On hold|Jenkins: Ignore|RFC|WIP)$/i.test(label))
+            if (blocking.length)
+              errors.push(`Label must be removed: ${blocking.join(', ')}`)
+            if (/\[(RFC|WIP)\]/i.test(pr.title))
+              errors.push('Title must not contain [RFC] or [WIP]')
+            if (files.includes('version.txt') && !files.includes('tools/Linux/kodi.metainfo.xml.in'))
+              errors.push('version.txt is changed, so tools/Linux/kodi.metainfo.xml.in must be changed too')
+
+            if (errors.length)
+              core.setFailed(errors.join('\n'))
