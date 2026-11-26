@@ -52,7 +52,6 @@
 #include <fmt/ranges.h>
 #include <libbluray/bluray-version.h>
 #include <libbluray/bluray.h>
-#include <libbluray/log_control.h>
 
 using namespace std::chrono_literals;
 
@@ -1015,10 +1014,7 @@ bool CBlurayDirectory::EnsureBlurayOpen()
     return false;
   }
 
-  bd_set_debug_handler(CBlurayCallback::bluray_logger);
-  bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
-
-  m_bd = bd_init();
+  m_bd = CBlurayCallback::Init();
 
   if (!m_bd)
   {
@@ -1029,12 +1025,16 @@ bool CBlurayDirectory::EnsureBlurayOpen()
   const std::string menuLang{KODI::LANGUAGE::CLanguage::GetInstance().UI().AsIso6392T()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, menuLang.c_str());
 
+  std::unique_lock opening(CBlurayCallback::OpenLock());
   if (!bd_open_files(m_bd, &m_realPath, CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
+    opening.unlock();
     CLog::LogF(LOGERROR, "Failed to open {}", CURL::GetRedacted(m_realPath));
     Dispose();
     return false;
   }
+  // A disc without an index has its metadata parsed by the first title info otherwise
+  bd_get_meta(m_bd);
   m_blurayInitialized = true;
 
   return true;

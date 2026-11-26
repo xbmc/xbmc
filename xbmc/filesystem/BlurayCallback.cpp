@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <string>
 
+#include <libbluray/log_control.h>
+
 using namespace XFILE;
 
 namespace
@@ -36,6 +38,26 @@ struct SDirState
   CFileItemList list;
   int curr = 0;
 };
+
+std::mutex& CBlurayCallback::OpenLock()
+{
+  static std::mutex lock;
+  return lock;
+}
+
+BLURAY* CBlurayCallback::Init()
+{
+  static std::mutex lock;
+  std::scoped_lock initialising(lock);
+  static bool logging{false};
+  if (!logging)
+  {
+    bd_set_debug_handler(bluray_logger);
+    bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
+    logging = true;
+  }
+  return bd_init();
+}
 
 void CBlurayCallback::bluray_logger(const char* msg)
 {

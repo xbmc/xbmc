@@ -25,9 +25,12 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <atomic>
 #include <chrono>
+#include <future>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -56,6 +59,14 @@ protected:
   {
     std::map<unsigned int, ClipInformation> clipCache;
     return CBlurayDirectory::GetPlaylists(url, "", 0, ALL_PLAYLISTS, items, clipCache);
+  }
+
+  //! Opens \p disc with libbluray, as a listing of it that needs libbluray does
+  static bool Open(const std::string& disc)
+  {
+    CBlurayDirectory directory;
+    directory.SetRealPath(disc);
+    return directory.EnsureBlurayOpen();
   }
 };
 
@@ -477,4 +488,33 @@ TEST(TestBlurayCallback, AFolderOfADiscInAZipIsListed)
 
   ASSERT_NE(nullptr, listed);
   EXPECT_EQ("bdmt_eng.xml", name);
+}
+
+// See CBlurayCallback::OpenLock()
+TEST_F(TestBlurayDirectory, ADiscWaitsToBeOpenedWhileAnotherIs)
+{
+  const std::string disc{XBMC_REF_FILE_PATH("xbmc/utils/test/data/bluray/")};
+  // Once, so that what libbluray loads the first time isn't timed
+  static_cast<void>(Open(disc));
+  std::atomic<bool> released{false};
+  std::promise<void> starting;
+  std::future<void> started{starting.get_future()};
+  std::unique_lock opening(CBlurayCallback::OpenLock());
+  std::future<bool> open{std::async(std::launch::async,
+                                    [&disc, &released, &starting]
+                                    {
+                                      starting.set_value();
+                                      static_cast<void>(Open(disc));
+                                      return released.load();
+                                    })};
+
+  // Timed from the open's start, and long enough for it to end, were it not waiting
+  started.wait();
+  const bool waiting{open.wait_for(1s) == std::future_status::timeout};
+  released = true;
+  opening.unlock();
+
+  ASSERT_EQ(std::future_status::ready, open.wait_for(5s));
+  EXPECT_TRUE(waiting);
+  EXPECT_TRUE(open.get());
 }
