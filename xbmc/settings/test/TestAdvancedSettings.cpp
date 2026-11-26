@@ -102,3 +102,14 @@ TEST_F(TestAdvancedSettingsMetadataSources, RemoveSourceAddedByEarlierFile)
         "</metadatasources></videoscanner></advancedsettings>"});
   EXPECT_EQ(m_settings.m_videoScannerMetadataSources, DEFAULT_METADATA_SOURCES);
 }
+
+// A profile's advancedsettings.xml that doesn't set them leaves them off, whatever the last set
+TEST(TestAdvancedSettings, LoadingAgainResetsWhatAScanLeavesUntilItIsDone)
+{
+  CAdvancedSettings settings;
+  settings.m_bVideoLibraryExtractFramesAfterScrape = true;
+
+  ASSERT_TRUE(settings.Load(*CServiceBroker::GetSettingsComponent()->GetProfileManager()));
+
+  EXPECT_FALSE(settings.m_bVideoLibraryExtractFramesAfterScrape);
+}
