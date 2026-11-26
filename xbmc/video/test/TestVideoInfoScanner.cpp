@@ -1638,6 +1638,33 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedToTheSetItsNfoNames)
                                       "movie.idSet WHERE sets.strSet = 'Films'"));
 }
 
+// A movie the scraper finds, looked up alongside others, has its set's art from the set's
+// information folder, which its look-up read
+TEST_F(TestVideoInfoScanner, AMovieLookedUpAlongsideHasItsSetsInformationFolder)
+{
+  UseTestScraper();
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const std::string previous{settings->GetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER)};
+  const std::string sets{Folder(m_root, "Sets")};
+  File(Folder(sets, "Saga"), "set.nfo",
+       "<set><title>Saga</title><art><poster>https://example.com/saga.jpg</poster></art></set>");
+  settings->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+  for (const std::string name : {"First", "Second"})
+  {
+    Found(name);
+    Details(name, "<details><title>" + name + "</title><set><name>Saga</name></set></details>");
+    File(Folder(m_root, name), name + ".mkv");
+  }
+
+  Scan();
+  settings->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, previous);
+
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(
+      "https://example.com/saga.jpg",
+      m_db.GetSingleValue("SELECT url FROM art WHERE media_type = 'set' AND type = 'poster'"));
+}
+
 TEST_F(TestVideoInfoScanner, AnEditionInTheFileNameNamesTheMoviesVersion)
 {
   const std::string folder{Folder(m_root, "Film (2010)")};

@@ -376,6 +376,12 @@ class ISetInfoTagLoader;
     //! by its ids
     bool CanLookUpMovieAlongside(const CFileItem& item) const;
 
+    //! UpdateSetInTag(), with each set's information folder read once for the scan
+    bool UpdateMovieSet(CVideoInfoTag& tag) const;
+
+    static bool UpdateSetInTag(CVideoInfoTag& tag,
+                               const CVideoInfoScannerArt::MovieSetFolder& folder);
+
     /*! \brief The part of RetrieveInfoForMovie() that reads the movie's nfo, asks the scraper and
      prepares the movie, which neither writes to the database nor shows a dialog. A disc is prepared
      as it is added, as its playlists are chosen with those the library already has.

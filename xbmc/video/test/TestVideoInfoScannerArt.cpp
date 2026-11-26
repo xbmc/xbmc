@@ -731,6 +731,50 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
 }
 #endif
 
+// Each movie of a set takes the set's details from its set.nfo and its art from its folder
+TEST_F(TestVideoInfoScannerArt, EachMovieOfASetHasWhatItsInformationFolderHolds)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  const std::string saga{Folder(sets, "Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>From the set's nfo</overview></set>");
+  const std::string poster{File(saga, "poster.jpg")};
+  Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+  for (const std::string name : {"First", "Second"})
+  {
+    const std::string folder{Folder(m_root, name)};
+    File(folder, name + ".mkv");
+    File(folder, name + ".nfo",
+         "<movie><title>" + name + "</title><set><name>Saga</name></set></movie>");
+  }
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"));
+  EXPECT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie JOIN sets ON movie.idSet = "
+                                      "sets.idSet WHERE sets.strSet = 'Saga'"));
+  EXPECT_EQ("From the set's nfo",
+            m_db.GetSingleValue("SELECT strOverview FROM sets WHERE strSet = 'Saga'"));
+  EXPECT_EQ(poster, m_db.GetSingleValue(
+                        "SELECT url FROM art WHERE media_type = 'set' AND type = 'poster'"));
+}
+
+// A set's information folder is read once for each set, not again for each of its movies
+TEST_F(TestVideoInfoScannerArt, AMovieSetsFolderIsReadOnceForEachSet)
+{
+  const std::string sets{Folder(m_root, "Sets")};
+  const std::string saga{Folder(sets, "Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>Read first</overview></set>");
+  Settings()->SetString(CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER, sets);
+
+  const CVideoInfoScannerArt art;
+  const CVideoInfoScannerArt::MovieSetFolder& first{art.GetMovieSetFolder("Saga")};
+  File(saga, "set.nfo", "<set><title>Saga</title><overview>Read again</overview></set>");
+  const CVideoInfoScannerArt::MovieSetFolder& second{art.GetMovieSetFolder("Saga")};
+
+  EXPECT_EQ(saga, first.path);
+  ASSERT_TRUE(second.nfo);
+  EXPECT_EQ("Read first", second.nfo->GetOverview());
+}
+
 // The art in a set's information folder follows the artwork level, as a movie's does: none at the
 // NONE level...
 TEST_F(TestVideoInfoScannerArt, ASetHasNoArtAtTheArtworkLevelNone)
