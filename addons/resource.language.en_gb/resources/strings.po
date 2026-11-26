@@ -20118,7 +20118,68 @@ msgctxt "#35511"
 msgid "Current"
 msgstr ""
 
-#empty strings from id 35512 to 35699
+#. Label of the setting for when games save themselves
+#: system/settings/settings.xml
+msgctxt "#35512"
+msgid "When to autosave"
+msgstr ""
+
+#. Help text of the setting for when games save themselves
+#: system/settings/settings.xml
+msgctxt "#35513"
+msgid "While playing saves the game every few seconds and when you stop. Only when quitting saves it once, as you stop, which is quicker for games with large saves."
+msgstr ""
+
+#. Choice of when to autosave
+#: system/settings/settings.xml
+msgctxt "#35514"
+msgid "While playing"
+msgstr ""
+
+#. Choice of when to autosave
+#: system/settings/settings.xml
+msgctxt "#35515"
+msgid "Only when quitting"
+msgstr ""
+
+#. Name of the save a game's quick save shortcut writes, as listed and in its notifications
+#: xbmc/cores/RetroPlayer/savestates/SavestateDatabase.cpp
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35516"
+msgid "Quick save"
+msgstr ""
+
+#. Notification after the quick save shortcut saved the game
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35517"
+msgid "Saved"
+msgstr ""
+
+#. Notification after the quick load shortcut loaded the quick save
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35518"
+msgid "Loaded"
+msgstr ""
+
+#. Notification when the quick load shortcut finds no quick save
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35519"
+msgid "There's no quick save for this game yet"
+msgstr ""
+
+#. Notification when the quick save shortcut couldn't save the game
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35520"
+msgid "This game couldn't be saved"
+msgstr ""
+
+#. Notification when the quick load shortcut couldn't load the quick save
+#: xbmc/interfaces/builtins/PlayerBuiltins.cpp
+msgctxt "#35521"
+msgid "The quick save couldn't be loaded"
+msgstr ""
+
+#empty strings from id 35522 to 35699
 
 #. Label of the setting that enables RetroAchievements hardcore mode
 #: system/settings/settings.xml

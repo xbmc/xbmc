@@ -145,6 +145,9 @@ private:
   void InvalidateAutosave();
   bool CommitSavestate(const Snapshot& snapshot);
   std::string GetSavestatePath(bool autosave, const std::string& path, const CDateTime& created);
+  // Called with m_savestateMutex held
+  void StopAutosavingTo(const std::string& savestatePath);
+  bool RestoreSavestate(const std::string& savestatePath);
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
@@ -186,6 +189,7 @@ private:
   CAutosaveCapture m_autosaveCapture;
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
   std::string m_autosavePath{};
+  bool m_autosaveFileTaken{false};
   size_t m_memorySize;
   const std::string m_gamePath;
   const std::string m_gameClientId;

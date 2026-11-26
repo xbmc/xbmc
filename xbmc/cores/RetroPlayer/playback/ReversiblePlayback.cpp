@@ -233,13 +233,27 @@ std::string CReversiblePlayback::GetSavestatePath(bool autosave,
   std::string savePath = path;
   if (autosave && savePath.empty())
     savePath = m_autosavePath;
-  if (!autosave && savePath == m_autosavePath)
-    m_autosavePath.clear();
+
+  // Autosaves go to one file for each game and client, so they don't pile up.
+  // A manual save written over that file keeps it for the rest of the session.
+  const std::string autosaveFile = CSavestateDatabase::MakeAutosavePath(m_gamePath, m_gameClientId);
+  if (!autosave && !savePath.empty())
+    StopAutosavingTo(savePath);
+  if (autosave && savePath.empty() && !m_autosaveFileTaken)
+    savePath = autosaveFile;
   if (savePath.empty())
     savePath = CSavestateDatabase::MakeSavestatePath(m_gamePath, created);
   if (autosave)
     m_autosavePath = savePath;
   return savePath;
+}
+
+void CReversiblePlayback::StopAutosavingTo(const std::string& savestatePath)
+{
+  if (savestatePath == m_autosavePath)
+    m_autosavePath.clear();
+  if (savestatePath == CSavestateDatabase::MakeAutosavePath(m_gamePath, m_gameClientId))
+    m_autosaveFileTaken = true;
 }
 
 std::string CReversiblePlayback::CreateSavestate(bool autosave, const std::string& savestatePath)
@@ -404,6 +418,17 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
 }
 
 bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
+{
+  if (RestoreSavestate(savestatePath))
+    return true;
+
+  // A save that didn't load is left as it is, rather than autosaved over
+  std::unique_lock savestateLock(m_savestateMutex);
+  StopAutosavingTo(savestatePath);
+  return false;
+}
+
+bool CReversiblePlayback::RestoreSavestate(const std::string& savestatePath)
 {
   // Every route that loads a state comes through here - the in-game dialog,
   // JSON-RPC, the Python player API - so hardcore is answered once, rather

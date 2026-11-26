@@ -2874,6 +2874,20 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesgeneral.autosavewhen" type="integer" parent="gamesgeneral.enableautosave" label="35512" help="35513">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="35514">0</option>
+              <option label="35515">1</option>
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="gamesgeneral.enableautosave">true</dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="gamesgeneral.enablerewind" type="boolean" label="35203" help="35204">
           <level>0</level>
           <default>false</default>

@@ -55,7 +55,8 @@ void CRetroPlayerAutoSave::Process()
 
   while (!m_bStop)
   {
-    if (m_settings.AutosaveEnabled() && m_callback.IsAutoSaveEnabled())
+    if (m_settings.AutosaveEnabled() && !m_settings.AutosaveOnlyWhenQuitting() &&
+        m_callback.IsAutoSaveEnabled())
       m_callback.RequestAutosave();
 
     CThread::Sleep(AUTOSAVE_DURATION_SECS);

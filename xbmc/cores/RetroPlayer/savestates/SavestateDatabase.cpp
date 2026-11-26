@@ -22,6 +22,7 @@
 #include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -31,6 +32,17 @@
 namespace
 {
 constexpr auto SAVESTATE_EXTENSION = ".sav";
+constexpr auto QUICKSAVE_PREFIX = "quicksave-";
+
+// Where a rename can't replace a file, the old file goes first
+bool RenameOver(const std::string& source, const std::string& destination)
+{
+  if (XFILE::CFile::Rename(source, destination))
+    return true;
+
+  return XFILE::CFile::Exists(destination, false) && XFILE::CFile::Delete(destination) &&
+         XFILE::CFile::Rename(source, destination);
+}
 } // namespace
 
 using namespace KODI;
@@ -65,14 +77,22 @@ bool CSavestateDatabase::AddSavestate(const std::string& savestatePath,
   size_t size = 0;
   if (save.Serialize(data, size))
   {
+    // Written to a new file first, so a failed write keeps the old save
+    const std::string tempPath = path + ".tmp";
     XFILE::CFile file;
-    if (file.OpenForWrite(path, true))
+    if (file.OpenForWrite(tempPath, true))
     {
       const ssize_t written = file.Write(data, size);
-      if (written == static_cast<ssize_t>(size))
+      file.Close();
+      if (written == static_cast<ssize_t>(size) && RenameOver(tempPath, path))
       {
         CLog::Log(LOGDEBUG, "Wrote savestate of {} bytes", size);
         bSuccess = true;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Failed to write savestate");
+        XFILE::CFile::Delete(tempPath);
       }
     }
     else
@@ -179,6 +199,11 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
     label2 = std::move(label);
     label = savestate.Label();
   }
+  else if (IsQuickSavePath(savestatePath))
+  {
+    label2 = std::move(label);
+    label = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35516); // "Quick save"
+  }
 
   // "Autosave" has the highest priority
   if (savestate.Type() == SAVE_TYPE::AUTO)
@@ -268,6 +293,31 @@ std::string CSavestateDatabase::MakeSavestatePath(const std::string& gamePath,
 {
   std::string path = MakePath(gamePath);
   return URIUtils::AddFileToFolder(path, creationTime.GetAsSaveString() + SAVESTATE_EXTENSION);
+}
+
+std::string CSavestateDatabase::MakeAutosavePath(const std::string& gamePath,
+                                                 const std::string& gameClient)
+{
+  const std::string path = MakePath(gamePath);
+  if (path.empty() || gameClient.empty())
+    return "";
+
+  return URIUtils::AddFileToFolder(path, "autosave-" + gameClient + SAVESTATE_EXTENSION);
+}
+
+std::string CSavestateDatabase::MakeQuickSavePath(const std::string& gamePath,
+                                                  const std::string& gameClient)
+{
+  const std::string path = MakePath(gamePath);
+  if (path.empty() || gameClient.empty())
+    return "";
+
+  return URIUtils::AddFileToFolder(path, QUICKSAVE_PREFIX + gameClient + SAVESTATE_EXTENSION);
+}
+
+bool CSavestateDatabase::IsQuickSavePath(const std::string& savestatePath)
+{
+  return StringUtils::StartsWith(URIUtils::GetFileName(savestatePath), QUICKSAVE_PREFIX);
 }
 
 std::string CSavestateDatabase::MakeThumbnailPath(const std::string& savestatePath)
