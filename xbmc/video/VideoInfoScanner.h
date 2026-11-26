@@ -510,6 +510,10 @@ class ISetInfoTagLoader;
                                       bool useLocal,
                                       CScraperUrl* pURL,
                                       CGUIDialogProgress* pDlgProgress);
+    /*!
+     \param alreadyHasArt whether the show was just added with its art, its seasons' included,
+     which isn't then worked out again
+     */
     InfoRet RetrieveInfoForEpisodes(CFileItem* item,
                                     long showID,
                                     EPISODELIST& files,

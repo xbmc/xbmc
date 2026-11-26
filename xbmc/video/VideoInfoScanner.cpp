@@ -3399,17 +3399,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     InfoRet ret{OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress, guide)};
 
-    if (ret == InfoRet::ADDED)
+    // A show just added was written with its season art
+    if (ret == InfoRet::ADDED && !alreadyHasArt)
     {
       KODI::ART::SeasonsArtwork seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
-      const bool updateSeasonArt{
-          alreadyHasArt ||
-          std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); })};
-      if (updateSeasonArt)
+      // Only a season of the show's episodes asks the scraper for art again: the row for all
+      // seasons, and a season without episodes, often have none to be had
+      EpisodeFileMap episodes;
+      m_database.GetEpisodeMap(static_cast<int>(showID), episodes);
+      std::set<int> seasonsOfEpisodes;
+      for (const auto& [_, episode] : episodes)
+        seasonsOfEpisodes.insert(episode.season);
+      if (std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); }))
       {
-        if (!alreadyHasArt && !item->IsPlugin())
+        const bool seasonOfEpisodesWithoutArt{std::ranges::any_of(
+            seasonArt, [&seasonsOfEpisodes](const auto& i)
+            { return i.second.empty() && seasonsOfEpisodes.contains(i.first); })};
+        if (!item->IsPlugin() && seasonOfEpisodesWithoutArt)
         {
           const CScraperCalls::CRegistration call{m_scraperCalls};
           CVideoInfoTag tag{showInfo};

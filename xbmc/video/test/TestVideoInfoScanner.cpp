@@ -3845,7 +3845,8 @@ constexpr const char* PYTHON_SHOW_SCRAPER_ADDON = R"(<?xml version="1.0" encodin
 /*!
  \brief Answers as a tv show scraper: a search finds the show, whose guide lists episodes 1 and 2
  of season 1 and episode 1 of season 2. Asked for the episodes' details with the list, it gives the
- first's there, marked complete; the others' are given only when asked for on their own.
+ first's there, marked complete; the others' are given only when asked for on their own. It has no
+ art to give.
  */
 void AnswerAsAShowScraper(int handle, const CURL& call)
 {
@@ -3861,6 +3862,7 @@ void AnswerAsAShowScraper(int handle, const CURL& call)
   {
     CFileItem show{"show", false};
     show.GetVideoInfoTag()->SetTitle("Show");
+    show.GetVideoInfoTag()->SetUniqueID("1", "tmdb", true);
     show.GetVideoInfoTag()->SetEpisodeGuide("guide");
     XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &show);
   }
@@ -3915,13 +3917,27 @@ protected:
         "UPDATE path SET strContent='tvshows', strScraper='%s', strSettings='', useFolderNames=0, "
         "scanRecursive=0 WHERE idPath=%i",
         PYTHON_SHOW_SCRAPER_ID, m_db.GetPathId(m_root))));
-    // An episode is given a thumbnail generated from the video, and a test has no texture cache to
-    // cache it in
+    // An episode is given a thumbnail generated from the video, which a test has no use for
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, false);
+    // A show's season art is cached as it is written
+    m_previousJobManager = CServiceBroker::GetJobManager();
+    CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+    CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
+    m_textureCache = true;
   }
 
   void TearDown() override
   {
+    if (m_textureCache)
+    {
+      // First, as its jobs are cancelled with the job manager
+      CServiceBroker::UnregisterTextureCache();
+      CServiceBroker::GetJobManager()->CancelJobs();
+      CServiceBroker::GetJobManager()->Restart();
+      CServiceBroker::UnregisterJobManager();
+      if (m_previousJobManager)
+        CServiceBroker::RegisterJobManager(m_previousJobManager);
+    }
     if (!m_showScraper.empty())
     {
       Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
@@ -3951,6 +3967,8 @@ protected:
 
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   std::string m_showScraper;
+  bool m_textureCache{false};
+  std::shared_ptr<CJobManager> m_previousJobManager;
 };
 } // namespace
 
@@ -4388,6 +4406,50 @@ TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeListedCompleteIsAddedWithoutACa
   EXPECT_EQ(1u, Calls({"action=getepisodedetails", "url=second"}));
 }
 
+// A known show given an episode is asked for art again only where a season it has episodes of has
+// none, not for the row for all seasons, which scrapers seldom give any
+TEST_F(TestVideoInfoScannerPythonShows, AKnownShowIsAskedForArtOnlyForASeasonOfItsEpisodesWithout)
+{
+  const std::string show{Folder(m_root, "Show")};
+  // The first season has art of its own, in the show's folder
+  File(show, "season01-poster.jpg");
+  const std::string season{Folder(show, "Season 1")};
+  File(season, "Show S01E01.mkv");
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  LetRunsEnd();
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  const int idShow{m_db.GetSingleValueInt("SELECT idShow FROM tvshow")};
+  ASSERT_GT(idShow, 0);
+  // The first season has its art, and the row for all seasons none
+  const auto hasArt{[this, idShow](int season)
+                    {
+                      KODI::ART::Artwork art;
+                      return m_db.GetArtForItem(m_db.GetSeasonId(idShow, season),
+                                                KODI::MEDIA::TYPE::SEASON, art) &&
+                             !art.empty();
+                    }};
+  ASSERT_TRUE(hasArt(1));
+  ASSERT_FALSE(hasArt(-1));
+
+  const std::string second{File(season, "Show S01E02.mkv")};
+  Touch(season);
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+  ASSERT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+  EXPECT_EQ(0u, Calls({"action=getartwork"}));
+
+  const std::string third{File(Folder(show, "Season 2"), "Show S02E01.mkv")};
+  Touch(show);
+  TestScanner later{m_settings};
+  later.Scan(m_root);
+  ASSERT_GT(m_db.GetEpisodeId(third, 1, 2), 0);
+  EXPECT_EQ(1u, Calls({"action=getartwork"}));
+}
+
 // A known show's episode list is asked for the seasons of the episodes the scan looks up
 TEST_F(TestVideoInfoScannerPythonShows, AKnownShowsListIsAskedForTheSeasonsOfItsNewEpisodes)
 {
@@ -4401,6 +4463,8 @@ TEST_F(TestVideoInfoScannerPythonShows, AKnownShowsListIsAskedForTheSeasonsOfIts
   TestScanner first{m_settings};
   first.Scan(m_root);
   ASSERT_EQ(1u, Calls({"action=getepisodelist"}));
+  // A show just added keeps the season art it was added with
+  EXPECT_EQ(0u, Calls({"action=getartwork"}));
 
   const std::string third{File(Folder(show, "Season 2"), "Show S02E01.mkv")};
   Touch(show);
