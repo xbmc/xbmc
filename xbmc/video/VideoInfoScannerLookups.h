@@ -47,13 +47,17 @@ public:
    add-on's script, such as a python scraper's call, stops waiting once it is set.
    \param window the most videos looked up and not yet handed back, the one being handed back
    among them; 0 for 8 a thread
+   \param beforeWaiting called on the calling thread before it waits for the next video to be
+   looked up (with one thread, before it looks the video up), or for the look-ups in flight as a
+   refused video ends the run, and not while the next is ready; returns false to hand back no more
    */
   static void Run(size_t count,
                   size_t workers,
                   const std::function<void(size_t)>& lookUp,
                   const std::function<bool(size_t)>& handBack,
                   const std::atomic<bool>& stop,
-                  size_t window = 0);
+                  size_t window = 0,
+                  const std::function<bool()>& beforeWaiting = {});
 
   /*!
    \brief A run that videos are added to while those added before are handed back, so that the
@@ -80,10 +84,13 @@ public:
     /*!
      \brief Hand the videos of the run back in order, as Run() does, up to the one at \p end
      \param handBack as Run()'s, given the video's index in the run
+     \param beforeWaiting as Run()'s
      \return false where the run ended first, as a video was refused, or not looked up as the scan
      stopped: it then looks up and hands back no more
      */
-    bool HandBack(size_t end, const std::function<bool(size_t)>& handBack);
+    bool HandBack(size_t end,
+                  const std::function<bool(size_t)>& handBack,
+                  const std::function<bool()>& beforeWaiting = {});
 
   private:
     void Work();

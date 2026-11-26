@@ -17,6 +17,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 class CFileItem;
@@ -217,10 +218,32 @@ public:
   //! \brief Store no record for a folder, so that the next scan looks at it again
   void Clear(const std::string& folder);
 
+  /*!
+   \brief The rows read and stored for as long as it lives, as in a transaction, are kept only
+   where Keep() is called. Otherwise, as where the transaction was rolled back, the table has them
+   as it had them before.
+   */
+  class CStoring
+  {
+  public:
+    explicit CStoring(CScanPathTable& table);
+    ~CStoring();
+    CStoring(const CStoring&) = delete;
+    CStoring& operator=(const CStoring&) = delete;
+
+    void Keep() { m_kept = true; }
+
+  private:
+    CScanPathTable& m_table;
+    bool m_kept{false};
+  };
+
 private:
   bool IsLoaded(const std::string& path) const;
   //! \brief Add the folders holding a folder, down from the first that has a row
   void AddParents(const std::string& folder);
+  //! \brief Note how the table has a path's row, before it is changed while storing
+  void Remember(const std::string& path);
 
   struct Resolved
   {
@@ -233,5 +256,9 @@ private:
   std::vector<std::string> m_roots;
   std::unordered_map<std::string, std::optional<CVideoDatabase::PathScanRow>> m_rows;
   std::unordered_map<std::string, Resolved> m_resolved;
+  //! While storing, the paths changed and how the table had them, nullopt for one it hadn't
+  std::optional<std::vector<
+      std::pair<std::string, std::optional<std::optional<CVideoDatabase::PathScanRow>>>>>
+      m_before;
 };
 } // namespace KODI::VIDEO

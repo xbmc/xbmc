@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
+#include <ranges>
 #include <utility>
 
 using namespace XFILE;
@@ -313,6 +314,7 @@ std::optional<CVideoDatabase::PathScanRow> CScanPathTable::Find(const std::strin
 
   // A path missing from the rows read may still be stored as another case of it, which a
   // case-insensitive database finds
+  Remember(path);
   return m_rows.try_emplace(path, m_database.GetPathScanRow(path)).first->second;
 }
 
@@ -359,6 +361,7 @@ void CScanPathTable::Store(const std::string& folder, const FolderRecord& record
   if (!m_database.SetPathHash(folder, hash))
     return;
 
+  Remember(folder);
   if (auto row{m_rows.find(folder)}; row != m_rows.end() && row->second)
     row->second->hash = hash;
   else
@@ -384,7 +387,38 @@ void CScanPathTable::AddParents(const std::string& folder)
   if (added.idPath < 0)
     return;
   added.path = parent;
+  Remember(parent);
   m_rows.insert_or_assign(parent, std::move(added));
+}
+
+void CScanPathTable::Remember(const std::string& path)
+{
+  if (!m_before)
+    return;
+  const auto row{m_rows.find(path)};
+  m_before->emplace_back(path,
+                         row != m_rows.end() ? std::make_optional(row->second) : std::nullopt);
+}
+
+CScanPathTable::CStoring::CStoring(CScanPathTable& table) : m_table(table)
+{
+  m_table.m_before.emplace();
+}
+
+CScanPathTable::CStoring::~CStoring()
+{
+  if (!m_kept)
+  {
+    // Last changed first, so that a path changed twice has its row from before both
+    for (auto& [path, row] : std::views::reverse(*m_table.m_before))
+    {
+      if (row)
+        m_table.m_rows.insert_or_assign(path, std::move(*row));
+      else
+        m_table.m_rows.erase(path);
+    }
+  }
+  m_table.m_before.reset();
 }
 
 void CScanPathTable::Clear(const std::string& folder)

@@ -26,6 +26,7 @@
 #include "video/VideoInfoScannerWalk.h"
 
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <deque>
@@ -302,12 +303,19 @@ class ISetInfoTagLoader;
         KODI::REGEXP::RegExpCache& regexps,
         std::optional<std::pair<std::string, CStreamDetails>>& lastProbed) const;
 
-    //! \brief The second half of AddVideo(): the item written in one transaction, and announced
+    class CWriteBatch;
+
+    /*!
+     \brief The second half of AddVideo(): the item written in one transaction, and announced
+     \param batch where given, the item is written in the batch's transaction, and counted and
+     announced once that is committed
+     */
     long WriteVideo(CFileItem* pItem,
                     const PreparedVideo& video,
                     bool videoFolder,
                     const CVideoInfoTag* showInfo,
-                    bool libraryImport);
+                    bool libraryImport,
+                    CWriteBatch* batch = nullptr);
 
     struct ShowLookup;
     /*! \param lookup the show as it was looked up already, or nullptr to look it up now
@@ -687,6 +695,11 @@ class ISetInfoTagLoader;
     std::vector<std::pair<std::string, FolderRecord>> ListFolderRecords(
         const std::string& folder, const std::vector<std::string>& excludes);
     void StoreFolderRecords(const std::string& folder, const std::vector<std::string>& excludes);
+    /*!
+     \brief Store the records of folders in one transaction, unless one is open. Where it fails,
+     none is stored, and the next scan lists the folders again.
+     */
+    void StoreRecords(const std::vector<std::pair<std::string, FolderRecord>>& records);
 
     /*! \brief Add the extras folders beside a movie's disc that have changed since they were added
      \param discFolder the listing of the folder holding the disc structure
@@ -770,9 +783,70 @@ class ISetInfoTagLoader;
     };
     ScanSummary m_summary;
 
+    //! \brief Count a video written, once committed, and announce it
+    void Added(ScanSummary::Item item, const CFileItem& video);
+
+    /*!
+     \brief The videos of a show written in one transaction while the scan has the next ready to
+     write, rather than a transaction each. The transaction is committed before the scan waits for
+     a video, reads a disc or calls the scraper, at the batch's limit, and as the batch ends, so that
+     the database isn't held while the scan waits on anything else. Each video is written after a
+     savepoint of its own, so that one that can't be written is undone alone. A video is counted
+     and announced once its transaction is committed.
+     */
+    class CWriteBatch
+    {
+    public:
+      explicit CWriteBatch(CVideoInfoScanner& scanner);
+      //! Commits the videos written
+      ~CWriteBatch();
+      CWriteBatch(const CWriteBatch&) = delete;
+      CWriteBatch& operator=(const CWriteBatch&) = delete;
+
+      //! \brief Begin the write of a video \return false where it can't be written in the batch
+      bool BeginVideo();
+      /*!
+       \brief End the write of a video
+       \param written whether it was written, else what was written of it is undone
+       \param item what the scan's summary counts of it
+       \param video the video, announced once committed
+       \return whether it is written, as it may have been committed at the batch's limit
+       */
+      bool EndVideo(bool written, ScanSummary::Item item, const CFileItem& video);
+      /*!
+       \brief Commit the videos written
+       \return false where the batch has failed: no video it held is written, and no more can be
+       */
+      bool Commit();
+
+    private:
+      //! \brief The transaction is lost, with the videos it held
+      void Abandon();
+
+      CVideoInfoScanner& m_scanner;
+      bool m_open{false};
+      bool m_failed{false};
+      std::chrono::steady_clock::time_point m_begun;
+      //! The videos written in the transaction, each with a copy to announce once committed
+      std::vector<std::pair<ScanSummary::Item, std::shared_ptr<const CFileItem>>> m_written;
+      size_t m_committed{0};
+      size_t m_transactions{0};
+    };
+
+    //! The most videos a batch writes in one transaction, and the longest it writes for
+    struct
+    {
+      size_t videos{100};
+      std::chrono::milliseconds time{1000};
+    } m_batchLimit;
+    //! Whether a batch is committed before the scan waits for the next video. Tests keep it open, to
+    //! know what it holds.
+    bool m_commitBeforeWaiting{true};
     //! The most folders whose movies are looked up together (FOLDERS_LOOKED_UP_TOGETHER), which
     //! tests lower
     size_t m_foldersLookedUpTogether;
+    //! The transactions batches were committed in, or failed to be
+    unsigned int m_batchTransactions{0};
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};

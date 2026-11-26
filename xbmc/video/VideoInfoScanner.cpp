@@ -82,6 +82,7 @@
 #include <ranges>
 #include <set>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <utility>
 
@@ -100,6 +101,11 @@ constexpr size_t FOLDERS_LOOKED_UP_TOGETHER{64};
 //! Shows looked up ahead of the one being added, so that the scraper has calls to make while a
 //! show's episodes are probed and added
 constexpr size_t SHOWS_LOOKED_UP_AHEAD{8};
+//! The savepoint a video of a batch is written after (CWriteBatch)
+constexpr const char* SAVEPOINT{"video"};
+//! How long a batch leaves the database to a writer that waited for its transaction, which tries
+//! again every 100 ms
+constexpr std::chrono::milliseconds LETTING_OTHERS_IN{120};
 
 /*!
  * \brief Get the video extras folder directly below \p directory that \p path belongs to.
@@ -1579,8 +1585,33 @@ CVideoInfoScanner::~CVideoInfoScanner()
   void CVideoInfoScanner::StoreFolderRecords(const std::string& folder,
                                              const std::vector<std::string>& excludes)
   {
-    for (const auto& [path, record] : ListFolderRecords(folder, excludes))
-      m_pathTable->Store(path, record);
+    StoreRecords(ListFolderRecords(folder, excludes));
+  }
+
+  void CVideoInfoScanner::StoreRecords(
+      const std::vector<std::pair<std::string, FolderRecord>>& records)
+  {
+    if (records.empty())
+      return;
+
+    // The table has them only once committed
+    CScanPathTable::CStoring storing{*m_pathTable};
+    const bool ownTransaction{!m_database.InTransaction()};
+    if (ownTransaction)
+      m_database.BeginTransaction();
+    for (const auto& [folder, record] : records)
+      m_pathTable->Store(folder, record);
+    if (!ownTransaction || m_database.CommitTransaction())
+    {
+      storing.Keep();
+      return;
+    }
+
+    if (m_database.InTransaction())
+      m_database.RollbackTransaction();
+    CLog::Log(LOGERROR,
+              "VideoInfoScanner: The records of {} and the folders below it couldn't be stored",
+              CURL::GetRedacted(records.front().first));
   }
 
   std::vector<std::pair<std::string, FolderRecord>> CVideoInfoScanner::ListFolderRecords(
@@ -1703,8 +1734,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const auto records{m_showRecords.find(show)};
     if (records == m_showRecords.end())
       return;
-    for (const auto& [folder, record] : records->second)
-      m_pathTable->Store(folder, record);
+    StoreRecords(records->second);
     m_showRecords.erase(records);
   }
 
@@ -3443,12 +3473,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CVideoInfoScannerArt::GetSeasonThumbs(
             showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::SEASON),
             useLocal && !item->IsPlugin(), useRemoteArt, &m_regexpCache);
+        for (const auto& art : seasonArt | std::views::values)
+          m_art.Cache(art);
+        // The seasons in one transaction
+        const bool ownTransaction{!m_database.InTransaction()};
+        if (ownTransaction)
+          m_database.BeginTransaction();
         for (const auto& [season, art] : seasonArt)
         {
-          m_art.Cache(art);
-
           const int seasonID{m_database.AddSeason(static_cast<int>(showID), season)};
           m_database.SetArtForItem(seasonID, MEDIA::TYPE::SEASON, art);
+        }
+        if (ownTransaction && !m_database.CommitTransaction())
+        {
+          if (m_database.InTransaction())
+            m_database.RollbackTransaction();
+          CLog::Log(LOGERROR, "VideoInfoScanner: The season art of {} couldn't be stored",
+                    CURL::GetRedacted(item->GetPath()));
         }
       }
     }
@@ -4002,11 +4043,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                      const PreparedVideo& video,
                                      bool videoFolder,
                                      const CVideoInfoTag* showInfo,
-                                     bool libraryImport)
+                                     bool libraryImport,
+                                     CWriteBatch* batch /* = nullptr */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
       return -1;
+
+    // A batch's after a savepoint of its own, which a video that can't be written is undone to
+    if (batch && !batch->BeginVideo())
+    {
+      m_database.Close();
+      return -1;
+    }
 
     const ContentType content{video.content};
     const CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt{video.useRemoteArt};
@@ -4030,7 +4079,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     // Written in one transaction, with nothing left to wait on but the database. A caller writing
     // more with it has its own open.
-    const bool ownTransaction{!m_database.InTransaction()};
+    const bool ownTransaction{!batch && !m_database.InTransaction()};
     if (ownTransaction)
       m_database.BeginTransaction();
 
@@ -4192,8 +4241,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (video.unreadGeometry && lResult > -1)
       m_database.SetContentGeometry(m_database.GetFileId(*pItem), *video.unreadGeometry);
 
+    ScanSummary::Type type{ScanSummary::Type::MOVIE};
+    if (content == ContentType::MOVIE_VERSIONS)
+      type = ScanSummary::Type::VERSION;
+    else if (content == ContentType::TVSHOWS)
+      type = showInfo ? ScanSummary::Type::EPISODE : ScanSummary::Type::TV_SHOW;
+    else if (content == ContentType::MUSICVIDEOS)
+      type = ScanSummary::Type::MUSIC_VIDEO;
+
     // An episode added without its details leaves no episode behind, and a video whose transaction
-    // couldn't be committed isn't added
+    // couldn't be committed isn't added. A batch's is counted and announced once committed.
     if (ownTransaction)
     {
       if (lResult < 0)
@@ -4206,29 +4263,143 @@ CVideoInfoScanner::~CVideoInfoScanner()
         movieDetails.m_iDbId = -1;
       }
     }
+    else if (batch && !batch->EndVideo(lResult > -1, {type, path, strTitle}, *pItem))
+    {
+      lResult = -1;
+      movieDetails.m_iDbId = -1;
+    }
     m_database.ForgetPreparedDatesAdded();
 
     m_database.Close();
 
-    if (lResult > -1)
-    {
-      ScanSummary::Type type{ScanSummary::Type::MOVIE};
-      if (content == ContentType::MOVIE_VERSIONS)
-        type = ScanSummary::Type::VERSION;
-      else if (content == ContentType::TVSHOWS)
-        type = showInfo ? ScanSummary::Type::EPISODE : ScanSummary::Type::TV_SHOW;
-      else if (content == ContentType::MUSICVIDEOS)
-        type = ScanSummary::Type::MUSIC_VIDEO;
-      m_summary.added.push_back({type, path, strTitle});
-
-      // Announce() copies the item before it returns, so it is lent here rather than copied twice
-      CServiceBroker::GetAnnouncementManager()->Announce(
-          ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Update{
-              .item = std::shared_ptr<const CFileItem>(pItem, [](const CFileItem*) {}),
-              .transaction = m_bRunning,
-              .added = true}});
-    }
+    if (lResult > -1 && !batch)
+      Added({type, path, strTitle}, *pItem);
     return lResult;
+  }
+
+  void CVideoInfoScanner::Added(ScanSummary::Item item, const CFileItem& video)
+  {
+    m_summary.added.push_back(std::move(item));
+
+    // Announce() copies the item before it returns, so it is lent here rather than copied twice
+    CServiceBroker::GetAnnouncementManager()->Announce(
+        ANNOUNCEMENT::VideoLibraryEvent{ANNOUNCEMENT::EVENT::LIBRARY::Update{
+            .item = std::shared_ptr<const CFileItem>(&video, [](const CFileItem*) {}),
+            .transaction = m_bRunning,
+            .added = true}});
+  }
+
+  CVideoInfoScanner::CWriteBatch::CWriteBatch(CVideoInfoScanner& scanner) : m_scanner(scanner)
+  {
+    // Held open, as a connection closed rolls back its transaction
+    m_scanner.m_database.Open();
+  }
+
+  CVideoInfoScanner::CWriteBatch::~CWriteBatch()
+  {
+    Commit();
+    if (m_transactions > 0)
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Wrote {} videos in {} transactions", m_committed,
+                m_transactions);
+    m_scanner.m_database.Close();
+  }
+
+  bool CVideoInfoScanner::CWriteBatch::BeginVideo()
+  {
+    if (m_failed)
+      return false;
+
+    CVideoDatabase& database{m_scanner.m_database};
+    if (!m_open)
+    {
+      if (!database.BeginTransaction())
+      {
+        if (database.InTransaction())
+          database.RollbackTransaction();
+        m_failed = true;
+        return false;
+      }
+      m_open = true;
+      m_begun = std::chrono::steady_clock::now();
+    }
+
+    if (!database.BeginSavepoint(SAVEPOINT))
+    {
+      Abandon();
+      return false;
+    }
+    return true;
+  }
+
+  bool CVideoInfoScanner::CWriteBatch::EndVideo(bool written,
+                                                ScanSummary::Item item,
+                                                const CFileItem& video)
+  {
+    CVideoDatabase& database{m_scanner.m_database};
+    if (!written)
+    {
+      // Those written before it are kept
+      if (!database.RollbackToSavepoint(SAVEPOINT))
+        Abandon();
+      return false;
+    }
+    if (!database.ReleaseSavepoint(SAVEPOINT))
+    {
+      Abandon();
+      return false;
+    }
+
+    m_written.emplace_back(std::move(item), std::make_shared<const CFileItem>(video));
+    if (m_written.size() >= m_scanner.m_batchLimit.videos ||
+        std::chrono::steady_clock::now() - m_begun >= m_scanner.m_batchLimit.time)
+      return Commit();
+    return true;
+  }
+
+  bool CVideoInfoScanner::CWriteBatch::Commit()
+  {
+    if (!m_open)
+      return !m_failed;
+
+    m_open = false;
+    ++m_transactions;
+    ++m_scanner.m_batchTransactions;
+    std::vector<std::pair<ScanSummary::Item, std::shared_ptr<const CFileItem>>> written;
+    written.swap(m_written);
+    CVideoDatabase& database{m_scanner.m_database};
+    if (!database.CommitTransaction())
+    {
+      if (database.InTransaction())
+        database.RollbackTransaction();
+      CLog::Log(LOGERROR, "VideoInfoScanner: The {} videos written last couldn't be committed",
+                written.size());
+      m_failed = true;
+      return false;
+    }
+
+    m_committed += written.size();
+    for (auto& [item, video] : written)
+      m_scanner.Added(std::move(item), *video);
+
+    // A writer that waited for the transaction to end gets in before the next is begun. It tries
+    // again every 100 ms.
+    if (database.OthersWaitedSince(m_begun))
+      std::this_thread::sleep_for(LETTING_OTHERS_IN);
+    return true;
+  }
+
+  void CVideoInfoScanner::CWriteBatch::Abandon()
+  {
+    CVideoDatabase& database{m_scanner.m_database};
+    if (database.InTransaction())
+      database.RollbackTransaction();
+    CLog::Log(LOGERROR,
+              "VideoInfoScanner: The {} videos written last were lost with their "
+              "transaction",
+              m_written.size());
+    m_written.clear();
+    m_open = false;
+    m_failed = true;
   }
 
   VideoDbContentType ContentToVideoDbType(ContentType content)
@@ -4702,6 +4873,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool cancelled{false};
     bool failed{false};
+    // The episodes handed back one after another are written in one transaction, but where a dialog
+    // is up, which the database isn't held for, or a caller writes them in a transaction of its own
+    std::optional<CWriteBatch> batch;
+    if (!pDlgProgress && !m_database.InTransaction())
+      batch.emplace(*this);
+    const auto commit{[&]
+                      {
+                        if (batch && !batch->Commit())
+                          failed = true;
+                        return !failed;
+                      }};
+
     const auto handBack{
         [&](size_t index)
         {
@@ -4735,6 +4918,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_failedLookups += lookup.failedLookups;
           for (const auto& [path, lookupFailed] : lookup.notAdded)
             NotAdded(ScanSummary::Type::EPISODE, path, lookupFailed);
+          // A disc is waited for here, with the database not held for it
+          if (IsDisc(first.strPath) && !commit())
+            return false;
           // Its disc, where read ahead, is held until its episodes are added
           const CDiscReadAhead::CTaken disc{m_discReadAhead, lookups[index].front()->strPath};
           for (FoundEpisode& episode : lookup.found)
@@ -4750,6 +4936,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
             }
             if (!episode.prepared)
             {
+              // An episode of a disc has its playlists chosen from those the library's episodes of
+              // the disc don't have, read through a connection of its own, which sees only what is
+              // committed: the episodes written before it are, and the database isn't held while
+              // the disc is read. Choosing a stack's writes through a connection of its own.
+              if (!commit())
+                return false;
+
               // Determine bluray playlist(s) (if possible)
               // Also populates streamdetails if playlist(s) found
               if (episode.resolvePlaylist)
@@ -4761,8 +4954,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   PrepareVideo(&episode.item, scraper, episode.isFolder, episode.useLocal,
                                &showInfo, false, ContentType::TVSHOWS, m_regexpCache, m_lastProbed);
             }
-            if (WriteVideo(&episode.item, *episode.prepared, episode.isFolder, &showInfo, false) <
-                0)
+            if (WriteVideo(&episode.item, *episode.prepared, episode.isFolder, &showInfo, false,
+                           batch ? &*batch : nullptr) < 0)
             {
               failed = true;
               return false;
@@ -4771,8 +4964,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
           return true;
         }};
 
+    // The database isn't held while the scan waits for an episode
+    const auto beforeWaiting{[&] { return !m_commitBeforeWaiting || commit(); }};
+
     CVideoLookups::Run(lookups.size(), pDlgProgress ? 1 : LookUpThreads(), lookUp, handBack,
-                       m_bStop);
+                       m_bStop, 0, beforeWaiting);
+
+    // The episodes written are kept, those written before a stop too
+    commit();
 
     if (failed)
       return InfoRet::INFO_ERROR;

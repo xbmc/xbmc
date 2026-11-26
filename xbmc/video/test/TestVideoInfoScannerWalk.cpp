@@ -9,6 +9,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "URL.h"
+#include "dbwrappers/test/DatabaseTestUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
@@ -304,6 +305,55 @@ TEST(TestVideoInfoScannerWalk, TheFoldersBelowASourceTheScanWasAskedToScanAreKno
   EXPECT_FLOAT_EQ(50.f, progress.Percentage());
   progress.Finished(2);
   EXPECT_FLOAT_EQ(100.f, progress.Percentage());
+}
+
+// The rows stored in a transaction rolled back are forgotten, so that the table has the folders as
+// the database has them
+TEST(TestVideoInfoScannerWalk, TheRecordsStoredInATransactionRolledBackAreForgotten)
+{
+  const DatabaseSettings settings{TestDatabaseSettings()};
+  const std::string name{"TestVideoInfoScannerWalkRecords"};
+  XFILE::CFile::Delete(settings.host + name + ".db");
+  CVideoDatabase db;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, db.Connect(name, settings, true));
+  const std::string source{"smb://host/TV/"};
+  ASSERT_GT(db.AddPath(source), 0);
+  const std::string show{source + "Show/"};
+  const std::string season{show + "Season 1/"};
+  const FolderRecord record{.cfg = "cfg", .mtime = 1, .digest = "digest"};
+  CScanPathTable table{db};
+  table.Load(source);
+
+  ASSERT_TRUE(db.BeginTransaction());
+  {
+    const CScanPathTable::CStoring storing{table};
+    table.Store(season, record);
+    ASSERT_GT(table.PathId(season), 0);
+    db.RollbackTransaction();
+  }
+
+  EXPECT_EQ(-1, table.PathId(season));
+  EXPECT_EQ(-1, table.PathId(show));
+  EXPECT_FALSE(table.Record(season));
+
+  // Stored again, each folder is added again, linked to the folder holding it
+  ASSERT_TRUE(db.BeginTransaction());
+  {
+    CScanPathTable::CStoring storing{table};
+    table.Store(season, record);
+    ASSERT_TRUE(db.CommitTransaction());
+    storing.Keep();
+  }
+  EXPECT_EQ(db.GetPathId(season), table.PathId(season));
+  EXPECT_GT(table.PathId(show), 0);
+  EXPECT_EQ(table.PathId(show),
+            db.GetSingleValueInt(
+                db.PrepareSQL("SELECT idParentPath FROM path WHERE strPath='%s'", season.c_str())));
+  ASSERT_TRUE(table.Record(season));
+  EXPECT_EQ("digest", table.Record(season)->digest);
+
+  db.Close();
+  XFILE::CFile::Delete(settings.host + name + ".db");
 }
 
 TEST(TestVideoInfoScannerWalk, AFolderLeftOutTakesNoShareOfTheBar)

@@ -156,6 +156,70 @@ TEST(TestVideoInfoScannerLookups, OneWorkerLooksEachUpBeforeTheNext)
   EXPECT_EQ((std::vector<int>{0, -1, 1, -2, 2, -3}), events);
 }
 
+// Told before it waits for a video not yet looked up, so that it can let go of what it holds, and
+// not while the next video is ready
+TEST(TestVideoInfoScannerLookups, TheCallingThreadIsToldBeforeItWaitsForAVideo)
+{
+  constexpr size_t count{3};
+  std::promise<void> told;
+  const std::shared_future<void> waitingForTheSecond{told.get_future().share()};
+  std::atomic<bool> toldBeforeTheSecond{false};
+  std::vector<size_t> toldAfter;
+  size_t handedBack{0};
+  const std::atomic<bool> stop{false};
+
+  CVideoLookups::Run(
+      count, 2,
+      [&](size_t i)
+      {
+        // The second is looked up once the calling thread has been told it waits for it
+        if (i == 1)
+          toldBeforeTheSecond =
+              waitingForTheSecond.wait_for(std::chrono::seconds{5}) == std::future_status::ready;
+      },
+      [&](size_t i)
+      {
+        ++handedBack;
+        // By when it is asked for, the third has long been looked up
+        if (i == 1)
+          std::this_thread::sleep_for(std::chrono::milliseconds{100});
+        return true;
+      },
+      stop, 0,
+      [&]
+      {
+        toldAfter.push_back(handedBack);
+        if (handedBack == 1)
+          told.set_value();
+        return true;
+      });
+
+  EXPECT_EQ(count, handedBack);
+  EXPECT_TRUE(toldBeforeTheSecond);
+  EXPECT_EQ(1, std::ranges::count(toldAfter, 1));
+  EXPECT_EQ(0, std::ranges::count(toldAfter, 2));
+}
+
+// One worker looks each video up on the calling thread, which it keeps waiting, and the calling
+// thread may say before any of them to hand back no more
+TEST(TestVideoInfoScannerLookups, OneWorkerTellsTheCallingThreadBeforeEachLookUp)
+{
+  std::vector<size_t> lookedUp;
+  std::vector<size_t> toldAfter;
+  const std::atomic<bool> stop{false};
+
+  CVideoLookups::Run(
+      3, 1, [&lookedUp](size_t i) { lookedUp.push_back(i); }, [](size_t) { return true; }, stop, 0,
+      [&]
+      {
+        toldAfter.push_back(lookedUp.size());
+        return lookedUp.size() < 2;
+      });
+
+  EXPECT_EQ((std::vector<size_t>{0, 1, 2}), toldAfter);
+  EXPECT_EQ((std::vector<size_t>{0, 1}), lookedUp);
+}
+
 // The scan may be stopped at any moment, without anyone being woken
 TEST(TestVideoInfoScannerLookups, AScanStoppedAtAnyMomentEnds)
 {
@@ -1040,4 +1104,42 @@ TEST(TestVideoInfoScannerLookups, AThumbDecodedDuringAScanDoesntWaitForItsProbes
 
   EXPECT_EQ(std::future_status::ready, decoding.wait_for(std::chrono::seconds(5)));
   held.LetGo(CScanProbe::ProbesAtOnce());
+}
+
+// A video refused ends the run, and the calling thread is told before it waits for the look-ups
+// still running
+TEST(TestVideoInfoScannerLookups, TheCallingThreadIsToldBeforeItWaitsForTheLookUpsLeft)
+{
+  std::promise<void> started;
+  const std::shared_future<void> secondStarted{started.get_future().share()};
+  std::promise<void> told;
+  const std::shared_future<void> toldOnce{told.get_future().share()};
+  std::atomic<bool> refused{false};
+  std::atomic<bool> toldFirst{false};
+  const std::atomic<bool> stop{false};
+
+  CVideoLookups::Run(
+      2, 2,
+      [&](size_t i)
+      {
+        if (i != 1)
+          return;
+        started.set_value();
+        toldFirst = toldOnce.wait_for(std::chrono::seconds{5}) == std::future_status::ready;
+      },
+      [&](size_t)
+      {
+        // Refused while the second is looked up
+        refused = secondStarted.wait_for(std::chrono::seconds{5}) == std::future_status::ready;
+        return false;
+      },
+      stop, 0,
+      [&]
+      {
+        if (refused && toldOnce.wait_for(std::chrono::seconds{0}) != std::future_status::ready)
+          told.set_value();
+        return true;
+      });
+
+  EXPECT_TRUE(toldFirst);
 }

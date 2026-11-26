@@ -79,11 +79,12 @@ void CVideoLookups::Run(size_t count,
                         const std::function<void(size_t)>& lookUp,
                         const std::function<bool(size_t)>& handBack,
                         const std::atomic<bool>& stop,
-                        size_t window /* = 0 */)
+                        size_t window /* = 0 */,
+                        const std::function<bool()>& beforeWaiting /* = {} */)
 {
   CRun run{std::min(workers, count), stop, window};
   run.Add(count, [&lookUp](size_t i, size_t) { lookUp(i); });
-  run.HandBack(count, handBack);
+  run.HandBack(count, handBack, beforeWaiting);
 }
 
 CVideoLookups::CRun::CRun(size_t workers, const std::atomic<bool>& stop, size_t window /* = 0 */)
@@ -129,13 +130,16 @@ size_t CVideoLookups::CRun::Add(size_t count, std::function<void(size_t, size_t)
   return first;
 }
 
-bool CVideoLookups::CRun::HandBack(size_t end, const std::function<bool(size_t)>& handBack)
+bool CVideoLookups::CRun::HandBack(size_t end,
+                                   const std::function<bool(size_t)>& handBack,
+                                   const std::function<bool()>& beforeWaiting /* = {} */)
 {
   if (m_workers <= 1)
   {
     for (; m_handedBack < std::min(end, m_done.size()); ++m_handedBack)
     {
-      if (m_ended || m_stop)
+      // The look-up keeps this thread waiting
+      if (m_ended || m_stop || (beforeWaiting && !beforeWaiting()))
       {
         End();
         return false;
@@ -155,7 +159,7 @@ bool CVideoLookups::CRun::HandBack(size_t end, const std::function<bool(size_t)>
     while (true)
     {
       size_t index;
-      bool lookedUp;
+      bool lookedUp{false};
       {
         std::unique_lock guard(m_lock);
         if (m_ended)
@@ -166,12 +170,25 @@ bool CVideoLookups::CRun::HandBack(size_t end, const std::function<bool(size_t)>
         // A video not yet looked up when the scan stopped is never looked up. The stop flag is
         // set without waking anyone, so it is looked at again now and then.
         const auto ready{[this, index] { return m_done[index] || (m_stop && index >= m_next); }};
-        while (!m_changed.wait_for(guard, std::chrono::milliseconds(100), ready))
-          ;
-        lookedUp = m_done[index];
+        bool goOn{true};
+        if (beforeWaiting && !ready())
+        {
+          guard.unlock();
+          goOn = beforeWaiting();
+          guard.lock();
+        }
+        if (goOn)
+        {
+          while (!m_changed.wait_for(guard, std::chrono::milliseconds(100), ready))
+            ;
+          lookedUp = m_done[index];
+        }
       }
       if (!lookedUp || !handBack(index))
       {
+        // End() waits for the look-ups in flight
+        if (beforeWaiting)
+          beforeWaiting();
         End();
         return false;
       }

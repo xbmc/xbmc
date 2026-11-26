@@ -335,8 +335,29 @@ public:
 
   using CVideoInfoScanner::CanLookUpMovieAlongside;
 
+  //! Keeps a show's episodes in one transaction while the scan waits for the next, so that a test
+  //! knows which of them it holds
+  void HoldEpisodesWhileWaiting() { m_commitBeforeWaiting = false; }
+  //! Commits a show's episodes once a transaction holds \p episodes
+  void LimitBatches(size_t episodes) { m_batchLimit.videos = episodes; }
+  //! Commits a show's episodes once a transaction has been written for \p time
+  void LimitBatchTime(std::chrono::milliseconds time) { m_batchLimit.time = time; }
+  //! Writes \p path in a batch of its own, as an episode is written, calling \p held while the
+  //! batch's transaction holds the database
+  bool WritePathInABatch(const std::string& path, const std::function<void()>& held)
+  {
+    CWriteBatch batch{*this};
+    if (!batch.BeginVideo() || m_database.AddPath(path) < 0)
+      return false;
+    held();
+    return batch.Commit();
+  }
   //! Looks the movies of \p folders beside each other up together, rather than of 64
   void LimitFoldersLookedUpTogether(size_t folders) { m_foldersLookedUpTogether = folders; }
+  //! The transactions a show's episodes were committed in, or failed to be
+  unsigned int EpisodeTransactions() const { return m_batchTransactions; }
+  //! Has the scan's connection check references, which defer a check until the commit
+  bool CheckReferences() { return m_database.ExecuteQuery("PRAGMA foreign_keys=ON"); }
 
   //! The folders a scan would plan with \p directory, itself included, \p budget of them below it
   size_t FoldersPlannedWith(const std::string& directory, size_t budget)
@@ -3086,6 +3107,181 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeAddedToAScannedSeasonIsFound)
   EXPECT_EQ(TestScanner::ScanSummary::Type::EPISODE, summary.existing[0].type);
 }
 
+// A show's episodes handed back one after another are written in one transaction, rather than one
+// each
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAShowHandedBackTogetherAreWrittenInOneTransaction)
+{
+  const std::string season{Folder(Show("Show"), "Season 1")};
+  Episode(season, "Show S01E01.mkv");
+  Episode(season, "Show S01E02.mkv");
+  Episode(season, "Show S01E03.mkv");
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(3, CountEpisodes());
+  EXPECT_EQ(1u, scanner.EpisodeTransactions());
+  const auto summary{scanner.Summary()};
+  EXPECT_EQ(3, std::ranges::count(summary.added, TestScanner::ScanSummary::Type::EPISODE,
+                                  &TestScanner::ScanSummary::Item::type));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, AShowsEpisodesBeyondATransactionsLimitAreWrittenInAnother)
+{
+  const std::string season{Folder(Show("Show"), "Season 1")};
+  Episode(season, "Show S01E01.mkv");
+  Episode(season, "Show S01E02.mkv");
+  Episode(season, "Show S01E03.mkv");
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+  scanner.LimitBatches(2);
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(3, CountEpisodes());
+  EXPECT_EQ(2u, scanner.EpisodeTransactions());
+}
+
+TEST_F(TestVideoInfoScannerTvShows, AShowsEpisodesWrittenPastATransactionsTimeAreWrittenInAnother)
+{
+  const std::string season{Folder(Show("Show"), "Season 1")};
+  Episode(season, "Show S01E01.mkv");
+  Episode(season, "Show S01E02.mkv");
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+  scanner.LimitBatchTime(std::chrono::milliseconds{0});
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(2, CountEpisodes());
+  EXPECT_EQ(2u, scanner.EpisodeTransactions());
+}
+
+// A writer on another connection that waited for a batch's transaction, as playback saving a resume
+// point does, gets in before the next batch holds the database again
+TEST_F(TestVideoInfoScannerTvShows, AWriterThatWaitedForABatchGetsInBeforeTheNext)
+{
+  TestScanner scanner{m_settings};
+  CVideoDatabase other;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+            other.Connect(m_settings.name, m_settings, false));
+  std::thread writer;
+  const auto start{std::chrono::steady_clock::now()};
+  const bool first{scanner.WritePathInABatch(
+      "/batches/1/",
+      [&]
+      {
+        writer = std::thread{[&other] { static_cast<void>(other.AddPath("/writer/")); }};
+        const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+        while (!scanner.Database().OthersWaitedSince(start) &&
+               std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{10});
+      })};
+  // Held for longer than the writer waits between its tries
+  const bool next{scanner.WritePathInABatch(
+      "/batches/2/", [] { std::this_thread::sleep_for(std::chrono::milliseconds{300}); })};
+  if (writer.joinable())
+    writer.join();
+
+  ASSERT_TRUE(first);
+  ASSERT_TRUE(next);
+  EXPECT_LT(m_db.GetPathId("/writer/"), m_db.GetPathId("/batches/2/"));
+}
+
+// An episode that can't be written is undone alone, those written before it in its transaction
+// kept. Its show goes no further, as with a transaction for each episode, and the next scan looks at
+// it again.
+TEST_F(TestVideoInfoScannerTvShows, AnEpisodeThatCantBeWrittenIsUndoneAlone)
+{
+  const std::string show{Show("Show")};
+  const std::string season{Folder(show, "Season 1")};
+  const std::string first{Episode(season, "Show S01E01.mkv")};
+  const std::string second{Episode(season, "Show S01E02.mkv")};
+  const std::string third{Episode(season, "Show S01E03.mkv")};
+  // The second's details are refused, once its file and row are written
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      "CREATE TRIGGER refused BEFORE UPDATE ON episode WHEN NEW.c00 = 'Show S01E02.mkv' "
+      "BEGIN SELECT RAISE(ABORT, 'refused'); END"));
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+
+  scanner.Scan(m_root);
+
+  EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
+  EXPECT_EQ(-1, m_db.GetEpisodeId(second, 2, 1));
+  EXPECT_EQ(-1, m_db.GetEpisodeId(third, 3, 1));
+  EXPECT_EQ(1, CountEpisodes());
+  EXPECT_EQ(0, m_db.GetSingleValueInt(m_db.PrepareSQL(
+                   "SELECT COUNT(*) FROM files WHERE strFilename='%s'", "Show S01E02.mkv")));
+  EXPECT_EQ(1u, scanner.EpisodeTransactions());
+  EXPECT_FALSE(Record(show).starts_with("2|"));
+
+  ASSERT_TRUE(m_db.ExecuteQuery("DROP TRIGGER refused"));
+  Scan();
+  EXPECT_EQ(3, CountEpisodes());
+}
+
+// Episodes whose transaction can't be committed aren't added, or counted as added, and the next scan
+// looks at their show again
+TEST_F(TestVideoInfoScannerTvShows, EpisodesWhoseTransactionCantBeCommittedAreLookedAtAgain)
+{
+  const std::string show{Show("Show")};
+  const std::string season{Folder(show, "Season 1")};
+  const std::string first{Episode(season, "Show S01E01.mkv")};
+  const std::string second{Episode(season, "Show S01E02.mkv")};
+  // The second's details leave a reference to nothing, which the commit then finds
+  ASSERT_TRUE(m_db.ExecuteQuery("CREATE TABLE parentless (id INTEGER PRIMARY KEY)"));
+  ASSERT_TRUE(m_db.ExecuteQuery("CREATE TABLE orphan (idParent INTEGER REFERENCES parentless(id) "
+                                "DEFERRABLE INITIALLY DEFERRED)"));
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      "CREATE TRIGGER orphaned AFTER UPDATE ON episode WHEN NEW.c00 = 'Show S01E02.mkv' "
+      "BEGIN INSERT INTO orphan (idParent) VALUES (7); END"));
+  TestScanner scanner{m_settings};
+  ASSERT_TRUE(scanner.CheckReferences());
+  scanner.HoldEpisodesWhileWaiting();
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_EQ(0, CountEpisodes());
+  const auto summary{scanner.Summary()};
+  EXPECT_EQ(0, std::ranges::count(summary.added, TestScanner::ScanSummary::Type::EPISODE,
+                                  &TestScanner::ScanSummary::Item::type));
+  EXPECT_EQ(1u, summary.failed.size());
+  EXPECT_FALSE(Record(show).starts_with("2|"));
+
+  ASSERT_TRUE(m_db.ExecuteQuery("DROP TRIGGER orphaned"));
+  Scan();
+  EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
+  EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+}
+
+// An episode of a disc has its playlists chosen from those the library's episodes of the disc don't
+// have, which are read through a connection of their own: the episodes written before it are
+// committed first
+TEST_F(TestVideoInfoScannerTvShows, AnEpisodeOfADiscHasItsPlaylistsChosenWithThoseBeforeItCommitted)
+{
+  const std::string bdmv{Folder(Folder(Show("Show"), "Show.S01E01E02"), "BDMV")};
+  File(bdmv, "index.bdmv");
+  File(bdmv, "MovieObject.bdmv");
+  File(Folder(bdmv, "PLAYLIST"), "00000.mpls");
+  File(Folder(bdmv, "STREAM"), "00000.m2ts");
+  for (const int episode : {1, 2})
+    File(bdmv, StringUtils::Format("index-S01E{:02}.nfo", episode),
+         StringUtils::Format("<episodedetails><title>Episode {0}</title><season>1</season>"
+                             "<episode>{0}</episode></episodedetails>",
+                             episode));
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+
+  scanner.Scan(m_root);
+
+  EXPECT_EQ(2, CountEpisodes());
+  // The first committed alone, before the second's playlists were chosen
+  EXPECT_EQ(2u, scanner.EpisodeTransactions());
+}
+
 TEST_F(TestVideoInfoScannerTvShows, AnUnchangedShowAddsNothingAgain)
 {
   const std::string season{Folder(Show("Show"), "Season 1")};
@@ -4404,6 +4600,85 @@ TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeListedCompleteIsAddedWithoutACa
   EXPECT_EQ(1u, Calls({"action=getepisodelist", "complete=1"}));
   EXPECT_EQ(0u, Calls({"action=getepisodedetails", "url=first"}));
   EXPECT_EQ(1u, Calls({"action=getepisodedetails", "url=second"}));
+}
+
+// The episodes written are committed before the scan waits for the next, so that the database
+// isn't held while it waits
+TEST_F(TestVideoInfoScannerPythonShows, AnEpisodeWrittenIsCommittedBeforeTheScanWaitsForTheNext)
+{
+  const std::string season{Folder(Folder(m_root, "Show"), "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{File(season, "Show S01E02.mkv")};
+  // The first is listed with its details, and the second's are asked for: the scan waits for them
+  // while the test's own connection, which sees only what is committed, looks for the first
+  bool committed{false};
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [this, &first, &committed](int handle, const CURL& call)
+    {
+      if (call.GetOption("action") == "getepisodedetails")
+      {
+        const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+        while (!(committed = m_db.GetEpisodeId(first, 1, 1) > 0) &&
+               std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{10});
+      }
+      AnswerAsAShowScraper(handle, call);
+    };
+  }
+  LetRunsEnd();
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  EXPECT_TRUE(committed);
+  EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+}
+
+// A scan stopped during a show keeps the episodes written before the stop, and the next scan adds
+// the rest
+TEST_F(TestVideoInfoScannerPythonShows, AStopDuringAShowKeepsTheEpisodesWrittenBeforeIt)
+{
+  const std::string show{Folder(m_root, "Show")};
+  const std::string season{Folder(show, "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{File(season, "Show S01E02.mkv")};
+  TestScanner scanner{m_settings};
+  scanner.HoldEpisodesWhileWaiting();
+  // The scan is stopped as it waits for the second's details, once the first is written in the
+  // transaction it holds, which has its journal
+  const std::string journal{m_settings.host + m_settings.name + ".db-journal"};
+  bool writing{false};
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = [&scanner, &journal, &writing](int handle, const CURL& call)
+    {
+      if (call.GetOption("action") == "getepisodedetails")
+      {
+        const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+        while (!(writing = XFILE::CFile::Exists(journal)) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{10});
+        scanner.Stop();
+      }
+      AnswerAsAShowScraper(handle, call);
+    };
+  }
+  LetRunsEnd();
+
+  scanner.Scan(m_root);
+
+  EXPECT_TRUE(writing);
+  EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
+  EXPECT_EQ(-1, m_db.GetEpisodeId(second, 2, 1));
+  EXPECT_FALSE(Record(show).starts_with("2|"));
+
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.answer = AnswerAsAShowScraper;
+  }
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+  EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
 }
 
 // A known show given an episode is asked for art again only where a season it has episodes of has
