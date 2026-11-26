@@ -17,6 +17,7 @@ set(SOURCES TestFFmpegImage.cpp
             TestGUITextLayout.cpp
             TestGUITexture.cpp
             TestLibraryGUIInfo.cpp
+            TestGUIWindowAnimations.cpp
             TestGUIWindowOnAction.cpp
             TestSkinMapManager.cpp
 )
