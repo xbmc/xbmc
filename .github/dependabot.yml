@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # The root covers .github/workflows; composite actions need their own entry.
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/*
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

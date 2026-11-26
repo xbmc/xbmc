@@ -1,0 +1,44 @@
+name: Prune ccache
+
+# ccache saves one entry per master commit and leg, and restores only the
+# newest, so older entries just fill the repository's cache budget until
+# eviction starts removing entries still in use. Runs after each master
+# pipeline that saves ccache. Keeps the newest per leg, and the older ones
+# until the newest is an hour old, so that no job is still restoring them.
+
+on:
+  workflow_run:
+    workflows: [CI, Coverage]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: prune-caches
+
+jobs:
+  prune:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Delete superseded ccache entries
+        run: |
+          gh cache list --limit 10000 --json id,key,ref,createdAt \
+            | jq -r '(now - 3600) as $settled
+                     | map(select(.key | contains("-ccache-")))
+                     | group_by(.ref + " " + (.key | sub("-[0-9a-f]{40}$"; "")))
+                     | map(sort_by(.createdAt) | reverse
+                           | select(.[0].createdAt | sub("\\.[0-9]+Z$"; "Z") | fromdateiso8601 < $settled)
+                           | .[1:])
+                     | flatten | .[]
+                     | "\(.id)\t\(.ref)\t\(.key)"' \
+            | while IFS=$'\t' read -r id ref key; do
+                echo "Deleting ${ref} ${key}"
+                gh cache delete "${id}" || true
+              done
