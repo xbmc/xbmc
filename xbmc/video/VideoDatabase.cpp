@@ -3375,8 +3375,12 @@ int CVideoDatabase::SetDetailsForTvShow(const std::vector<std::string>& paths,
                                         CVideoInfoTag& details,
                                         const KODI::ART::Artwork& artwork,
                                         const KODI::ART::SeasonsArtwork& seasonArt,
-                                        int idTvShow /*= -1 */)
+                                        int idTvShow /*= -1 */,
+                                        bool exactPathOnly /*= false */,
+                                        bool* createdNewShow /*= nullptr */)
 {
+  if (createdNewShow)
+    *createdNewShow = false;
 
   /*
    The steps are as follows.
@@ -3391,18 +3395,54 @@ int CVideoDatabase::SetDetailsForTvShow(const std::vector<std::string>& paths,
   {
     for (const auto& path : paths)
     {
-      idTvShow = GetTvShowId(path);
-      if (idTvShow > -1)
-        break;
+      const int candidate = GetTvShowId(path);
+      if (candidate < 0)
+        continue;
+
+      if (exactPathOnly)
+      {
+        std::vector<std::string> linkedPaths;
+        if (!GetPathsLinkedToTvShow(candidate, linkedPaths) ||
+            std::ranges::none_of(
+                linkedPaths, [&path](const std::string& linked)
+                { return URIUtils::PathEquals(linked, path, true); }))
+          continue;
+      }
+      idTvShow = candidate;
+      break;
     }
   }
   if (idTvShow < 0)
+  {
     idTvShow = GetMatchingTvShow(details);
+    if (idTvShow >= 0 && exactPathOnly)
+    {
+      // A nested show must not inherit an ancestor link through metadata matching.
+      std::vector<std::string> linkedPaths;
+      if (GetPathsLinkedToTvShow(idTvShow, linkedPaths))
+      {
+        const bool ancestorCollision = std::ranges::any_of(
+            paths, [&linkedPaths](const std::string& candidatePath)
+            {
+              return std::ranges::any_of(
+                  linkedPaths, [&candidatePath](const std::string& linkedPath)
+                  {
+                    return !URIUtils::PathEquals(candidatePath, linkedPath, true) &&
+                           StringUtils::StartsWithNoCase(candidatePath, linkedPath);
+                  });
+            });
+        if (ancestorCollision)
+          idTvShow = -1;
+      }
+    }
+  }
   if (idTvShow < 0)
   {
     idTvShow = AddTvShow();
     if (idTvShow < 0)
       return -1;
+    if (createdNewShow)
+      *createdNewShow = true;
   }
 
   // add any paths to the tvshow
@@ -9811,14 +9851,26 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
 
     if (scraper->Content() == ContentType::TVSHOWS)
     {
-      settings.recurse = 0;
-      if(settings.parent_name) // single show
+      // Only explicitly opted-in collection sources search through grouping
+      // folders. The legacy first-level-is-a-show rule must *not* set
+      // parent_name at depth 2 for these sources: it would disable recursion
+      // and mistake categories such as "Animation" for TV shows.
+      const bool recursiveCollection = !settings.parent_name && settings.recurse > 1;
+      // Record the source's opt-in independently of the remaining recursion
+      // depth: its last grouping folder may have recurse == 1 or 0.
+      settings.recursive_tvshow_source = recursiveCollection;
+      if (recursiveCollection)
       {
-        settings.parent_name_root = settings.parent_name = (iFound == 1);
+        settings.recurse = std::max(0, settings.recurse - (iFound - 1));
+        settings.parent_name = settings.parent_name_root = false;
       }
-      else // show root
+      else
       {
-        settings.parent_name_root = settings.parent_name = (iFound == 2);
+        settings.recurse = 0;
+        if (settings.parent_name) // explicitly configured single show
+          settings.parent_name_root = settings.parent_name = (iFound == 1);
+        else // traditional immediate child of TV collection root is a show
+          settings.parent_name_root = settings.parent_name = (iFound == 2);
       }
     }
     else if (scraper->Content() == ContentType::MOVIES ||

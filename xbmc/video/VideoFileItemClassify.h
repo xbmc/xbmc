@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <string>
 #include <string_view>
 
 class CFileItem;
@@ -32,6 +33,11 @@ bool IsProtectedBlurayDisc(const CFileItem& item);
  \sa CVideoDatabase::GetMoviesByWhere()
  */
 bool IsBrowsableFolder(const CFileItem& item);
+
+//! \brief Check whether a path is inside a raw Blu-ray BDMV or DVD VIDEO_TS tree.
+//! \details Checks all ancestor folders, not just the current folder name, so
+//!          BDMV/PLAYLIST/00001.mpls and VIDEO_TS subdirectories are excluded too.
+bool IsInOpticalDiscStructure(const std::string& path);
 
 //! \brief Check whether an item is a subtitle file.
 bool IsSubtitle(const CFileItem& item);
