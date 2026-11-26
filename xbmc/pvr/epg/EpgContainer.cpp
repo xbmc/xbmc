@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
@@ -31,7 +32,9 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <optional>
 #include <ranges>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -1013,14 +1016,22 @@ int CPVREpgContainer::CleanupCachedImages()
     return 0;
   }
 
+  const std::optional<std::set<int>> epgIdsWithImages =
+      CPVRCachedImages::GetOwnerIds(CPVREpgInfoTag::IMAGE_OWNER_PATTERN);
+  if (!epgIdsWithImages)
+    return 0;
+
   // Processing can take some time. Do not block.
   m_critSection.lock();
   const std::map<int, std::shared_ptr<CPVREpg>> epgIdToEpgMap = m_epgIdToEpgMap;
   m_critSection.unlock();
 
   int cleanedImages = 0;
-  for (const auto& [_, epg] : epgIdToEpgMap)
+  for (const auto& [epgId, epg] : epgIdToEpgMap)
   {
+    if (!epgIdsWithImages->contains(epgId))
+      continue;
+
     // With thousands of channels this takes minutes, and PVR manager can't stop until it returns
     if (!CServiceBroker::GetPVRManager().IsStarted())
       break;
