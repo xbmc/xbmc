@@ -54,6 +54,7 @@
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+#include "video/tags/IVideoInfoTagLoader.h"
 
 #include <chrono>
 #include <condition_variable>
@@ -330,6 +331,19 @@ public:
   }
 
   using CVideoInfoScanner::CanLookUpMovieAlongside;
+
+  //! Looks the movies of \p folders beside each other up together, rather than of 64
+  void LimitFoldersLookedUpTogether(size_t folders) { m_foldersLookedUpTogether = folders; }
+
+  //! The folders a scan would plan with \p directory, itself included, \p budget of them below it
+  size_t FoldersPlannedWith(const std::string& directory, size_t budget)
+  {
+    const std::unique_ptr<DirectoryScan> scan{PlanDirectory(directory)};
+    if (!scan || !CanScanAlongside(*scan))
+      return 0;
+    PlanAhead(*scan, budget);
+    return CountPlanned(*scan);
+  }
 
   using CVideoInfoScanner::FolderTime;
   using CVideoInfoScanner::ScannedSubfolders;
@@ -1778,6 +1792,118 @@ TEST_F(TestVideoInfoScanner, TheDiscsOfFoldersBesideEachOtherAreEachAddedWithThe
   }
 }
 
+// Folders beside each other are looked up in bounded batches, so that a first scan of a large
+// source doesn't hold every folder before its first movie is added
+TEST_F(TestVideoInfoScanner, TheMoviesOfMoreFoldersThanAreLookedUpTogetherAreAllAdded)
+{
+  constexpr int count{70};
+  std::vector<std::string> folders;
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    FolderMovie(folders.back(), name + ".mkv");
+  }
+
+  Scan();
+
+  EXPECT_EQ(count, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+    EXPECT_TRUE(Record(folders[movie - 1]).starts_with("2|")) << movie;
+}
+
+// The movies of the folders beside each other are looked up alongside each other, each folder is
+// recorded once its own movie is added, and a folder that holds another is scanned in its turn
+TEST_F(TestVideoInfoScanner, TheMoviesOfFoldersBesideEachOtherAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  std::vector<std::string> folders;
+  std::vector<std::string> movies;
+  constexpr int count{6};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    if (movie == 3)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    movies.emplace_back(File(folders.back(), name + ".mkv"));
+  }
+  // A folder holding another folder of movies, scanned once those before it are
+  const std::string collection{Folder(folders[3], "Collection")};
+  Nfo(collection, "Inner.nfo", "Inner");
+  const std::string inner{File(collection, "Inner.mkv")};
+  // A movie folder with extras is still one holding no folder to scan
+  const std::string trailer{File(Folder(folders[4], "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  EXPECT_EQ(count, CountMovies());
+  EXPECT_GT(m_db.GetMovieId(inner), 0);
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(movies[movie - 1])};
+    if (movie == 3)
+    {
+      EXPECT_EQ(-1, idMovie);
+      EXPECT_FALSE(Record(folders[movie - 1]).starts_with("2|"));
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+    EXPECT_TRUE(Record(folders[movie - 1]).starts_with("2|")) << movie;
+  }
+  EXPECT_TRUE(IsExtraOf(trailer, m_db.GetMovieId(movies[4])));
+}
+
+// The movies of the folders a movie folder holds are looked up with those of the folders beside it,
+// and added in their turn, so that the library is written to in the order of the folders
+TEST_F(TestVideoInfoScanner, TheMoviesOfTheFoldersInAFolderAreEachAddedWithTheirDetails)
+{
+  UseTestScraper();
+  const std::string collection{Folder(m_root, "Film2")};
+  const std::vector<std::pair<std::string, std::string>> movies{
+      {File(Folder(m_root, "Film1"), "Film1.mkv"), "Film1"},
+      {File(Folder(collection, "Alpha"), "Alpha.mkv"), "Alpha"},
+      {File(Folder(collection, "Beta"), "Beta.mkv"), "Beta"},
+      {File(Folder(m_root, "Film3"), "Film3.mkv"), "Film3"}};
+  for (const auto& [movie, name] : movies)
+    FoundFromTheScraper(name);
+
+  Scan();
+
+  int previous{0};
+  for (const auto& [movie, name] : movies)
+  {
+    const int idMovie{m_db.GetMovieId(movie)};
+    ASSERT_GT(idMovie, previous) << movie;
+    EXPECT_EQ(name + " from the scraper", m_db.GetMovieTitle(idMovie));
+    previous = idMovie;
+  }
+}
+
+// A folder planned ahead with the folder holding it isn't planned again in its turn, which would
+// look the movies below it up twice: an update finds each folder of a tree unchanged once
+TEST_F(TestVideoInfoScanner, AnUpdateFindsEachFolderOfATreeUnchangedOnce)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  const std::string series{Folder(collection, "Series")};
+  const std::string film{Folder(series, "Film (2010)")};
+  FolderMovie(film, "Film (2010).mkv");
+  // A folder to scan, so that the update lists the film's folder too
+  const std::string other{Folder(film, "Other")};
+  for (const std::string& folder : {other, film, series, collection})
+    Settle(folder);
+  Scan();
+
+  const auto summary{Scan()};
+
+  EXPECT_EQ(1, CountMovies());
+  // The source, the collection, the series, the film's folder and the folder it holds
+  EXPECT_EQ(5u, summary.unchangedDirectories);
+}
+
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
 {
   UseTestScraper();
@@ -2502,6 +2628,136 @@ TEST_F(TestVideoInfoScanner, AMovieThatStopsBeingHiddenIsAddedOnUpdate)
   EXPECT_GT(m_db.GetMovieId(movie), 0);
 }
 #endif
+
+// A folder whose folders, and those below them, make more than are looked up together has only
+// as many planned ahead; the others are scanned in their turn
+TEST_F(TestVideoInfoScanner, AllTheMoviesOfATreeOfMoreFoldersThanAreLookedUpTogetherAreAdded)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  std::vector<std::string> movies;
+  for (int series = 1; series <= 8; ++series)
+  {
+    const std::string folder{Folder(collection, StringUtils::Format("Series {}", series))};
+    for (int film = 1; film <= 8; ++film)
+    {
+      const std::string title{StringUtils::Format("Film {} {} (2010)", series, film)};
+      movies.push_back(FolderMovie(Folder(folder, title), title + ".mkv"));
+    }
+  }
+
+  // 8 series and 56 of their movies
+  EXPECT_EQ(1U + 64U, TestScanner{m_settings}.FoldersPlannedWith(collection, 64));
+
+  Scan();
+
+  EXPECT_EQ(64, CountMovies());
+  for (const std::string& movie : movies)
+    EXPECT_GT(m_db.GetMovieId(movie), 0) << movie;
+}
+
+// A folder that isn't scanned alongside those beside it, here one of music videos, is added once the
+// movies of every batch of folders before it are, though the next batch is looked up before the one
+// before it is added
+TEST_F(TestVideoInfoScanner, AFolderScannedOnItsOwnWaitsForEveryBatchBeforeIt)
+{
+  for (const std::string name :
+       {"A Film (2001)", "B Film (2002)", "C Film (2003)", "D Film (2004)", "E Film (2005)"})
+    FolderMovie(Folder(m_root, name), name + ".mkv");
+  const std::string videos{Folder(m_root, "F Videos")};
+  File(videos, "Video.nfo", "<musicvideo><title>Video</title><artist>Artist</artist></musicvideo>");
+  File(videos, "Video.mkv");
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='musicvideos', strScraper='metadata.local', useFolderNames=0, "
+      "scanRecursive=0, noUpdate=0 WHERE idPath=%i",
+      m_db.AddPath(videos))));
+  FolderMovie(Folder(m_root, "G Film (2007)"), "G Film (2007).mkv");
+
+  TestScanner scanner{m_settings};
+  scanner.LimitFoldersLookedUpTogether(2);
+  scanner.Scan(m_root);
+
+  std::vector<std::string> added;
+  for (const TestScanner::ScanSummary::Item& item : scanner.Summary().added)
+    added.push_back(URIUtils::GetFileName(item.path));
+  EXPECT_EQ((std::vector<std::string>{"A Film (2001).mkv", "B Film (2002).mkv", "C Film (2003).mkv",
+                                      "D Film (2004).mkv", "E Film (2005).mkv", "Video.mkv",
+                                      "G Film (2007).mkv"}),
+            added);
+}
+
+// However many folders are looked up together, the library is written in the same order, so is the
+// same. The source holds a disc, extras, a folder whose few folders are planned ahead, one of them
+// with .nomedia, and one whose many are scanned in their turn.
+TEST_F(TestVideoInfoScanner, TheLibraryIsTheSameHoweverManyFoldersAreLookedUpTogether)
+{
+  for (const std::string name : {"A Film (2001)", "B Film (2002)", "D Film (2004)", "F Film (2006)",
+                                 "G Film (2007)", "H Film (2008)"})
+    FolderMovie(Folder(m_root, name), name + ".mkv");
+  File(Folder(URIUtils::AddFileToFolder(m_root, "B Film (2002)"), "Extras"), "Trailer.mkv");
+  const std::string disc{Folder(m_root, "C Film (2003)")};
+  Nfo(disc, "movie.nfo", "C Film");
+  DvdRip(disc);
+  const std::string few{Folder(m_root, "E Collection")};
+  for (const std::string name : {"Part 1 (2001)", "Part 2 (2002)"})
+    FolderMovie(Folder(few, name), name + ".mkv");
+  File(Folder(few, "Hidden (2005)"), ".nomedia");
+  const std::string many{Folder(m_root, "I Many")};
+  for (int film = 1; film <= 9; ++film)
+  {
+    const std::string name{StringUtils::Format("Many {} (2010)", film)};
+    FolderMovie(Folder(many, name), name + ".mkv");
+  }
+  Nfo(m_root, "Root Film (2009).nfo", "Root Film");
+  File(m_root, "Root Film (2009).mkv");
+
+  // A database of its own for each scan, as SetUp() makes the test's
+  const auto scanned{[this](size_t together)
+                     {
+                       DatabaseSettings settings{m_settings};
+                       settings.name += "Together" + std::to_string(together);
+                       TestDatabase db;
+                       EXPECT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+                                 db.Connect(settings.name, settings, true));
+                       EXPECT_TRUE(db.ExecuteQuery(db.PrepareSQL(
+                           "UPDATE path SET strContent='movies', strScraper='metadata.local', "
+                           "useFolderNames=1, scanRecursive=2147483647, noUpdate=0 WHERE idPath=%i",
+                           db.AddPath(m_root))));
+                       std::vector<std::string> library;
+                       {
+                         TestScanner scanner{settings};
+                         scanner.LimitFoldersLookedUpTogether(together);
+                         scanner.Scan(m_root);
+                         for (const TestScanner::ScanSummary::Item& item : scanner.Summary().added)
+                           library.push_back(item.path + "|" + item.title);
+                       }
+                       // The movies and extras in the order written, and the folders' records
+                       library.push_back(db.GetSingleValue(
+                           "SELECT GROUP_CONCAT(entry, char(10)) FROM (SELECT movie.c00 || '|' || "
+                           "path.strPath || files.strFilename AS entry FROM movie JOIN files ON "
+                           "files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath ORDER "
+                           "BY movie.idMovie)"));
+                       library.push_back(db.GetSingleValue(
+                           "SELECT GROUP_CONCAT(entry, char(10)) FROM (SELECT path.strPath || "
+                           "files.strFilename || '|' || videoversion.idMedia || '|' || "
+                           "videoversion.itemType AS entry FROM videoversion JOIN files ON "
+                           "files.idFile=videoversion.idFile JOIN path ON "
+                           "path.idPath=files.idPath ORDER BY videoversion.idFile)"));
+                       library.push_back(db.GetSingleValue(
+                           "SELECT GROUP_CONCAT(entry, char(10)) FROM (SELECT strPath || '|' || "
+                           "IFNULL(strHash, '') AS entry FROM path ORDER BY strPath)"));
+                       db.Close();
+                       XFILE::CFile::Delete(settings.host + settings.name + ".db");
+                       return library;
+                     }};
+
+  const std::vector<std::string> together{scanned(64)};
+  // Every movie, and the extra
+  ASSERT_GE(together.size(), 3U);
+  EXPECT_EQ(19, std::ranges::count(together[together.size() - 3], '\n') + 1);
+  EXPECT_FALSE(together[together.size() - 2].empty());
+  EXPECT_EQ(together, scanned(2));
+  EXPECT_EQ(together, scanned(1));
+}
 
 // Music videos
 

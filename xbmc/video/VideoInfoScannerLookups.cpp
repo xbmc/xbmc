@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
+#include <iterator>
 #include <mutex>
 #include <vector>
 
@@ -49,119 +50,173 @@ void CVideoLookups::Run(size_t count,
                         const std::function<bool(size_t)>& handBack,
                         const std::atomic<bool>& stop)
 {
-  // A video whose look-up throws is still handed back, on one thread as on several
-  const auto lookUpOrLog{[&lookUp, count](size_t i)
-                         {
-                           try
-                           {
-                             lookUp(i);
-                           }
-                           catch (...)
-                           {
-                             CLog::LogF(LOGERROR, "Looking up video {} of {} failed", i + 1, count);
-                           }
-                         }};
+  CRun run{std::min(workers, count), stop};
+  run.Add(count, [&lookUp](size_t i, size_t) { lookUp(i); });
+  run.HandBack(count, handBack);
+}
 
-  workers = std::min(workers, count);
-  if (workers <= 1)
-  {
-    for (size_t i = 0; i < count && !stop; ++i)
-    {
-      lookUpOrLog(i);
-      if (!handBack(i))
-        break;
-    }
+CVideoLookups::CRun::CRun(size_t workers, const std::atomic<bool>& stop)
+  : m_workers(workers),
+    m_stop(stop),
+    m_window(workers * 8)
+{
+  // With one, each video is looked up on the calling thread as it is handed back
+  if (m_workers <= 1)
     return;
-  }
-
-  // Look-ups run this far at most ahead of the video handed back
-  const size_t window{workers * 4};
-
-  std::mutex lock;
-  std::condition_variable changed;
-  size_t next{0};
-  size_t handedBack{0};
-  bool stopping{false};
-  std::vector<char> done(count, 0);
-
-  const auto work{[&]
-                  {
-                    while (true)
-                    {
-                      size_t i;
-                      {
-                        std::unique_lock guard(lock);
-                        changed.wait(guard,
-                                     [&] {
-                                       return stopping || stop || next >= count ||
-                                              next < handedBack + window;
-                                     });
-                        if (stopping || stop || next >= count)
-                        {
-                          // The calling thread may be waiting for a video no one is to look up
-                          guard.unlock();
-                          changed.notify_all();
-                          return;
-                        }
-                        i = next++;
-                      }
-
-                      lookUpOrLog(i);
-
-                      {
-                        std::unique_lock guard(lock);
-                        done[i] = 1;
-                      }
-                      changed.notify_all();
-                    }
-                  }};
-
-  std::vector<std::unique_ptr<CThread>> threads;
-  threads.reserve(workers);
-
-  const auto finish{[&]
-                    {
-                      {
-                        std::unique_lock guard(lock);
-                        stopping = true;
-                      }
-                      changed.notify_all();
-                      threads.clear();
-                    }};
 
   try
   {
-    // Made in here, so that a thread that can't be made ends those that were
-    for (size_t worker = 0; worker < workers; ++worker)
-      threads.push_back(std::make_unique<CScanThread>("VideoLookUp", work));
+    m_threads.reserve(m_workers);
+    for (size_t worker = 0; worker < m_workers; ++worker)
+      m_threads.push_back(std::make_unique<CScanThread>("VideoLookUp", [this] { Work(); }));
+  }
+  catch (...)
+  {
+    // A thread that can't be made ends those that were
+    End();
+    throw;
+  }
+}
 
-    for (size_t i = 0; i < count; ++i)
+CVideoLookups::CRun::~CRun()
+{
+  End();
+}
+
+size_t CVideoLookups::CRun::Add(size_t count, std::function<void(size_t, size_t)> lookUp)
+{
+  size_t first;
+  {
+    std::unique_lock guard(m_lock);
+    first = m_done.size();
+    if (count == 0)
+      return first;
+    m_additions.push_back({.first = first, .lookUp = std::move(lookUp)});
+    m_done.resize(first + count, 0);
+  }
+  m_changed.notify_all();
+  return first;
+}
+
+bool CVideoLookups::CRun::HandBack(size_t end, const std::function<bool(size_t)>& handBack)
+{
+  if (m_workers <= 1)
+  {
+    for (; m_handedBack < std::min(end, m_done.size()); ++m_handedBack)
     {
+      if (m_ended || m_stop)
+      {
+        End();
+        return false;
+      }
+      LookUp(m_handedBack);
+      if (!handBack(m_handedBack))
+      {
+        End();
+        return false;
+      }
+    }
+    return !m_ended;
+  }
+
+  try
+  {
+    while (true)
+    {
+      size_t index;
       bool lookedUp;
       {
-        std::unique_lock guard(lock);
+        std::unique_lock guard(m_lock);
+        if (m_ended)
+          return false;
+        if (m_handedBack >= std::min(end, m_done.size()))
+          return true;
+        index = m_handedBack;
         // A video not yet looked up when the scan stopped is never looked up. The stop flag is
         // set without waking anyone, so it is looked at again now and then.
-        const auto ready{[&] { return done[i] || ((stopping || stop) && i >= next); }};
-        while (!changed.wait_for(guard, std::chrono::milliseconds(100), ready))
+        const auto ready{[this, index] { return m_done[index] || (m_stop && index >= m_next); }};
+        while (!m_changed.wait_for(guard, std::chrono::milliseconds(100), ready))
           ;
-        lookedUp = done[i];
+        lookedUp = m_done[index];
       }
-      if (!lookedUp || !handBack(i))
-        break;
+      if (!lookedUp || !handBack(index))
+      {
+        End();
+        return false;
+      }
 
       {
-        std::unique_lock guard(lock);
-        ++handedBack;
+        std::unique_lock guard(m_lock);
+        ++m_handedBack;
       }
-      changed.notify_all();
+      m_changed.notify_all();
     }
   }
   catch (...)
   {
-    finish();
+    End();
     throw;
   }
-  finish();
+}
+
+void CVideoLookups::CRun::Work()
+{
+  while (true)
+  {
+    size_t index;
+    {
+      std::unique_lock guard(m_lock);
+      m_changed.wait(guard,
+                     [this] {
+                       return m_ended || m_stop ||
+                              (m_next < m_done.size() && m_next < m_handedBack + m_window);
+                     });
+      if (m_ended || m_stop)
+      {
+        // The calling thread may be waiting for a video no one is to look up
+        guard.unlock();
+        m_changed.notify_all();
+        return;
+      }
+      index = m_next++;
+    }
+
+    LookUp(index);
+
+    {
+      std::unique_lock guard(m_lock);
+      m_done[index] = 1;
+    }
+    m_changed.notify_all();
+  }
+}
+
+void CVideoLookups::CRun::LookUp(size_t index)
+{
+  const Addition* added;
+  {
+    std::unique_lock guard(m_lock);
+    added = &*std::prev(std::ranges::upper_bound(m_additions, index, {}, &Addition::first));
+  }
+
+  // A video whose look-up throws is still handed back, on one thread as on several
+  try
+  {
+    added->lookUp(index - added->first, index);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Looking up video {} failed", index + 1);
+  }
+}
+
+void CVideoLookups::CRun::End()
+{
+  {
+    std::unique_lock guard(m_lock);
+    m_ended = true;
+  }
+  m_changed.notify_all();
+  m_threads.clear();
 }
 } // namespace KODI::VIDEO
