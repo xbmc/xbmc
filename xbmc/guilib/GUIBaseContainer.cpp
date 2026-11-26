@@ -577,7 +577,6 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         for (int i = 0; i < items->Size(); i++)
           m_items.push_back(items->Get(i));
         UpdateLayout(true); // true to refresh all items
-        UpdateScrollByLetter();
         SelectItem(message.GetParam1());
         return true;
       }
@@ -700,6 +699,7 @@ void CGUIBaseContainer::OnRight()
 
 void CGUIBaseContainer::OnNextLetter()
 {
+  UpdateScrollByLetter();
   const int offset = CorrectOffset(GetOffset(), GetCursor());
   // Binary search for first letter offset greater than current position
   auto it =
@@ -710,6 +710,7 @@ void CGUIBaseContainer::OnNextLetter()
 
 void CGUIBaseContainer::OnPrevLetter()
 {
+  UpdateScrollByLetter();
   const int offset = CorrectOffset(GetOffset(), GetCursor());
   if (m_letterOffsets.empty())
     return;
@@ -729,6 +730,7 @@ void CGUIBaseContainer::OnJumpLetter(const std::string& letter, bool skip /*=fal
 
   m_matchTimer.StartZero();
 
+  UpdateScrollByLetter();
   // we can't jump through letters if we have none
   if (m_letterOffsets.empty())
     return;
@@ -765,7 +767,11 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
   static const char letterMap[8][6] = { "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
   // only 2..9 supported
-  if (letter < 2 || letter > 9 || m_letterOffsets.empty())
+  if (letter < 2 || letter > 9)
+    return;
+
+  UpdateScrollByLetter();
+  if (m_letterOffsets.empty())
     return;
 
   const std::string letters = letterMap[letter - 2];
@@ -1226,9 +1232,6 @@ void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
         SelectItem(m_items.size()-1);
       SetInvalid();
     }
-    // always update the scroll by letter, as the list provider may have altered labels
-    // while not actually changing the list items.
-    UpdateScrollByLetter();
   }
 }
 
@@ -1265,6 +1268,8 @@ void CGUIBaseContainer::CalculateLayout()
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
 }
 
+// Only the letter actions read the offsets, and a list provider can change its labels at any
+// time, so they are built for each action
 void CGUIBaseContainer::UpdateScrollByLetter()
 {
   m_letterOffsets.clear();
