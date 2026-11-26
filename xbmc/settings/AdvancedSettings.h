@@ -307,6 +307,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryImportWatchedState{true};
     bool m_bVideoLibraryImportResumePoint{true};
+    //! A scan caches a thumb made from a frame of a video once it is done, rather than as it finds
+    //! it, as decoding the frame competes with the scan
+    bool m_bVideoLibraryExtractFramesAfterScrape{false};
 
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;

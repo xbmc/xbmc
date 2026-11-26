@@ -34,6 +34,8 @@ namespace KODI::VIDEO
 enum class ArtPriority : uint8_t
 {
   LIST = 0, //!< poster - shown in library
+  //! a thumb made from a frame of the video \sa CVideoInfoScannerArt::CachedAsFound()
+  FRAME,
   BACKGROUND, //!< fanart - shown behind a list
   DETAIL, //!< shown once an item is opened
   ACTOR, //!< shown once a cast list is opened
@@ -49,6 +51,10 @@ struct ArtToCache
 
 //! \brief When art of the given type (a "poster", a "set.fanart") is first seen
 ArtPriority PriorityOfArtType(std::string_view artType);
+
+//! \brief When an image is to be cached: as its art type is first seen, but for a thumb made from a
+//! frame of the video \sa ArtPriority::FRAME
+ArtPriority PriorityOfArt(std::string_view artType, const std::string& url);
 
 /*! \brief The artwork side of a video scan
 
@@ -120,10 +126,10 @@ public:
   /*! \brief Hand the artwork held back during the scan to the texture cache
 
    Caching an image competes with the scan for the cpu to decode and store what it fetched, so
-   with ArtRetrievalTiming::BACKGROUND all but ArtPriority::LIST is collected as it is found and
-   queued here instead, once the library is browsable. The texture cache's own queue outlives this
-   object, so the images are still cached from that point rather than being left for something to
-   ask for them.
+   with ArtRetrievalTiming::BACKGROUND all but the art cached as found (CachedAsFound()) is
+   collected as it is found and queued here instead, once the library is browsable. The texture cache's own queue
+   outlives this object, so the images are still cached from that point rather than being left for
+   something to ask for them.
 
    Queued in ArtPriority order, so that what the user comes to first is fetched first.
 
@@ -131,6 +137,13 @@ public:
    each would otherwise cost a lookup to find it already cached.
    */
   void FlushDeferred();
+
+  /*!
+   \brief Whether art of a priority is cached as the scan finds it, rather than once it is done:
+   with ArtRetrievalTiming::BACKGROUND, the art shown in the library, and a thumb made from a frame
+   of the video unless videolibrary/extractframesafterscrape says to extract the frames after it
+   */
+  bool CachedAsFound(ArtPriority priority) const;
 
   /*! \brief Get season thumbs for a tvshow.
    All seasons (regardless of whether the user has episodes) are added to the art map.
@@ -179,6 +192,8 @@ private:
   void Cache(std::vector<ArtToCache> art) const;
 
   ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
+  //! videolibrary/extractframesafterscrape
+  bool m_framesAfterScan{false};
 
   //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
   //! Mutable, as the art is found by the const methods that gather it

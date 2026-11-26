@@ -137,6 +137,14 @@ CVideoInfoScannerArt::CVideoInfoScannerArt()
   m_artRetrievalTiming =
       static_cast<ArtRetrievalTiming>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
           CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING));
+  m_framesAfterScan = CServiceBroker::GetSettingsComponent()
+                          ->GetAdvancedSettings()
+                          ->m_bVideoLibraryExtractFramesAfterScrape;
+}
+
+bool CVideoInfoScannerArt::CachedAsFound(ArtPriority priority) const
+{
+  return priority == ArtPriority::LIST || (priority == ArtPriority::FRAME && !m_framesAfterScan);
 }
 
 CVideoInfoScannerArt::~CVideoInfoScannerArt()
@@ -154,7 +162,7 @@ void CVideoInfoScannerArt::Cache(const KODI::ART::Artwork& art) const
   std::vector<ArtToCache> artToCache;
   artToCache.reserve(art.size());
   for (const auto& [artType, url] : art)
-    artToCache.push_back({url, {}, PriorityOfArtType(artType)});
+    artToCache.push_back({url, {}, PriorityOfArt(artType, url)});
 
   Cache(std::move(artToCache));
 }
@@ -168,7 +176,7 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
     for (auto& a : art)
     {
       // Get artwork that is immediately visible to the user first, and defer the rest for later
-      if (a.priority == ArtPriority::LIST)
+      if (CachedAsFound(a.priority))
         CacheArtwork(a.url, false, a.hash);
       else
       {
@@ -236,9 +244,9 @@ void CVideoInfoScannerArt::FlushDeferred()
   // Broken down by priority, as one image looks like any other by the time it is fetched
   CLog::LogF(LOGDEBUG,
              "Queueing {} images found during the scan for caching "
-             "({} list, {} background, {} detail, {} actor)",
-             m_deferredArt.size(), count(ArtPriority::LIST), count(ArtPriority::BACKGROUND),
-             count(ArtPriority::DETAIL), count(ArtPriority::ACTOR));
+             "({} list, {} frame, {} background, {} detail, {} actor)",
+             m_deferredArt.size(), count(ArtPriority::LIST), count(ArtPriority::FRAME),
+             count(ArtPriority::BACKGROUND), count(ArtPriority::DETAIL), count(ArtPriority::ACTOR));
 
   const auto& textureCache = CServiceBroker::GetTextureCache();
   for (const auto& art : m_deferredArt)
@@ -262,6 +270,13 @@ ArtPriority PriorityOfArtType(std::string_view artType)
     return ArtPriority::LIST;
 
   return ArtPriority::DETAIL;
+}
+
+ArtPriority PriorityOfArt(std::string_view artType, const std::string& url)
+{
+  if (IMAGE_FILES::CImageFileURL(url).GetSpecialType() == "video")
+    return ArtPriority::FRAME;
+  return PriorityOfArtType(artType);
 }
 
 void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
@@ -447,7 +462,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   std::vector<ArtToCache> artToCache;
   for (const auto& artType : artTypes)
     if (art.contains(artType))
-      artToCache.push_back({art.at(artType), {}, PriorityOfArtType(artType)});
+      artToCache.push_back({art.at(artType), {}, PriorityOfArt(artType, art.at(artType))});
   Cache(std::move(artToCache));
 
   pItem->SetArt(art);
