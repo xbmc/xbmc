@@ -148,7 +148,8 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       CScreenShot::IsScreenshotPath(realPath))
     return true;
 
-  std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
   if (!strPlaylistsPath.empty() && StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
     return true;
