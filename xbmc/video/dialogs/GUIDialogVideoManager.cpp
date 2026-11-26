@@ -598,10 +598,11 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
     }
     else
     {
-      // The playlist's file starts unplayed, whatever the item it was chosen for shows
+      // The playlist's file starts unplayed and unmeasured, whatever the chosen item shows
       CFileItem asset{*item};
       asset.GetVideoInfoTag()->SetPlayCount(0);
       asset.GetVideoInfoTag()->m_lastPlayed.Reset();
+      asset.GetVideoInfoTag()->m_contentGeometry.Set({});
       if (!m_database.AddVideoAsset(item->GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
                                     idVideoVersion, GetVideoAssetType(), asset))
       {
