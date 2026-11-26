@@ -5,6 +5,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
     See LICENSES/README.md for more information.
 """
+import json
 import sys
 import urllib.parse
 
@@ -175,6 +176,15 @@ elif action == 'getepisodedetails':
                                 {'image': '/home/akva/Pictures/hawaii-shirt.png',
                                  'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
+
+elif action == 'getartwork':
+    # id is the show's default unique id, which may be another site's: uniqueIDs gives them all, by
+    # type
+    uniqueids = json.loads(params.get('uniqueIDs', '{}'))
+    xbmc.log(f'Get artwork callback "{params["id"]}", unique ids {uniqueids}', xbmc.LOGDEBUG)
+    liz = xbmcgui.ListItem('Demo show 1', offscreen=True)
+    liz.getVideoInfoTag().addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
+    xbmcplugin.setResolvedUrl(handle=plugin_handle, succeeded=True, listitem=liz)
 
 elif action == 'nfourl':
     nfo = params['nfo']

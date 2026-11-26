@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
@@ -31,8 +33,10 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/ContentNames.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XBMCTinyXML2.h"
 #include "video/VideoInfoTag.h"
@@ -89,17 +93,19 @@ constexpr const char* PYTHON_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UT
   </extension>
 </addon>)";
 
-//! The searches made of the scraper: whether they fail, and the threads they ran on
+//! The searches made of the scraper: whether they fail, the threads they ran on, and the options each
+//! run was given
 struct SSearches
 {
   std::mutex lock;
   bool fail{false};
   std::vector<int> threads;
+  std::vector<std::string> options;
 };
 
 /*!
  \brief Stands in for the python interpreter running a scraper: a search finds nothing, or fails,
- ending its listing as unsuccessful
+ ending its listing as unsuccessful. An artwork request reads a movie called 'Details'.
  */
 class CSearchingInvoker : public ILanguageInvoker
 {
@@ -116,14 +122,23 @@ protected:
     setState(InvokerStateRunning);
     // As a plugin is run: its url, handle and options
     const int handle{std::stoi(arguments[1])};
+    const CURL options{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + arguments[2]};
     bool fail{false};
     {
       std::unique_lock lock(m_searches.lock);
       fail = m_searches.fail;
       m_searches.threads.push_back(GetId());
+      m_searches.options.push_back(arguments[2]);
     }
 
-    XFILE::CPluginDirectory::EndOfDirectory(handle, !fail, false, false);
+    if (options.GetOption("action") == "getartwork")
+    {
+      CFileItem movie{"Details"};
+      movie.GetVideoInfoTag()->SetTitle("Details");
+      XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &movie);
+    }
+    else
+      XFILE::CPluginDirectory::EndOfDirectory(handle, !fail, false, false);
 
     setState(InvokerStateScriptDone);
     return true;
@@ -225,6 +240,16 @@ protected:
     return m_handler.m_searches.threads;
   }
 
+  //! The options each run of the scraper was given, as a plugin's url gives them
+  std::vector<CURL> Options()
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    std::vector<CURL> options;
+    for (const std::string& option : m_handler.m_searches.options)
+      options.emplace_back("plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + option);
+    return options;
+  }
+
   CSearchingHandler m_handler;
   bool m_registered{false};
   std::string m_folder;
@@ -256,6 +281,24 @@ TEST_F(TestPythonScraper, AMusicSearchThatFailsFindsNothing)
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> artists;
   EXPECT_NO_THROW(artists = m_scraper->FindArtist("Artist"));
   EXPECT_TRUE(artists.empty());
+}
+
+TEST_F(TestPythonScraper, AnArtworkRequestIsGivenTheUniqueIDs)
+{
+  // An nfo file can make another site's id the default, which the scraper can't tell from its own
+  CVideoInfoTag show;
+  show.SetUniqueID("381020", "tvdb", true);
+  show.SetUniqueID("112162", "tmdb");
+  EXPECT_TRUE(m_scraper->GetArtwork(show));
+
+  const std::vector<CURL> requests{Options()};
+  ASSERT_EQ(1u, requests.size());
+  EXPECT_EQ("getartwork", requests[0].GetOption("action"));
+  EXPECT_EQ("381020", requests[0].GetOption("id"));
+  CVariant ids;
+  ASSERT_TRUE(CJSONVariantParser::Parse(requests[0].GetOption("uniqueIDs"), ids));
+  EXPECT_EQ("112162", ids["tmdb"].asString());
+  EXPECT_EQ("381020", ids["tvdb"].asString());
 }
 
 TEST(TestScraper, LocalInformationOnlyLooksNothingUp)
