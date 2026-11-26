@@ -38,7 +38,6 @@ public:
   std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
   float GetFrameLatencyAdjustment() override;
-  bool IsHDRDisplay() override;
   bool SetHDR(const VideoPicture* videoPicture) override;
   int GetOutputBitDepth() const override;
   KODI::UTILS::Eotf GetEotf() const override;
