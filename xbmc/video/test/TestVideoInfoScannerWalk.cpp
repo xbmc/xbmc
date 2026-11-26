@@ -206,6 +206,41 @@ TEST_F(TestDirectorySnapshot, ItsItemsAreThoseOfTheMask)
   EXPECT_EQ(m_folder, items.GetPath());
 }
 
+TEST_F(TestDirectorySnapshot, ADvdFolderRipIsFoundAsItsIfo)
+{
+  File(Folder(m_folder, "VIDEO_TS"), "VIDEO_TS.IFO");
+
+  EXPECT_EQ(URIUtils::AddFileToFolder(m_folder, "VIDEO_TS", "VIDEO_TS.IFO"),
+            CDirectorySnapshot::Take(m_folder)->GetDiscPath());
+}
+
+// As the file system matches names, which may take another case for the same name
+TEST_F(TestDirectorySnapshot, ADiscFileOfAnotherCaseIsFoundWhereTheFileSystemFindsIt)
+{
+  File(m_folder, "video_ts.ifo");
+
+  EXPECT_EQ(XFILE::CFile::Exists(URIUtils::AddFileToFolder(m_folder, "VIDEO_TS.IFO"), false),
+            !CDirectorySnapshot::Take(m_folder)->GetDiscPath().empty());
+}
+
+#ifdef HAVE_LIBBLURAY
+TEST_F(TestDirectorySnapshot, ABlurayFolderRipIsFoundAsItsIndex)
+{
+  File(Folder(m_folder, "BDMV"), "index.bdmv");
+
+  EXPECT_EQ(URIUtils::AddFileToFolder(m_folder, "BDMV", "index.bdmv"),
+            CDirectorySnapshot::Take(m_folder)->GetDiscPath());
+}
+#endif
+
+TEST_F(TestDirectorySnapshot, AFolderOfFilesIsNoDisc)
+{
+  File(m_folder, "Film.mkv");
+  Folder(m_folder, "Extras");
+
+  EXPECT_TRUE(CDirectorySnapshot::Take(m_folder)->GetDiscPath().empty());
+}
+
 TEST(TestVideoInfoScannerWalk, AFileListedWithoutItsStatHasTheTimeTheListingReports)
 {
   CFileItem file{"ftp://host/Film.mkv", false};

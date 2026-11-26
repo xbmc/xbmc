@@ -59,6 +59,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -1781,6 +1782,32 @@ TEST_F(TestVideoInfoScanner, ARefreshFindsASubtitleAddedSinceTheScan)
   EXPECT_EQ(1, refreshed.m_streamDetails.GetSubtitleStreamCount());
 }
 
+// A refresh lists the movie's folder afresh to look for an nfo of any name in it, though the cache
+// holds the listing the scan took without it
+TEST_F(TestVideoInfoScanner, ARefreshFindsAnNfoAddedSinceTheScan)
+{
+  UseTestScraper();
+  const std::string folder{Folder(m_root, "Afilm")};
+  const std::string film{File(folder, "Afilm.mkv")};
+  Found("Afilm");
+  Details("Afilm", "<details><title>Afilm</title></details>");
+  Scan();
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, m_db.GetMovieId(film)));
+  // Added as another program adds it, unseen by the directory cache
+  const std::string nfo{URIUtils::AddFileToFolder(folder, "info.nfo")};
+  {
+    std::ofstream file{std::filesystem::path{
+        std::u8string{reinterpret_cast<const char8_t*>(nfo.data()), nfo.size()}}};
+    file << "<movie><title>Other</title></movie>";
+    ASSERT_TRUE(file.good());
+  }
+
+  ASSERT_TRUE(Refresh(tag));
+
+  EXPECT_EQ("Other", m_db.GetMovieTitle(m_db.GetMovieId(film)));
+}
+
 // A refresh adds a disc of a movie again, which is titled with its disc, and gives it back the
 // movie's other disc
 TEST_F(TestVideoInfoScanner, ARefreshOfADiscGivesTheMovieBackItsOtherDisc)
@@ -2770,6 +2797,42 @@ TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)
 
   EXPECT_EQ(thumb, m_db.GetSingleValue(
                        "SELECT url FROM art WHERE media_type = 'actor' AND type = 'thumb'"));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, EachShowsCastAndGuestsHaveTheThumbsInItsActorsFolder)
+{
+  UseTextureCache();
+  std::map<std::string, std::string> thumbs;
+  for (const std::string name : {"A", "B", "C", "D"})
+  {
+    const std::string show{Folder(m_root, "Show " + name)};
+    File(show, "tvshow.nfo",
+         "<tvshow><title>Show " + name + "</title><actor><name>Star " + name +
+             "</name></actor></tvshow>");
+    const std::string actors{Folder(show, ".actors")};
+    thumbs["Star " + name] = File(actors, "Star_" + name + ".jpg");
+    thumbs["Guest " + name] = File(actors, "Guest_" + name + ".jpg");
+    const std::string season{Folder(show, "Season 1")};
+    for (int episode = 1; episode <= 4; ++episode)
+    {
+      const std::string file{"Show " + name + " S01E0" + std::to_string(episode) + ".mkv"};
+      File(season, URIUtils::ReplaceExtension(file, ".nfo"),
+           "<episodedetails><title>" + file + "</title><actor><name>Guest " + name +
+               "</name></actor></episodedetails>");
+      File(season, file);
+    }
+  }
+
+  Scan();
+
+  for (const auto& [actor, thumb] : thumbs)
+  {
+    EXPECT_EQ(thumb, m_db.GetSingleValue(m_db.PrepareSQL(
+                         "SELECT url FROM art JOIN actor ON art.media_id = actor.actor_id WHERE "
+                         "art.media_type = 'actor' AND art.type = 'thumb' AND actor.name = '%s'",
+                         actor.c_str())))
+        << actor;
+  }
 }
 
 // TV shows looked up with a scraper

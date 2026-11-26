@@ -106,6 +106,13 @@ public:
   //! \brief Whether it holds .nomedia as CInfoScanner::HasNoMedia() finds it: a file, not a folder,
   //! of that name as the file system matches names
   bool HasNoMedia() const;
+
+  /*!
+   \brief The disc structure file the folder holds, as UTILS::GetOpticalMediaPath() finds it: its
+   own entries are looked at, and a BDMV or VIDEO_TS folder looked into only where there is one
+   \return the file, or empty where the folder holds no disc
+   */
+  std::string GetDiscPath() const;
   const std::string& Digest() const { return m_digest; }
 
   /*!

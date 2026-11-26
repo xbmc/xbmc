@@ -53,8 +53,10 @@ std::string InfoTypeToStr(CInfoScanner::InfoType infoType)
 
 CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
                                        ADDON::ScraperPtr info,
-                                       bool lookInFolder)
-  : IVideoInfoTagLoader(item, std::move(info), lookInFolder)
+                                       bool lookInFolder,
+                                       std::function<bool(const std::string& folder)> listed)
+  : IVideoInfoTagLoader(item, std::move(info), lookInFolder),
+    m_listed(std::move(listed))
 {
   if (m_info && m_info->Content() == ADDON::ContentType::TVSHOWS && m_item.IsFolder())
     m_path = URIUtils::AddFileToFolder(m_item.GetPath(), "tvshow.nfo");
@@ -304,7 +306,8 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
                               : item.IsStack() ? CStackDirectory::GetBasePath(item.GetPath())
                                                : URIUtils::GetDirectory(item.GetPath())};
     CFileItemList items;
-    if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && !items.IsEmpty())
+    const int flags{m_listed && m_listed(strPath) ? DIR_FLAG_READ_CACHE : DIR_FLAG_DEFAULTS};
+    if (CDirectory::GetDirectory(strPath, items, ".nfo", flags) && !items.IsEmpty())
     {
       const CVideoInfoTag* tag{item.GetVideoInfoTag()};
       auto nfoItems{items | std::views::filter(

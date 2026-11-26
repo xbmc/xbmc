@@ -1463,6 +1463,25 @@ public:
    */
   int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
 
+  //! \brief The movies the files of a folder are versions of, by file name
+  struct FolderMovies
+  {
+    std::string folder;
+    std::map<std::string, int, std::less<>> byFile;
+  };
+
+  /*!
+   \brief The movies the files of a folder are versions of
+   \param folder the folder, with a slash at its end
+   */
+  FolderMovies GetFolderMovies(const std::string& folder);
+
+  /*!
+   \brief As GetMovieId(), from the movies of the file's folder where it is one of them
+   \param known the movies of a folder, which may not be the file's
+   */
+  int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
+
   /*!
    \brief Work out the date a file, or a show's folder, is added to the library with, where nothing
    gives it one, before the transaction it is added in, so that the file system isn't asked while the

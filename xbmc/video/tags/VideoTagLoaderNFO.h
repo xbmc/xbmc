@@ -11,6 +11,7 @@
 #include "IVideoInfoTagLoader.h"
 #include "NfoFile.h"
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -18,9 +19,12 @@
 class CVideoTagLoaderNFO : public KODI::VIDEO::IVideoInfoTagLoader
 {
 public:
+  //! \param listed Whether the caller has listed a folder itself, so that the directory cache
+  //! holds it as it is now: a listing left there by anything else may be older than an nfo
   CVideoTagLoaderNFO(const CFileItem& item,
                      ADDON::ScraperPtr info,
-                     bool lookInFolder);
+                     bool lookInFolder,
+                     std::function<bool(const std::string& folder)> listed = {});
 
   ~CVideoTagLoaderNFO() override = default;
 
@@ -55,6 +59,7 @@ protected:
   std::string FindNFO(const CFileItem& item, bool movieFolder) const;
 
   std::string m_path; //!< Path to nfo file
+  std::function<bool(const std::string& folder)> m_listed;
 
 private:
   // Cache of the parsed nfo file, populated on the first call to Load()

@@ -21,6 +21,7 @@
 
 #include <atomic>
 #include <cstdint>
+#include <deque>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -466,6 +467,8 @@ class ISetInfoTagLoader;
     std::unique_ptr<CScanPathTable> m_pathTable{std::make_unique<CScanPathTable>(m_database)};
     //! Listings taken of folders the scan has yet to leave
     std::unordered_map<std::string, std::shared_ptr<const CDirectorySnapshot>> m_snapshots;
+    //! The order the listings were taken in, the oldest let go of first
+    std::deque<std::string> m_snapshotOrder;
     //! The modified time of each folder as its parent's listing gave it
     std::unordered_map<std::string, std::optional<int64_t>> m_listedTimes;
     //! The file probed last, and its own streams, which its other episodes have too
@@ -481,6 +484,9 @@ class ISetInfoTagLoader;
       std::unique_lock lock(m_listedFoldersLock);
       return m_listedFolders.contains(folder);
     }
+
+    //! The movies of the folder whose items are being looked up
+    CVideoDatabase::FolderMovies m_folderMovies;
     std::unordered_map<std::string, std::string> m_folderSettings;
     //! The records of the folders of each show, stored once its episodes are added
     std::unordered_map<std::string, std::vector<std::pair<std::string, FolderRecord>>>
