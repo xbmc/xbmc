@@ -405,6 +405,9 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults& results)
 
     m_ifc.peripheral->toAddon->free_scan_results(m_ifc.peripheral, peripheralCount, pScanResults);
 
+    // The bus repeats its scan every few seconds, so the batteries are read with it
+    UpdateBatteries();
+
     return true;
   }
 
@@ -842,6 +845,39 @@ void CPeripheralAddon::PowerOffJoystick(unsigned int index)
     return;
 
   m_ifc.peripheral->toAddon->power_off_joystick(m_ifc.peripheral, index);
+}
+
+void CPeripheralAddon::UpdateBatteries()
+{
+  if (!m_ifc.peripheral->toAddon->get_joystick_battery)
+    return;
+
+  std::vector<std::pair<unsigned int, std::shared_ptr<CPeripheralJoystick>>> joysticks;
+  {
+    std::unique_lock lock(m_critSection);
+    for (const auto& [index, peripheral] : m_peripherals)
+    {
+      if (peripheral->Type() == PERIPHERAL_JOYSTICK)
+        joysticks.emplace_back(index, std::static_pointer_cast<CPeripheralJoystick>(peripheral));
+    }
+  }
+
+  for (const auto& [index, joystick] : joysticks)
+  {
+    JOYSTICK_BATTERY batteryStruct{JOYSTICK_BATTERY_STATE_UNKNOWN, -1};
+
+    PeripheralBattery battery;
+    if (m_ifc.peripheral->toAddon->get_joystick_battery(m_ifc.peripheral, index, &batteryStruct) ==
+        PERIPHERAL_NO_ERROR)
+      battery = CPeripheralAddonTranslator::TranslateBattery(batteryStruct);
+
+    if (battery != joystick->GetBattery())
+    {
+      CLog::LogF(LOGDEBUG, "{}: battery {} percent, state {}", joystick->DeviceName(),
+                 battery.level, static_cast<int>(battery.state));
+      joystick->SetBattery(battery);
+    }
+  }
 }
 
 void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IButtonMap* buttonMap)

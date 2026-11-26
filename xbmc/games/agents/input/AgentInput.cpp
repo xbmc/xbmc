@@ -9,21 +9,34 @@
 #include "AgentInput.h"
 
 #include "AgentController.h"
+#include "ServiceBroker.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/input/GameClientJoystick.h"
 #include "games/controllers/Controller.h"
 #include "input/InputManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/events/EventLockHandle.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <array>
 
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+// The joystick add-on gives a driver's "Low" charge step as 25%
+constexpr int LOW_BATTERY_LEVEL = 25;
+} // namespace
 
 CAgentInput::CAgentInput(PERIPHERALS::CPeripherals& peripheralManager, CInputManager& inputManager)
   : m_peripheralManager(peripheralManager),
@@ -47,6 +60,10 @@ void CAgentInput::Start(GameClientPtr gameClient)
 {
   // Initialize state
   m_gameClient = std::move(gameClient);
+  {
+    std::lock_guard<std::mutex> lock(m_controllerMutex);
+    m_lowBatteryWarned.clear();
+  }
 
   // Register callbacks
   if (m_gameClient)
@@ -79,6 +96,9 @@ void CAgentInput::Stop()
     m_portMap.clear();
     m_peripheralMap.clear();
     m_disconnectedPeripherals.clear();
+
+    std::lock_guard<std::mutex> lock(m_controllerMutex);
+    m_agentPeripherals.clear();
   }
 
   // Close open keyboard
@@ -115,6 +135,9 @@ void CAgentInput::Refresh()
     // Open/close joysticks
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
     ProcessJoysticks(inputHandlingLock);
+
+    // Peripheral scans read the batteries, and every scan ends with a refresh
+    CheckBatteries();
   }
 
   // Notify observers if anything changed
@@ -177,6 +200,65 @@ bool CAgentInput::OnButtonPress(MOUSE::BUTTON_ID button)
     NotifyObservers(ObservableMessageAgentControllersChanged);
   }
   return false;
+}
+
+PERIPHERALS::PeripheralVector CAgentInput::GetAgentPeripherals() const
+{
+  std::lock_guard<std::mutex> lock(m_controllerMutex);
+  return m_agentPeripherals;
+}
+
+void CAgentInput::CheckBatteries()
+{
+  const PERIPHERALS::PeripheralVector peripherals = GetAgentPeripherals();
+  for (unsigned int i = 0; i < peripherals.size(); ++i)
+  {
+    if (!peripherals[i])
+      continue;
+
+    const PERIPHERALS::PeripheralBattery battery = peripherals[i]->GetBattery();
+    const bool low = battery.state == PERIPHERALS::PeripheralBatteryState::DISCHARGING &&
+                     battery.level >= 0 && battery.level <= LOW_BATTERY_LEVEL;
+    const std::string& location = peripherals[i]->Location();
+
+    {
+      std::lock_guard<std::mutex> lock(m_controllerMutex);
+      if (!low)
+      {
+        m_lowBatteryWarned.erase(location);
+        continue;
+      }
+
+      if (!m_lowBatteryWarned.insert(location).second)
+        continue;
+    }
+
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning, strings.Get(35401),
+        StringUtils::Format(strings.Get(35402), i + 1, battery.level));
+  }
+}
+
+void CAgentInput::OnAgentControllerLost(const std::string& portAddress)
+{
+  if (!m_gameClient)
+    return;
+
+  const std::vector<std::string> ports = GetGameInputPorts();
+  const auto it = std::ranges::find(ports, portAddress);
+  if (it == ports.end())
+    return;
+
+  const auto agentNumber = static_cast<unsigned int>(std::distance(ports.begin(), it)) + 1;
+  CLog::Log(LOGINFO, "Agent {}'s controller disconnected, pausing the game", agentNumber);
+
+  // Pausing opens the game menu, from which the game carries on
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+
+  const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, strings.Get(35400),
+                                        StringUtils::Format(strings.Get(35403), agentNumber));
 }
 
 std::vector<std::shared_ptr<const CAgentController>> CAgentInput::GetControllers() const
@@ -338,6 +420,22 @@ void CAgentInput::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlin
   // Update connected joysticks
   std::set<PERIPHERALS::PeripheralPtr> disconnectedPeripherals;
   UpdateConnectedJoysticks(joysticks, newPortMap, inputHandlingLock, disconnectedPeripherals);
+
+  // Agents are numbered by their port, so an empty port keeps its place
+  std::map<PortAddress, PERIPHERALS::PeripheralPtr> portPeripherals;
+  for (const auto& [inputProvider, joystick] : m_portMap)
+    portPeripherals[joystick->GetPortAddress()] = joystick->GetSource();
+
+  PERIPHERALS::PeripheralVector agentPeripherals;
+  for (const std::string& portAddress : GetGameInputPorts())
+  {
+    const auto it = portPeripherals.find(portAddress);
+    agentPeripherals.emplace_back(it != portPeripherals.end() ? it->second : nullptr);
+  }
+  {
+    std::lock_guard<std::mutex> lock(m_controllerMutex);
+    m_agentPeripherals = std::move(agentPeripherals);
+  }
 
   // Rebuild peripheral map
   PeripheralMap peripheralMap;
@@ -646,6 +744,8 @@ void CAgentInput::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& jo
     // Erase joystick from port map if its peripheral becomes disconnected
     if (bDisconnected)
     {
+      const std::string portAddress = joystick->GetPortAddress();
+
       // Must use nullptr because peripheral has likely fallen out of scope,
       // destroying the object
       joystick->UnregisterInput(nullptr);
@@ -655,6 +755,8 @@ void CAgentInput::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& jo
       m_portMap.erase(inputProvider);
 
       SetChanged(true);
+
+      OnAgentControllerLost(portAddress);
     }
   }
 }
