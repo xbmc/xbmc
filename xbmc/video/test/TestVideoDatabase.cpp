@@ -436,6 +436,18 @@ TEST_F(TestVideoDatabase, AddPathReusesRowAcrossZipAndArchiveProtocols)
   EXPECT_LT(m_db.GetPathId(archive), 0);
 }
 
+TEST_F(TestVideoDatabase, ATrailerIsStoredOnItsMovie)
+{
+  const int idMovie{AddMovie("/videos/movie.mkv")};
+  ASSERT_GT(idMovie, 0);
+
+  m_db.SetTrailerForMovie(idMovie, "/videos/movie-trailer.mkv");
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo("", tag, idMovie));
+  EXPECT_EQ("/videos/movie-trailer.mkv", tag.m_strTrailer);
+}
+
 TEST_F(TestVideoDatabase, AMovieIsFoundByItsDirectorsName)
 {
   CVideoInfoTag directed{Tag("/videos/directed.mkv")};
