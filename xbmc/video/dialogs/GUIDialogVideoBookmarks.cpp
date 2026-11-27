@@ -47,6 +47,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <utility>
@@ -304,7 +305,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
         StringUtils::IsNaturalNumber(chapterName))
       chapterName = StringUtils::Format(localizeStrings.Get(25010), i);
 
-    CFileItemPtr item(new CFileItem(chapterName));
+    CFileItemPtr item = std::make_shared<CFileItem>(chapterName);
     item->SetLabel2(time);
 
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(

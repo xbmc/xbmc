@@ -33,6 +33,7 @@
 #include "utils/Variant.h"
 
 #include <cassert>
+#include <memory>
 #include <string_view>
 #include <utility>
 
@@ -470,11 +471,11 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   m_ruleLabels->Clear();
   for (const auto& rule : m_playlist.GetRules())
   {
-    CFileItemPtr item(new CFileItem("", false));
+    CFileItemPtr item = std::make_shared<CFileItem>("", false);
     item->SetLabel(rule->GetLocalizedRule());
     m_ruleLabels->Add(item);
   }
-  CFileItemPtr item(new CFileItem("", false));
+  CFileItemPtr item = std::make_shared<CFileItem>("", false);
   item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21423));
   m_ruleLabels->Add(item);
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RULE_LIST, 0, 0, m_ruleLabels);

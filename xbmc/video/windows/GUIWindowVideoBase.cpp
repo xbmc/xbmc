@@ -1327,7 +1327,7 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
     CServiceBroker::GetPlaylistPlayer().SetShuffle(playlistId, false);
   }
 
-  CFileItemPtr movieItem(new CFileItem(*item));
+  CFileItemPtr movieItem = std::make_shared<CFileItem>(*item);
 
   // Call the base method to actually queue the items
   // and start playing the given item

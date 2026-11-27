@@ -27,6 +27,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <climits>
+#include <memory>
 #include <mutex>
 #include <utility>
 
@@ -624,7 +625,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
        child = child->NextSiblingElement())
   {
     // Create new item,
-    CFileItemPtr item(new CFileItem());
+    CFileItemPtr item = std::make_shared<CFileItem>();
     ParseItem(item.get(), child, pathToUrl);
 
     item->SetProperty("isrss", "1");

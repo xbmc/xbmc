@@ -31,6 +31,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <string.h>
 
 using namespace KODI;
@@ -359,7 +360,7 @@ void CJSONRPCUtils::NotifyItemUpdated(const std::shared_ptr<CFileItem>& item)
 
 void CJSONRPCUtils::NotifyItemUpdated(const CVideoInfoTag& info, const KODI::ART::Artwork& artwork)
 {
-  CFileItemPtr msgItem(new CFileItem(info));
+  CFileItemPtr msgItem = std::make_shared<CFileItem>(info);
   if (!artwork.empty())
     msgItem->SetArt(artwork);
   CGUIMessage message(GUI_MSG_NOTIFY_ALL,

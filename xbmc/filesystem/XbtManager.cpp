@@ -12,6 +12,7 @@
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
 
+#include <memory>
 #include <utility>
 
 namespace XFILE
@@ -108,7 +109,7 @@ CXbtManager::XBTFReaders::const_iterator CXbtManager::ProcessFile(const CURL& pa
   }
 
   // try to read the file
-  CXBTFReaderPtr reader(new CXBTFReader());
+  CXBTFReaderPtr reader = std::make_shared<CXBTFReader>();
   if (!reader->Open(filePath))
     return m_readers.end();
 

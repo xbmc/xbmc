@@ -16,6 +16,8 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 
+#include <memory>
+
 using namespace XFILE;
 using namespace MEDIA_DETECT;
 
@@ -57,7 +59,7 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // Format standard cdda item label
     std::string strLabel = StringUtils::Format("Track {:02}", i);
 
-    CFileItemPtr pItem(new CFileItem(strLabel));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strLabel);
     pItem->SetFolder(false);
     CURL trackUrl{url};
     trackUrl.SetFileName(StringUtils::Format("{:02}.cdda", i));

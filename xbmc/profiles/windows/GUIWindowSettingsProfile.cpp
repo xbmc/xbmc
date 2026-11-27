@@ -33,6 +33,8 @@
 #include "utils/Variant.h"
 #include "windows/GUIWindowFileManager.h"
 
+#include <memory>
+
 using namespace XFILE;
 
 #define CONTROL_PROFILES 2
@@ -214,7 +216,7 @@ void CGUIWindowSettingsProfile::LoadList()
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
   {
     const CProfile *profile = profileManager->GetProfile(i);
-    CFileItemPtr item(new CFileItem(profile->getName()));
+    CFileItemPtr item = std::make_shared<CFileItem>(profile->getName());
     item->SetLabel2(profile->getDate());
     item->SetArt(KODI::ART::TYPE::THUMB, profile->getThumb());
     item->SetOverlayImage(profile->getLockMode() == LockMode::EVERYONE
@@ -224,8 +226,8 @@ void CGUIWindowSettingsProfile::LoadList()
     m_listItems->Add(item);
   }
   {
-    CFileItemPtr item(
-        new CFileItem(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20058)));
+    CFileItemPtr item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20058));
     m_listItems->Add(item);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);
@@ -266,7 +268,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   // "Last used profile" option comes first, so up indices by 1
   int autoLoginProfileId = profileManager->GetAutoLoginProfileId() + 1;
   CFileItemList items;
-  CFileItemPtr item(new CFileItem());
+  CFileItemPtr item = std::make_shared<CFileItem>();
   item->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37014)); // Last used profile
   item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::USER);
@@ -277,7 +279,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     const CProfile *profile = profileManager->GetProfile(i);
     const std::string& locked = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         static_cast<int>(profile->getLockMode()) > 0 ? 20166 : 20165);
-    CFileItemPtr item(new CFileItem(profile->getName()));
+    CFileItemPtr item = std::make_shared<CFileItem>(profile->getName());
     item->SetLabel2(locked); // lock setting
     std::string thumb = profile->getThumb();
     if (thumb.empty())

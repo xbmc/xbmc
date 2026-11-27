@@ -8366,7 +8366,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
         isAlbum = false;
       }
 
-      CFileItemPtr pItem(new CFileItem(strAlbum));
+      CFileItemPtr pItem = std::make_shared<CFileItem>(strAlbum);
 
       CVideoDbUrl itemUrl = videoUrl;
       std::string path = StringUtils::Format("{}/", idMVideo);
@@ -8646,7 +8646,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
 
     if (countOnly)
     {
-      CFileItemPtr pItem(new CFileItem());
+      CFileItemPtr pItem = std::make_shared<CFileItem>();
       pItem->SetProperty("total", iRowsFound == 1 ? m_pDS->fv(0).get_asInt() : iRowsFound);
       items.Add(pItem);
 

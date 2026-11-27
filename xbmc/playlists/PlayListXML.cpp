@@ -19,6 +19,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace XFILE;
 
 /*
@@ -118,7 +120,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
          name += " [" + lang + "]";
 
        std::string info = name;
-       CFileItemPtr newItem( new CFileItem(info) );
+       CFileItemPtr newItem = std::make_shared<CFileItem>(info);
        newItem->SetPath(url);
 
        // Set language as metadata

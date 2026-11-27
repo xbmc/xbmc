@@ -891,7 +891,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
 
     if (VIDEO::LIBRARY::HasContent(VideoDbContentType::MUSICVIDEOS))
     {
-      CFileItemPtr mvideos(new CFileItem(MEDIA::LIBRARY_PATH::MUSICVIDEOS, true));
+      CFileItemPtr mvideos = std::make_shared<CFileItem>(MEDIA::LIBRARY_PATH::MUSICVIDEOS, true);
       mvideos->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
       items.Add(mvideos);
     }
@@ -1447,7 +1447,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
     else if (MUSIC::IsMusicDb(updated))
       CUtil::DeleteMusicDatabaseDirectoryCache();
 
-    CFileItemPtr msgItem(new CFileItem(updated));
+    CFileItemPtr msgItem = std::make_shared<CFileItem>(updated);
     CGUIMessage message(GUI_MSG_NOTIFY_ALL,
                         CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
                         GUI_MSG_UPDATE_ITEM, GUI_MSG_FLAG_UPDATE_LIST, msgItem);

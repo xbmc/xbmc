@@ -28,16 +28,19 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#if defined(TARGET_WINDOWS)
+#include "utils/CharsetConverter.h"
+#endif
 #include "utils/Screenshot.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
-#include "utils/CharsetConverter.h"
 #endif
 
 #include <array>
+#include <memory>
 #include <vector>
 
 using namespace XFILE;
@@ -45,7 +48,7 @@ using KODI::MEDIA::MediaSection;
 
 bool CFileUtils::DeleteItem(const std::string &strPath)
 {
-  CFileItemPtr item(new CFileItem(strPath));
+  CFileItemPtr item = std::make_shared<CFileItem>(strPath);
   item->SetPath(strPath);
   item->SetFolder(URIUtils::HasSlashAtEnd(strPath));
   item->Select(true);
@@ -58,7 +61,7 @@ bool CFileUtils::DeleteItem(const std::shared_ptr<CFileItem>& item)
     return false;
 
   // Create a temporary item list containing the file/folder for deletion
-  CFileItemPtr pItemTemp(new CFileItem(*item));
+  CFileItemPtr pItemTemp = std::make_shared<CFileItem>(*item);
   pItemTemp->Select(true);
   CFileItemList items;
   items.Add(pItemTemp);

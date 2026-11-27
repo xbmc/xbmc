@@ -17,6 +17,7 @@
 #include "utils/URIUtils.h"
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace XFILE
@@ -29,7 +30,7 @@ std::shared_ptr<CFileItem> ZipEntryToFileItem(const SZipEntry& entry,
                                               const std::string& path,
                                               bool isFolder)
 {
-  std::shared_ptr<CFileItem> item(new CFileItem(label));
+  std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(label);
   if (!isFolder)
   {
     item->SetSize(static_cast<int64_t>(entry.usize));

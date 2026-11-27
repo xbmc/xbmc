@@ -1170,7 +1170,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   CFileItemList resolved;
 
   bool success = false;
-  CFileItemPtr fileItem(new CFileItem());
+  CFileItemPtr fileItem = std::make_shared<CFileItem>();
   if (FillFileItem(file, fileItem, parameterObject))
   {
     success = true;

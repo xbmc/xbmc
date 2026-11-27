@@ -2167,7 +2167,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else
     {
-      CFileItemPtr newItem(new CFileItem(*item));
+      CFileItemPtr newItem = std::make_shared<CFileItem>(*item);
       items.Add(newItem);
     }
 

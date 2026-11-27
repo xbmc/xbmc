@@ -70,6 +70,8 @@
 #include "video/windows/GUIWindowVideoNav.h"
 #include "view/GUIViewState.h"
 
+#include <memory>
+
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
@@ -884,7 +886,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
-    CFileItemPtr pItem(new CFileItem(".."));
+    CFileItemPtr pItem = std::make_shared<CFileItem>("..");
     pItem->SetPath(strParentPath);
     items.Add(pItem);
   }

@@ -20,6 +20,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <mutex>
 
 using namespace PERIPHERALS;
@@ -311,7 +312,7 @@ void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& ite
     if (peripheral->IsHidden())
       continue;
 
-    CFileItemPtr peripheralFile(new CFileItem(peripheral->DeviceName()));
+    CFileItemPtr peripheralFile = std::make_shared<CFileItem>(peripheral->DeviceName());
     peripheralFile->SetPath(peripheral->FileLocation());
     peripheralFile->SetProperty("vendor", peripheral->VendorIdAsString());
     peripheralFile->SetProperty("product", peripheral->ProductIdAsString());

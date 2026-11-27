@@ -19,6 +19,8 @@
 #include "utils/Digest.h"
 #include "utils/Variant.h"
 
+#include <memory>
+
 using namespace JSONRPC;
 using KODI::UTILITY::CDigest;
 
@@ -31,7 +33,7 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const CVariant& parameterObject,
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); ++i)
   {
     const CProfile *profile = profileManager->GetProfile(i);
-    CFileItemPtr item(new CFileItem(profile->getName()));
+    CFileItemPtr item = std::make_shared<CFileItem>(profile->getName());
     item->SetArt(KODI::ART::TYPE::THUMB, profile->getThumb());
     listItems.Add(item);
   }

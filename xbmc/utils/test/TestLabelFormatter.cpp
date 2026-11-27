@@ -16,6 +16,8 @@
 #include "test/TestUtils.h"
 #include "utils/LabelFormatter.h"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
 /* Set default settings used by CLabelFormatter. */
@@ -40,7 +42,7 @@ TEST_F(TestLabelFormatter, FormatLabel)
   ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -60,7 +62,7 @@ TEST_F(TestLabelFormatter, FormatLabel2)
   ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);

@@ -35,6 +35,8 @@
 #include "utils/Variant.h"
 #include "video/VideoDbPaths.h"
 
+#include <memory>
+
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LOAD_PLAYLIST      6
@@ -193,14 +195,14 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
     files->SetIsShareOrDrive(true);
     items.Add(files);
 
-    CFileItemPtr mdb(new CFileItem(MEDIA::LIBRARY_PATH::MUSIC, true));
+    CFileItemPtr mdb = std::make_shared<CFileItem>(MEDIA::LIBRARY_PATH::MUSIC, true);
     mdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14022));
     mdb->SetLabelPreformatted(true);
     mdb->SetIsShareOrDrive(true);
     items.SetPath("");
     items.Add(mdb);
 
-    CFileItemPtr vdb(new CFileItem(VIDEO::DB_PATH::MUSICVIDEOS, true));
+    CFileItemPtr vdb = std::make_shared<CFileItem>(VIDEO::DB_PATH::MUSICVIDEOS, true);
     vdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
     vdb->SetLabelPreformatted(true);
     vdb->SetIsShareOrDrive(true);

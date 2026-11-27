@@ -15,6 +15,8 @@
 #include "playlists/PlayListFileItemClassify.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 using namespace KODI;
 
 namespace XBMCAddon
@@ -51,7 +53,7 @@ namespace XBMCAddon
       }
       else
       {
-        CFileItemPtr item(new CFileItem(url, false));
+        CFileItemPtr item = std::make_shared<CFileItem>(url, false);
         item->SetLabel(url);
 
         items.Add(item);

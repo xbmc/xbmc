@@ -619,7 +619,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         for (const auto& tvshowPath : tvshowPaths)
         {
-          CFileItemPtr tvshowItem(new CFileItem(*m_item->GetVideoInfoTag()));
+          CFileItemPtr tvshowItem = std::make_shared<CFileItem>(*m_item->GetVideoInfoTag());
           tvshowItem->SetPath(tvshowPath);
           items.Add(tvshowItem);
         }

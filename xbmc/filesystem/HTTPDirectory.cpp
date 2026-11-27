@@ -24,6 +24,7 @@
 #include "utils/log.h"
 
 #include <climits>
+#include <memory>
 
 using namespace XFILE;
 
@@ -184,7 +185,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       // if same, we consider it as a valid item.
       if (strLinkTemp != ".." && !strLinkTemp.empty() && NameMatchesLink(strNameTemp, strLinkTemp))
       {
-        CFileItemPtr pItem(new CFileItem(strNameTemp));
+        CFileItemPtr pItem = std::make_shared<CFileItem>(strNameTemp);
         pItem->SetProperty(KODI::ITEM::PROPERTY::IS_HTTP_DIRECTORY, true);
         CURL url2(url);
 

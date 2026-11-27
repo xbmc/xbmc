@@ -25,6 +25,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -100,8 +102,8 @@ void CControllerSelect::Process()
   if (m_showDisconnect)
   {
     // Add a button to disconnect the port
-    CFileItemPtr item(new CFileItem(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298))); // "Disconnected"
+    CFileItemPtr item = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298)); // "Disconnected"
     item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON_NONE);
     items.Add(std::move(item));
 

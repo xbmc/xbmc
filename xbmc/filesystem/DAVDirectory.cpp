@@ -19,6 +19,8 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace XFILE;
 
 CDAVDirectory::CDAVDirectory(void) = default;
@@ -166,7 +168,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       if (!item.IsURL(url))
       {
-        CFileItemPtr pItem(new CFileItem(item));
+        CFileItemPtr pItem = std::make_shared<CFileItem>(item);
         items.Add(pItem);
       }
     }

@@ -19,6 +19,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include <tinyxml2.h>
@@ -63,7 +64,7 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream& stream)
       value += stream.get();
 
     CLog::Log(LOGINFO, "Adding element {}={}", name, value);
-    CFileItemPtr newItem(new CFileItem(value));
+    CFileItemPtr newItem = std::make_shared<CFileItem>(value);
     newItem->SetPath(value);
     if (VIDEO::IsVideo(*newItem) &&
         !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
@@ -158,7 +159,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
               title = value;
 
             CLog::Log(LOGINFO, "Adding element {}, {}", title, value);
-            CFileItemPtr newItem(new CFileItem(title));
+            CFileItemPtr newItem = std::make_shared<CFileItem>(title);
             newItem->SetPath(value);
             Add(newItem);
           }

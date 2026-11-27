@@ -58,6 +58,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace MUSICDATABASEDIRECTORY;
@@ -529,7 +531,7 @@ void CGUIDialogMusicInfo::SetSongs(const std::vector<CSong>& songs) const
   for (unsigned int i = 0; i < songs.size(); i++)
   {
     const CSong& song = songs[i];
-    CFileItemPtr item(new CFileItem(song));
+    CFileItemPtr item = std::make_shared<CFileItem>(song);
     // Load the song art and related artist(s) (that may be different from album artist) art
     loader.LoadItem(item.get());
     m_albumSongs->Add(item);
@@ -799,7 +801,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   {
     // Add item for current artwork
     // For album it could be a fallback from artist
-    CFileItemPtr item(new CFileItem(ART::CHOICE::CURRENT, false));
+    CFileItemPtr item = std::make_shared<CFileItem>(ART::CHOICE::CURRENT, false);
     item->SetArt(ART::TYPE::THUMB, m_item->GetArt(type));
     item->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
@@ -883,7 +885,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   if (bHasArt && !bFallback)
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
-    CFileItemPtr item(new CFileItem(ART::CHOICE::NONE, false));
+    CFileItemPtr item = std::make_shared<CFileItem>(ART::CHOICE::NONE, false);
     if (m_bArtistInfo)
       item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
     else

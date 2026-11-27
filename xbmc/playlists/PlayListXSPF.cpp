@@ -16,6 +16,8 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <memory>
+
 namespace
 {
 
@@ -86,7 +88,7 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
     {
       std::string label = GetXMLText(pCurTrack->FirstChildElement(TITLE_TAGNAME));
 
-      CFileItemPtr newItem(new CFileItem(label));
+      CFileItemPtr newItem = std::make_shared<CFileItem>(label);
 
       CURL uri(location);
 

@@ -141,7 +141,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CVariant& parameterObject, CV
           filteredFiles.Add(items[i]);
       else
       {
-        CFileItemPtr fileItem(new CFileItem());
+        CFileItemPtr fileItem = std::make_shared<CFileItem>();
         if (FillFileItem(items[i], fileItem, section, parameterObject))
             filteredFiles.Add(fileItem);
         else
@@ -402,7 +402,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
             list.Add(items[i]);
           else
           {
-            CFileItemPtr fileItem(new CFileItem());
+            CFileItemPtr fileItem = std::make_shared<CFileItem>();
             if (FillFileItem(items[i], fileItem, section, parameterObject))
               list.Add(fileItem);
             else if (section == MediaSection::FILES)

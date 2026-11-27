@@ -15,6 +15,8 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
+#include <memory>
+
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 Node Top100Children[] = {
@@ -49,8 +51,8 @@ bool CDirectoryNodeTop100::GetContent(CFileItemList& items) const
 {
   for (const Node& node : Top100Children)
   {
-    CFileItemPtr pItem(new CFileItem(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label)));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label));
     std::string strDir = StringUtils::Format("{}/", node.id);
     pItem->SetPath(BuildPath() + strDir);
     pItem->SetFolder(true);

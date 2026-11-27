@@ -13,6 +13,8 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 #include <cdio++/iso9660.hpp>
 
 using namespace XFILE;
@@ -50,7 +52,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
       {
         if (filename != "." && filename != "..")
         {
-          CFileItemPtr pItem(new CFileItem(filename));
+          CFileItemPtr pItem = std::make_shared<CFileItem>(filename);
           std::string strDir(strRoot + filename);
           URIUtils::AddSlashAtEnd(strDir);
           pItem->SetPath(strDir);
@@ -60,7 +62,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
       }
       else
       {
-        CFileItemPtr pItem(new CFileItem(filename));
+        CFileItemPtr pItem = std::make_shared<CFileItem>(filename);
         pItem->SetPath(strRoot + filename);
         pItem->SetFolder(false);
         pItem->SetSize(file->p_stat->size);

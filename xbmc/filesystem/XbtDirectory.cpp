@@ -14,6 +14,7 @@
 #include "filesystem/XbtManager.h"
 #include "guilib/XBTF.h"
 
+#include <memory>
 #include <stdio.h>
 
 namespace XFILE
@@ -21,7 +22,7 @@ namespace XFILE
 
 static CFileItemPtr XBTFFileToFileItem(const CXBTFFile& entry, const std::string& label, const std::string& path, bool isFolder)
 {
-  CFileItemPtr item(new CFileItem(label));
+  CFileItemPtr item = std::make_shared<CFileItem>(label);
   if (!isFolder)
     item->SetSize(static_cast<int64_t>(entry.GetUnpackedSize()));
 

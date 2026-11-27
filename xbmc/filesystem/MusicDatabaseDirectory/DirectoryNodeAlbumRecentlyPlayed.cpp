@@ -17,6 +17,8 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 
+#include <memory>
+
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumRecentlyPlayed::CDirectoryNodeAlbumRecentlyPlayed(const std::string& strName,
@@ -60,7 +62,7 @@ bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items) const
   for (const CAlbum& album : albums)
   {
     std::string strDir = StringUtils::Format("{}{}/", BuildPath(), album.idAlbum);
-    CFileItemPtr pItem(new CFileItem(strDir, album));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strDir, album);
     items.Add(pItem);
   }
 

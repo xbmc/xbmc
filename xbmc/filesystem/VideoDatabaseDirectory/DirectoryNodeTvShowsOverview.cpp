@@ -16,6 +16,8 @@
 #include "utils/StringUtils.h"
 #include "video/VideoDbUrl.h"
 
+#include <memory>
+
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node TvShowChildren[] = {
@@ -58,8 +60,8 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
 
   for (const Node& node : TvShowChildren)
   {
-    CFileItemPtr pItem(new CFileItem(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label)));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(node.label));
 
     CVideoDbUrl itemUrl = videoUrl;
     std::string strDir = StringUtils::Format("{}/", node.id);

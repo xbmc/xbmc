@@ -14,6 +14,7 @@
 #include "utils/log.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace KODI::PLAYLIST
@@ -28,7 +29,7 @@ bool CPlayListRAM::LoadData(std::istream& stream)
     strMMS += stream.get();
 
   CLog::Log(LOGINFO, "Adding element {}", strMMS);
-  CFileItemPtr newItem(new CFileItem(strMMS));
+  CFileItemPtr newItem = std::make_shared<CFileItem>(strMMS);
   newItem->SetPath(strMMS);
   Add(newItem);
   return true;

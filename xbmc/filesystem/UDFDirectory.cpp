@@ -18,6 +18,8 @@
 #include "filesystem/UDFContext.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 #include <udfread/udfread.h>
 
 using namespace XFILE;
@@ -58,7 +60,7 @@ bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       std::string filename = dirent.d_name;
       if (filename != "." && filename != "..")
       {
-        CFileItemPtr pItem(new CFileItem(filename));
+        CFileItemPtr pItem = std::make_shared<CFileItem>(filename);
         std::string strDir(strRoot + filename);
         URIUtils::AddSlashAtEnd(strDir);
         pItem->SetPath(strDir);
@@ -70,7 +72,7 @@ bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     else
     {
       std::string filename = dirent.d_name;
-      CFileItemPtr pItem(new CFileItem(filename));
+      CFileItemPtr pItem = std::make_shared<CFileItem>(filename);
       pItem->SetPath(strRoot + filename);
       pItem->SetFolder(false);
 
