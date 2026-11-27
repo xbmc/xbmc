@@ -85,7 +85,6 @@ private:
   ParseFunc m_syncFunc;
   bool m_hasSync = false;
 
-  unsigned int m_skipCount = 0;
   unsigned int m_coreSize = 0;         /* core size for dtsHD */
   bool m_dtsHDMA = false; /* stream is dtsHD MA for this parser's lifetime */
   unsigned int m_dtsBlocks = 0;
