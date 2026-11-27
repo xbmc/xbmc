@@ -8,13 +8,13 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "PlayListPlayer.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/json-rpc/PlayerOperations.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "utils/URIUtils.h"
 
 #include <memory>
@@ -131,9 +131,7 @@ TEST_F(TestPlayerOpenDirectory, AFileThatCouldBeAudioOrVideoAsksForTheVideoPlaye
   ASSERT_TRUE(CTestPlayerOperations::List(m_root, true, pictures, media));
 
   ASSERT_EQ((std::vector<std::string>{"film.mkv", "recording.wtv"}), Names(media));
-  EXPECT_FALSE(media[0]->HasProperty("playlist_type_hint"));
-  EXPECT_EQ(static_cast<int>(KODI::PLAYLIST::Id::TYPE_VIDEO),
-            media[1]->GetProperty("playlist_type_hint").asInteger32(-1));
+  EXPECT_EQ(KODI::PLAYLIST::Video, KODI::PLAYLIST::TypeFor(*media[1]));
 }
 
 TEST_F(TestPlayerOpenDirectory, SubdirectoriesAreOnlyFollowedWhenAsked)

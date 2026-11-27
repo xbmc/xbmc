@@ -23,10 +23,14 @@ class CPVRChannelGroup;
 class CPVREpgInfoTag;
 }
 
+namespace ANNOUNCEMENT::V14
+{
+enum class PlaylistId;
+} // namespace ANNOUNCEMENT::V14
+
 namespace KODI::PLAYLIST
 {
-enum class Id;
-enum class RepeatState;
+enum class Repeat;
 } // namespace PLAYLIST
 
 namespace JSONRPC
@@ -100,12 +104,12 @@ namespace JSONRPC
     static JSONRPC_STATUS PlayFileItemList(CFileItemList& list, const CVariant& options);
     static int GetActivePlayers();
     static PlayerType GetPlayer(const CVariant &player);
-    static KODI::PLAYLIST::Id GetPlaylist(PlayerType player);
+    static ANNOUNCEMENT::V14::PlaylistId GetPlaylist(PlayerType player);
     static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath = "");
     static void SendSlideshowAction(int actionID);
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const std::string &property, CVariant &result);
 
-    static KODI::PLAYLIST::RepeatState ParseRepeatState(const CVariant& repeat);
+    static KODI::PLAYLIST::Repeat ParseRepeatState(const CVariant& repeat);
     static bool IsPVRChannel();
     static std::shared_ptr<PVR::CPVREpgInfoTag> GetCurrentEpg();
   };
