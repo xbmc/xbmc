@@ -5,11 +5,14 @@
 
 #pragma once
 
+#include "input/touch/ITouchInputHandler.h"
 #include "windowing/WinEvents.h"
 #include "windowing/XBMC_events.h"
 
 #include <atomic>
+#include <cstdint>
 #include <deque>
+#include <map>
 #include <mutex>
 #include <unordered_set>
 
@@ -22,6 +25,16 @@ public:
   bool MessagePump() override;
 
   void MessagePush(const XBMC_Event& newEvent);
+
+  struct Touch
+  {
+    TouchInput event;
+    int id; //!< the browser's identifier for the touch
+    float x;
+    float y;
+    int64_t time; //!< nanoseconds
+  };
+  void TouchPush(const Touch& touch);
 
   //! \brief Remembers a key whose press was not passed to Kodi.
   void AddSwallowedKey(unsigned long keyCode);
@@ -38,10 +51,17 @@ public:
 
 private:
   void ProcessProxyCallbacks();
+  void DispatchQueuedTouches();
   bool DispatchQueuedEvents();
 
   std::mutex m_mutex;
   std::deque<XBMC_Event> m_events;
+  std::deque<Touch> m_touches;
+
+  //! Kodi's pointer number for each touch the browser reported down. Like
+  //! Android's pointer indices, which CGenericTouchInputHandler expects, the
+  //! numbers stay packed from 0.
+  std::map<int, int32_t> m_touchPointers;
 
   std::atomic<double> m_pointerScale{1.0};
 

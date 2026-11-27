@@ -11,6 +11,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/keyboard/XBMC_keyboard.h"
 #include "input/mouse/MouseStat.h"
+#include "input/touch/generic/GenericTouchActionHandler.h"
+#include "input/touch/generic/GenericTouchInputHandler.h"
 #include "utils/CharsetConverter.h"
 
 #include <algorithm>
@@ -31,6 +33,9 @@
 namespace
 {
 constexpr const char* CANVAS_TARGET = "#canvas";
+
+// CSS pixels are defined at 96 per inch.
+constexpr double CSS_DPI = 96.0;
 
 XBMCMod TranslateModifiers(const EmscriptenKeyboardEvent* e)
 {
@@ -374,6 +379,59 @@ EM_BOOL OnWheel(int /*eventType*/, const EmscriptenWheelEvent* e, void* userData
   return EM_TRUE;
 }
 
+void FocusCanvas()
+{
+  // clang-format off
+  EM_ASM({
+    const canvas = document.querySelector(UTF8ToString($0));
+    if (canvas && document.activeElement !== canvas)
+      canvas.focus();
+  }, CANVAS_TARGET);
+  // clang-format on
+}
+
+EM_BOOL OnTouch(int eventType, const EmscriptenTouchEvent* e, void* userData)
+{
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
+  TouchInput event;
+  switch (eventType)
+  {
+    case EMSCRIPTEN_EVENT_TOUCHSTART:
+      event = TouchInputDown;
+      break;
+    case EMSCRIPTEN_EVENT_TOUCHMOVE:
+      event = TouchInputMove;
+      break;
+    case EMSCRIPTEN_EVENT_TOUCHEND:
+      event = TouchInputUp;
+      break;
+    case EMSCRIPTEN_EVENT_TOUCHCANCEL:
+      event = TouchInputAbort;
+      break;
+    default:
+      return EM_FALSE;
+  }
+
+  // Returning true cancels the browser's own handling of the tap, which would
+  // have moved the focus to the canvas and so closed a native keyboard.
+  if (eventType == EMSCRIPTEN_EVENT_TOUCHSTART)
+    FocusCanvas();
+
+  const double scale = events.GetPointerScale();
+  const auto time = static_cast<int64_t>(e->timestamp * 1e6);
+  for (int i = 0; i < e->numTouches; ++i)
+  {
+    const EmscriptenTouchPoint& point = e->touches[i];
+    if (!point.isChanged)
+      continue;
+    // A touch dragged off the canvas keeps reporting, past its edges too.
+    const auto x = static_cast<float>(std::max(0.0, point.targetX * scale));
+    const auto y = static_cast<float>(std::max(0.0, point.targetY * scale));
+    events.TouchPush({event, point.identifier, x, y, time});
+  }
+  return EM_TRUE;
+}
+
 EM_BOOL OnResize(int /*eventType*/, const EmscriptenUiEvent* e, void* userData)
 {
   auto& events = *static_cast<CWinEventsWasm*>(userData);
@@ -401,6 +459,20 @@ void SetCallbacks(CWinEventsWasm* events)
   emscripten_set_keyup_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, events, EM_TRUE,
                                           events ? OnKeyUp : nullptr,
                                           EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  // Touch callbacks run on the browser thread too: returning true there is what
+  // stops the browser from also turning the touch into mouse clicks.
+  emscripten_set_touchstart_callback_on_thread(CANVAS_TARGET, events, EM_TRUE,
+                                               events ? OnTouch : nullptr,
+                                               EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  emscripten_set_touchmove_callback_on_thread(CANVAS_TARGET, events, EM_TRUE,
+                                              events ? OnTouch : nullptr,
+                                              EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  emscripten_set_touchend_callback_on_thread(CANVAS_TARGET, events, EM_TRUE,
+                                             events ? OnTouch : nullptr,
+                                             EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  emscripten_set_touchcancel_callback_on_thread(CANVAS_TARGET, events, EM_TRUE,
+                                                events ? OnTouch : nullptr,
+                                                EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
   emscripten_set_mousemove_callback(CANVAS_TARGET, events, EM_TRUE, events ? OnMouseMove : nullptr);
   emscripten_set_mousedown_callback(CANVAS_TARGET, events, EM_TRUE,
                                     events ? OnMouseButtonDown : nullptr);
@@ -414,6 +486,8 @@ void SetCallbacks(CWinEventsWasm* events)
 
 CWinEventsWasm::CWinEventsWasm()
 {
+  CGenericTouchInputHandler::GetInstance().RegisterHandler(
+      &CGenericTouchActionHandler::GetInstance());
   SetCallbacks(this);
 }
 
@@ -423,12 +497,19 @@ CWinEventsWasm::~CWinEventsWasm()
   // Events the browser already queued for this thread still point at this
   // object, so run them before it goes away.
   ProcessProxyCallbacks();
+  CGenericTouchInputHandler::GetInstance().UnregisterHandler();
 }
 
 void CWinEventsWasm::MessagePush(const XBMC_Event& newEvent)
 {
   std::unique_lock lock(m_mutex);
   m_events.push_back(newEvent);
+}
+
+void CWinEventsWasm::TouchPush(const Touch& touch)
+{
+  std::unique_lock lock(m_mutex);
+  m_touches.push_back(touch);
 }
 
 double CWinEventsWasm::DevicePixelRatio()
@@ -440,6 +521,7 @@ double CWinEventsWasm::DevicePixelRatio()
 void CWinEventsWasm::SetPointerScale(double scale)
 {
   m_pointerScale = scale;
+  CGenericTouchInputHandler::GetInstance().SetScreenDPI(static_cast<float>(CSS_DPI * scale));
 }
 
 void CWinEventsWasm::AddSwallowedKey(unsigned long keyCode)
@@ -458,6 +540,59 @@ void CWinEventsWasm::ProcessProxyCallbacks()
   // Process proxied browser callbacks here so mouse and resize events can still
   // reach this thread while that nested loop is active.
   emscripten_current_thread_process_queued_calls();
+}
+
+void CWinEventsWasm::DispatchQueuedTouches()
+{
+  std::deque<Touch> touches;
+  {
+    std::unique_lock lock(m_mutex);
+    touches.swap(m_touches);
+  }
+
+  CGenericTouchInputHandler& handler = CGenericTouchInputHandler::GetInstance();
+  for (const Touch& touch : touches)
+  {
+    // Abort ends every touch, whichever pointer it is sent for.
+    if (touch.event == TouchInputAbort)
+    {
+      if (!m_touchPointers.empty())
+        handler.HandleTouchInput(TouchInputAbort, touch.x, touch.y, touch.time);
+      m_touchPointers.clear();
+      continue;
+    }
+
+    int32_t pointer = -1;
+    if (touch.event == TouchInputDown)
+    {
+      if (m_touchPointers.size() >= CGenericTouchInputHandler::MAX_POINTERS)
+        continue;
+      pointer = static_cast<int32_t>(m_touchPointers.size());
+      m_touchPointers[touch.id] = pointer;
+    }
+    else
+    {
+      const auto it = m_touchPointers.find(touch.id);
+      if (it == m_touchPointers.end())
+        continue;
+      pointer = it->second;
+      if (touch.event == TouchInputUp)
+      {
+        m_touchPointers.erase(it);
+        // Keep the numbers packed, see m_touchPointers.
+        for (auto& entry : m_touchPointers)
+        {
+          if (entry.second > pointer)
+            --entry.second;
+        }
+      }
+    }
+
+    // The handler only takes a move's position from here.
+    if (touch.event == TouchInputMove)
+      handler.UpdateTouchPointer(pointer, touch.x, touch.y, touch.time);
+    handler.HandleTouchInput(touch.event, touch.x, touch.y, touch.time, pointer);
+  }
 }
 
 bool CWinEventsWasm::DispatchQueuedEvents()
@@ -483,5 +618,6 @@ bool CWinEventsWasm::DispatchQueuedEvents()
 bool CWinEventsWasm::MessagePump()
 {
   ProcessProxyCallbacks();
+  DispatchQueuedTouches();
   return DispatchQueuedEvents();
 }
