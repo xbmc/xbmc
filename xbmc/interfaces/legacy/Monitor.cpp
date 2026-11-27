@@ -47,14 +47,17 @@ namespace XBMCAddon
 
       while (!endTime.IsTimePast())
       {
+        bool aborted;
         {
           DelayedCallGuard dg(languageHook);
           auto timeout = std::min(endTime.GetTimeLeft(), 100ms);
-          if (abortEvent.Wait(timeout))
-            return true;
+          aborted = abortEvent.Wait(timeout);
         }
+        // run callbacks queued before the abort first
         if (languageHook)
           languageHook->MakePendingCalls();
+        if (aborted)
+          return true;
       }
       return false;
     }
