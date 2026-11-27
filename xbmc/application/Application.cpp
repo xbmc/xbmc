@@ -2016,7 +2016,7 @@ bool CApplication::PlayFile(const CFileItem& item,
                                                               0};
   if (const int dMsgCount{
           CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
-              &previousMsgsIgnoredByNewPlaying[0])};
+              previousMsgsIgnoredByNewPlaying.data())};
       dMsgCount > 0)
     CLog::LogF(LOGDEBUG, "Ignored {} playback thread messages", dMsgCount);
 

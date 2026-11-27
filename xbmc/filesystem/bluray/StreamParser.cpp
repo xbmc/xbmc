@@ -462,7 +462,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
                   b.playlist, playItemClip->clip);
   }
   if (!streamClip && !b.clips.empty())
-    streamClip = &b.clips[0];
+    streamClip = b.clips.data();
 
   if (streamClip && !streamClip->programs.empty())
   {
