@@ -376,7 +376,8 @@ int CGUIFixedListContainer::GetCurrentPage() const
 void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) const
 {
   minCursor = std::max(m_fixedCursor - m_startCursorRange, 0);
-  maxCursor = std::min(m_fixedCursor + m_endCursorRange, m_itemsPerPage);
+  // The last row of the container is only partly visible sometimes, but the cursor can be there
+  maxCursor = std::min(m_fixedCursor + m_endCursorRange, std::max(m_itemsPerPage - 1, 0));
 
   if (m_items.empty())
   {
