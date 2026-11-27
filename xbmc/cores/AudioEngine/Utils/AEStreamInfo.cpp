@@ -238,12 +238,32 @@ void CAEStreamParser::GetPacket(uint8_t** buffer, unsigned int* bufferSize)
   m_coreSize = 0;
 }
 
+bool CAEStreamParser::AllowsAC3() const
+{
+  return m_expectedType == CAEStreamInfo::STREAM_TYPE_NULL ||
+         m_expectedType == CAEStreamInfo::STREAM_TYPE_AC3 ||
+         m_expectedType == CAEStreamInfo::STREAM_TYPE_EAC3;
+}
+
+bool CAEStreamParser::AllowsTrueHD() const
+{
+  return m_expectedType == CAEStreamInfo::STREAM_TYPE_NULL ||
+         m_expectedType == CAEStreamInfo::STREAM_TYPE_TRUEHD;
+}
+
+bool CAEStreamParser::AllowsDTS() const
+{
+  // Every type outside the AC3 and TrueHD families is a DTS variant.
+  return m_expectedType == CAEStreamInfo::STREAM_TYPE_NULL || (!AllowsAC3() && !AllowsTrueHD());
+}
+
 // SYNC FUNCTIONS
 
 // This function looks for sync words across the types in parallel, and only does an exhaustive
 // test if it finds a syncword. Once sync has been established, the relevant sync function sets
 // m_syncFunc to itself. This function will only be called again if total sync is lost, which
-// allows is to switch stream types on the fly much like a real receiver does.
+// allows it to switch stream types on the fly much like a real receiver does. With an expected
+// type set (see SetExpectedType), it only switches between types of that family.
 unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
 {
   unsigned int skipped = 0;
@@ -253,8 +273,8 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
   {
     // if it could be DTS
     unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
-    if (header == DTS_PREAMBLE_14LE || header == DTS_PREAMBLE_14BE || header == DTS_PREAMBLE_16LE ||
-        header == DTS_PREAMBLE_16BE)
+    if (AllowsDTS() && (header == DTS_PREAMBLE_14LE || header == DTS_PREAMBLE_14BE ||
+                        header == DTS_PREAMBLE_16LE || header == DTS_PREAMBLE_16BE))
     {
       unsigned int skip = SyncDTS(data, size);
       if (m_hasSync || m_needBytes)
@@ -264,7 +284,7 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
     }
 
     // if it could be AC3
-    if (data[0] == 0x0b && data[1] == 0x77)
+    if (AllowsAC3() && data[0] == 0x0b && data[1] == 0x77)
     {
       unsigned int skip = SyncAC3(data, size);
       if (m_hasSync || m_needBytes)
@@ -274,7 +294,7 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
     }
 
     // if it could be TrueHD
-    if (data[4] == 0xf8 && data[5] == 0x72 && data[6] == 0x6f && data[7] == 0xba)
+    if (AllowsTrueHD() && data[4] == 0xf8 && data[5] == 0x72 && data[6] == 0x6f && data[7] == 0xba)
     {
       unsigned int skip = SyncTrueHD(data, size);
       if (m_hasSync)
