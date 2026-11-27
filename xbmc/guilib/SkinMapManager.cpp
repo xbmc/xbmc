@@ -55,8 +55,7 @@ void CSkinMapManager::LoadMaps(const TiXmlElement* node)
     const char* name = mapElement->Attribute("name");
     if (name && *name)
     {
-      const bool hadOldDefinition =
-          m_maps.find(name) != m_maps.end() || m_refs.find(name) != m_refs.end();
+      const bool hadOldDefinition = m_maps.contains(name) || m_refs.contains(name);
       if (hadOldDefinition)
       {
         CLog::LogF(LOGWARNING, "Skin map '{}' is defined more than once, last definition wins",
@@ -90,7 +89,7 @@ void CSkinMapManager::LoadMaps(const TiXmlElement* node)
   // Validate refs — all referenced maps must be defined
   for (const auto& [refName, target] : m_refs)
   {
-    if (m_maps.find(target) == m_maps.end() && m_refs.find(target) == m_refs.end())
+    if (!m_maps.contains(target) && !m_refs.contains(target))
       CLog::LogF(LOGWARNING, "Skin map '{}' references unknown map '{}'", refName, target);
   }
 }

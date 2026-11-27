@@ -437,7 +437,7 @@ void CollectSimpleTags(const TagLib::Matroska::SimpleTagsList& list,
     * album is right, so it goes no further.
     */
     const unsigned long long chapterUid = tag.chapterUid();
-    if (chapterUid > 0 && edition.unselectedChapterUids.count(chapterUid) != 0)
+    if (chapterUid > 0 && edition.unselectedChapterUids.contains(chapterUid))
       continue;
 
     /*!

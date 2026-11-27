@@ -367,8 +367,7 @@ bool CApplicationSkinHandling::LoadCustomWindows()
             // higher-priority skin path (e.g. the resolution-matched <res> folder). This is
             // the expected fallback duplicate from a lower-priority <res> folder, not a
             // genuine id collision, so skip it quietly.
-            if (id != WINDOW_INVALID &&
-                processedSkinFiles.find(skinFileLower) != processedSkinFiles.end())
+            if (id != WINDOW_INVALID && processedSkinFiles.contains(skinFileLower))
             {
               CLog::Log(LOGDEBUG,
                         "Skipping duplicate custom window {} already loaded from a "

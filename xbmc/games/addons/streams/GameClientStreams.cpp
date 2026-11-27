@@ -115,7 +115,7 @@ bool CGameClientStreams::StartStream(IGameClientStream* stream)
   if (auto* hwStream = dynamic_cast<CGameClientStreamHwFramebuffer*>(stream))
   {
     const bool ready = hwStream->ResetHwContext();
-    if (m_streams.find(stream) == m_streams.end())
+    if (!m_streams.contains(stream))
       return false;
     if (!ready)
     {
