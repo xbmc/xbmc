@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <Neptune/Source/Core/NptReferences.h>
 #include <Neptune/Source/Core/NptStrings.h>
@@ -117,6 +118,10 @@ namespace UPNP
 
   std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
                                          UPnPService upnp_service = UPnPServiceNone);
+
+  /*! \brief The first subtitle in the language CLanguage::Subtitle() resolves, else the first. */
+  std::string PickExternalSubtitle(const std::string& videoPath,
+                                   const std::vector<std::string>& subtitles);
 
   bool             GetResource(const PLT_MediaObject* entry, CFileItem& item);
   std::shared_ptr<CFileItem> GetFileItem(const NPT_String& uri, const NPT_String& meta);
