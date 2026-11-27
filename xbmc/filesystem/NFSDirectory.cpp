@@ -59,100 +59,105 @@ KODI::TIME::FileTime GetDirEntryTime(const struct nfsdirent* dirent)
   return localTime;
 }
 
-bool ResolveSymlink(const std::string& dirName, struct nfsdirent* dirent, std::string& resolvedPath)
+void SetDirentFromStat(struct nfsdirent& dirent, const nfs_stat_64& targetStat)
+{
+  dirent.inode = targetStat.nfs_ino;
+  dirent.mode = static_cast<uint32_t>(targetStat.nfs_mode);
+  dirent.size = targetStat.nfs_size;
+  dirent.atime.tv_sec = targetStat.nfs_atime;
+  dirent.mtime.tv_sec = targetStat.nfs_mtime;
+  dirent.ctime.tv_sec = targetStat.nfs_ctime;
+
+  // map stat mode to nf3type
+  if (S_ISBLK(targetStat.nfs_mode))
+  {
+    dirent.type = NF3BLK;
+  }
+  else if (S_ISCHR(targetStat.nfs_mode))
+  {
+    dirent.type = NF3CHR;
+  }
+  else if (S_ISDIR(targetStat.nfs_mode))
+  {
+    dirent.type = NF3DIR;
+  }
+  else if (S_ISFIFO(targetStat.nfs_mode))
+  {
+    dirent.type = NF3FIFO;
+  }
+  else if (S_ISREG(targetStat.nfs_mode))
+  {
+    dirent.type = NF3REG;
+  }
+  else if (S_ISLNK(targetStat.nfs_mode))
+  {
+    dirent.type = NF3LNK;
+  }
+  else if (S_ISSOCK(targetStat.nfs_mode))
+  {
+    dirent.type = NF3SOCK;
+  }
+}
+
+// Gives a symlink's dirent the type, size and times of its target. libnfs follows a relative link
+// from the link's folder, anywhere in a path, so such a link keeps its own path, as in
+// CPosixDirectory. An absolute link is stat'ed by its target's URL, on a context of its own, as it
+// can point into another export, and targetUrl gets that URL to list it under. It keeps its own
+// path only if it is a file that libnfs resolves by that path to the same file: libnfs resolves an
+// absolute link from the link's folder on NFSv4, and on NFSv3 drops the rest of a path that goes
+// through one, so a file inside a linked folder couldn't be opened.
+bool ResolveSymlink(const std::string& dirName, struct nfsdirent& dirent, std::string& targetUrl)
 {
   std::unique_lock lock(gNfsConnection);
 
-  bool retVal{true};
-  std::string fullpath{dirName + dirent->name};
+  const std::string fullpath{dirName + dirent.name};
+  nfs_stat_64 targetStat{};
 
-  char resolvedLink[NFS_MAX_PATH];
-  int ret{
-      nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH)};
-
-  if (ret == 0)
-  {
-    nfs_stat_64 tmpBuffer{};
-
-    CURL resolvedUrl;
-    resolvedUrl.SetPort(2049);
-    resolvedUrl.SetProtocol("nfs");
-    resolvedUrl.SetHostName(gNfsConnection.GetConnectedIp());
-
-    // special case - if link target is absolute it could be even another export
-    // intervolume symlinks baby ...
-    if (resolvedLink[0] == '/')
-    {
-      // use the special stat function for using an extra context
-      // because we are inside of a dir traversal
-      // and just can't change the global nfs context here
-      // without destroying something...
-      fullpath = resolvedLink;
-      resolvedUrl.SetFileName(fullpath);
-      ret = gNfsConnection.stat(resolvedUrl, &tmpBuffer);
-    }
-    else
-    {
-      fullpath = dirName + resolvedLink;
-      ret = nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
-      resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);
-    }
-
-    if (ret != 0)
-    {
-      CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve ({})", fullpath,
-                 nfs_get_error(gNfsConnection.GetNfsContext()));
-      retVal = false;
-    }
-    else
-    {
-      resolvedPath = resolvedUrl.Get();
-
-      dirent->inode = tmpBuffer.nfs_ino;
-      dirent->mode = static_cast<uint32_t>(tmpBuffer.nfs_mode);
-      dirent->size = tmpBuffer.nfs_size;
-      dirent->atime.tv_sec = tmpBuffer.nfs_atime;
-      dirent->mtime.tv_sec = tmpBuffer.nfs_mtime;
-      dirent->ctime.tv_sec = tmpBuffer.nfs_ctime;
-
-      // map stat mode to nf3type
-      if (S_ISBLK(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3BLK;
-      }
-      else if (S_ISCHR(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3CHR;
-      }
-      else if (S_ISDIR(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3DIR;
-      }
-      else if (S_ISFIFO(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3FIFO;
-      }
-      else if (S_ISREG(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3REG;
-      }
-      else if (S_ISLNK(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3LNK;
-      }
-      else if (S_ISSOCK(tmpBuffer.nfs_mode))
-      {
-        dirent->type = NF3SOCK;
-      }
-    }
-  }
-  else
+  char link[NFS_MAX_PATH];
+  if (nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), link, NFS_MAX_PATH) != 0)
   {
     CLog::LogF(LOGERROR, "Failed to readlink '{}' ({})", fullpath,
                nfs_get_error(gNfsConnection.GetNfsContext()));
-    retVal = false;
+    return false;
   }
-  return retVal;
+
+  if (link[0] != '/')
+  {
+    if (nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &targetStat) != 0)
+    {
+      CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve ({})", fullpath,
+                 nfs_get_error(gNfsConnection.GetNfsContext()));
+      return false;
+    }
+    SetDirentFromStat(dirent, targetStat);
+    return true;
+  }
+
+  CURL url;
+  url.SetPort(2049);
+  url.SetProtocol("nfs");
+  url.SetHostName(gNfsConnection.GetConnectedIp());
+  url.SetFileName(link);
+  if (gNfsConnection.stat(url, &targetStat) != 0)
+  {
+    CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve", link);
+    return false;
+  }
+  SetDirentFromStat(dirent, targetStat);
+
+  if (!S_ISDIR(targetStat.nfs_mode))
+  {
+    nfs_stat_64 linkStat{};
+    // A fileid identifies a file only together with its filesystem's id, which libnfs 5.0.2
+    // leaves at 0 on NFSv4.
+    if (nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &linkStat) == 0 &&
+        linkStat.nfs_dev != 0 && linkStat.nfs_dev == targetStat.nfs_dev &&
+        linkStat.nfs_ino == targetStat.nfs_ino)
+      return true;
+  }
+
+  targetUrl = url.Get();
+  return true;
 }
 
 } // Unnamed namespace
@@ -248,37 +253,41 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::AddSlashAtEnd(myStrPath);
   URIUtils::AddSlashAtEnd(strDirName);
 
-  std::string resolvedPath;
   std::vector<std::shared_ptr<CFileItem>> fileItems;
-  struct nfsdirent* dirent = nullptr;
-  while ((dirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != nullptr)
+  struct nfsdirent* cachedDirent = nullptr;
+  while ((cachedDirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != nullptr)
   {
-    const std::string& name = dirent->name;
-
-    //resolve symlinks
-    //resolve symlink changes dirent and name
-    const bool isSymLink = dirent->type == NF3LNK;
-    if (isSymLink && !ResolveSymlink(strDirName, dirent, resolvedPath))
-      continue;
+    // The next nfs_opendir() of this folder gets the same entries from the context's cache while
+    // the folder is unchanged, so a symlink is resolved into a copy.
+    struct nfsdirent dirent = *cachedDirent;
+    const std::string name{dirent.name};
 
     if (name == "." || name == ".." || name == "lost+found")
       continue;
 
-    const bool isDir = dirent->type == NF3DIR;
+    std::string path{myStrPath + name};
+    if (dirent.type == NF3LNK)
+    {
+      std::string targetUrl;
+      if (!ResolveSymlink(strDirName, dirent, targetUrl))
+        continue;
+      if (!targetUrl.empty())
+        path = std::move(targetUrl);
+    }
 
-    std::string path = isSymLink ? resolvedPath : (myStrPath + name);
+    const bool isDir = dirent.type == NF3DIR;
     if (isDir)
       URIUtils::AddSlashAtEnd(path);
 
     const auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(name));
     item->SetPath(std::move(path));
-    item->SetDateTime(GetDirEntryTime(dirent));
+    item->SetDateTime(GetDirEntryTime(&dirent));
     item->SetFolder(isDir);
-    item->SetSize(dirent->size);
+    item->SetSize(dirent.size);
 
     // raw values; the DateTime above is local-time converted
-    item->SetProperty(DIR_PROPERTY_STAT_MTIME, static_cast<int64_t>(dirent->mtime.tv_sec));
-    item->SetProperty(DIR_PROPERTY_STAT_CTIME, static_cast<int64_t>(dirent->ctime.tv_sec));
+    item->SetProperty(DIR_PROPERTY_STAT_MTIME, static_cast<int64_t>(dirent.mtime.tv_sec));
+    item->SetProperty(DIR_PROPERTY_STAT_CTIME, static_cast<int64_t>(dirent.ctime.tv_sec));
 
     if (name[0] == '.')
       item->SetProperty("file:hidden", true);
