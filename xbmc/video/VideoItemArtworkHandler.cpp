@@ -572,7 +572,7 @@ std::string CVideoItemArtworkFanartHandler::UpdateEmbeddedArt(const std::string&
       matchingTag = i;
   }
 
-  if (matchingTag != -1)
+  if (matchingTag == -1)
   {
     videoTag->m_fanart.AddFanart(art, "", "");
     matchingTag = currentTag;
