@@ -360,9 +360,12 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       int srcStride[] = {stride[0], stride[1], stride[2], 0};
       uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
       int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
-      sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+      const int rows = sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
       sws_freeContext(context);
-      converted = true;
+      if (rows > 0)
+        converted = true;
+      else
+        CLog::LogF(LOGWARNING, "sws_scale failed ({}), no thumbnail", rows);
     }
   }
 
