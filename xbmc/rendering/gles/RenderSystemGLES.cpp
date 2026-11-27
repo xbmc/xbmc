@@ -313,14 +313,7 @@ void CRenderSystemGLES::InvalidateColorBuffer()
   if (!m_bRenderCreated)
     return;
 
-  // some platforms prefer a clear, instead of rendering over
-  if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
-  {
-    ClearBuffers(0);
-    return;
-  }
-
-  ClearBuffersWithStencil(GetEnabledFrontToBackRendering() ? GL_DEPTH_BUFFER_BIT : 0);
+  ClearBuffers(0);
 }
 
 bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
