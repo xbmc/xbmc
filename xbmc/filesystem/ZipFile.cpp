@@ -20,7 +20,7 @@ static constexpr uint64_t ZIP_CACHE_LIMIT = 4ull * 1024 * 1024;
 
 using namespace XFILE;
 
-CZipFile::CZipFile() : m_szStringBuffer(nullptr), m_szStartOfStringBuffer(nullptr)
+CZipFile::CZipFile()
 {
   memset(m_szBuffer, 0, sizeof(m_szBuffer));
 }

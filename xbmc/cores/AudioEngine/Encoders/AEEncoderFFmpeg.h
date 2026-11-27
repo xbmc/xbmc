@@ -36,7 +36,7 @@ private:
   AVCodecID m_CodecID;
   unsigned int m_BitRate = 0;
   AEAudioFormat m_CurrentFormat;
-  AVCodecContext* m_CodecCtx;
+  AVCodecContext* m_CodecCtx = nullptr;
   CAEChannelInfo m_Layout;
   int m_BufferSize = 0;
   int m_OutputSize = 0;

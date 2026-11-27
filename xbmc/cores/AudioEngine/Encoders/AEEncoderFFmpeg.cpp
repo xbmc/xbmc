@@ -27,7 +27,7 @@ extern "C"
 using FFMPEG_HELP_TOOLS::FFMpegErrorToString;
 using FFMPEG_HELP_TOOLS::FFMpegException;
 
-CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(nullptr)
+CAEEncoderFFmpeg::CAEEncoderFFmpeg()
 {
 }
 
