@@ -866,7 +866,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
     const bool keepSelection = m_keepTouchSelection;
     m_keepTouchSelection = false;
     int select = GetSelectedItem();
-    if (keepSelection || SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
+    if (keepSelection || SelectItemFromClick(point - CPoint(m_posX, m_posY)))
     {
       if (event.m_id != ACTION_MOUSE_RIGHT_CLICK || select == GetSelectedItem())
         OnClick(event.m_id);
@@ -892,6 +892,8 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
     m_gestureActive = true;
+    // The finger takes over from a scroll that started with the touch
+    m_scroller.Stop();
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
     return EVENT_RESULT_HANDLED;
@@ -954,9 +956,9 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
       // while the touch can still turn into a scroll gesture, but the touched item is selected
       // right away.
       const CPoint itemPoint = point - CPoint(m_posX, m_posY);
-      if (SelectItemFromPoint(itemPoint))
+      if (SelectItemFromClick(itemPoint))
       {
-        // Moving the focus can change which item is at the position
+        // Scrolling the list or moving the focus can change which item is at the position
         const int cursor = GetCursorFromPoint(itemPoint);
         m_keepTouchSelection =
             cursor < 0 || CorrectOffset(GetOffset(), cursor) != GetSelectedItem();

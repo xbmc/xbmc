@@ -280,6 +280,38 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   }
 }
 
+bool CGUIFixedListContainer::SelectItemFromClick(const CPoint& point)
+{
+  if (!m_focusedLayout || !m_layout)
+    return false;
+
+  // Find the row at the point, it can be outside of the cursor range. The row after the last one
+  // that fits is only partly visible.
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  const CGUIListItemLayout* layout = nullptr;
+  int row = 0;
+  for (; row <= m_itemsPerPage; ++row)
+  {
+    layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
+    if (pos < layout->Size(m_orientation))
+      break;
+    pos -= layout->Size(m_orientation);
+  }
+  const int item = CorrectOffset(GetOffset(), row);
+  if (row > m_itemsPerPage || item < 0 || item >= static_cast<int>(m_items.size()) ||
+      !InsideLayout(layout, point))
+    return false;
+
+  // The cursor has to stay in its range, so an item outside of it is scrolled into it
+  int minCursor, maxCursor;
+  GetCursorRange(minCursor, maxCursor);
+  const int cursor = std::clamp(row, minCursor, maxCursor);
+  SetCursor(cursor);
+  if (cursor != row)
+    ScrollToOffset(item - cursor);
+  return true;
+}
+
 void CGUIFixedListContainer::SelectItem(int item)
 {
   // Check that GetOffset() is valid
