@@ -26,8 +26,8 @@ public:
   CURL(const CURL&) = default;
   CURL& operator=(const CURL&) = default;
   /*! \brief Transfer all URI/compatibility state, leaving the source Reset(). */
-  CURL(CURL&& other);
-  CURL& operator=(CURL&& other);
+  CURL(CURL&& other) noexcept;
+  CURL& operator=(CURL&& other) noexcept;
   explicit CURL(std::string strURL);
 
   bool operator==(const CURL& url) const { return url.Get() == Get(); }

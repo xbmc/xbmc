@@ -27,12 +27,12 @@
 
 #include <fmt/xchar.h>
 
-CURL::CURL(CURL&& other)
+CURL::CURL(CURL&& other) noexcept
 {
   *this = std::move(other);
 }
 
-CURL& CURL::operator=(CURL&& other)
+CURL& CURL::operator=(CURL&& other) noexcept
 {
   if (this != &other)
   {
