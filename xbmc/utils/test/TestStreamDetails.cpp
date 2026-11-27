@@ -10,7 +10,9 @@
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
 
+#include <atomic>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -1199,4 +1201,70 @@ TEST(TestStreamDetails, DefaultAudio_FirstNominationWins)
                                {"ger", "truehd", 8, StreamFlags::FLAG_DEFAULT}})};
 
   EXPECT_EQ(1, details.GetDefaultAudioStreamIndex());
+}
+
+TEST(TestStreamDetails, ConcurrentReadWhileReplaced)
+{
+  // The GUI reads an item's details while the background loader replaces them.
+  const CStreamDetails few{MakeAudioStreams({{"eng", "ac3", 6}})};
+  const CStreamDetails many{MakeAudioStreams({{"ger", "truehd", 8},
+                                              {"eng", "ac3", 6},
+                                              {"fra", "dts", 6},
+                                              {"eng", "dtshd_ma", 8},
+                                              {"jpn", "aac", 2},
+                                              {"spa", "eac3", 6}})};
+  const auto preferences{ForLanguage("eng")};
+
+  CStreamDetails details{few};
+  std::atomic<bool> done{false};
+  std::atomic<int> outOfRange{0};
+  std::atomic<int> round{0};
+
+  std::thread reader(
+      [&]
+      {
+        int seen{-1};
+        while (!done)
+        {
+          // The lock isn't fair, so reading back to back could starve the writer
+          if (round == seen)
+          {
+            std::this_thread::yield();
+            continue;
+          }
+          seen = round;
+
+          const int index{details.GetPreferredAudioStreamIndex(preferences)};
+          if (index < 0 || index > many.GetAudioStreamCount())
+            outOfRange++;
+          details.GetAudioLanguage(index);
+          details.GetDefaultAudioStreamIndex();
+          details.GetAudioStreamCount();
+        }
+      });
+
+  for (int i = 0; i < 2000; ++i)
+  {
+    round = i;
+    details = (i % 2) ? many : few;
+
+    // Rebuilt in place, as CVideoDatabase::GetStreamDetails() does
+    details.Reset();
+    for (int j = 1; j <= many.GetAudioStreamCount(); ++j)
+    {
+      auto* audio = new CStreamDetailAudio();
+      audio->m_strLanguage = many.GetAudioLanguage(j);
+      audio->m_strCodec = many.GetAudioCodec(j);
+      audio->m_iChannels = many.GetAudioChannels(j);
+      details.AddStream(audio);
+    }
+    details.DetermineBestStreams();
+  }
+
+  done = true;
+  reader.join();
+
+  EXPECT_EQ(0, outOfRange);
+  EXPECT_EQ(many.GetPreferredAudioStreamIndex(preferences),
+            details.GetPreferredAudioStreamIndex(preferences));
 }

@@ -10,6 +10,7 @@
 
 #include "ISerializable.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/StreamUtils.h"
 
@@ -264,12 +265,13 @@ public:
    */
   static StreamFlags StreamFlagFromName(std::string_view name);
 
-  bool HasItems(void) const { return !m_vecItems.empty(); }
+  bool HasItems(void) const;
   int GetStreamCount(CStreamDetail::StreamType type) const;
   int GetVideoStreamCount(void) const;
   int GetAudioStreamCount(void) const;
   int GetSubtitleStreamCount(void) const;
   static std::string HdrTypeToString(StreamHdrType hdrType);
+  // The pointer is unprotected; only use it on details no other thread modifies.
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   std::string GetVideoCodec(int idx = 0) const;
@@ -401,6 +403,10 @@ public:
 
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
+
+  // Guards m_vecItems and m_pBest*. The GUI takes it under the GUI lock, so never wait on the GUI
+  // or the loader while holding it.
+  mutable CCriticalSection m_critSection;
   std::vector<std::unique_ptr<CStreamDetail>> m_vecItems;
   const CStreamDetailVideo *m_pBestVideo;
   const CStreamDetailAudio *m_pBestAudio;
