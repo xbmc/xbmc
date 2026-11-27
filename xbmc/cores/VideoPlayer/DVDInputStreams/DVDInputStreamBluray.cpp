@@ -577,6 +577,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     /* when a title ends, playlist WILL eventually change */
     if (m_navmode)
       FreeTitleInfo();
+    m_readToEnd = true;
     break;
 
   case BD_EVENT_TITLE:
@@ -605,6 +606,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_PLAYLIST:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST {}", m_event.param);
     m_playlist = m_event.param;
+    m_readToEnd = false;
     FreeTitleInfo();
     m_titleInfo = bd_get_playlist_info(m_bd, m_playlist, m_angle);
     break;
@@ -748,8 +750,10 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
         case BD_EVENT_SEEK:
           // Kodi's own seeks consume this event in PosTime() / SeekChapter(), so this is a jump
           // by the disc program. Drop the data queued from the old position instead of playing
-          // it out while the demuxer is reopened.
-          if (m_hold != HOLD_DATA)
+          // it out while the demuxer is reopened. If the playlist was already read to its end,
+          // the queued data is its last part, e.g. of a menu background looped by a seek to its
+          // start, so it is played out.
+          if (m_hold != HOLD_DATA && !m_readToEnd)
           {
             m_player->OnDiscNavResult(nullptr, BD_EVENT_SEEK);
             m_seekFlushed = true;
@@ -784,7 +788,10 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 
       const bool queued = m_event.event != BD_EVENT_NONE && m_hold != HOLD_DATA;
       if(result > 0)
+      {
         m_hold = HOLD_NONE;
+        m_readToEnd = false;
+      }
 
       ProcessEvent();
 
@@ -1406,9 +1413,11 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   // A jump within the playlist can be reported behind the event that held the stream, e.g. a
   // play item change. A new playlist also starts with a seek, but it follows the end of the
   // previous one, or a playlist stop that already flushed.
-  if (seek && !playlist && !m_seekFlushed)
+  if (seek && !playlist && !m_seekFlushed && !m_readToEnd)
     m_player->OnDiscNavResult(nullptr, BD_EVENT_SEEK);
   m_seekFlushed = false;
+  if (seek)
+    m_readToEnd = false;
 
   // The last read error can be queued with the events of a clip boundary
   if (HasGivenUpReading())
