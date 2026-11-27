@@ -31,8 +31,6 @@ CGameClientTable::CGameClientTable(CDatabase& database) : m_database(database)
 {
 }
 
-CGameClientTable::~CGameClientTable() = default;
-
 void CGameClientTable::Create()
 {
   CLog::Log(LOGINFO, "GAME: Creating gameclient table");
