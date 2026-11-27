@@ -873,14 +873,13 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
       return EVENT_RESULT_HANDLED;
     }
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    Scroll(-1);
-    return EVENT_RESULT_HANDLED;
-  }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
-  {
-    Scroll(1);
+    Scroll(event.m_id == ACTION_MOUSE_WHEEL_UP ? -1 : 1);
+    // The list moves under a pointer that doesn't, so the item under it is selected
+    const int cursor = GetCursorFromPoint(point - CPoint(m_posX, m_posY));
+    if (cursor >= 0)
+      SetCursor(cursor);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
