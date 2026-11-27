@@ -30,7 +30,7 @@ public:
   static void DrawStencilQuad(const CRect& coords, STENCIL_LAYER mask);
 
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  ~CGUITextureGLES() override = default;
+  ~CGUITextureGLES() override;
 
   CGUITextureGLES* Clone() const override;
 
@@ -43,6 +43,8 @@ protected:
 
 private:
   CGUITextureGLES(const CGUITextureGLES& texture);
+
+  void DestroyVertexArray();
 
   // One corner of a quad and its opposite corner; see m_attrpos and m_attrsnap in gles_shader.vert.
   struct QuadVertex
@@ -59,7 +61,12 @@ private:
   unsigned int m_quadBufferVersion{0};
   std::size_t m_quadCount{0};
 
+  GLuint m_vertexArray{0};
+  // Attribute locations m_vertexArray was set up for; they differ between shaders.
+  std::array<GLint, 4> m_vertexArrayLocations{};
+
   CRenderSystemGLES *m_renderSystem;
   bool m_isGLES20{true};
+  bool m_useVertexArray{false};
 };
 
