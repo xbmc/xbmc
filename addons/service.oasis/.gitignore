@@ -1,0 +1,7 @@
+# IDE ignorables
+.idea
+
+# Python ignorables
+.mypy_cache
+.tox
+__pycache__

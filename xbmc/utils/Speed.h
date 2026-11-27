@@ -103,7 +103,7 @@ public:
   double ToFurlongPerFortnight() const;
 
   double To(Unit speedUnit) const;
-  std::string ToString(Unit speedUnit) const;
+  std::string ToString(Unit speedUnit, unsigned int decimals = 0) const;
 
 protected:
   explicit CSpeed(double value);
@@ -113,4 +113,3 @@ protected:
   double m_value; // we store in m/s
   bool m_valid;
 };
-

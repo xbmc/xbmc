@@ -320,6 +320,27 @@ constexpr std::array<InfoFormatData, 6> infoformatmap = {{{"$INFO[", InfoFormat:
                                                           {"$MAP[", InfoFormat::MAP},
                                                           {"$ESCMAP[", InfoFormat::ESC_MAP}}};
 
+std::vector<std::string> SplitInfoLabelParameters(std::string_view block)
+{
+  std::vector<std::string> parameters;
+  size_t start = 0;
+  unsigned int parentheses = 0;
+  for (size_t i = 0; i < block.size(); ++i)
+  {
+    if (block[i] == '(')
+      ++parentheses;
+    else if (block[i] == ')' && parentheses > 0)
+      --parentheses;
+    else if (block[i] == ',' && parentheses == 0)
+    {
+      parameters.emplace_back(block.substr(start, i - start));
+      start = i + 1;
+    }
+  }
+  parameters.emplace_back(block.substr(start));
+  return parameters;
+}
+
 } // unnamed namespace
 
 void CGUIInfoLabel::Parse(const std::string& label,
@@ -363,7 +384,7 @@ void CGUIInfoLabel::Parse(const std::string& label,
       {
         // decipher the block
         const std::vector<std::string> params =
-            StringUtils::Split(std::string_view(work).substr(pos1 + len, pos2 - pos1 - len), ",");
+            SplitInfoLabelParameters(std::string_view(work).substr(pos1 + len, pos2 - pos1 - len));
         if (!params.empty())
         {
           CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();

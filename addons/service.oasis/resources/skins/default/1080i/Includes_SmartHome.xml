@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+    <variable name="SmartHomeSystemAirMonitorIsActive">
+        <value condition="SmartHome.System(AirMonitor).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemBarIsActive">
+        <value condition="SmartHome.System(bar).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemConductorIsActive">
+        <value condition="SmartHome.System(conductor).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemDoorIsActive">
+        <value condition="SmartHome.System(door).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemEngineerIsActive">
+        <value condition="SmartHome.System(engineer).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemFalconIsActive">
+        <value condition="SmartHome.System(falcon).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemFalconIsInactive">
+        <value condition="!SmartHome.System(falcon).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemGateIsActive">
+        <value condition="SmartHome.System(gate).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemHallwayIsActive">
+        <value condition="SmartHome.System(hallway).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemHomeAssistantIsActive">
+        <value condition="SmartHome.System(homeassistant).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemNasIsActive">
+        <value condition="SmartHome.System(nas).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemOceanPlatformIsActive">
+        <value condition="SmartHome.System(oceanplatform).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemPatioIsActive">
+        <value condition="SmartHome.System(patio).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemStationIsActive">
+        <value condition="SmartHome.System(station).IsActive(2)">true</value>
+    </variable>
+    <variable name="SmartHomeSystemVisionIsActive">
+        <value condition="SmartHome.System(vision).IsActive(2)">true</value>
+    </variable>
+    <include name="UnclickableVideoWindow">
+		<control type="group">
+			<control type="videowindow">
+				<description>Video playback area</description>
+			</control>
+			<!-- Transparent overlay to absorb mouse clicks over the video -->
+			<control type="button">
+				<description>Mouse click blocker</description>
+
+				<!-- No visual appearance -->
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+
+				<!-- Swallow mouse clicks -->
+				<onclick>noop</onclick>
+			</control>
+		</control>
+    </include>
+</includes>

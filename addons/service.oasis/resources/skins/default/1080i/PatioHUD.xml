@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include file="../../service.oasis/resources/skins/default/1080i/Includes_Weather.xml" />
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="grouplist">
+			<description>Vertical grouplist for weather content</description>
+			<visible>!String.IsEmpty(Weather.Data(Daily.IsFetched))</visible>
+			<animation effect="fade" time="1500">VisibleChange</animation>
+			<orientation>vertical</orientation>
+			<itemgap>-10</itemgap>
+			<control type="group">
+				<description>Headline weather info</description>
+				<height>300</height>
+				<width>678</width>
+				<control type="label">
+					<description>Current temperature</description>
+					<top>40</top>
+					<right>45</right>
+					<align>right</align>
+					<font>WeatherTemp</font>
+					<label>$INFO[Weather.Data(Current.Temperature)]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+				<control type="grouplist">
+					<top>45</top>
+					<left>60</left>
+					<width>220</width>
+					<align>justify</align>
+					<orientation>horizontal</orientation>
+					<include content="OasisWeatherIconMyWeather">
+						<param name="label" value="Weather.Data(Current.Wind)" />
+						<param name="texture" value="icons/weather/wind.png" />
+					</include>
+					<!--
+					<include content="OasisWeatherIconMyWeather">
+						<param name="label" value="Weather.Data(Current.Humidity)" />
+						<param name="texture" value="icons/weather/humidity.png" />
+					</include>
+					<include content="OasisWeatherIconMyWeather">
+						<param name="label" value="Weather.Data(Current.Precipitation)" />
+						<param name="texture" value="icons/weather/rain.png" />
+					</include>
+					<include content="OasisWeatherIconMyWeather">
+						<param name="label" value="Weather.Data(Today.Sunrise)" />
+						<param name="texture" value="icons/weather/sunrise.png" />
+					</include>
+					<include content="OasisWeatherIconMyWeather">
+						<param name="label" value="Weather.Data(Today.Sunset)" />
+						<param name="texture" value="icons/weather/sunset.png" />
+					</include>
+					-->
+				</control>
+			</control>
+			<include content="OasisWeatherWidget">
+				<param name="content_include" value="OasisDailyItems" />
+				<param name="item_width" value="226" />
+			</include>
+			<include content="OasisWeatherWidget">
+				<param name="content_include" value="OasisHourlyItems" />
+				<param name="item_width" value="226" />
+			</include>
+		</control>
+	</controls>
+</window>

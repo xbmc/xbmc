@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>Display area</description>
+			<control type="group">
+				<description>Upper Dell display content area</description>
+				<top>60</top>
+				<height>175</height>
+				<left>140</left>
+				<right>140</right>
+				<!--
+				<control type="image">
+					<description>Upper Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				-->
+				<control type="image">
+					<description>OASIS logo</description>
+					<texture>OASIS.png</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control>
+			<control type="group">
+				<description>Lower Dell display content area</description>
+				<top>300</top>
+				<bottom>40</bottom>
+				<left>140</left>
+				<right>140</right>
+				<control type="image">
+					<description>Lower Dell content area background</description>
+					<top>-20</top>
+					<bottom>-20</bottom>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="list">
+					<description>Node list</description>
+					<orientation>vertical</orientation>
+					<top>8</top>
+					<itemlayout width="1570" height="104">
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<left>125</left>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<right>250</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>30</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+					</itemlayout>
+					<focusedlayout width="1570" height="104">
+						<control type="label">
+							<label>$INFO[ListItem.Label]</label>
+							<left>125</left>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cputemperature)]</label>
+							<right>250</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.Property(smarthome.cpuutilization)]</label>
+							<right>30</right>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>right</align>
+							<aligny>center</aligny>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>Desk HUD</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(uplift).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(uplift).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Server</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(cinder).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(cinder).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Train Station</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(station).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(station).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>LEGO Air Quality Lab</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(substation).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(substation).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>MacBook</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(macbook_vm).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(macbook_vm).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Door HUD</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(lenovo).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(lenovo).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Bar HUD</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(asus).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(asus).CPUUtilization]</property>
+						</item>
+						<item>
+							<label>Dual Displays</label>
+							<property name="smarthome.cputemperature">$INFO[SmartHome.System(nuc).CPUTemperature]</property>
+							<property name="smarthome.cpuutilization">$INFO[SmartHome.System(nuc).CPUUtilization]</property>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

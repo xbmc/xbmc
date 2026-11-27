@@ -101,6 +101,10 @@ public:
   std::string GetLabel(int info, int contextWindow, std::string* fallback = nullptr) const;
   std::string GetImage(int info, int contextWindow, std::string* fallback = nullptr);
   bool GetInt(int& value, int info, int contextWindow, const CGUIListItem* item = nullptr) const;
+  bool GetFloat(float& value,
+                int info,
+                int contextWindow,
+                const CGUIListItem* item = nullptr) const;
   bool GetBool(int condition, int contextWindow, const CGUIListItem* item = nullptr);
 
   std::string GetItemLabel(const CFileItem* item,
@@ -202,6 +206,10 @@ private:
                        const KODI::GUILIB::GUIINFO::CGUIInfo& info,
                        int contextWindow,
                        const CGUIListItem* item) const;
+  bool GetMultiInfoFloat(float& value,
+                         const KODI::GUILIB::GUIINFO::CGUIInfo& info,
+                         int contextWindow,
+                         const CGUIListItem* item) const;
   bool GetMultiInfoBool(const KODI::GUILIB::GUIINFO::CGUIInfo& info,
                         int contextWindow,
                         const CGUIListItem* item);
