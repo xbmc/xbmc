@@ -321,32 +321,6 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
-      case ACTION_ZOOM_IN:
-      {
-        CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_CustomZoomAmount += 0.01f;
-        if (vs.m_CustomZoomAmount > 2.f)
-          vs.m_CustomZoomAmount = 2.f;
-        vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
-                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
-        ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
-        return true;
-      }
-
-      case ACTION_ZOOM_OUT:
-      {
-        CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_CustomZoomAmount -= 0.01f;
-        if (vs.m_CustomZoomAmount < 0.5f)
-          vs.m_CustomZoomAmount = 0.5f;
-        vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
-                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
-        ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
-        return true;
-      }
-
       case ACTION_INCREASE_PAR:
       {
         CVideoSettings vs = appPlayer->GetVideoSettings();
@@ -354,7 +328,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (vs.m_CustomPixelRatio > 2.f)
           vs.m_CustomPixelRatio = 2.f;
         vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomPixelRatio,
                                      vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
@@ -367,7 +341,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (vs.m_CustomPixelRatio < 0.5f)
           vs.m_CustomPixelRatio = 0.5f;
         vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomPixelRatio,
                                      vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
@@ -380,7 +354,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (vs.m_CustomVerticalShift < -2.0f)
           vs.m_CustomVerticalShift = -2.0f;
         vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomPixelRatio,
                                      vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
@@ -393,7 +367,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (vs.m_CustomVerticalShift > 2.0f)
           vs.m_CustomVerticalShift = 2.0f;
         vs.m_ViewMode = ViewModeCustom;
-        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomPixelRatio,
                                      vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;

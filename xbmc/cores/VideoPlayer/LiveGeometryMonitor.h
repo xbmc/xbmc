@@ -38,6 +38,14 @@ struct LiveGeometryUpdate
   bool clear{false}; //!< withdraw the live reading rather than replace it
   CRectInt rect{};
   bool varies{false};
+
+  //! \brief What the stream's pixel aspect is multiplied by to read the frame as the other SD
+  //! shape, 1 when the stream's flag held.
+  float frameCorrection{1.0f};
+
+  //! \brief The pixel ratio the user set when the reading was judged, which the renderer
+  //! applies itself.
+  float pixelRatio{1.0f};
 };
 
 /*!
@@ -94,6 +102,7 @@ private:
   //! \brief The rules in force, and when they were last re-read.
   KODI::VIDEO::GEOMETRY::LiveGeometrySettings m_settings;
   float m_declaredAspect{0.0f};
+  float m_pixelRatio{1.0f}; //!< the user's, as last read
   int64_t m_settingsReadMs{0};
 
   //! \brief What the debounce was configured against; a mismatch reconfigures.
@@ -101,6 +110,7 @@ private:
   unsigned int m_codedHeight{0};
   std::string m_stereoMode;
   float m_displayAspect{0.0f};
+  float m_configuredPixelRatio{0.0f};
 
   bool m_unreadableLogged{false};
   bool m_reducedLogged{false};

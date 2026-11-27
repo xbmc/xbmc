@@ -4020,7 +4020,7 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
           idFile, static_cast<int>(CStreamDetail::VIDEO), details.GetVideoCodec(i).c_str(),
           static_cast<double>(details.GetVideoAspect(i)), details.GetVideoWidth(i),
           details.GetVideoHeight(i), details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
-          details.GetVideoLanguage(i).AsIso6392B().c_str(), details.GetVideoHdrType(i).c_str(),
+          details.GetVideoLanguage(i).ToString().c_str(), details.GetVideoHdrType(i).c_str(),
           details.GetVideoHdrDetail(i).c_str(),
           static_cast<int>(details.GetSource(CStreamDetail::VIDEO, i)),
           details.GetVersion(CStreamDetail::VIDEO, i)));
@@ -4033,7 +4033,7 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
           "strAudioLanguage, iSource, iVersion, iFlags) "
           "VALUES (%i,%i,'%s',%i,'%s',%i, %i, %i)",
           idFile, static_cast<int>(CStreamDetail::AUDIO), details.GetAudioCodec(i).c_str(),
-          details.GetAudioChannels(i), details.GetAudioLanguage(i).AsIso6392B().c_str(),
+          details.GetAudioChannels(i), details.GetAudioLanguage(i).ToString().c_str(),
           static_cast<int>(details.GetSource(CStreamDetail::AUDIO, i)),
           details.GetVersion(CStreamDetail::AUDIO, i), static_cast<int>(details.GetAudioFlags(i))));
     }
@@ -4044,7 +4044,7 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
                              "iFlags) "
                              "VALUES (%i,%i,'%s',%i, %i, %i)",
                              idFile, static_cast<int>(CStreamDetail::SUBTITLE),
-                             details.GetSubtitleLanguage(i).AsIso6392B().c_str(),
+                             details.GetSubtitleLanguage(i).ToString().c_str(),
                              static_cast<int>(details.GetSource(CStreamDetail::SUBTITLE, i)),
                              details.GetVersion(CStreamDetail::SUBTITLE, i),
                              static_cast<int>(details.GetSubtitleFlags(i))));
@@ -6444,13 +6444,12 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_NoiseReduction = m_pDS->fv("NoiseReduction").get_asFloat();
       settings.m_PostProcess = m_pDS->fv("PostProcess").get_asBool();
       settings.m_Sharpness = m_pDS->fv("Sharpness").get_asFloat();
-      settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
       settings.m_CustomVerticalShift = m_pDS->fv("VerticalShift").get_asFloat();
       settings.m_Gamma = m_pDS->fv("Gamma").get_asFloat();
       settings.m_SubtitleDelay = m_pDS->fv("SubtitleDelay").get_asFloat();
       settings.m_SubtitleOn = m_pDS->fv("SubtitlesOn").get_asBool();
       settings.m_SubtitleStream = m_pDS->fv("SubtitleStream").get_asInt();
-      settings.m_ViewMode = m_pDS->fv("ViewMode").get_asInt();
+      settings.m_ViewMode = ViewModeFromStored(m_pDS->fv("ViewMode").get_asInt());
       settings.m_ResumeTime = m_pDS->fv("ResumeTime").get_asInt();
       settings.m_InterlaceMethod = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInt();
       settings.m_VolumeAmplification = m_pDS->fv("VolumeAmplification").get_asFloat();
@@ -6504,13 +6503,12 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       // update the item
       strSQL = PrepareSQL(
           "update settings set "
-          "Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,VerticalShift=%f,"
+          "Deinterlace=%i,ViewMode=%i,PixelRatio=%f,VerticalShift=%f,"
           "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast="
           "%f,Gamma=%f,"
           "VolumeAmplification=%f,AudioDelay=%f,Sharpness=%f,NoiseReduction=%f,NonLinStretch=%i,"
           "PostProcess=%i,ScalingMethod=%i,",
           setting.m_InterlaceMethod, setting.m_ViewMode,
-          static_cast<double>(setting.m_CustomZoomAmount),
           static_cast<double>(setting.m_CustomPixelRatio),
           static_cast<double>(setting.m_CustomVerticalShift), setting.m_AudioStream,
           setting.m_SubtitleStream, static_cast<double>(setting.m_SubtitleDelay),
@@ -6541,20 +6539,18 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
     else
     { // add the items
       m_pDS->close();
-      strSQL =
-          "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
-          "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
-          "Contrast,Gamma,VolumeAmplification,AudioDelay,"
-          "ResumeTime,"
-          "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,"
-          "StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel,"
-          "Hue,Saturation,DeclaredAspect,DeclaredOn,DetectedWhenDeclared) "
-          "VALUES ";
+      strSQL = "INSERT INTO settings (idFile,Deinterlace,ViewMode,PixelRatio, VerticalShift, "
+               "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
+               "Contrast,Gamma,VolumeAmplification,AudioDelay,"
+               "ResumeTime,"
+               "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,"
+               "StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel,"
+               "Hue,Saturation,DeclaredAspect,DeclaredOn,DetectedWhenDeclared) "
+               "VALUES ";
       strSQL += PrepareSQL(
-          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i,%f,"
+          "(%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i,%f,"
           "%f,%f,'%s',%f)",
           idFile, setting.m_InterlaceMethod, setting.m_ViewMode,
-          static_cast<double>(setting.m_CustomZoomAmount),
           static_cast<double>(setting.m_CustomPixelRatio),
           static_cast<double>(setting.m_CustomVerticalShift), setting.m_AudioStream,
           setting.m_SubtitleStream, static_cast<double>(setting.m_SubtitleDelay),

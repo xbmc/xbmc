@@ -1003,10 +1003,7 @@ msgctxt "#215"
 msgid "Soften"
 msgstr ""
 
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#216"
-msgid "Zoom amount"
-msgstr ""
+#empty string with id 216
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#217"
@@ -2987,7 +2984,13 @@ msgctxt "#626"
 msgid "In progress TV shows"
 msgstr ""
 
-#empty strings from id 627 to 628
+#. Label for stretching the displayed video to fill the screen when only a small stretch is needed
+#: xbmc/video/ViewModeSettings.cpp
+msgctxt "#627"
+msgid "Stretch to fill"
+msgstr ""
+
+#empty string with id 628
 
 msgctxt "#629"
 msgid "View mode"
@@ -3014,11 +3017,7 @@ msgctxt "#632"
 msgid "Stretch 4:3"
 msgstr ""
 
-#: system/settings/settings.xml
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#633"
-msgid "Wide zoom"
-msgstr ""
+#empty string with id 633
 
 #. Label for stretching the displayed video to a 16:9 aspect ratio
 #: system/settings/settings.xml
@@ -3073,10 +3072,7 @@ msgctxt "#643"
 msgid "Avoid clipping protection on ReplayGained files"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#644"
-msgid "Stretch 16:9 - Nonlinear"
-msgstr ""
+#empty string with id 644
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
@@ -15893,7 +15889,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22021"
-msgid "Minimise black bars"
+msgid "Stretch to fill limit"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -20968,10 +20964,10 @@ msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source.[CR][Low] Is fast and will have minimal impact on system resources such as the use of the CPU.[CR][Medium] & [High] Will use progressively more system resources."
 msgstr ""
 
-#. Description of setting with label #22021 "Minimise black bars"
+#. Description of setting with label #22021 "Stretch to fill limit"
 #: system/settings/settings.xml
 msgctxt "#36170"
-msgid "Stretch the video up to the set percentage in order to minimise black bars."
+msgid "The most the Stretch to fill view mode stretches a video to fill the screen. A video that needs more is left as it is."
 msgstr ""
 
 #. Description of setting with label #173 "Display 4:3 videos as"
@@ -24624,15 +24620,7 @@ msgctxt "#39007"
 msgid "This provides access to where picture sources can be added and otherwise managed."
 msgstr ""
 
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#39008"
-msgid "Zoom - 120% width"
-msgstr ""
-
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#39009"
-msgid "Zoom - 110% width"
-msgstr ""
+#empty strings from id 39008 to 39009
 
 #: view/GUIViewState.cpp
 msgctxt "#39010"

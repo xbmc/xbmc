@@ -32,7 +32,6 @@ CVideoSettings::CVideoSettings()
   m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_ViewMode = ViewModeNormal;
-  m_CustomZoomAmount = 1.0f;
   m_CustomPixelRatio = 1.0f;
   m_CustomVerticalShift = 0.0f;
   m_CustomNonLinStretch = false;
@@ -67,7 +66,6 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
   if (m_ScalingMethod != right.m_ScalingMethod) return true;
   if (m_ViewMode != right.m_ViewMode) return true;
-  if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
   if (m_CustomPixelRatio != right.m_CustomPixelRatio) return true;
   if (m_CustomVerticalShift != right.m_CustomVerticalShift) return true;
   if (m_CustomNonLinStretch != right.m_CustomNonLinStretch) return true;
@@ -151,11 +149,10 @@ void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save)
   m_videoSettings.m_subtitleVerticalPositionSave = save;
 }
 
-void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
+void CVideoSettingsLocked::SetViewMode(int mode, float par, float shift, bool stretch)
 {
   std::unique_lock lock(m_critSection);
   m_videoSettings.m_ViewMode = mode;
-  m_videoSettings.m_CustomZoomAmount = zoom;
   m_videoSettings.m_CustomPixelRatio = par;
   m_videoSettings.m_CustomVerticalShift = shift;
   m_videoSettings.m_CustomNonLinStretch = stretch;

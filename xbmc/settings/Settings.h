@@ -113,7 +113,7 @@ public:
   static constexpr auto SETTING_VIDEOPLAYER_MAX_SMOOTH_FF_SPEED = "videoplayer.maxsmoothff";
   static constexpr auto SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE = "videoplayer.adjustrefreshrate";
   static constexpr auto SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK = "videoplayer.usedisplayasclock";
-  static constexpr auto SETTING_VIDEOPLAYER_ERRORINASPECT = "videoplayer.errorinaspect";
+  static constexpr auto SETTING_VIDEOPLAYER_STRETCHTOFILL = "videoplayer.stretchtofill";
   static constexpr auto SETTING_VIDEOPLAYER_STRETCH43 = "videoplayer.stretch43";
   static constexpr auto SETTING_VIDEOPLAYER_TELETEXTENABLED = "videoplayer.teletextenabled";
   static constexpr auto SETTING_VIDEOPLAYER_TELETEXTSCALE = "videoplayer.teletextscale";

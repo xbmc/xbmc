@@ -35,7 +35,9 @@ public:
   void Refresh();
 
   //! \brief Take a reading confirmed during playback, in coded space, and serve it.
-  void SetLive(const CRectInt& rect, bool varies);
+  //! \p frameCorrection and \p pixelRatio are what it was judged through, as
+  //! GeometryInputs holds them.
+  void SetLive(const CRectInt& rect, bool varies, float frameCorrection, float pixelRatio);
 
   //! \brief Leaves the stored inputs to answer as they did before playback.
   void ClearLive();

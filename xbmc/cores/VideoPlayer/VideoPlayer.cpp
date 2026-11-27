@@ -6405,9 +6405,9 @@ void CVideoPlayer::FlushRenderer()
   m_renderManager.Flush(true, true);
 }
 
-void CVideoPlayer::SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch)
+void CVideoPlayer::SetRenderViewMode(int mode, float par, float shift, bool stretch)
 {
-  m_processInfo->GetVideoSettingsLocked().SetViewMode(mode, zoom, par, shift, stretch);
+  m_processInfo->GetVideoSettingsLocked().SetViewMode(mode, par, shift, stretch);
   m_renderManager.SetVideoSettings(m_processInfo->GetVideoSettings());
   m_renderManager.SetViewMode(mode);
 }

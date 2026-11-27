@@ -41,12 +41,29 @@ void PublishRatio(float aspect, std::string& label, std::string& name)
   name = entry ? entry->name : std::string{};
 }
 
+bool LiveInForce(const GeometryInputs& inputs)
+{
+  return inputs.hasLive && inputs.live.hasReading;
+}
+
+//! \brief The stream as resolved, its flag replaced while a live reading of the frame as the
+//! other SD shape is in force.
+StreamGeometry StreamInForce(const GeometryInputs& inputs)
+{
+  StreamGeometry stream{inputs.stream};
+  if (LiveInForce(inputs))
+    stream.displayAspect *= inputs.liveFrameCorrection;
+  return stream;
+}
+
 /*!
  * \brief Resolve the live reading, else the stored one, against the vocabulary. The sections
  * are published rather than resolved from, so this does not touch them.
  * \param frame the coded frame with its pixel aspect undone, which \p upright is a region of
  */
-ResolvedMeasurement ResolveMeasurement(const GeometryInputs& inputs, const CRect& frame)
+ResolvedMeasurement ResolveMeasurement(const GeometryInputs& inputs,
+                                       const StreamGeometry& stream,
+                                       const CRect& frame)
 {
   ResolvedMeasurement resolved;
   resolved.upright = frame;
@@ -55,12 +72,14 @@ ResolvedMeasurement ResolveMeasurement(const GeometryInputs& inputs, const CRect
   CRect candidate;
   GeometrySource measured = GeometrySource::Container;
   bool varies{false};
+  float judgedThrough{1.0f};
 
-  if (inputs.hasLive && inputs.live.hasReading)
+  if (LiveInForce(inputs))
   {
-    candidate = ToSquarePixels(inputs.live.rect, inputs.stream);
+    candidate = ToSquarePixels(inputs.live.rect, stream);
     measured = GeometrySource::Live;
     varies = inputs.live.varies;
+    judgedThrough = inputs.livePixelRatio;
   }
   else if (inputs.cached.HasRecord() && inputs.cached.record.HasReading())
   {
@@ -83,7 +102,7 @@ ResolvedMeasurement ResolveMeasurement(const GeometryInputs& inputs, const CRect
 
   // The answer is the matched ratio's rectangle, centred, after pixel-aspect correction.
   const std::optional<AspectRatioEntry> entry = CAspectRatioVocabulary::Resolve(
-      AspectOf(candidate), AspectRatioUse::Detect, inputs.atRestAspect);
+      AspectOf(candidate) * judgedThrough, AspectRatioUse::Detect, inputs.atRestAspect);
   if (!entry)
   {
     // A measurement matching no real ratio is a failed measurement, so the frame stands.
@@ -92,7 +111,7 @@ ResolvedMeasurement ResolveMeasurement(const GeometryInputs& inputs, const CRect
     return resolved;
   }
 
-  resolved.upright = FitAspect(entry->ratio, frame);
+  resolved.upright = FitAspect(entry->ratio / judgedThrough, frame);
   resolved.source = measured;
   resolved.varies = varies;
   return resolved;
@@ -138,12 +157,13 @@ GeometryInputs InputsForStream(const GeometryInputs& inputs, int videoStream)
 EffectiveGeometry ResolveEffectiveGeometry(const GeometryInputs& inputs)
 {
   EffectiveGeometry result;
-  result.codedFrame = inputs.stream.coded;
-  result.par = PixelAspectRatio(inputs.stream);
-  result.orientation = NormaliseRotation(inputs.stream.orientation);
+  const StreamGeometry stream{StreamInForce(inputs)};
+  result.codedFrame = stream.coded;
+  result.par = PixelAspectRatio(stream);
+  result.orientation = NormaliseRotation(stream.orientation);
 
   // Everything is decided upright; the turn is applied once, at the end.
-  const CRect frame = ToSquarePixels(inputs.stream.coded, inputs.stream);
+  const CRect frame = ToSquarePixels(stream.coded, stream);
 
   result.displayFrame = Rotate(frame, frame, result.orientation);
 
@@ -171,7 +191,7 @@ EffectiveGeometry ResolveEffectiveGeometry(const GeometryInputs& inputs)
     result.sections.push_back(std::move(published));
   }
 
-  const ResolvedMeasurement measurement = ResolveMeasurement(inputs, frame);
+  const ResolvedMeasurement measurement = ResolveMeasurement(inputs, stream, frame);
   CRect upright = measurement.upright;
   result.source = measurement.source;
   result.varies = measurement.varies;
@@ -199,8 +219,9 @@ EffectiveGeometry ResolveEffectiveGeometry(const GeometryInputs& inputs)
 float ResolveDetectedAspect(const GeometryInputs& inputs)
 {
   // Only the measurement decides this, so the sections and the labelling are not resolved.
-  const CRect frame = ToSquarePixels(inputs.stream.coded, inputs.stream);
-  const ResolvedMeasurement measurement = ResolveMeasurement(inputs, frame);
+  const StreamGeometry stream{StreamInForce(inputs)};
+  const CRect frame = ToSquarePixels(stream.coded, stream);
+  const ResolvedMeasurement measurement = ResolveMeasurement(inputs, stream, frame);
 
   return measurement.source == GeometrySource::Container ? 0.0f : AspectOf(measurement.upright);
 }

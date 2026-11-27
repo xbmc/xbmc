@@ -208,8 +208,8 @@ TEST(TestVideoInfoTag, ReadStreamDetailLanguageThatNamesNone)
   KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Declare({{"hva", "High Valyrian"}});
   CVideoInfoTag declared;
   EXPECT_TRUE(declared.Load(doc.RootElement(), true, false));
-  EXPECT_EQ(declared.m_streamDetails.GetAudioLanguage(1).AsIso6392B(), "hva");
-  EXPECT_EQ(declared.m_streamDetails.GetSubtitleLanguage(1).AsIso6392B(), "hva");
+  EXPECT_EQ(declared.m_streamDetails.GetAudioLanguage(1).ToString(), "hva");
+  EXPECT_EQ(declared.m_streamDetails.GetSubtitleLanguage(1).ToString(), "hva");
   KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Reset();
 }
 
@@ -290,6 +290,37 @@ TEST(TestVideoInfoTag, WriteVideoStreamDetails)
 
   EXPECT_EQ("eng", reloaded.m_streamDetails.GetVideoLanguage(1).AsIso6392B());
   EXPECT_EQ("7MEL", reloaded.m_streamDetails.GetVideoHdrDetail(1));
+}
+
+TEST(TestVideoInfoTag, WriteStreamLanguagesAsTheirWholeTag)
+{
+  auto* video = new CStreamDetailVideo();
+  video->m_language = CLanguageTag::Parse("en-AU");
+  video->SetSource(CStreamDetail::MEDIA);
+  auto* audio = new CStreamDetailAudio();
+  audio->m_language = CLanguageTag::Parse("pob");
+  audio->SetSource(CStreamDetail::MEDIA);
+  auto* subtitle = new CStreamDetailSubtitle();
+  subtitle->m_language = CLanguageTag::Parse("zh-Hant");
+  subtitle->SetSource(CStreamDetail::MEDIA);
+
+  CVideoInfoTag details;
+  details.m_streamDetails.AddStream(video);
+  details.m_streamDetails.AddStream(audio);
+  details.m_streamDetails.AddStream(subtitle);
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  const TiXmlElement* streams{
+      xmlDoc.RootElement()->FirstChildElement("fileinfo")->FirstChildElement("streamdetails")};
+  EXPECT_STREQ("en-AU",
+               streams->FirstChildElement("video")->FirstChildElement("language")->GetText());
+  EXPECT_STREQ("pt-BR",
+               streams->FirstChildElement("audio")->FirstChildElement("language")->GetText());
+  EXPECT_STREQ("zh-Hant",
+               streams->FirstChildElement("subtitle")->FirstChildElement("language")->GetText());
 }
 
 TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)

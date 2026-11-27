@@ -568,7 +568,7 @@ void CApplicationPlayerCallback::OnContentGeometryChanged(const LiveGeometryUpda
   if (update.clear)
     geometry->ClearLive();
   else
-    geometry->SetLive(update.rect, update.varies);
+    geometry->SetLive(update.rect, update.varies, update.frameCorrection, update.pixelRatio);
 }
 
 void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)

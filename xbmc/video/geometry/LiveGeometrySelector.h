@@ -36,6 +36,10 @@ struct LiveGeometryReading
   CRectInt rect;
 
   bool varies{false}; //!< more than one shape has been served this playback
+
+  //! \brief What the pixel aspect was multiplied by to read the frame as the other SD shape,
+  //! or 1 when the stream's own flag held.
+  float frameCorrection{1.0f};
 };
 
 /*!
@@ -83,15 +87,22 @@ private:
     unsigned int frames{0};
   };
 
-  //! \brief The rectangle of \p displayRatio inside the coded frame.
-  CRectInt Fit(float displayRatio) const;
+  struct Snapped
+  {
+    CRectInt rect;
+    float frameCorrection{1.0f};
+  };
+
+  //! \brief The rectangle of \p displayRatio inside the coded frame, whose pixels are \p par
+  //! wide.
+  CRectInt Fit(float displayRatio, float par) const;
   bool SameEdges(const CRectInt& a, const CRectInt& b) const;
   bool LosesPicture(const CRectInt& rect) const;
   bool GainsPicture(const CRectInt& rect) const;
-  std::optional<CRectInt> Snap(const CRectInt& rect);
+  std::optional<Snapped> Snap(const CRectInt& rect);
 
-  //! \brief Serve \p rect, which is always a reading.
-  LiveGeometryReading Publish(const CRectInt& rect);
+  //! \brief Serve \p snapped, which is always a reading.
+  LiveGeometryReading Publish(const Snapped& snapped);
 
   LiveSelectorParams m_params;
 
@@ -100,7 +111,11 @@ private:
   bool m_configured{false};
   float m_atRestAspect{0.0f};
 
+  //! \brief What reads this SD frame as the other SD shape, or zero when it is not one.
+  float m_otherShape{0.0f};
+
   std::optional<CRectInt> m_published;
+  float m_publishedCorrection{1.0f};
   std::optional<Run> m_run;
   std::vector<CRectInt> m_shapes; //!< distinct shapes served this playback
 

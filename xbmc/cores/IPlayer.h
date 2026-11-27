@@ -266,7 +266,7 @@ public:
     return true;
   }
   virtual void FlushRenderer() {}
-  virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {}
+  virtual void SetRenderViewMode(int mode, float par, float shift, bool stretch) {}
   virtual float GetRenderAspectRatio() const { return 1.0; }
   virtual void TriggerUpdateResolution() {}
   virtual bool IsRenderingVideo() const { return false; }

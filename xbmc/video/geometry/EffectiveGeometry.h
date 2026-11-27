@@ -138,6 +138,14 @@ struct GeometryInputs
   CombinedGeometry live; //!< a playback reading, which outranks the cache when present
   bool hasLive{false};
 
+  //! \brief What the stream's pixel aspect is multiplied by while the live reading is in force,
+  //! which read the frame as the other SD shape. 1 when the stream's flag held.
+  float liveFrameCorrection{1.0f};
+
+  //! \brief The user's pixel ratio the live reading was judged through. Only the judging takes
+  //! it, as the renderer applies it to the picture.
+  float livePixelRatio{1.0f};
+
   VariableGeometryPolicy policy{VariableGeometryPolicy::Envelope};
 };
 

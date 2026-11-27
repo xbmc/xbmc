@@ -141,6 +141,15 @@ CRect ToSquarePixels(const CRectInt& coded, const StreamGeometry& stream)
           static_cast<float>(coded.y2 - stream.coded.y1)};
 }
 
+std::optional<float> StretchToFill(float pictureAspect, float screenAspect, float limit)
+{
+  if (pictureAspect <= 0.0f || screenAspect <= 0.0f)
+    return std::nullopt;
+  if (std::abs(screenAspect / pictureAspect - 1.0f) > limit)
+    return std::nullopt;
+  return screenAspect;
+}
+
 CRect FitAspect(float aspect, const CRect& frame, float pixelRatio)
 {
   if (aspect <= 0.0f || frame.Width() <= 0.0f || frame.Height() <= 0.0f)

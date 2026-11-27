@@ -557,36 +557,15 @@
     "type": "string",
     "enum": [
       "normal",
-      "zoom",
       "stretch4x3",
-      "widezoom",
       "stretch16x9",
-      "original",
-      "stretch16x9nonlin",
-      "zoom120width",
-      "zoom110width"
+      "stretchtofill",
+      "original"
     ]
   },
   "Player.CustomViewMode": {
     "type": "object",
     "properties": {
-      "zoom": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "increase",
-              "decrease"
-            ]
-          },
-          {
-            "$ref": "#/$defs/Optional.Number",
-            "minimum": 0.5,
-            "maximum": 2.0,
-            "description": "Zoom where 1.0 means 100%"
-          }
-        ]
-      },
       "pixelratio": {
         "anyOf": [
           {

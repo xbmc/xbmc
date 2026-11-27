@@ -328,7 +328,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetInt(&stream, "durationinseconds", m_streamDetails.GetVideoDuration(iStream));
       XMLUtils::SetString(&stream, "stereomode", m_streamDetails.GetStereoMode(iStream));
       XMLUtils::SetString(&stream, "language",
-                          m_streamDetails.GetVideoLanguage(iStream).AsIso6392B());
+                          m_streamDetails.GetVideoLanguage(iStream).ToString());
       XMLUtils::SetString(&stream, "hdrtype", m_streamDetails.GetVideoHdrType(iStream));
       XMLUtils::SetString(&stream, "hdrdetail", m_streamDetails.GetVideoHdrDetail(iStream));
       streamdetails.InsertEndChild(stream);
@@ -338,7 +338,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       TiXmlElement stream("audio");
       XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
       XMLUtils::SetString(&stream, "language",
-                          m_streamDetails.GetAudioLanguage(iStream).AsIso6392B());
+                          m_streamDetails.GetAudioLanguage(iStream).ToString());
       XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
       if (m_streamDetails.GetVersion(CStreamDetail::AUDIO, iStream) >=
           CStreamDetail::STREAM_DETAILS_VERSION_FLAGS)
@@ -355,7 +355,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     {
       TiXmlElement stream("subtitle");
       XMLUtils::SetString(&stream, "language",
-                          m_streamDetails.GetSubtitleLanguage(iStream).AsIso6392B());
+                          m_streamDetails.GetSubtitleLanguage(iStream).ToString());
       if (m_streamDetails.GetVersion(CStreamDetail::SUBTITLE, iStream) >=
           CStreamDetail::STREAM_DETAILS_VERSION_FLAGS)
       {

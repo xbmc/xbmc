@@ -381,6 +381,43 @@ TEST(TestEffectiveGeometry, AnotherStreamKeepsTheLiveReading)
   EXPECT_EQ(GeometrySource::Live, ResolveEffectiveGeometry(InputsForStream(inputs, 1)).source);
 }
 
+//! A 4:3 SD frame flagged 16:9, whose letterbox the live reading took as 16:9 in a 4:3 frame.
+TEST(TestEffectiveGeometry, ALiveReadingOfTheOtherSdShapeReplacesTheFlag)
+{
+  GeometryInputs inputs;
+  inputs.stream.coded = CRectInt{0, 0, 704, 480};
+  inputs.stream.displayAspect = 16.0f / 9.0f;
+  inputs.hasLive = true;
+  inputs.live.hasReading = true;
+  inputs.live.rect = CRectInt{0, 60, 704, 420};
+  inputs.liveFrameCorrection = 0.75f;
+
+  const EffectiveGeometry result = ResolveEffectiveGeometry(inputs);
+
+  EXPECT_EQ(GeometrySource::Live, result.source);
+  EXPECT_EQ("1.78", result.label);
+  EXPECT_NEAR(4.0f / 3.0f, AspectOf(result.displayFrame), 0.001f);
+  EXPECT_NEAR(0.75f * (16.0f / 9.0f) / (704.0f / 480.0f), result.par, 0.0001f);
+}
+
+//! The reading was taken through the user's pixel ratio of 0.78: 704x374 is 2.28 as flagged.
+TEST(TestEffectiveGeometry, ALiveReadingIsJudgedThroughThePixelRatioItWasTakenThrough)
+{
+  GeometryInputs inputs;
+  inputs.stream.coded = CRectInt{0, 0, 704, 480};
+  inputs.stream.displayAspect = 16.0f / 9.0f;
+  inputs.hasLive = true;
+  inputs.live.hasReading = true;
+  inputs.live.rect = CRectInt{0, 53, 704, 427};
+  inputs.livePixelRatio = 0.78f;
+
+  const EffectiveGeometry result = ResolveEffectiveGeometry(inputs);
+
+  EXPECT_EQ(GeometrySource::Live, result.source);
+  EXPECT_FALSE(result.rejected);
+  EXPECT_NEAR(16.0f / 9.0f / 0.78f, result.aspect, 0.001f);
+}
+
 /*!
  * The schema says a label is empty when the ratio corresponds to none, because a client
  * compares it. Nearest() never rejects, so labelling through it would publish a section on no
