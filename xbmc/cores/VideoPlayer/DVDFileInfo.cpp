@@ -647,7 +647,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
 
       details.AddStream(p);
 
-      if (details.GetVideoHdrType(1, true).length() > 0)
+      if (!details.GetVideoHdrType(1, true).empty())
       {
         // add a virtual stream for the alternate HDR type
         CStreamDetailVideo* q = new CStreamDetailVideo();

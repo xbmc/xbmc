@@ -2970,7 +2970,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
     {
       const std::string& lang{details.GetOriginalLanguage().ToString()};
-      if (lang.size() > 0)
+      if (!lang.empty())
         sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
       else
         sql += ", originalLanguage = NULL";
@@ -3654,7 +3654,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     sql += ", duration = NULL";
   {
     const std::string& lang{details.GetOriginalLanguage().ToString()};
-    if (lang.size() > 0)
+    if (!lang.empty())
       sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
     else
       sql += ", originalLanguage = NULL";
