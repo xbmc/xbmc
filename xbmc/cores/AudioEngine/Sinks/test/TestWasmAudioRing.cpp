@@ -38,6 +38,7 @@ public:
     const uint32_t available = m_ring.GetWriteFrame().load() - read;
     const unsigned int toRead = std::min<uint32_t>(available, frames);
     std::vector<float> out;
+    out.reserve(toRead);
     for (unsigned int i = 0; i < toRead; ++i)
       out.push_back(m_plane[(m_index + i) % m_ring.GetCapacityFrames()]);
     m_index = (m_index + toRead) % m_ring.GetCapacityFrames();

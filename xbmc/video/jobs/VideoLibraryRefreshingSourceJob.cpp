@@ -85,6 +85,7 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
     return true;
 
   std::vector<std::string> pathIdStrings;
+  pathIdStrings.reserve(pathIds.size());
   for (const int pathId : pathIds)
     pathIdStrings.emplace_back(std::to_string(pathId));
   const std::string pathIdList{StringUtils::Join(pathIdStrings, ",")};

@@ -115,6 +115,7 @@ protected:
   {
     std::vector<CNfsContextLease> leases(count);
     std::vector<std::thread> threads;
+    threads.reserve(count);
     for (unsigned int i = 0; i < count; ++i)
       threads.emplace_back([this, &leases, i] { leases[i] = Checkout(); });
     for (auto& thread : threads)
@@ -179,6 +180,7 @@ TEST_F(TestNfsContextPool, ExportsHaveSeparateContexts)
 TEST_F(TestNfsContextPool, RetiredContextIsNotHandedOut)
 {
   std::vector<CNfsContextLease> leases;
+  leases.reserve(MAX_CONTEXTS);
   for (unsigned int i = 0; i < MAX_CONTEXTS; ++i)
     leases.push_back(Checkout());
 

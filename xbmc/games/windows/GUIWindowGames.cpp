@@ -65,6 +65,7 @@ void SetInfoFromFileName(CGameInfoTag& tag, const std::string& path)
   tag.SetPublisher(name.publisher);
 
   std::vector<std::string> regions;
+  regions.reserve(name.regions.size());
   for (const GameRegion& region : name.regions)
     regions.emplace_back(CGameNameParser::RegionName(region));
   tag.SetRegion(StringUtils::Join(regions, ", "));

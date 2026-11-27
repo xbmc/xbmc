@@ -418,6 +418,7 @@ std::vector<std::string> CAchievementRuntime::GetLeaderboardAttemptTitles() cons
   std::lock_guard<std::mutex> lock(m_mutex);
 
   std::vector<std::string> titles;
+  titles.reserve(m_attempts.size());
   for (const auto& [id, title] : m_attempts)
     titles.emplace_back(title);
   return titles;

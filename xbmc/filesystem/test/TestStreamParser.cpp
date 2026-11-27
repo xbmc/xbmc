@@ -77,6 +77,7 @@ BlurayPlaylistInformation MakePlaylist(unsigned int playlist,
 std::vector<std::string> AudioLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
+  languages.reserve(p.audioStreams.size());
   for (const auto& stream : p.audioStreams)
     languages.emplace_back(stream.language.ToString());
   return languages;
@@ -85,6 +86,7 @@ std::vector<std::string> AudioLanguagesOf(const PlaylistInformation& p)
 std::vector<std::string> SubtitleLanguagesOf(const PlaylistInformation& p)
 {
   std::vector<std::string> languages;
+  languages.reserve(p.pgStreams.size());
   for (const auto& stream : p.pgStreams)
     languages.emplace_back(stream.language.ToString());
   return languages;

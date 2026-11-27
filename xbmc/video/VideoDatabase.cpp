@@ -12481,6 +12481,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             GetStackTimes(movie.m_strFileNameAndPath, times))
         {
           std::vector<std::string> ends;
+          ends.reserve(times.size());
           for (const auto time : times)
             ends.emplace_back(std::to_string(time.count()));
           XMLUtils::SetString(pMain->LastChild("movie"), "stacktimes",

@@ -294,6 +294,7 @@ std::vector<std::string> CSong::GetArtist() const
 {
   //Get artist names as vector from artist credits
   std::vector<std::string> songartists;
+  songartists.reserve(artistCredits.size());
   for (const auto& artistCredit : artistCredits)
   {
     songartists.push_back(artistCredit.GetArtist());
@@ -326,6 +327,7 @@ std::vector<std::string> CSong::GetMusicBrainzArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
   std::vector<std::string> musicBrainzID;
+  musicBrainzID.reserve(artistCredits.size());
   for (const auto& artistCredit : artistCredits)
   {
     musicBrainzID.push_back(artistCredit.GetMusicBrainzArtistID());
@@ -340,6 +342,7 @@ std::string CSong::GetArtistString() const
   if (!strArtistDesc.empty())
     return strArtistDesc;
   std::vector<std::string> artistvector;
+  artistvector.reserve(artistCredits.size());
   for (const auto& i : artistCredits)
     artistvector.push_back(i.GetArtist());
   std::string artistString;
@@ -352,6 +355,7 @@ std::vector<int> CSong::GetArtistIDArray() const
 {
   // Get song artist IDs for json rpc
   std::vector<int> artistids;
+  artistids.reserve(artistCredits.size());
   for (const auto& artistCredit : artistCredits)
     artistids.push_back(artistCredit.GetArtistId());
   return artistids;

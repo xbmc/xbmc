@@ -29,6 +29,7 @@ std::shared_ptr<CSmartFeed> Feed(int total, std::vector<std::vector<int>>& fetch
       {
         fetched.push_back(slice);
         std::vector<std::shared_ptr<CFileItem>> items;
+        items.reserve(slice.size());
         for (const int entry : slice)
           items.push_back(std::make_shared<CFileItem>(std::to_string(entry), false));
         return items;
@@ -38,6 +39,7 @@ std::shared_ptr<CSmartFeed> Feed(int total, std::vector<std::vector<int>>& fetch
 std::vector<int> Entries(const std::vector<std::shared_ptr<CFileItem>>& items)
 {
   std::vector<int> entries;
+  entries.reserve(items.size());
   for (const auto& item : items)
     entries.push_back(std::stoi(item->GetPath()));
   return entries;

@@ -937,6 +937,7 @@ std::vector<std::string> CastAfterLoading(const std::string& clear)
   EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
 
   std::vector<std::string> names;
+  names.reserve(details.m_cast.size());
   for (const auto& actor : details.m_cast)
     names.push_back(actor.strName);
   return names;
