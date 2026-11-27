@@ -14578,37 +14578,36 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   else
     return false;
 
-  if (idFile < 0)
+  if (idFile < 0 || !m_pDB)
     return false;
 
-  BeginTransaction();
+  const bool inTransaction{m_pDB->in_transaction()};
+  if (!inTransaction)
+    BeginTransaction();
+  const auto fail{[this, inTransaction]
+                  {
+                    if (!inTransaction)
+                      RollbackTransaction();
+                    return false;
+                  }};
 
   if (dbIdSource != dbIdTarget)
   {
     // Transfer all assets (versions, extras,...) to the new movie.
     if (!UpdateAssetsOwner(mediaType, dbIdSource, dbIdTarget))
-    {
-      RollbackTransaction();
-      return false;
-    }
+      return fail();
 
     // version-level art doesn't need any change.
     // 'movie' art is converted to 'videoversion' art.
     if (!SetVideoVersionDefaultArt(idFile, dbIdSource, mediaType))
-    {
-      RollbackTransaction();
-      return false;
-    }
+      return fail();
 
     if (itemType == VideoDbContentType::MOVIES)
     {
       // The file is kept as the new asset, and so are its streamdetails
       if (!DeleteMovie(dbIdSource, DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS,
                        DeleteMovieHashAction::HASH_PRESERVE))
-      {
-        RollbackTransaction();
-        return false;
-      }
+        return fail();
     }
   }
 
@@ -14622,12 +14621,10 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                        idVideoVersion, assetType, idFile);
 
   if (!ExecuteQuery(query))
-  {
-    RollbackTransaction();
-    return false;
-  }
+    return fail();
 
-  CommitTransaction();
+  if (!inTransaction)
+    CommitTransaction();
 
   return true;
 }

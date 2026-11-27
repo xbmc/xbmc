@@ -2443,6 +2443,25 @@ TEST_F(TestVideoDatabase, AddingAnotherMoviesFileAsAVersionBringsThatMovie)
   EXPECT_FALSE(m_db.CanAddVideoAsset(withVersions.movieFileId));
 }
 
+// Choosing a disc playlist adds the asset inside a transaction of the dialog's own
+TEST_F(TestVideoDatabase, AddingAnotherMoviesFileAsAVersionKeepsTheCallersTransaction)
+{
+  const int idTarget{AddMovie("/movies/Target.mkv")};
+  ASSERT_GT(idTarget, 0);
+  ASSERT_GT(AddMovie("/movies/Other.mkv"), 0);
+
+  m_db.BeginTransaction();
+  CFileItem other{"/movies/Other.mkv", false};
+  const bool added{m_db.AddVideoAsset(VideoDbContentType::MOVIES, idTarget,
+                                      VIDEO_VERSION_ID_DEFAULT, VideoAssetType::VERSION, other)};
+  const bool stillOpen{m_db.InTransaction()};
+  m_db.CommitTransaction();
+
+  ASSERT_TRUE(added);
+  EXPECT_TRUE(stillOpen);
+  EXPECT_EQ(idTarget, m_db.GetVideoVersionInfo("/movies/Other.mkv").m_idMedia);
+}
+
 TEST_F(TestVideoDatabase, RevertingAPlaylistMovesItsMovieToTheDisc)
 {
   const std::string disc{"/movies/Film/BDMV/index.bdmv"};
