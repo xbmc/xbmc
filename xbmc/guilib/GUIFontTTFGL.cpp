@@ -131,12 +131,6 @@ bool CGUIFontTTFGL::FirstBegin()
     m_textureStatus = TEXTURE_READY;
   }
 
-  // Accumulate coverage; the HDR composite shader squares it to compensate for blending in PQ.
-  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, m_nTexture);
-
   return true;
 }
 
@@ -150,6 +144,17 @@ void CGUIFontTTFGL::LastEnd()
     return;
 
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+
+  // End() calls this even when Begin() skipped FirstBegin(), for a font that hasn't cached a glyph
+  // yet, and other draws may have run since, so set up the batch's shader, texture and blending.
+  renderSystem->EnableShader(m_scissorClip ? ShaderMethodGL::SM_FONTS
+                                           : ShaderMethodGL::SM_FONTS_SHADER_CLIP);
+
+  // Accumulate coverage; the HDR composite shader squares it to compensate for blending in PQ.
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_nTexture);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint colLoc = renderSystem->ShaderGetCol();
