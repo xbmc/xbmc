@@ -405,8 +405,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     const std::vector<std::string> &artists = m_movieItem->GetVideoInfoTag()->m_artist;
     for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
-      int idArtist = database.GetArtistByName(*it);
-      std::string thumb = database.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, ART::TYPE::THUMB);
+      std::string thumb = database.GetArtistArtByName(*it, ART::TYPE::THUMB);
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
         item->SetArt(ART::TYPE::THUMB, thumb);
@@ -1130,7 +1129,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   }
 
   // tags
-  if (item->IsFolder() && item->GetVideoInfoTag()->m_type == "tag")
+  if (item->IsFolder() && item->GetVideoInfoTag()->m_type == KODI::VIDEO::DB_TABLE::TAG)
   {
     CVideoDbUrl videoUrl;
     if (videoUrl.FromString(item->GetPath()))
@@ -1305,7 +1304,7 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const std::shared_ptr<CFileItem>& i
   if (item == nullptr || !item->HasVideoInfoTag())
     return false;
 
-  if (item->GetVideoInfoTag()->m_type == "tag")
+  if (item->GetVideoInfoTag()->m_type == KODI::VIDEO::DB_TABLE::TAG)
     return true;
 
   CQueryParams params;
@@ -1341,7 +1340,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   int heading = -1;
   VideoDbContentType type = item->GetVideoContentType();
   const std::string& subtype = item->GetVideoInfoTag()->m_type;
-  if (subtype != "tag")
+  if (subtype != KODI::VIDEO::DB_TABLE::TAG)
   {
     switch (type)
     {
@@ -1395,7 +1394,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   if (item->GetVideoInfoTag()->m_iDbId < 0)
     return false;
 
-  if (subtype == "tag")
+  if (subtype == KODI::VIDEO::DB_TABLE::TAG)
   {
     VIDEO::LIBRARY::DeleteTag(item->GetVideoInfoTag()->m_iDbId, type);
     return true;

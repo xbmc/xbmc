@@ -5367,7 +5367,8 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item,
         for (const auto& [type, value] : tag->GetUniqueIDs())
         {
           // A nondefault 'unknown' id does not identify the kind of id
-          if (!value.empty() && (type != "unknown" || type == tag->GetDefaultUniqueID()))
+          if (!value.empty() &&
+              (type != VIDEO::UNIQUE_ID::UNKNOWN || type == tag->GetDefaultUniqueID()))
             conditions.emplace_back(
                 PrepareSQL("(value = '%s' AND type = '%s')", value.c_str(), type.c_str()));
         }
@@ -8219,7 +8220,7 @@ bool CVideoDatabase::GetTagsNav(const std::string& strBaseDir,
                                 const Filter& filter /* = Filter() */,
                                 bool countOnly /* = false */)
 {
-  return GetNavCommon(strBaseDir, items, "tag", idContent, filter, countOnly);
+  return GetNavCommon(strBaseDir, items, VIDEO::DB_TABLE::TAG, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetSetsNav(const std::string& strBaseDir,
@@ -8466,7 +8467,7 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
                                   const Filter& filter /* = Filter() */,
                                   bool countOnly /* = false */)
 {
-  if (GetPeopleNav(strBaseDir, items, "actor", idContent, filter, countOnly))
+  if (GetPeopleNav(strBaseDir, items, VIDEO::DB_TABLE::ACTOR, idContent, filter, countOnly))
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size() && !countOnly; i++)
     {
@@ -12455,7 +12456,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           TiXmlElement additionalNode("art");
           for (const auto& [type, url] : artwork)
             XMLUtils::SetString(&additionalNode, type.c_str(), url);
-          movie.Save(pMain, "movie", true, &additionalNode);
+          movie.Save(pMain, VIDEO::NFO_ROOT::MOVIE, true, &additionalNode);
         }
         else if (!singleFile && URIUtils::IsStack(movie.m_strFileNameAndPath))
         {
@@ -12470,10 +12471,11 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             XMLUtils::SetInt(&part, "playlist", playlist);
             stackNode.InsertEndChild(part);
           }
-          movie.Save(pMain, "movie", singleFile, parts.empty() ? nullptr : &stackNode);
+          movie.Save(pMain, VIDEO::NFO_ROOT::MOVIE, singleFile,
+                     parts.empty() ? nullptr : &stackNode);
         }
         else
-          movie.Save(pMain, "movie", singleFile);
+          movie.Save(pMain, VIDEO::NFO_ROOT::MOVIE, singleFile);
 
         // A resolved bluray:// playlist cannot be demuxed for its duration
         if (std::vector<std::chrono::milliseconds> times;
@@ -12713,10 +12715,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         TiXmlElement additionalNode("art");
         for (const auto& [type, url] : artwork)
           XMLUtils::SetString(&additionalNode, type.c_str(), url);
-        movie.Save(pMain, "musicvideo", true, &additionalNode);
+        movie.Save(pMain, VIDEO::NFO_ROOT::MUSIC_VIDEO, true, &additionalNode);
       }
       else
-        movie.Save(pMain, "musicvideo", singleFile);
+        movie.Save(pMain, VIDEO::NFO_ROOT::MUSIC_VIDEO, singleFile);
 
       // reset old skip state
       bool bSkip = false;
@@ -12959,7 +12961,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         {
           // Separate files
           // Save details in XML
-          episode.Save(pMain, "episodedetails", singleFile);
+          episode.Save(pMain, VIDEO::NFO_ROOT::EPISODE, singleFile);
 
           std::string nfoFile;
           if (const bool multipleEpisodes{
@@ -13015,10 +13017,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             TiXmlElement additionalNode("art");
             for (const auto& [artType, artPath] : episodeArtwork)
               XMLUtils::SetString(&additionalNode, artType.c_str(), artPath);
-            episode.Save(pMain->LastChild(), "episodedetails", true, &additionalNode);
+            episode.Save(pMain->LastChild(), VIDEO::NFO_ROOT::EPISODE, true, &additionalNode);
           }
           else
-            episode.Save(pMain->LastChild(), "episodedetails", singleFile);
+            episode.Save(pMain->LastChild(), VIDEO::NFO_ROOT::EPISODE, singleFile);
 
           // Arbitrary name for art
           const std::string epName{
@@ -13480,7 +13482,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         }
         current++;
         // now load the episodes
-        TiXmlElement *episode = movie->FirstChildElement("episodedetails");
+        TiXmlElement* episode = movie->FirstChildElement(VIDEO::NFO_ROOT::EPISODE);
         while (episode)
         {
           // no need to delete the episode info, due to the above deletion
@@ -13497,7 +13499,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           CopyActorThumbs(artItem2, item);
           scanner.AddVideo(&item, nullptr, false, false, showItem.GetVideoInfoTag(), true,
                            ContentType::TVSHOWS);
-          episode = episode->NextSiblingElement("episodedetails");
+          episode = episode->NextSiblingElement(VIDEO::NFO_ROOT::EPISODE);
         }
       }
       else if (StringUtils::StartsWithNoCase(movie->Value(), NameOf(MEDIA::TYPE::VIDEO_COLLECTION)))
