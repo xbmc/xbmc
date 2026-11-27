@@ -2215,8 +2215,13 @@ TEST_F(TestPlayStateAnnouncements, ResettingALibraryItemAnnouncesItsFile)
 
 TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
 {
-  ASSERT_TRUE(
-      m_db.SetPlayCount(CFileItem("smb://user:secret@server/videos/film.mkv", false), 1).IsValid());
+  // Dated by its modification time, the file would be looked up on the share
+  CAdvancedSettings& advanced{*CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const int dateAdded{std::exchange(advanced.m_iVideoLibraryDateAdded, 0)};
+  const bool written{
+      m_db.SetPlayCount(CFileItem("smb://user:secret@server/videos/film.mkv", false), 1).IsValid()};
+  advanced.m_iVideoLibraryDateAdded = dateAdded;
+  ASSERT_TRUE(written);
 
   const auto files{m_announcements->Files()};
   ASSERT_EQ(1u, files.size());
