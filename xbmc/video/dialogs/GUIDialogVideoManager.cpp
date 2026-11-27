@@ -259,6 +259,7 @@ void CGUIDialogVideoManager::SetVideoAsset(const std::shared_ptr<CFileItem>& ite
   }
 
   m_videoAsset = item;
+  m_hasUpdatedItems = false;
 
   // An extra is managed from its movie, whose disc and folder its own may not be
   if (VIDEO::IsVideoAssetFile(*item) &&
@@ -340,32 +341,15 @@ void CGUIDialogVideoManager::Remove()
     return;
   }
 
-  bool success{false};
-  m_database.BeginTransaction();
+  if (!m_database.RemoveVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
+    return;
 
-  if (m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
-  {
-    // If a version of a bluray then remove the idFile as well
-    const bool isblurayPath = URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath());
-    if (!isblurayPath || m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId))
-    {
-      success = true;
-    }
-  }
+  m_hasUpdatedItems = true;
 
-  if (success)
-  {
-    m_database.CommitTransaction();
-
-    // refresh data and controls
-    Refresh();
-    RefreshSelectedVideoAsset();
-    UpdateControls();
-  }
-  else
-  {
-    m_database.RollbackTransaction();
-  }
+  // refresh data and controls
+  Refresh();
+  RefreshSelectedVideoAsset();
+  UpdateControls();
 }
 
 void CGUIDialogVideoManager::Rename()
@@ -614,20 +598,20 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
     }
     else
     {
-      idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
-      if (idFile > 0)
+      // The playlist's file starts unplayed and unmeasured, whatever the chosen item shows
+      CFileItem asset{*item};
+      asset.GetVideoInfoTag()->SetPlayCount(0);
+      asset.GetVideoInfoTag()->m_lastPlayed.Reset();
+      asset.GetVideoInfoTag()->m_contentGeometry.Set({});
+      if (!m_database.AddVideoAsset(item->GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
+                                    idVideoVersion, GetVideoAssetType(), asset))
       {
-        videoDbSuccess = true;
-        m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
-        if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(),
-                                                owner.GetVideoInfoTag()->m_iDbId, idFile,
-                                                idVideoVersion, GetVideoAssetType()))
-        {
-          m_database.RollbackTransaction();
-          *item = original;
-          return false;
-        }
+        m_database.RollbackTransaction();
+        *item = original;
+        return false;
       }
+      idFile = asset.GetVideoInfoTag()->m_iFileId;
+      videoDbSuccess = true;
     }
 
     if (videoDbSuccess)

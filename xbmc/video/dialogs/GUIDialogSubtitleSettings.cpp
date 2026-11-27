@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "GUIDialogSubtitles.h"
-#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -21,11 +20,9 @@
 #include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -42,8 +39,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoStreamSelect.h"
+#include "video/guilib/VideoGUIUtils.h"
 
 #include <string>
 #include <vector>
@@ -252,30 +249,8 @@ void CGUIDialogSubtitleSettings::OnSettingAction(const std::shared_ptr<const CSe
 
 bool CGUIDialogSubtitleSettings::Save()
 {
-  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-
-  if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
-    return true;
-
-  // prompt user if they are sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
-    return true;
-
-  // reset the settings
-  CVideoDatabase db;
-  if (!db.Open())
-    return true;
-
-  db.EraseAllVideoSettings();
-  db.Close();
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-
-  CMediaSettings::GetInstance().GetDefaultVideoSettings() = appPlayer->GetVideoSettings();
-  CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
-  CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
-
+  KODI::VIDEO::UTILS::MakeVideoSettingsDefault([](CVideoSettings& defaults)
+                                               { defaults.m_SubtitleStream = -1; });
   return true;
 }
 

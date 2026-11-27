@@ -42,6 +42,9 @@ public:
   const char *GetType() const override { return "VideoLibraryRefreshingJob"; }
   bool Equals(const CJob* job) const override;
 
+  //! Whether the refresh failed after the item was taken out of the library to be added again
+  bool RemovedItem() const { return m_removedItem; }
+
 protected:
   // implementation of CVideoLibraryJob
   bool Work(CVideoDatabase &db) override;
@@ -52,4 +55,5 @@ private:
   bool m_refreshAll;
   bool m_ignoreNfo;
   std::string m_searchTitle;
+  bool m_removedItem{false};
 };

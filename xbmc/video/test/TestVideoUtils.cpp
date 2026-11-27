@@ -21,6 +21,7 @@
 #include "platform/Filesystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/Artwork.h"
 #include "utils/ItemProperties.h"
 #include "utils/SaveFileStateJob.h"
@@ -464,7 +465,7 @@ void CreateFiles(const std::string& root, const std::vector<std::string>& files)
   {
     const std::string path{URIUtils::AddFileToFolder(root, file)};
     ASSERT_TRUE(CUtil::CreateDirectoryEx(URIUtils::GetDirectory(path)));
-    std::ofstream of(path);
+    ASSERT_TRUE(WriteTextFile(path, ""));
   }
 }
 } // namespace
@@ -530,70 +531,6 @@ TEST(TestVideoUtils, VideoExtrasAreNamedAfterTheirFileOrDisc)
   const std::string bonus{"/movies/Movie/Bonus Disc/"};
   EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(bonus, bonus + "BDMV/index.bdmv"),
             "Bonus Disc");
-}
-
-namespace
-{
-//! A movie source, /movies/, scanned recursively, in a database of the test's own
-class TestMovieFolder : public testing::Test
-{
-protected:
-  void SetUp() override
-  {
-    m_settings.type = "sqlite3";
-    m_settings.name = "TestMovieFolder";
-    m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
-    ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
-              m_db.Connect(m_settings.name, m_settings, true));
-    UseFolderNames(true);
-  }
-
-  void TearDown() override
-  {
-    m_db.Close();
-    XFILE::CFile::Delete(m_settings.host + m_settings.name + ".db");
-  }
-
-  void UseFolderNames(bool useFolderNames)
-  {
-    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
-        "UPDATE path SET strContent='movies', strScraper='metadata.local', useFolderNames=%i, "
-        "scanRecursive=2147483647 WHERE idPath=%i",
-        useFolderNames ? 1 : 0, m_db.AddPath("/movies/"))));
-  }
-
-  DatabaseSettings m_settings;
-  CVideoDatabase m_db;
-};
-} // namespace
-
-// A movie in the source's root shares it, whether a file, an ISO, or a playlist of an ISO
-TEST_F(TestMovieFolder, AMovieInTheSourcesRootHasNoFolderOfItsOwn)
-{
-  for (const std::string& video :
-       {std::string{"/movies/Film.mkv"}, std::string{"/movies/M3GAN.iso"},
-        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN.iso", 800)})
-    EXPECT_FALSE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
-}
-
-TEST_F(TestMovieFolder, AMovieInAFolderBelowTheSourcesRootHasOne)
-{
-  for (const std::string& video :
-       {std::string{"/movies/Film/Film.mkv"}, std::string{"/movies/M3GAN/M3GAN.iso"},
-        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/M3GAN.iso", 800),
-        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/BDMV/index.bdmv", 800),
-        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/disc 1/BDMV/index.bdmv", 800),
-        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/disc 1/M3GAN.iso", 800),
-        std::string{"/movies/M3GAN/VIDEO_TS/VIDEO_TS.IFO"}})
-    EXPECT_TRUE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
-}
-
-TEST_F(TestMovieFolder, AMovieOfASourceWithoutFolderNamesHasNoFolderOfItsOwn)
-{
-  UseFolderNames(false);
-  for (const std::string& video : {std::string{"/movies/Film/Film.mkv"},
-                                   URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/M3GAN.iso", 800)})
-    EXPECT_FALSE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
 }
 
 // An ISO in a folder of its own has the movie-trailer there, and none in a folder it shares

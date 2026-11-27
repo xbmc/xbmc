@@ -175,7 +175,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
             ? GenerateVideoExtra(URIUtils::GetParentPath(URIUtils::RemoveDiscPath(path)), path)
             : GenerateVideoExtra(URIUtils::GetFileName(path))};
 
-    if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
+    if (newAsset.IsAsset())
     {
       // The video already is an asset of the movie
       if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType)
@@ -203,7 +203,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       // The video is an asset of another movie
 
       // The video is a version, ask for confirmation of the asset type change
-      if (newAsset.m_assetType == VideoAssetType::VERSION &&
+      if (newAsset.IsAsset(VideoAssetType::VERSION) &&
           !CGUIDialogYesNo::ShowAndGetInput(
               CVariant{40015},
               StringUtils::Format(
@@ -244,30 +244,16 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         }
       }
 
-      // Additional constraints for the conversion of a movie version
-      if (newAsset.m_assetType == VideoAssetType::VERSION &&
-          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+      if (!m_database.CanAddVideoAsset(newAsset.m_idFile))
       {
-        CFileItemList list;
-        m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);
-
-        if (list.Size() > 1)
-        {
-          // cannot add the default version of a movie with multiple versions to another movie
-          CGUIDialogOK::ShowAndGetInput(CVariant{40015}, CVariant{40034});
-          return false;
-        }
-
-        const int idNewVideoVersion{m_database.AddVideoVersionType(
-            typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
-
-        if (idNewVideoVersion == -1)
-          return false;
-
-        return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                idNewVideoVersion, VideoAssetType::EXTRA);
+        // cannot add the default version of a movie with multiple versions to another movie
+        CGUIDialogOK::ShowAndGetInput(CVariant{40015}, CVariant{40034});
+        return false;
       }
     }
+
+    // A movie's own file brings the movie
+    const bool bringsMovie{m_database.IsDefaultVideoVersion(newAsset.m_idFile)};
 
     CFileItem item{path, false};
 
@@ -287,9 +273,11 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
     if (idNewVideoVersion == -1)
       return false;
 
-    m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::EXTRA, item);
+    if (!m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::EXTRA, item))
+      return false;
 
-    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
+    if (!bringsMovie)
+      KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

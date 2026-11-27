@@ -53,9 +53,8 @@ public:
   /*!
   \brief If a disc stack is stopped between parts when the next part has not been determined (ie. playlist not selected),
   then we need to save the bookmark for the next part before exiting playback.
-  \param path the stack:// path
   */
-  void SetNextPartBookmark(const std::string& path);
+  void SetNextPartBookmark();
 
   /*!
   \brief returns the current part number

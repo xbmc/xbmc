@@ -14,7 +14,6 @@
 #include "GUIDialogYesNo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "media/MediaType.h"
@@ -47,7 +46,7 @@ void RetypeAsVersion(CFileItem& item)
 
 // Take the chosen playlist away from the library items that have it, reverting them to the disc base
 bool ReassignPlaylist(const CFileItem& item,
-                      const std::vector<CVideoDatabase::PlaylistInfo>& matchingPlaylists)
+                      const std::vector<KODI::VIDEO::DiscPlaylist>& matchingPlaylists)
 {
   CVideoDatabase db;
   if (!db.Open())
@@ -68,7 +67,7 @@ bool ReassignPlaylist(const CFileItem& item,
       assignedMovie = db.GetVideoVersionInfo(item.GetDynPath()).m_idMedia;
   }
   const auto own{std::ranges::find_if(
-      matchingPlaylists, [assignedMovie](const CVideoDatabase::PlaylistInfo& p)
+      matchingPlaylists, [assignedMovie](const KODI::VIDEO::DiscPlaylist& p)
       { return p.mediaType == VideoDbContentType::MOVIES && p.idMedia == assignedMovie; })};
   if (assignedMovie >= 0 && own != matchingPlaylists.end())
   {
@@ -81,7 +80,7 @@ bool ReassignPlaylist(const CFileItem& item,
 
   // Show warning dialog if the new playlist will displace an existing item in the library
   const auto displacedMovie{std::ranges::find(matchingPlaylists, VideoDbContentType::MOVIES,
-                                              &CVideoDatabase::PlaylistInfo::mediaType)};
+                                              &KODI::VIDEO::DiscPlaylist::mediaType)};
   const int question{displacedMovie == matchingPlaylists.end()           ? 40048 // Episode
                      : displacedMovie->itemType == VideoAssetType::EXTRA ? 40056
                                                                          : 40049};
@@ -92,128 +91,32 @@ bool ReassignPlaylist(const CFileItem& item,
   if (URIUtils::IsBlurayPath(base))
     base = URIUtils::GetDiscFile(base);
 
-  // Loop over all matching playlists and revert the file to the base file (BDMV/ISO)
-  struct Displaced
+  std::vector<CVideoDatabase::PlaylistRevert> reverted;
+  switch (db.RevertPlaylistsToDisc(base, matchingPlaylists, reverted))
   {
-    CFileItem item;
-    std::string oldPath;
-    int oldFile;
-    bool version;
-    MEDIA::TYPE mediaType;
-    int idMedia;
-  };
-  std::vector<Displaced> displaced;
-  std::vector<int> moviesLosingExtras;
-
-  db.BeginTransaction();
-
-  for (const auto& it : matchingPlaylists)
-  {
-    // An extra is the playlist, so it goes rather than falling back to the whole disc
-    if (it.mediaType == VideoDbContentType::MOVIES && it.itemType == VideoAssetType::EXTRA)
-    {
-      if (!db.DeleteVideoAsset(it.idFile) || !db.DeleteFile(it.idFile))
-      {
-        CLog::LogF(LOGERROR, "Failed to remove the extra of movie {} on playlist {}", it.idMedia,
-                   it.playlist);
-        db.RollbackTransaction();
-        return false;
-      }
-      moviesLosingExtras.emplace_back(it.idMedia);
-      continue;
-    }
-
-    const MEDIA::TYPE mediaType{it.mediaType == VideoDbContentType::EPISODES ? MEDIA::TYPE::EPISODE
-                                                                           : MEDIA::TYPE::MOVIE};
-
-    // History belongs to the playlist (watched counts etc.), so it is not carried over.
-    // An item already at the base file keeps its own, as SetFileForMedia() rewrites the row
-    CVideoInfoTag baseFile;
-    const bool baseInUse{db.GetFileInfo(base, baseFile)};
-    const int newIdFile{db.SetFileForMedia(
-        base, it.mediaType, it.idMedia,
-        CVideoDatabase::FileRecord{
-            .m_idFile = it.idFile,
-            .m_playCount = baseInUse ? baseFile.GetPlayCount() : -1,
-            .m_lastPlayed = baseInUse ? baseFile.m_lastPlayed : CDateTime{},
-            .m_dateAdded = baseInUse
-                               ? baseFile.m_dateAdded
-                               : it.dateAdded})}; // Update displaced item and create new idFile
-    if (newIdFile <= 0)
-    {
-      CLog::LogF(LOGERROR, "Failed to move {} {} off playlist {}", mediaType, it.idMedia,
-                 it.playlist);
-      db.RollbackTransaction();
-      return false;
-    }
-    if (CVideoInfoTag oldFile;
-        it.mediaType == VideoDbContentType::MOVIES && db.GetFileInfo("", oldFile, it.idFile))
-    {
-      db.RollbackTransaction();
-      CLog::LogF(LOGERROR, "File {} is still in use after moving {} {} to file {}", it.idFile,
-                 mediaType, it.idMedia, newIdFile);
+    case CVideoDatabase::PlaylistRevertResult::DONE:
+      break;
+    case CVideoDatabase::PlaylistRevertResult::IN_USE:
       CGUIDialogOK::ShowAndGetInput(CVariant{257},
                                     CVariant{40051}); // Still in use by another movie version
       return false;
-    }
-
-    // Get the details of the displaced item from the database
-    CVideoInfoTag details;
-    if (it.mediaType == VideoDbContentType::MOVIES)
-    {
-      if (!db.GetMovieInfo("", details, it.idMedia, -1, newIdFile))
-      {
-        CLog::LogF(LOGERROR, "Failed to read movie {} on file {}", it.idMedia, newIdFile);
-        db.RollbackTransaction();
-        return false;
-      }
-    }
-    else
-    {
-      details = db.GetDetailsByTypeAndId(it.mediaType, it.idMedia);
-      if (details.m_iDbId < 0)
-      {
-        CLog::LogF(LOGERROR, "Failed to read {} {}", mediaType, it.idMedia);
-        db.RollbackTransaction();
-        return false;
-      }
-    }
-
-    CLog::LogF(LOGDEBUG, "{} {} moved from playlist {} to file {}", mediaType, it.idMedia,
-               it.playlist, newIdFile);
-    displaced.emplace_back(Displaced{.item = CFileItem{details},
-                                     .oldPath = URIUtils::GetBlurayPlaylistPath(base, it.playlist),
-                                     .oldFile = it.idFile,
-                                     .version = it.mediaType == VideoDbContentType::MOVIES,
-                                     .mediaType = mediaType,
-                                     .idMedia = it.idMedia});
-  }
-  if (!db.CommitTransaction())
-  {
-    CLog::LogF(LOGERROR, "Failed to commit the playlist reassignment");
-    db.RollbackTransaction();
-    return false;
+    case CVideoDatabase::PlaylistRevertResult::FAILED:
+      return false;
   }
   db.Close();
 
-  for (auto& d : displaced)
+  for (const auto& r : reverted)
   {
-    d.item.SetDynPath(base);
-    VIDEO::UTILS::NotifyItemPathChanged(d.item, d.oldPath, d.oldFile);
-    if (d.version)
+    CFileItem moved{r.details};
+    moved.SetDynPath(base);
+    const std::string oldPath{URIUtils::GetBlurayPlaylistPath(base, r.playlist)};
+    VIDEO::UTILS::NotifyItemPathChanged(moved, oldPath, r.oldIdFile);
+    if (r.details.GetMediaType() == MEDIA::TYPE::MOVIE)
     {
-      RetypeAsVersion(d.item); // Generate FileItem for version update
-      VIDEO::UTILS::NotifyItemPathChanged(d.item, d.oldPath, d.oldFile);
+      RetypeAsVersion(moved); // Generate FileItem for version update
+      VIDEO::UTILS::NotifyItemPathChanged(moved, oldPath, r.oldIdFile);
     }
   }
-
-  // Cached library listings still hold the old paths, and widgets reload on the announcement
-  // Notify the rest of kodi
-  CUtil::DeleteVideoDatabaseDirectoryCache();
-  for (const auto& d : displaced)
-    CVideoDatabase::AnnounceUpdate(d.mediaType, d.idMedia);
-  for (const int idMovie : moviesLosingExtras)
-    CVideoDatabase::AnnounceUpdate(MEDIA::TYPE::MOVIE, idMovie);
 
   return true;
 }
@@ -223,7 +126,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
     const CFileItem& item,
     CFileItem& selectedItem,
     const CFileItemList& items,
-    const std::vector<CVideoDatabase::PlaylistInfo>& usedPlaylists)
+    const std::vector<KODI::VIDEO::DiscPlaylist>& usedPlaylists)
 {
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT)};
@@ -255,15 +158,14 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(
 
   // See if playlist already used
   const int newPlaylist{selectedItem.GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
-  auto matching{usedPlaylists |
-                std::views::filter([newPlaylist](const CVideoDatabase::PlaylistInfo& p)
-                                   { return p.playlist == newPlaylist; })};
+  auto matching{usedPlaylists | std::views::filter([newPlaylist](const KODI::VIDEO::DiscPlaylist& p)
+                                                   { return p.playlist == newPlaylist; })};
   if (std::ranges::empty(matching))
     return true; // Not used
 
   // A playlist already assigned to several episodes is a multi-episode playlist, so it is shared
   // rather than taken away
-  if (std::ranges::count_if(matching, [](const CVideoDatabase::PlaylistInfo& p)
+  if (std::ranges::count_if(matching, [](const KODI::VIDEO::DiscPlaylist& p)
                             { return p.mediaType == VideoDbContentType::EPISODES; }) > 1)
     return CGUIDialogYesNo::ShowAndGetInput(CVariant{559}, CVariant{40050});
 

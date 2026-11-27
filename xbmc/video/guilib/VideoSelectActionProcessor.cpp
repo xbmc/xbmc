@@ -16,6 +16,7 @@
 #include "utils/Variant.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoLibrary.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 
@@ -55,7 +56,7 @@ bool CVideoSelectActionProcessor::Process(Action action)
       const auto item{GetItem()};
       if (GetDefaultAction() == ACTION_INFO && !KODI::VIDEO::IsVideoDb(*item) &&
           !item->IsPlugin() && !item->IsScript() && !item->IsPVR() &&
-          !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*item))
+          !KODI::VIDEO::LIBRARY::HasVideoInfo(*item))
       {
         // For items without info fall back to default play action.
         return Process(ACTION_PLAY);

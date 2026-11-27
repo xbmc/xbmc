@@ -815,6 +815,7 @@ protected:
     refresh.Work(m_db);
 
     EXPECT_EQ(idMovie, m_db.GetMovieId(film));
+    EXPECT_FALSE(refresh.RemovedItem());
   }
 
   std::string m_root;

@@ -19,6 +19,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/LibraryPaths.h"
@@ -35,6 +36,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
@@ -42,10 +44,12 @@
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
@@ -619,20 +623,6 @@ bool IsItemPlayable(const CFileItem& item)
   return false;
 }
 
-bool HasItemVideoDbInformation(const CFileItem& item)
-{
-  CVideoDatabase db;
-  if (!db.Open())
-  {
-    CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-    return false;
-  }
-
-  return db.HasMovieInfo(item.GetDynPath()) ||
-         db.HasTvShowInfo(URIUtils::GetDirectory(item.GetPath())) ||
-         db.HasEpisodeInfo(item.GetDynPath()) || db.HasMusicVideoInfo(item.GetDynPath());
-}
-
 std::string GetResumeString(const CFileItem& item)
 {
   const ResumeInformation resumeInfo = GetItemResumeInformation(item);
@@ -707,6 +697,32 @@ void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, in
                   GUI_MSG_FLAG_FORCE_UPDATE,
                   std::make_shared<CFileItem>(oldItem)};
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+}
+
+void MakeVideoSettingsDefault(const std::function<void(CVideoSettings&)>& forget)
+{
+  const std::shared_ptr<CProfileManager> profileManager{
+      CServiceBroker::GetSettingsComponent()->GetProfileManager()};
+  if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
+      !g_passwordManager.CheckSettingLevelLock(::SettingLevel::Expert))
+    return;
+
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
+    return;
+
+  if (!LIBRARY::WithDatabase(
+          [](CVideoDatabase& db)
+          {
+            db.EraseAllVideoSettings();
+            return true;
+          }))
+    return;
+
+  const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
+  CVideoSettings& defaults{CMediaSettings::GetInstance().GetDefaultVideoSettings()};
+  defaults = appPlayer->GetVideoSettings();
+  forget(defaults);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 }
 
 } // namespace KODI::VIDEO::UTILS

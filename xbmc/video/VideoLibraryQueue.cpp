@@ -23,6 +23,7 @@
 #include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <algorithm>
+#include <cstring>
 #include <mutex>
 #include <ranges>
 #include <utility>
@@ -179,9 +180,11 @@ void CVideoLibraryQueue::RefreshItem(std::shared_ptr<CFileItem> item,
 }
 
 bool CVideoLibraryQueue::RefreshItemModal(std::shared_ptr<CFileItem> item,
-                                          bool forceRefresh /* = true */,
-                                          bool refreshAll /* = false */)
+                                          bool forceRefresh,
+                                          bool refreshAll,
+                                          bool& removed)
 {
+  removed = false;
   // we can't perform a modal item refresh if other jobs are running
   if (IsRunning())
     return false;
@@ -191,6 +194,7 @@ bool CVideoLibraryQueue::RefreshItemModal(std::shared_ptr<CFileItem> item,
 
   bool result = refreshingJob.DoModal();
   m_modal = false;
+  removed = refreshingJob.RemovedItem();
 
   return result;
 }

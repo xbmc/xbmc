@@ -214,53 +214,13 @@ void CGUIDialogVideoManagerVersions::Ungroup()
 
 bool CGUIDialogVideoManagerVersions::UngroupImpl()
 {
-  m_database.BeginTransaction();
+  if (!m_videoAsset->HasVideoInfoTag() ||
+      m_database.ConvertVersionToVideo(*m_videoAsset->GetVideoInfoTag(),
+                                       *m_selectedVideoAsset->GetVideoInfoTag()) < 0)
+    return false;
 
-  // Strategy: capture version-level information (artwork, name, stream details) and recreate the
-  // version as a movie after deletion.
-  // The existing code and architecture favor that approach rather than building up the stored
-  // version data into a movie.
-
-  const CVideoInfoTag* versionDetails = m_selectedVideoAsset->GetVideoInfoTag();
-
-  KODI::ART::Artwork artwork;
-  if (m_videoAsset->HasVideoInfoTag() &&
-      m_database.GetArtForAsset(versionDetails->m_iDbId, ArtFallbackOptions::PARENT, artwork) &&
-      m_database.DeleteVideoAsset(versionDetails->m_iDbId))
-  {
-    // The item used to open the dialog contains the correct movie information because all
-    // versions of a movie share fields.
-    CVideoInfoTag details = *m_videoAsset->GetVideoInfoTag();
-    const int origMovieId = details.m_iDbId;
-    // Force a movie record creation - the parent movie is found otherwise.
-    details.m_iDbId = -1;
-    // Then modify the persisted fields with the removed version info
-    details.m_iFileId = versionDetails->m_iFileId;
-    details.m_strFileNameAndPath = versionDetails->m_strFileNameAndPath;
-    details.m_basePath = versionDetails->m_basePath;
-    details.m_parentPathID = versionDetails->m_parentPathID;
-    details.m_dateAdded = versionDetails->m_dateAdded;
-    details.m_streamDetails = versionDetails->m_streamDetails;
-    // Preserve the version name
-    details.GetAssetInfo().Clear();
-    details.GetAssetInfo().SetTitle(versionDetails->GetAssetInfo().GetTitle());
-
-    const int movieId = m_database.SetDetailsForMovie(details, artwork);
-    if (movieId >= 0 && movieId != origMovieId)
-    {
-      std::vector<int> showIds;
-      if (m_database.GetLinksToTvShow(origMovieId, showIds) &&
-          (showIds.empty() || m_database.LinkMovieToTvshows(movieId, showIds, false)))
-      {
-        m_database.CommitTransaction();
-        m_hasUpdatedItems = true;
-        return true;
-      }
-    }
-  }
-
-  m_database.RollbackTransaction();
-  return false;
+  m_hasUpdatedItems = true;
+  return true;
 }
 
 void CGUIDialogVideoManagerVersions::SetDefault()
@@ -297,10 +257,6 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
   CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,           0, GUI_MSG_UPDATE_ITEM,
                   GUI_MSG_FLAG_FORCE_UPDATE, m_videoAsset};
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-
-  // Widgets reload on the announcement
-  CUtil::DeleteVideoDatabaseDirectoryCache();
-  CVideoDatabase::AnnounceUpdate(m_videoAsset->GetVideoInfoTag()->GetMediaType(), dbId);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersion()
@@ -874,11 +830,11 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
 
     // @todo look only for a version identified by idFile instead of retrieving all versions
-    if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
+    if (newAsset.IsAsset())
     {
       // The video already is a version of the movie
       if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType &&
-          newAsset.m_assetType == VideoAssetType::VERSION)
+          newAsset.IsAsset(VideoAssetType::VERSION))
       {
         unsigned int msgid{};
 
@@ -903,7 +859,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       // The video is an asset of another movie or different asset type of same movie
 
       // The video is an extra, ask for confirmation of the asset type change
-      if (newAsset.m_assetType == VideoAssetType::EXTRA &&
+      if (newAsset.IsAsset(VideoAssetType::EXTRA) &&
           !CGUIDialogYesNo::ShowAndGetInput(
               CVariant{40014},
               StringUtils::Format(
@@ -944,35 +900,16 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         }
       }
 
-      // Additional constraints for the conversion of a movie version
-      if (newAsset.m_assetType == VideoAssetType::VERSION &&
-          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+      if (!m_database.CanAddVideoAsset(newAsset.m_idFile))
       {
-        CFileItemList list;
-        m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);
-
-        if (list.Size() > 1)
-        {
-          // cannot add the default version of a movie with multiple versions to another movie
-          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40038});
-          return false;
-        }
-
-        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
-        if (idNewVideoVersion != -1)
-        {
-          // Remove (Disc n) from title
-          RemovePartNumberFromTitle(m_videoAsset->GetVideoInfoTag()->m_iDbId,
-                                    m_videoAsset->GetVideoContentType(), m_database);
-          return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                  idNewVideoVersion, VideoAssetType::VERSION);
-        }
-        else
-        {
-          return false;
-        }
+        // cannot add the default version of a movie with multiple versions to another movie
+        CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40038});
+        return false;
       }
     }
+
+    // A movie's own file brings the movie
+    const bool bringsMovie{m_database.IsDefaultVideoVersion(newAsset.m_idFile)};
 
     CFileItem item{path, false};
 
@@ -990,9 +927,16 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     if (idNewVideoVersion == -1)
       return false;
 
-    m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item);
+    // Remove (Disc n) from title
+    if (bringsMovie)
+      RemovePartNumberFromTitle(m_videoAsset->GetVideoInfoTag()->m_iDbId,
+                                m_videoAsset->GetVideoContentType(), m_database);
 
-    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
+    if (!m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item))
+      return false;
+
+    if (!bringsMovie)
+      KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

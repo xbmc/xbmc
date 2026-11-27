@@ -151,6 +151,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/PlayerController.h"
+#include "video/VideoLibrary.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
 #include "video/geometry/ContentGeometryScanner.h"
@@ -1174,14 +1175,9 @@ bool CApplication::OnAction(const CAction &action)
       // Mirror changes to GUI item
       CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,
-                              m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating,
-                              m_itemCurrentFile->GetVideoInfoTag()->GetMediaType());
-        db.Close();
-      }
+      VIDEO::LIBRARY::SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,
+                                         m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating,
+                                         m_itemCurrentFile->GetVideoInfoTag()->GetMediaType());
       // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);

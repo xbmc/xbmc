@@ -24,7 +24,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoUtils.h"
 
 CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob(
     const std::shared_ptr<CFileItem>& item)
@@ -66,11 +65,9 @@ bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
 #endif
 
     if (item->HasPVRRecordingInfoTag() &&
-        CServiceBroker::GetPVRManager().Recordings()->ResetResumePoint(item->GetPVRRecordingInfoTag()))
-    {
-      KODI::VIDEO::UTILS::AnnounceResumePointChanged(item->GetPath(), {});
+        CServiceBroker::GetPVRManager().Recordings()->ResetResumePoint(
+            item->GetPVRRecordingInfoTag()))
       continue;
-    }
 
     resetItems.emplace_back(item);
   }
@@ -83,11 +80,6 @@ bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
   for (const auto& resetItem : resetItems)
   {
     db.DeleteResumeBookMark(*resetItem);
-
-    std::string path{resetItem->GetPath()};
-    if (resetItem->HasVideoInfoTag() && !resetItem->GetVideoInfoTag()->GetPath().empty())
-      path = resetItem->GetVideoInfoTag()->GetPath();
-    KODI::VIDEO::UTILS::AnnounceResumePointChanged(path, {});
   }
 
   db.CommitTransaction();

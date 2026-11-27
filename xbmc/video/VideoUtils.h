@@ -41,14 +41,6 @@ std::string FindTrailer(const CFileItem& item,
                         bool movieFolder,
                         KODI::REGEXP::RegExpCache* cache = nullptr);
 
-/*! \brief Whether a movie has a folder of its own: its source has movies in separate folders, and it
- *         isn't in the source's root. A disc's is that of its file, not of its playlist.
- *  \param[in] database an open video database
- *  \param[in] videoPath the path of the movie's video
- *  \return true if the movie has a folder of its own
- */
-bool HasMovieFolder(CVideoDatabase& database, const std::string& videoPath);
-
 /*!
  \brief Check whether an item is an optical media folder or its parent.
   This will return the non-empty path to the playable entry point of the media
@@ -252,21 +244,5 @@ bool SaveDiscPlaylist(CFileItem& item);
  \return True if the item was flagged
  */
 bool FlagMainTitleToSave(CFileItem& item, const std::string& pathBeforePick);
-
-/*!
- * \brief Announce a change of a file's play count as Files.OnPlayCountChanged, for any file in or
- * outside the library, so that e.g. the add-on whose plugin item it is can react.
- * \param[in] file The file. Its credentials are not announced.
- * \param[in] playCount The new play count
- */
-void AnnouncePlayCountChanged(const std::string& file, int playCount);
-
-/*!
- * \brief Announce a change of a file's resume point as Files.OnResumePointChanged, for any file in
- * or outside the library, so that e.g. the add-on whose plugin item it is can react.
- * \param[in] file The file. Its credentials are not announced.
- * \param[in] resumePoint The new resume point, at 0 seconds if it was reset
- */
-void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint);
 
 } // namespace KODI::VIDEO::UTILS

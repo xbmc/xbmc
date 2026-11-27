@@ -10,11 +10,13 @@
 
 #include "utils/ContentUtils.h"
 
+#include <functional>
 #include <memory>
 #include <string>
 
 class CFileItem;
 class CFileItemList;
+class CVideoSettings;
 
 namespace KODI::VIDEO::UTILS
 {
@@ -63,13 +65,6 @@ bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item,
 bool IsItemPlayable(const CFileItem& item);
 
 /*!
- \brief Check whether for the given item information is stored in the video database.
- \param item The item to check
- \return True if info is available, false otherwise.
- */
-bool HasItemVideoDbInformation(const CFileItem& item);
-
-/*!
  \brief Get a localized resume string for the given item, if it is resumable.
  \param item The item to retrieve the resume string for
  \return The resume string or empty string in case the item is not resumable.
@@ -99,5 +94,12 @@ bool ChooseDiscPlaylist(CFileItem& item);
  \param oldFileId [in] The library file id the item had before, when the change gave it a new one
  */
 void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, int oldFileId = -1);
+
+/*!
+ \brief Once the user unlocks and confirms it, make the playing video's settings the default for
+ every video, erasing the settings each video kept of its own.
+ \param forget [in] Clears from the new default what does not carry over to other videos
+ */
+void MakeVideoSettingsDefault(const std::function<void(CVideoSettings&)>& forget);
 
 } // namespace KODI::VIDEO::UTILS

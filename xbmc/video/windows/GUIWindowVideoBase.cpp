@@ -315,7 +315,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   const ADDON::ScraperPtr scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
   if (!fileItem.HasVideoInfoTag() && !scraper && !(fileItem.IsPlugin() || fileItem.IsScript()) &&
-      !KODI::VIDEO::UTILS::HasItemVideoDbInformation(fileItem))
+      !m_database.HasVideoInfo(fileItem))
   {
     // We have no chance to fill a video info tag, neither scraper nor db data available.
     HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
@@ -559,6 +559,7 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
 
   bool listNeedsUpdating = false;
   bool refreshFailed = false;
+  bool removed = false;
   // 3. Run a loop so that if we Refresh we re-run this block
   do
   {
@@ -568,7 +569,7 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
     OnMessage(reload);
 
     if (!CVideoLibraryQueue::GetInstance().RefreshItemModal(item, needsRefresh,
-                                                            pDlgInfo->RefreshAll()))
+                                                            pDlgInfo->RefreshAll(), removed))
     {
       refreshFailed = true;
       break;
@@ -594,17 +595,7 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
   } while (needsRefresh);
 
   if (refreshFailed)
-  {
-    // the movie may have been removed from the library before the refresh failed
-    bool removed{false};
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::MOVIE &&
-        item->GetVideoInfoTag()->m_iDbId > 0 && m_database.Open())
-    {
-      removed = m_database.GetMovieId(item->GetVideoInfoTag()->m_strFileNameAndPath) < 0;
-      m_database.Close();
-    }
     return (listNeedsUpdating || removed || hasChanges) ? RESULT_OK_UPDATED : RESULT_OK_NOT_UPDATED;
-  }
 
   // changes the dialog made to other items are only picked up by refreshing the list
   const std::shared_ptr<CFileItem> dialogItem{pDlgInfo->GetCurrentListItem()};

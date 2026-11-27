@@ -9,6 +9,9 @@
 #pragma once
 
 #include "Bookmark.h"
+#include "DiscPlaylist.h"
+#include "EpisodeFileMap.h"
+#include "VideoDbContentType.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
@@ -92,53 +95,6 @@ enum VideoDbDetails
   VideoDbDetailsAll      = 0xFF
 } ;
 
-enum class VideoDbContentType
-{
-  UNKNOWN = -1,
-  MOVIES = 1,
-  TVSHOWS = 2,
-  MUSICVIDEOS = 3,
-  EPISODES = 4,
-  MOVIE_SETS = 5,
-  MUSICALBUMS = 6
-};
-
-template<>
-struct fmt::formatter<VideoDbContentType> : fmt::formatter<std::string_view>
-{
-  template<typename FormatContext>
-  constexpr auto format(const VideoDbContentType& type, FormatContext& ctx)
-  {
-    return fmt::formatter<std::string_view>::format(enumToSV(type), ctx);
-  }
-
-private:
-  static constexpr std::string_view enumToSV(VideoDbContentType type)
-  {
-    using namespace std::literals::string_view_literals;
-    switch (type)
-    {
-      using enum VideoDbContentType;
-
-      case UNKNOWN:
-        return "unknown"sv;
-      case MOVIES:
-        return "movies"sv;
-      case TVSHOWS:
-        return "TV shows"sv;
-      case MUSICVIDEOS:
-        return "music videos"sv;
-      case EPISODES:
-        return "episodes"sv;
-      case MOVIE_SETS:
-        return "movie sets"sv;
-      case MUSICALBUMS:
-        return "music albums"sv;
-    };
-    throw std::invalid_argument("no videodb content string found");
-  }
-};
-
 enum class ArtFallbackOptions
 {
   NONE,
@@ -160,18 +116,6 @@ enum class DeleteMovieHashAction
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
-
-struct EpisodeInformation
-{
-  int index{0};
-  int season{-1};
-  int episode{-1};
-  unsigned int duration{0};
-  CBookmark bookmark{};
-};
-
-using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<>>;
-using EpisodeFileMapEntry = EpisodeFileMap::value_type;
 
 static constexpr const char* MULTIPLE_EPISODES{"multiple_episodes"};
 
@@ -231,6 +175,10 @@ public:
   bool Open() override;
   bool CommitTransaction() override;
 
+  //! \brief Whether play count and resume point writes are announced; off for values restored
+  //! from an NFO file or an earlier record of the item, which change nothing a listener knew.
+  void SetAnnounceFileChanges(bool announce) { m_announceFileChanges = announce; }
+
   int AddNewEpisode(int idShow, CVideoInfoTag& details);
 
   // editing functions
@@ -240,6 +188,8 @@ public:
    \param count The playcount to set.
    \param date The date the file was last viewed (does not denote the video was watched to completion).
    If empty we use current datetime (if count > 0) or never viewed (if count = 0).
+   A count other than the database held, or the item showed, is announced as
+   Files.OnPlayCountChanged.
    \return on success, the new last played time set, invalid datetime otherwise.
    \sa GetPlayCount, IncrementPlayCount, UpdateLastPlayed
    */
@@ -323,6 +273,10 @@ public:
   bool HasEpisodeInfo(const std::string& strFilenameAndPath);
   bool HasMusicVideoInfo(const std::string& strFilenameAndPath);
 
+  //! \brief Whether the library holds an item, as a movie, an episode or a music video by its file,
+  //! or as a TV show by its folder
+  bool HasVideoInfo(const CFileItem& item);
+
   void GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType);
   std::string GetGenreById(int id) const;
   std::string GetCountryById(int id) const;
@@ -336,6 +290,10 @@ public:
   int GetTvShowForEpisode(int idEpisode) const;
   int GetSeasonForEpisode(int idEpisode) const;
 
+  /*!
+   * \brief Fill details with what the library holds for a file. An extra's file is filled as the
+   * extras list of its movie shows it.
+   */
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details);
   bool GetMovieInfo(const std::string& strFilenameAndPath,
                     CVideoInfoTag& details,
@@ -496,26 +454,12 @@ public:
    */
   bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
-  struct PlaylistInfo
-  {
-    int playlist{-1};
-    int idFile{-1};
-    VideoDbContentType mediaType{-1};
-    int idMedia{-1};
-    std::string title{};
-
-    //! Which of a movie's assets holds the playlist. Unset for an episode, which is named by its
-    //! title instead.
-    std::optional<VideoAssetType> itemType{};
-    CDateTime dateAdded{};
-  };
-
   /*!
    * \brief Get all playlists from a single bluray:// path in the database
    * \param[in] path The bluray:// path
    * \return vector array of playlist numbers and idFiles
    */
-  std::vector<PlaylistInfo> GetPlaylistsByPath(const std::string& path);
+  std::vector<KODI::VIDEO::DiscPlaylist> GetPlaylistsByPath(const std::string& path);
 
   /*!
    * \brief Announce that a library item has changed, so that widgets and other listeners reload it
@@ -523,6 +467,7 @@ public:
    */
   static void AnnounceUpdate(KODI::MEDIA::TYPE content, int id);
 
+  //! \brief Set a movie's trailer, announcing the change
   void SetTrailerForMovie(int idMovie, const std::string& trailer);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
@@ -652,6 +597,12 @@ public:
   void RemoveContentForPath(const std::string& strPath, CGUIDialogProgress* progress = nullptr);
   void UpdateFanart(const CFileItem& item, VideoDbContentType type);
   void DeleteSet(int idSet);
+
+  /*!
+   * \brief Remove a movie, movie set, TV show, episode or music video from the library.
+   * \return false for another kind of item, or if a movie could not be removed
+   */
+  bool DeleteItem(VideoDbContentType type, int id);
   void DeleteTag(int idTag, VideoDbContentType mediaType);
   bool DeleteFile(int idFile);
 
@@ -722,6 +673,8 @@ public:
                      const std::vector<std::chrono::milliseconds>& times);
 
   void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
+
+  //! \brief Writing a resume point announces it as Files.OnResumePointChanged.
   bool AddBookMarkToFile(const std::string& strFilenameAndPath,
                          const CBookmark& bookmark,
                          CBookmark::EType type = CBookmark::STANDARD);
@@ -734,13 +687,26 @@ public:
    */
   bool SetResumePoint(const std::string& file, double position, double total);
 
+  //! \brief Clears the resume point of an item's file, as ClearBookMarksOfFile does.
   void DeleteResumeBookMark(const CFileItem& item);
   void ClearBookMarkOfFile(const std::string& strFilenameAndPath,
                            const CBookmark& bookmark,
                            CBookmark::EType type = CBookmark::STANDARD);
+
+  /*!
+   * \brief Clears the bookmarks of a type from a file. Clearing a resume point the database held
+   * announces it as Files.OnResumePointChanged.
+   * \param shownResumePoint whether the item the file was listed as showed a resume point held
+   * outside the database, as a plugin item or a recording can, so that clearing it is announced
+   */
   bool ClearBookMarksOfFile(const std::string& strFilenameAndPath,
-                            CBookmark::EType type = CBookmark::STANDARD);
+                            CBookmark::EType type = CBookmark::STANDARD,
+                            bool shownResumePoint = false);
   bool ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
+
+  //! \brief Clears every bookmark of a file, its resume point included, as ClearBookMarksOfFile
+  //! does for each type
+  bool ClearAllBookMarksOfFile(const std::string& strFilenameAndPath);
   bool GetBookMarkForEpisode(int dbId, CBookmark& bookmark) const;
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark) const;
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
@@ -790,6 +756,15 @@ public:
                                      int idFile = -1);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
+
+  //! \brief The details of the library item a tag is: for a movie, of the version or file it names
+  bool GetDetailsOfItem(const CVideoInfoTag& item,
+                        CVideoInfoTag& details,
+                        int getDetails = VideoDbDetailsAll);
+
+  //! \brief Rename a movie, set, TV show, season, episode or music video. A season keeps its name
+  //! for an empty one, as saving its details does.
+  bool SetItemTitle(const CVideoInfoTag& item, const std::string& title);
 
   /*! \name Content geometry
    * The measured picture rectangle of a file. Detection results only; a declared ratio
@@ -853,6 +828,15 @@ public:
                                       KODI::VIDEO::SScanSettings& settings,
                                       bool& foundDirectly,
                                       ScraperCache* scraperCache = nullptr);
+
+  /*! \brief Determine whether the path is using lookup using folders: its source has its items in
+   folders of their own, and it isn't in the source's root. A disc's is that of its file, not of its
+   playlist.
+   \param path the path to check
+   \param shows whether this path is from a tvshow (defaults to false)
+   \return true if items under the path are looked up by folder name
+   */
+  bool LookupByFolders(const std::string& path, bool shows = false);
 
   /*! \brief Retrieve the content type of videos in the given path
    If content is set on the folder, we return the given content type, except in the case of tvshows,
@@ -1231,8 +1215,24 @@ public:
     int mediaId, KODI::MEDIA::TYPE mediaType, const std::string& artType);
 
   int AddTag(const std::string &tag);
+
+  //! \brief Whether a tag of this name is given to any item of a type
+  bool HasTag(const std::string& name, KODI::MEDIA::TYPE type) const;
   void AddTagToItem(int idItem, int idTag, KODI::MEDIA::TYPE type);
   void RemoveTagFromItem(int idItem, int idTag, KODI::MEDIA::TYPE type);
+
+  //! \brief Give a tag to items of a type, in one transaction
+  bool AddTagToItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type);
+
+  //! \brief Take a tag from items of a type, in one transaction
+  bool RemoveTagFromItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type);
+
+  /*!
+   * \brief The movies, TV shows or music videos that have a tag, or those that don't
+   * \param idTag the tag; all of them for none
+   * \param tagged true for those with the tag, false for those without it
+   */
+  bool GetVideosForTag(KODI::MEDIA::TYPE type, int idTag, bool tagged, CFileItemList& items);
   void RemoveTagsFromItem(int idItem, KODI::MEDIA::TYPE type);
 
   bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting) override;
@@ -1263,6 +1263,9 @@ public:
              const bool updateOverview = true);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
+
+  //! \brief AddSet, for a movie to be put in: a set with no art yet is given the movie's
+  int AddSetForMovie(const std::string& name, int idMovie);
   bool SetVideoUserRating(int dbId, int rating, KODI::MEDIA::TYPE mediaType);
   bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
 
@@ -1294,19 +1297,16 @@ public:
                              VideoAssetType assetType);
 
   /*!
-   * \brief Adds or updates a version of an existing movie to the database
-   * \param itemType type of the video being converted
-   * \param dbIdSource id of the video being converted
-   * \param idVideoVersion new versiontype of the default version of the video
-   * \param assetType new asset type of the default version of the video
-   * \return true if success, false otherwise
+   * \brief Make a version of a movie a movie of its own: the movie's details, with the version's
+   * file, name and art, linked to the movie's TV shows.
+   * \param movie the movie the version belongs to
+   * \param version the version, as Manage versions lists it
+   * \return the new movie's id, -1 on failure
    */
-  bool AddOrUpdateVideoVersion(VideoDbContentType itemType,
-                               int dbIdSource,
-                               int idFile,
-                               int idVideoVersion,
-                               VideoAssetType assetType);
+  int ConvertVersionToVideo(const CVideoInfoTag& movie, const CVideoInfoTag& version);
 
+  //! \brief Make a file the default version of a video. Outside a caller's transaction a change
+  //! is announced.
   bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddOrValidateVideoVersionType(const std::string& typeVideoVersion, VideoAssetType itemType);
@@ -1315,21 +1315,90 @@ public:
                           VideoAssetType assetType);
   /*!
    * \brief Create a new video asset from the provided item and type and attach it to an owner
-   * A file record is created for items with a path new to the database.
+   * A file record is created for items with a path new to the database. The file of another
+   * movie's default version brings that movie, which becomes the asset with its own assets.
    * \param[in] itemType Parent's type
    * \param[in] dbId  Parent's id
    * \param[in] idVideoAsset Video asset identifier / name
    * \param[in] videoAssetType Type of the video asset
    * \param[in] item Item to be made into a video asset
-   * \return Success status. true:success, false:failure
+   * \return Success status. true:success, false:failure, also where CanAddVideoAsset refuses
+   * \sa RemoveVideoAsset
    */
   bool AddVideoAsset(VideoDbContentType itemType,
                      int dbId,
                      int idVideoAsset,
                      VideoAssetType videoAssetType,
                      CFileItem& item);
-  bool DeleteVideoAsset(int idFile,
+
+  /*!
+   * \brief Whether a file can become another movie's version or extra: not the default version of
+   * a movie with other versions, which would be left without a file of its own.
+   */
+  bool CanAddVideoAsset(int idFile);
+
+  //! \brief Unlink a version or an extra from its movie, keeping its file and that file's state.
+  //! \sa LinkVideoAsset, RemoveVideoAsset
+  bool UnlinkVideoAsset(int idFile,
                         DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
+
+  /*!
+   * \brief Remove a version or an extra from its movie. The file of one on a disc playlist goes too,
+   * as nothing else lists it.
+   * Outside a caller's transaction the movie's change is announced.
+   * \return false for a movie's default version, or if it could not be removed
+   * \sa AddVideoAsset
+   */
+  bool RemoveVideoAsset(int idFile);
+
+  //! A movie or an episode RevertPlaylistsToDisc moved off a disc playlist onto the disc
+  struct PlaylistRevert
+  {
+    CVideoInfoTag details; //!< as it is now
+    int oldIdFile{-1};
+    int playlist{-1};
+  };
+
+  enum class PlaylistRevertResult
+  {
+    DONE,
+    IN_USE, //!< a playlist's file is still a version of another movie, so nothing changed
+    FAILED,
+  };
+
+  /*!
+   * \brief Take disc playlists from the library items they belong to. An extra on one goes; a movie
+   * or an episode moves back to the disc, which keeps its own play history. Outside a caller's
+   * transaction the changes, and the movies whose extras went, are announced.
+   * \param disc the disc's file
+   * \param reverted [out] the movies and episodes moved to the disc
+   */
+  PlaylistRevertResult RevertPlaylistsToDisc(
+      const std::string& disc,
+      const std::vector<KODI::VIDEO::DiscPlaylist>& playlists,
+      std::vector<PlaylistRevert>& reverted);
+
+  //! How MoveFileOfPlayedItem moved a played library item
+  struct PlayedFileMove
+  {
+    int idFile{-1}; //!< the item's file now
+    int replacedIdFile{-1}; //!< the file it stopped using, -1 if it kept it
+    KODI::MEDIA::TYPE mediaType{KODI::MEDIA::TYPE::NONE};
+    int idMedia{-1};
+  };
+
+  //! Whether MoveFileOfPlayedItem moves the played library item
+  static bool PlayedItemMovesFile(const CFileItem& item);
+
+  /*!
+   * \brief Point a played library item at the file it was played from, where that changed: a disc
+   * played by another playlist, or a stack played under a new stack path. A version or an extra
+   * moves with its movie.
+   * \param file the file the item's play state is kept against
+   * \return nullopt if nothing needed moving, or the move failed
+   */
+  std::optional<PlayedFileMove> MoveFileOfPlayedItem(const CFileItem& item,
+                                                     const std::string& file);
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType assetType,
@@ -1398,6 +1467,12 @@ public:
    \return A path in the format of bluray://removable://<title_ID>/BDMV/PLAYLIST/00000.mpls if found, otherwise an empty string.
    */
   std::string GetRemovableBlurayPath(std::string originalPath);
+
+  /*!
+   * \brief The resume point of a disc in a drive, by the id CMediaManager::GetDiskUniqueId gives.
+   * A Blu-ray's is kept against the playlist last played from it.
+   */
+  bool GetDiscResumeBookMark(const std::string& discId, CBookmark& bookmark);
 
 protected:
   //! \brief The play state a TV show's edit leaves one of its episodes with
@@ -1587,6 +1662,39 @@ private:
   void CreateAnalytics() override;
   void UpdateTables(int version) override;
 
+  /*!
+   * \brief Link a file to a movie as a version or an extra, or change the link it has.
+   * \param itemType type of the video the version belongs to
+   * \param dbIdSource id of the video the version belongs to
+   * \param idFile file id of the version
+   * \param idVideoVersion versiontype of the version
+   * \param assetType asset type of the version
+   * \return true if success, false otherwise
+   * \sa UnlinkVideoAsset
+   */
+  bool LinkVideoAsset(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
+  //! \brief Fill details for a version or extra of owner, as its asset list shows it
+  bool GetVideoAssetInfo(int idFile,
+                         int idType,
+                         const std::string& name,
+                         VideoAssetType type,
+                         const CVideoInfoTag& owner,
+                         CVideoInfoTag& details);
+
+  //! \brief Announce a library item's change, clearing the cached listings first, unless updates
+  //! are not announced
+  void AnnounceItemChanged(KODI::MEDIA::TYPE type, int id);
+
+  //! \brief SetPlayCount, without announcing the count
+  CDateTime WritePlayCount(const CFileItem& item, int count, const CDateTime& date);
+
+  bool m_announceFileChanges{true};
+
   /*! \brief Helper to get a database id given a query.
    Returns an integer, -1 if not found, and greater than 0 if found.
    \param query the SQL that will retrieve a database id.
@@ -1615,12 +1723,6 @@ private:
                         const char* viewKey,
                         const CUrlOptions::UrlOptions& options,
                         Filter& filter) const;
-
-  /*! \brief Determine whether the path is using lookup using folders
-   \param path the path to check
-   \param shows whether this path is from a tvshow (defaults to false)
-   */
-  bool LookupByFolders(const std::string &path, bool shows = false);
 
   /*! \brief Get the playcount for a file id
    \param iFileId file id to get the playcount for

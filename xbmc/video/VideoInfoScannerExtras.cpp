@@ -127,11 +127,11 @@ std::string HashVideoExtras(const std::string& folder)
 bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
 {
   if (const VideoAssetInfo whole{db.GetVideoVersionInfo(disc)};
-      whole.m_assetType == VideoAssetType::EXTRA && whole.m_idMedia == dbId)
+      whole.IsAsset(VideoAssetType::EXTRA) && whole.m_idMedia == dbId)
     return true;
 
   return std::ranges::any_of(db.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(disc)),
-                             [dbId](const CVideoDatabase::PlaylistInfo& playlist)
+                             [dbId](const KODI::VIDEO::DiscPlaylist& playlist)
                              {
                                return playlist.mediaType == VideoDbContentType::MOVIES &&
                                       playlist.idMedia == dbId &&
@@ -174,8 +174,8 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
           {
             // An older version added the disc as a whole, before its extras were known
             if (const VideoAssetInfo whole{m_database.GetVideoVersionInfo(item->GetPath())};
-                whole.m_assetType == VideoAssetType::EXTRA && whole.m_idMedia == dbId &&
-                (!m_database.DeleteVideoAsset(whole.m_idFile) ||
+                whole.IsAsset(VideoAssetType::EXTRA) && whole.m_idMedia == dbId &&
+                (!m_database.UnlinkVideoAsset(whole.m_idFile) ||
                  !m_database.DeleteFile(whole.m_idFile)))
               CLog::LogF(LOGERROR, "Failed to remove the whole disc {} for its extras",
                          CURL::GetRedacted(item->GetPath()));
@@ -189,7 +189,7 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
         // An extra already in the library keeps any name or art it has since been given. A version
         // is left one, as converting it would make the movie's own file the extra.
         if (const VideoAssetInfo asset{m_database.GetVideoVersionInfo(item->GetPath())};
-            asset.m_assetType != VideoAssetType::UNKNOWN && asset.m_idMedia == dbId)
+            asset.IsAsset() && asset.m_idMedia == dbId)
           return;
 
         // An export keeps the extra's name and play state in an nfo beside it, and whether it is
@@ -519,7 +519,7 @@ bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
     *asset.GetVideoInfoTag() = std::move(entry.tag);
     asset.GetVideoInfoTag()->m_strFileNameAndPath = path;
 
-    if (m_database.GetVideoVersionInfo(path).m_assetTypeId != -1)
+    if (m_database.GetVideoVersionInfo(path).IsAsset())
     {
       CLog::LogF(LOGDEBUG, "The {} '{}' ({}) is already in the library", kind, title,
                  CURL::GetRedacted(path));
@@ -660,7 +660,7 @@ bool CVideoInfoScannerExtras::AddDiscExtras(const std::string& disc, int dbId)
   {
     const std::string& path{extra->GetDynPath()};
     const std::string& title{extra->GetVideoInfoTag()->GetAssetInfo().GetTitle()};
-    if (m_database.GetVideoVersionInfo(path).m_assetTypeId != -1)
+    if (m_database.GetVideoVersionInfo(path).IsAsset())
     {
       CLog::LogF(LOGDEBUG, "Extra '{}' ({}) is already in the library", title,
                  CURL::GetRedacted(path));

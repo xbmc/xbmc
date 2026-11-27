@@ -9,12 +9,9 @@
 #pragma once
 
 #include "cores/VideoPlayer/Edl/EdlParser.h"
+#include "video/EpisodeFileMap.h"
 
 #include <chrono>
-#include <map>
-
-struct EpisodeInformation;
-using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<>>;
 
 namespace EDL
 {

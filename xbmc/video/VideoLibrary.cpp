@@ -26,10 +26,31 @@ bool AddBookMarkToFile(const std::string& strFilenameAndPath,
                       { return db.AddBookMarkToFile(strFilenameAndPath, bookmark, type); });
 }
 
+int AddSetForMovie(const std::string& name, int idMovie)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.AddSetForMovie(name, idMovie); });
+}
+
 int AddTag(const std::string& tag)
 {
   return WithDatabase([&](CVideoDatabase& db) -> std::optional<int> { return db.AddTag(tag); })
       .value_or(-1);
+}
+
+bool AddTagToItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.AddTagToItems(idTag, idItems, type); });
+}
+
+bool ClearAllBookMarksOfFile(const std::string& strFilenameAndPath)
+{
+  return WithDatabase([&](CVideoDatabase& db)
+                      { return db.ClearAllBookMarksOfFile(strFilenameAndPath); });
+}
+
+bool DeleteItem(VideoDbContentType type, int id)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.DeleteItem(type, id); });
 }
 
 void DeleteTag(int idTag, VideoDbContentType mediaType)
@@ -64,6 +85,18 @@ std::string GetArtForItem(int mediaId, const std::string& mediaType, const std::
 CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id)
 {
   return WithDatabase([&](CVideoDatabase& db) { return db.GetDetailsByTypeAndId(type, id); });
+}
+
+bool GetDetailsOfItem(const CVideoInfoTag& item, CVideoInfoTag& details, int getDetails)
+{
+  return WithDatabase([&](CVideoDatabase& db)
+                      { return db.GetDetailsOfItem(item, details, getDetails); });
+}
+
+bool GetDiscResumeBookMark(const std::string& discId, CBookmark& bookmark)
+{
+  return WithDatabase([&](CVideoDatabase& db)
+                      { return db.GetDiscResumeBookMark(discId, bookmark); });
 }
 
 bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile)
@@ -149,6 +182,11 @@ std::string GetRemovableBlurayPath(const std::string& originalPath)
   return WithDatabase([&](CVideoDatabase& db) { return db.GetRemovableBlurayPath(originalPath); });
 }
 
+std::vector<DiscPlaylist> GetPlaylistsByPath(const std::string& path)
+{
+  return WithDatabase([&path](CVideoDatabase& db) { return db.GetPlaylistsByPath(path); });
+}
+
 bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark& bookmark)
 {
   return WithDatabase([&](CVideoDatabase& db)
@@ -219,9 +257,25 @@ bool GetUseAllExternalAudioForVideo(const std::string& videoPath)
                       { return db.GetUseAllExternalAudioForVideo(videoPath); });
 }
 
+bool GetVideosForTag(KODI::MEDIA::TYPE type, int idTag, bool tagged, CFileItemList& items)
+{
+  return WithDatabase([&](CVideoDatabase& db)
+                      { return db.GetVideosForTag(type, idTag, tagged, items); });
+}
+
 bool HasContent(VideoDbContentType type)
 {
   return WithDatabase([&](CVideoDatabase& db) { return db.HasContent(type); });
+}
+
+bool HasTag(const std::string& name, KODI::MEDIA::TYPE type)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.HasTag(name, type); });
+}
+
+bool HasVideoInfo(const CFileItem& item)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.HasVideoInfo(item); });
 }
 
 void ImportFromXML(const std::string& path)
@@ -235,9 +289,30 @@ bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details
                       { return db.LoadVideoInfo(strFilenameAndPath, details); });
 }
 
+bool LookupByFolders(const std::string& path, bool shows)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.LookupByFolders(path, shows); });
+}
+
+bool RemoveVideoAsset(int idFile)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.RemoveVideoAsset(idFile); });
+}
+
+bool RemoveTagFromItems(int idTag, const std::vector<int>& idItems, KODI::MEDIA::TYPE type)
+{
+  return WithDatabase([&](CVideoDatabase& db)
+                      { return db.RemoveTagFromItems(idTag, idItems, type); });
+}
+
 bool ScraperInUse(const std::string& scraperID)
 {
   return WithDatabase([&](CVideoDatabase& db) { return db.ScraperInUse(scraperID); });
+}
+
+bool SetItemTitle(const CVideoInfoTag& item, const std::string& title)
+{
+  return WithDatabase([&](CVideoDatabase& db) { return db.SetItemTitle(item, title); });
 }
 
 bool SetPathHash(const std::string& path, const std::string& hash)

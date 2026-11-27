@@ -118,6 +118,22 @@ private:
 //! \brief Writes \p text to the file at \p path, replacing whatever it held.
 bool WriteTextFile(const std::string& path, const std::string& text);
 
+//! \brief Loads the English language strings for the life of the guard, then clears them.
+class CScopedLanguageStrings
+{
+public:
+  CScopedLanguageStrings();
+  ~CScopedLanguageStrings();
+
+  CScopedLanguageStrings(const CScopedLanguageStrings&) = delete;
+  CScopedLanguageStrings& operator=(const CScopedLanguageStrings&) = delete;
+
+  bool IsLoaded() const { return m_loaded; }
+
+private:
+  bool m_loaded{false};
+};
+
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
 #define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
 #define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)

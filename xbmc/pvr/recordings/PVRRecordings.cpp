@@ -314,7 +314,8 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecordi
       // Clear resume bookmark
       if (recording->GetPlayCount() > 0)
       {
-        db.ClearBookMarksOfFile(recording->m_strFileNameAndPath, CBookmark::RESUME);
+        db.ClearBookMarksOfFile(recording->m_strFileNameAndPath, CBookmark::RESUME,
+                                recording->GetResumePoint().IsPartWay());
         recording->SetResumePoint(CBookmark());
       }
 
@@ -347,7 +348,8 @@ bool CPVRRecordings::ResetResumePoint(const std::shared_ptr<CPVRRecording>& reco
     {
       bResult = true;
 
-      db.ClearBookMarksOfFile(recording->m_strFileNameAndPath, CBookmark::RESUME);
+      db.ClearBookMarksOfFile(recording->m_strFileNameAndPath, CBookmark::RESUME,
+                              recording->GetResumePoint().IsPartWay());
       recording->SetResumePoint(CBookmark());
 
       CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
