@@ -788,10 +788,28 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   framesCtx->width  = avctx->coded_width;
   framesCtx->height = avctx->coded_height;
 
-  avctx->hw_frames_ctx = framesRef;
+  m_framesRef.reset(framesRef);
+  avctx->hw_frames_ctx = av_buffer_ref(framesRef);
+  m_swFormat = avctx->pix_fmt;
+  m_profile = avctx->profile;
+  m_refs = avctx->refs;
   avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
 
+  return true;
+}
+
+bool CDecoder::Reuse(AVCodecContext* avctx, const enum AVPixelFormat fmt)
+{
+  if (fmt != AV_PIX_FMT_VAAPI || !m_vaapiConfigured || m_DisplayState != VAAPI_OPEN ||
+      avctx->pix_fmt != m_swFormat || avctx->profile != m_profile || avctx->refs != m_refs ||
+      avctx->coded_width != m_vaapiConfig.surfaceWidth ||
+      avctx->coded_height != m_vaapiConfig.surfaceHeight ||
+      avctx->width != m_vaapiConfig.vidWidth || avctx->height != m_vaapiConfig.vidHeight ||
+      av_cmp_q(avctx->sample_aspect_ratio, m_vaapiConfig.aspect) != 0)
+    return false;
+
+  avctx->hw_frames_ctx = av_buffer_ref(m_framesRef.get());
   return true;
 }
 
@@ -803,6 +821,7 @@ void CDecoder::Close()
 
   FiniVAAPIOutput();
 
+  m_framesRef.reset();
   m_deviceRef.reset();
 
   if (m_vaapiConfig.context)
