@@ -40,6 +40,8 @@
 #include "video/VideoThumbLoader.h"
 #include "video/tags/VideoTagExtractionHelper.h"
 
+#include <optional>
+
 using namespace XFILE;
 using KODI::MEDIA::NameOf;
 
@@ -588,10 +590,25 @@ std::string CVideoItemArtworkFanartHandler::UpdateRemoteArt(const std::vector<st
 {
   CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
 
+  // index counts the remote fanart GetRemoteArt() offered, which leaves out embedded fanart
+  std::optional<unsigned int> chosen;
+  for (unsigned int i = 0, remote = 0; i < videoTag->m_fanart.GetNumFanarts(); ++i)
+  {
+    if (URIUtils::IsProtocol(videoTag->m_fanart.GetPreviewURL(i), "image"))
+      continue;
+    if (static_cast<int>(remote++) == index)
+    {
+      chosen = i;
+      break;
+    }
+  }
+  if (!chosen)
+    return videoTag->m_fanart.GetImageURL();
+
   LIBRARY::WithDatabase(
-      [this, videoTag, index](CVideoDatabase& videodb)
+      [this, videoTag, fanart = *chosen](CVideoDatabase& videodb)
       {
-        videoTag->m_fanart.SetPrimaryFanart(index);
+        videoTag->m_fanart.SetPrimaryFanart(fanart);
         videodb.UpdateFanart(*m_item, m_item->GetVideoContentType());
       });
   return videoTag->m_fanart.GetImageURL();

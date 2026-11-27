@@ -449,3 +449,32 @@ TEST_F(TestVideoItemArtworkHandler, ChoosingTheEmbeddedFanartMakesItTheFanart)
   stored.m_fanart.Unpack();
   EXPECT_EQ(embedded, stored.m_fanart.GetImageURL());
 }
+
+// The remote fanart offered for choice leaves out the embedded fanart listed among it
+TEST_F(TestVideoItemArtworkHandler, ChoosingARemoteFanartAfterTheEmbeddedOneMakesItTheFanart)
+{
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Film";
+  tag.m_strFileNameAndPath = File(m_root, "film.mkv");
+  tag.m_strPath = m_root;
+  tag.m_fanart.AddFanart("http://example.com/fanart.jpg", "", "");
+  tag.m_fanart.Pack();
+  const int idMovie{Library().SetDetailsForMovie(tag, ART::Artwork{})};
+  ASSERT_GT(idMovie, 0);
+  tag.m_iDbId = idMovie;
+  tag.SetMediaType(MEDIA::TYPE::MOVIE);
+  const auto item{std::make_shared<CFileItem>(tag)};
+  item->SetPath(StringUtils::Format("videodb://movies/titles/{}", idMovie));
+
+  const auto handler{VIDEO::IVideoItemArtworkHandlerFactory::Create(
+      item, MEDIA::NameOf(MEDIA::TYPE::MOVIE), ART::TYPE::FANART)};
+  handler->UpdateEmbeddedArt("image://video@film.mkv/");
+  const std::vector<std::string> remote{handler->GetRemoteArt()};
+  ASSERT_EQ(1u, remote.size());
+  handler->UpdateRemoteArt(remote, 0);
+
+  CVideoInfoTag stored;
+  ASSERT_TRUE(Library().GetMovieInfo("", stored, idMovie));
+  stored.m_fanart.Unpack();
+  EXPECT_EQ("http://example.com/fanart.jpg", stored.m_fanart.GetImageURL());
+}
