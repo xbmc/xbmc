@@ -277,7 +277,8 @@ bool CVideoDatabase::GetPaths(std::set<std::string, std::less<>>& paths)
             "AND idPath NOT IN "
             "  (SELECT idPath FROM files WHERE strFileName LIKE 'index.bdmv') "
             "AND strPath NOT LIKE 'multipath://%%' "
-            "AND strContent NOT IN ('movies', 'tvshows', 'None') " // these have been added above
+            "AND (strContent IS NULL OR "
+            "     strContent NOT IN ('movies', 'tvshows', 'None')) " // these have been added above
             "ORDER BY strPath"))
 
       return false;

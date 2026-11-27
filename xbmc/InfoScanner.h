@@ -65,10 +65,11 @@ protected:
   //! \brief Protected constructor to only allow subclass instances.
   CInfoScanner() = default;
 
-  enum class ScanComplete : bool
+  enum class ScanComplete
   {
     Stopped,
-    Completed
+    Completed,
+    Skipped
   };
 
   enum class ContentFound : bool
