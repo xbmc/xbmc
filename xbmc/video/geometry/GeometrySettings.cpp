@@ -59,15 +59,18 @@ float RasterAspectFromSettings()
       Settings()->GetInt(CSettings::SETTING_VIDEOSCREEN_RASTERASPECT));
 }
 
-float ContentGeometryAtRestFromSettings()
+float ContentGeometryAtRest(float rasterAspect)
 {
   // The answer whenever what the viewer said no longer names a ratio the definition holds.
   constexpr float DEFAULT_AT_REST_ASPECT = 1.78f;
 
-  const float ratio = RasterAspectFromSettings();
-
   // Zero is "the same as the display", which answers 16:9.
-  return ratio > 0.0f ? ratio : DEFAULT_AT_REST_ASPECT;
+  return rasterAspect > 0.0f ? rasterAspect : DEFAULT_AT_REST_ASPECT;
+}
+
+float ContentGeometryAtRestFromSettings()
+{
+  return ContentGeometryAtRest(RasterAspectFromSettings());
 }
 
 SamplingParams ContentGeometrySamplingFromSettings(SamplingDepth depth)
