@@ -32,6 +32,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <cstdint>
 #include <memory>
@@ -254,10 +255,15 @@ bool CApplicationPlay::GetPlaylistIfDisc()
     {
       // Select playlist, showing simple menu if needed
       CFileItemList items;
+      const std::string oldPath{m_item.GetDynPath()};
       if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(m_item, items, menuDecision) ||
           items.IsEmpty())
         return false; // User cancelled
       m_item = *items[0];
+
+      // A main title picked for an item still stored as its disc is saved at playback end
+      if (menuDecision == GET_MAIN_TITLE)
+        KODI::VIDEO::UTILS::FlagMainTitleToSave(m_item, oldPath);
 
       // Reset any resume state as new playlist chosen
       m_options.starttime = m_options.startpercent = 0.0;
