@@ -267,8 +267,8 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
                                       UseRemoteArtWithLocalScraper useRemoteArt /* = yes */,
                                       const CFileItem* mediaItem /* = nullptr */) const
 {
-  int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  int artLevel = settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
   if (artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
     return;
 
@@ -425,8 +425,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   }
 
   if (!art.contains(ART::TYPE::THUMB) &&
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+      settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
       CVideoThumbLoader::CanExtractEmbeddedThumb(mediaItem ? *mediaItem : *pItem))
   {
     art[ART::TYPE::THUMB] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
@@ -444,8 +443,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   // show) is its own
   const std::string parentDir{pItem->IsFolder() ? pItem->GetPath()
                                                 : URIUtils::GetParentPath(pItem->GetPath())};
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+  if (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
   {
     // .actors sits alongside the nfo, so for a disc folder it is in BDMV/VIDEO_TS
     const std::string mediaDir{URIUtils::IsOpticalMediaFile(pItem->GetPath())
