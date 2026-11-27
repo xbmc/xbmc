@@ -1,0 +1,11 @@
+--- a/m4/gnulib-common.m4
++++ b/m4/gnulib-common.m4
+@@ -489,7 +489,7 @@
+ /* This attributes is supported
+      - for fields of array type: by gcc >= 16, clang >= 18,
+      - for fields of pointer type: by gcc >= 16.2, clang >= 19.  */
+-# if _GL_GNUC_PREREQ (16, 2) || (defined __clang__ && __clang_major__ >= 19)
++# if _GL_GNUC_PREREQ (16, 2) || (defined __clang__ && __clang_major__ >= 20)
+ #  define _GL_ATTRIBUTE_COUNTED_BY(c) __attribute__ ((__counted_by__ (c)))
+ # else
+ #  define _GL_ATTRIBUTE_COUNTED_BY(c)

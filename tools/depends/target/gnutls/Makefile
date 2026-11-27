@@ -1,7 +1,7 @@
 include ../../Makefile.include GNUTLS-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile ../../download-files.include \
-                              0001-clang-lt-17-fix.patch \
-                              0002-makefile-am-wasm-fix.patch
+                              0002-makefile-am-wasm-fix.patch \
+                              0003-counted-by-clang-19.patch
 
 # disable rpl_malloc and rpl_realloc symbols in glib
 # causes linking errors in libmicrohttpd and ffmpeg with missing symbols
@@ -18,13 +18,18 @@ DEPS = ../../Makefile.include Makefile ../../download-files.include \
 CONFIGURE_OPTIONS+= ac_cv_func_malloc_0_nonnull=yes \
                     ac_cv_func_realloc_0_nonnull=yes
 
+ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+  # strchrnul is newer than the deployment targets (macOS 15.4, iOS/tvOS 18.4),
+  # make gnulib use its replacement
+  CONFIGURE_OPTIONS+= gl_cv_onwards_func_strchrnul=future
+endif
+
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
                       --disable-shared \
                       --without-p11-kit \
                       --disable-nls \
                       --with-included-unistring \
-                      --with-included-libtasn1 \
                       --enable-local-libopts \
                       --disable-doc \
                       --disable-tests \
@@ -46,8 +51,8 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../0001-clang-lt-17-fix.patch
 	cd $(PLATFORM); patch -p1 -i ../0002-makefile-am-wasm-fix.patch
+	cd $(PLATFORM); patch -p1 -i ../0003-counted-by-clang-19.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 	touch $@
