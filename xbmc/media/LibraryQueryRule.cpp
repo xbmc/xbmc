@@ -797,7 +797,7 @@ std::optional<std::string> CLibraryQueryRule::FormatWhereClause(
   const std::string& parameter{*formatted};
   const MEDIA::TYPE type{context.itemType};
 
-  const std::string query{
+  std::string query{
       InMusicDatabase(type)
           ? MUSIC::LIBRARY_QUERY::RuleClause(*this, type, negate, param, parameter,
                                              context.useOriginalDate)

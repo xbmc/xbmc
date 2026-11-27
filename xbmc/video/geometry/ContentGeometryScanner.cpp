@@ -65,7 +65,7 @@ std::optional<ContentGeometryRecord> MeasureContentGeometry(const CFileItem& ite
   if (scan.cancelled || (cancelled && cancelled()))
     return std::nullopt;
 
-  const ContentGeometryRecord record{MakeContentGeometryRecord(scan, identity)};
+  ContentGeometryRecord record{MakeContentGeometryRecord(scan, identity)};
 
   // A scan that read nothing still produces a record, so the file is not measured again.
   CLog::LogF(LOGDEBUG, "measured content geometry of {}: {}", CURL::GetRedacted(item.GetDynPath()),

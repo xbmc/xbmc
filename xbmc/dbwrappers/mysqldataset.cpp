@@ -2307,7 +2307,7 @@ bool MysqlDatabase::ChangeStorageEngine(std::string_view db,
 
 std::string MysqlDatabase::ResolveStorageEngine()
 {
-  const std::string serverDefault = GetServerDefaultEngine();
+  std::string serverDefault = GetServerDefaultEngine();
   if (!serverDefault.empty())
   {
     if (IsBlacklistedEngine(serverDefault))

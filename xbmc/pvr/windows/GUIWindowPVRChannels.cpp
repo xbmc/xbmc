@@ -76,10 +76,10 @@ CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 
 std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
 {
-  const std::string basePath{CPVRChannelsPath(IsRadio(), m_bShowHiddenChannels,
-                                              GetChannelGroup()->GroupName(),
-                                              GetChannelGroup()->GetClientID())
-                                 .AsString()};
+  std::string basePath{CPVRChannelsPath(IsRadio(), m_bShowHiddenChannels,
+                                        GetChannelGroup()->GroupName(),
+                                        GetChannelGroup()->GetClientID())
+                           .AsString()};
   if (URIUtils::PathHasParent(m_vecItems->GetPath(), basePath))
     return m_vecItems->GetPath();
 

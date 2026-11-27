@@ -221,7 +221,7 @@ std::string ExtractMotionPhotoClip(const std::string& path)
     return {};
   }
 
-  const std::string clipPath =
+  std::string clipPath =
       StringUtils::Format("{}{:08x}-{}.mp4", CLIP_FOLDER, Crc32::Compute(path), clipSize);
   // special:// Exists() still asks the directory cache, which can outlive the folder
   if (CFile::Exists(CSpecialProtocol::TranslatePath(clipPath), false))

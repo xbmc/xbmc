@@ -198,7 +198,7 @@ std::string CGameUtils::GetDefaultGameClient(const std::string& path,
   if (!db.Open())
     return "";
 
-  const std::string gameClient = db.GameClients().GetGameClientForGame(path);
+  std::string gameClient = db.GameClients().GetGameClientForGame(path);
   if (gameClient.empty())
     return "";
 
@@ -228,7 +228,7 @@ bool CGameUtils::ChooseAndSetDefaultGameClient(const CFileItem& item)
 {
   using namespace ADDON;
 
-  const std::string path = item.GetPath();
+  const std::string& path = item.GetPath();
   if (path.empty())
     return false;
 
