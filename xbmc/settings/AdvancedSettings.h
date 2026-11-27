@@ -278,6 +278,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bFTPThumbs;
     bool m_bShoutcastArt;
 
+    bool m_artworkOffline{false};
+
     std::string m_musicThumbs;
 
     int m_iMusicLibraryRecentlyAddedItems;
