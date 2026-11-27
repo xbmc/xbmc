@@ -32,7 +32,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
   std::string line;
   int i;
 
-  std::unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
+  std::unique_ptr<CDVDSubtitleStream> pStream = std::make_unique<CDVDSubtitleStream>();
   if(!pStream->Open(strFile))
   {
     return nullptr;

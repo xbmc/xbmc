@@ -12,6 +12,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 
 using namespace PERIPHERALS;
@@ -43,7 +44,7 @@ void CEventScanner::Stop()
 
 EventPollHandlePtr CEventScanner::RegisterPollHandle()
 {
-  EventPollHandlePtr handle(new CEventPollHandle(*this));
+  EventPollHandlePtr handle = std::make_unique<CEventPollHandle>(*this);
 
   {
     std::unique_lock lock(m_handleMutex);
@@ -103,7 +104,7 @@ void CEventScanner::Release(CEventPollHandle& handle)
 
 EventLockHandlePtr CEventScanner::RegisterLock()
 {
-  EventLockHandlePtr handle(new CEventLockHandle(*this));
+  EventLockHandlePtr handle = std::make_unique<CEventLockHandle>(*this);
 
   {
     std::unique_lock lock(m_lockMutex);

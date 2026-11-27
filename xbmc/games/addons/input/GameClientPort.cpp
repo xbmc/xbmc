@@ -16,6 +16,7 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace KODI;
 using namespace GAME;
@@ -30,7 +31,8 @@ CGameClientPort::CGameClientPort(const game_input_port& port)
   {
     for (unsigned int i = 0; i < port.device_count; i++)
     {
-      std::unique_ptr<CGameClientDevice> device(new CGameClientDevice(port.accepted_devices[i]));
+      std::unique_ptr<CGameClientDevice> device =
+          std::make_unique<CGameClientDevice>(port.accepted_devices[i]);
 
       if (device->Controller() != CController::EmptyPtr)
         m_acceptedDevices.emplace_back(std::move(device));
@@ -63,7 +65,8 @@ CGameClientPort::CGameClientPort(const game_input_port& logicalPort,
 
       if (physicalPort.IsCompatible(controllerId))
       {
-        std::unique_ptr<CGameClientDevice> device(new CGameClientDevice(deviceStruct));
+        std::unique_ptr<CGameClientDevice> device =
+            std::make_unique<CGameClientDevice>(deviceStruct);
 
         if (device->Controller() != CController::EmptyPtr)
           m_acceptedDevices.emplace_back(std::move(device));

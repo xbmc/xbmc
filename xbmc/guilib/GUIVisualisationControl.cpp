@@ -253,7 +253,7 @@ void CGUIVisualisationControl::OnAudioData(const float* audioData, unsigned int 
     return;
 
   // Save our audio data in the buffers
-  std::unique_ptr<CAudioBuffer> pBuffer(new CAudioBuffer(audioDataLength));
+  std::unique_ptr<CAudioBuffer> pBuffer = std::make_unique<CAudioBuffer>(audioDataLength);
   pBuffer->Set(audioData, audioDataLength);
   m_vecBuffers.emplace_back(std::move(pBuffer));
 

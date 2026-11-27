@@ -35,7 +35,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
   URIUtils::AddSlashAtEnd(strRoot);
   URIUtils::AddSlashAtEnd(strSub);
 
-  std::unique_ptr<ISO9660::IFS> iso(new ISO9660::IFS);
+  std::unique_ptr<ISO9660::IFS> iso = std::make_unique<ISO9660::IFS>();
 
   if (!iso->open(url2.GetHostName().c_str()))
     return false;

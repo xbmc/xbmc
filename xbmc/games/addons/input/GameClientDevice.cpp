@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace KODI;
 using namespace GAME;
@@ -54,7 +55,8 @@ CGameClientDevice::~CGameClientDevice() = default;
 void CGameClientDevice::AddPort(const game_input_port& logicalPort,
                                 const CPhysicalPort& physicalPort)
 {
-  std::unique_ptr<CGameClientPort> port(new CGameClientPort(logicalPort, physicalPort));
+  std::unique_ptr<CGameClientPort> port =
+      std::make_unique<CGameClientPort>(logicalPort, physicalPort);
   m_ports.emplace_back(std::move(port));
 }
 

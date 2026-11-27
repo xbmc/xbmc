@@ -306,7 +306,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           loader)
       {
         haveLoader = true;
-        std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
+        std::unique_ptr<CVideoInfoTag> tag = std::make_unique<CVideoInfoTag>();
         nfoResult = loader->Load(*tag, false);
 
         // keep some properties only if advancedsettings.xml says so
