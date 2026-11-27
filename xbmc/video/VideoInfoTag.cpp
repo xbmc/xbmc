@@ -1236,9 +1236,8 @@ bool CVideoInfoTag::HasConflictingUniqueID(const CVideoInfoTag& other) const
                              {
                                const auto it{other.m_uniqueIDs.find(id.first)};
                                return id.first != KODI::VIDEO::UNIQUE_ID::UNKNOWN &&
-                                      !id.second.empty() &&
-                                      it != other.m_uniqueIDs.end() && !it->second.empty() &&
-                                      it->second != id.second;
+                                      !id.second.empty() && it != other.m_uniqueIDs.end() &&
+                                      !it->second.empty() && it->second != id.second;
                              });
 }
 

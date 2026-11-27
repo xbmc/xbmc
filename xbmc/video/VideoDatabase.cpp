@@ -111,6 +111,31 @@ constexpr int LIST_DETAILS{VideoDbDetailsCast | VideoDbDetailsTag | VideoDbDetai
 // IN lists stay below the sizes where MariaDB and MySQL switch query plans
 constexpr size_t LIST_DETAILS_CHUNK{500};
 
+// The table a browse kind's names are in, linked to media by <table>_link. People are all in
+// actor, so for them it names only the link: director_link.
+const char* NavTableOf(MEDIA::TYPE kind)
+{
+  switch (kind)
+  {
+    case MEDIA::TYPE::GENRE:
+      return "genre";
+    case MEDIA::TYPE::COUNTRY:
+      return "country";
+    case MEDIA::TYPE::STUDIO:
+      return "studio";
+    case MEDIA::TYPE::TAG:
+      return "tag";
+    case MEDIA::TYPE::ACTOR:
+      return "actor";
+    case MEDIA::TYPE::DIRECTOR:
+      return "director";
+    case MEDIA::TYPE::WRITER:
+      return "writer";
+    default:
+      return "";
+  }
+}
+
 // The file a play count is kept for, as SetPlayCount and AddFile find it
 std::string PlayCountFileOf(const CFileItem& item)
 {
@@ -1921,7 +1946,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     }
     // add artwork
     if (!thumb.empty())
-      SetArtForItem(idActor, "actor", ART::TYPE::THUMB, thumb);
+      SetArtForItem(idActor, NameOf(MEDIA::TYPE::ACTOR), ART::TYPE::THUMB, thumb);
     return idActor;
   }
   catch (...)
@@ -7993,7 +8018,7 @@ bool CVideoDatabase::GetGenresNav(const std::string& strBaseDir,
                                   const Filter& filter /* = Filter() */,
                                   bool countOnly /* = false */)
 {
-  return GetNavCommon(strBaseDir, items, "genre", idContent, filter, countOnly);
+  return GetNavCommon(strBaseDir, items, MEDIA::TYPE::GENRE, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetCountriesNav(const std::string& strBaseDir,
@@ -8002,7 +8027,7 @@ bool CVideoDatabase::GetCountriesNav(const std::string& strBaseDir,
                                      const Filter& filter /* = Filter() */,
                                      bool countOnly /* = false */)
 {
-  return GetNavCommon(strBaseDir, items, "country", idContent, filter, countOnly);
+  return GetNavCommon(strBaseDir, items, MEDIA::TYPE::COUNTRY, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetStudiosNav(const std::string& strBaseDir,
@@ -8011,16 +8036,17 @@ bool CVideoDatabase::GetStudiosNav(const std::string& strBaseDir,
                                    const Filter& filter /* = Filter() */,
                                    bool countOnly /* = false */)
 {
-  return GetNavCommon(strBaseDir, items, "studio", idContent, filter, countOnly);
+  return GetNavCommon(strBaseDir, items, MEDIA::TYPE::STUDIO, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
                                   CFileItemList& items,
-                                  const char* type,
+                                  MEDIA::TYPE kind,
                                   VideoDbContentType idContent /* = UNKNOWN */,
                                   const Filter& filter /* = Filter() */,
                                   bool countOnly /* = false */)
 {
+  const char* type{NavTableOf(kind)};
   try
   {
     if (nullptr == m_pDB)
@@ -8048,7 +8074,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
       {
         view       = NameOf(MEDIA::TYPE::EPISODE);
         // in order to make use of FieldPlaycount in smart playlists we need an extra join
-        if (StringUtils::EqualsNoCase(type, "tag"))
+        if (kind == MEDIA::TYPE::TAG)
           extraJoin  = PrepareSQL("JOIN tvshow_view ON tvshow_view.idShow = tag_link.media_id AND tag_link.media_type='tvshow'");
       }
       else if (idContent == VideoDbContentType::MUSICVIDEOS)
@@ -8163,7 +8189,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
 
         auto pItem = std::make_shared<CFileItem>(label);
         pItem->GetVideoInfoTag()->m_iDbId = dbId;
-        pItem->GetVideoInfoTag()->m_type = type;
+        pItem->GetVideoInfoTag()->SetMediaType(kind);
 
         CVideoDbUrl itemUrl = videoUrl;
         const std::string path = StringUtils::Format("{}/", dbId);
@@ -8186,7 +8212,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
       {
         auto pItem = std::make_shared<CFileItem>(m_pDS->fv(1).get_asString());
         pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
-        pItem->GetVideoInfoTag()->m_type = type;
+        pItem->GetVideoInfoTag()->SetMediaType(kind);
 
         CVideoDbUrl itemUrl = videoUrl;
         std::string path = StringUtils::Format("{}/", m_pDS->fv(0).get_asInt());
@@ -8220,7 +8246,7 @@ bool CVideoDatabase::GetTagsNav(const std::string& strBaseDir,
                                 const Filter& filter /* = Filter() */,
                                 bool countOnly /* = false */)
 {
-  return GetNavCommon(strBaseDir, items, VIDEO::DB_TABLE::TAG, idContent, filter, countOnly);
+  return GetNavCommon(strBaseDir, items, MEDIA::TYPE::TAG, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetSetsNav(const std::string& strBaseDir,
@@ -8449,7 +8475,7 @@ bool CVideoDatabase::GetWritersNav(const std::string& strBaseDir,
                                    const Filter& filter /* = Filter() */,
                                    bool countOnly /* = false */)
 {
-  return GetPeopleNav(strBaseDir, items, "writer", idContent, filter, countOnly);
+  return GetPeopleNav(strBaseDir, items, MEDIA::TYPE::WRITER, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetDirectorsNav(const std::string& strBaseDir,
@@ -8458,7 +8484,7 @@ bool CVideoDatabase::GetDirectorsNav(const std::string& strBaseDir,
                                      const Filter& filter /* = Filter() */,
                                      bool countOnly /* = false */)
 {
-  return GetPeopleNav(strBaseDir, items, "director", idContent, filter, countOnly);
+  return GetPeopleNav(strBaseDir, items, MEDIA::TYPE::DIRECTOR, idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
@@ -8467,7 +8493,7 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
                                   const Filter& filter /* = Filter() */,
                                   bool countOnly /* = false */)
 {
-  if (GetPeopleNav(strBaseDir, items, VIDEO::DB_TABLE::ACTOR, idContent, filter, countOnly))
+  if (GetPeopleNav(strBaseDir, items, MEDIA::TYPE::ACTOR, idContent, filter, countOnly))
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size() && !countOnly; i++)
     {
@@ -8484,11 +8510,12 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
 
 bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
                                   CFileItemList& items,
-                                  const char* type,
+                                  MEDIA::TYPE kind,
                                   VideoDbContentType idContent /* = UNKNOWN */,
                                   const Filter& filter /* = Filter() */,
                                   bool countOnly /* = false */)
 {
+  const char* type{NavTableOf(kind)};
   if (nullptr == m_pDB)
     return false;
   if (nullptr == m_pDS)
@@ -8702,7 +8729,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         pItem->GetVideoInfoTag()->SetPlayCount(actor.playcount);
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseFromData(actor.thumb);
         pItem->GetVideoInfoTag()->m_iDbId = actorId;
-        pItem->GetVideoInfoTag()->m_type = type;
+        pItem->GetVideoInfoTag()->SetMediaType(kind);
         pItem->GetVideoInfoTag()->m_relevance = actor.appearances;
         if (idContent == VideoDbContentType::MUSICVIDEOS)
         {
@@ -8729,7 +8756,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
           pItem->SetFolder(true);
           pItem->GetVideoInfoTag()->m_strPictureURL.ParseFromData(m_pDS->fv(2).get_asString());
           pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
-          pItem->GetVideoInfoTag()->m_type = type;
+          pItem->GetVideoInfoTag()->SetMediaType(kind);
           if (idContent != VideoDbContentType::TVSHOWS)
           {
             // fv(4) is the number of videos watched, fv(3) is the total number.  We set the playcount
@@ -14163,7 +14190,7 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, MEDIA::TYPE mediaT
     if (nullptr == m_pDS)
       return false;
 
-    if (mediaType == MEDIA::TYPE::NONE)
+    if (!MEDIA::IsMedia(mediaType))
       return false;
 
     std::string sql;

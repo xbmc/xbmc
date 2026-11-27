@@ -37,13 +37,6 @@ namespace KODI::VIDEO::UNIQUE_ID
 inline constexpr char UNKNOWN[] = "unknown";
 } // namespace KODI::VIDEO::UNIQUE_ID
 
-//! \brief Video database tables that CVideoInfoTag::m_type names besides media types.
-namespace KODI::VIDEO::DB_TABLE
-{
-inline constexpr char ACTOR[] = "actor";
-inline constexpr char TAG[] = "tag";
-} // namespace KODI::VIDEO::DB_TABLE
-
 //! \brief The root element of each kind of video NFO.
 namespace KODI::VIDEO::NFO_ROOT
 {
