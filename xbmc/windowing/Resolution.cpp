@@ -113,7 +113,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
         // and this causes ugly double switching.
         // This won't allow 25p / 30p playback on native refreshrate by default
         if ((info.fRefreshRate > 30) || (MathUtils::FloatEquals(info.fRefreshRate, 24.0f, 0.1f)))
-          indexList.push_back(CDisplaySettings::GetInstance().GetStringFromRes(c));
+          indexList.emplace_back(CDisplaySettings::GetInstance().GetStringFromRes(c));
       }
     }
   }
