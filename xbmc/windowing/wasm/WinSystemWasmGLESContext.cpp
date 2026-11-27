@@ -26,6 +26,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <cmath>
 #include <cstdint>
 #include <string>
 
@@ -78,13 +79,15 @@ void NotifyFirstFramePresented()
   });
 }
 
+// The canvas' size in device pixels, so the GUI renders as sharp as the display allows.
 void GetCanvasSize(int* width, int* height)
 {
   double w = 0;
   double h = 0;
   emscripten_get_element_css_size("#canvas", &w, &h);
-  *width = static_cast<int>(w);
-  *height = static_cast<int>(h);
+  const double ratio = CWinEventsWasm::DevicePixelRatio();
+  *width = static_cast<int>(std::lround(w * ratio));
+  *height = static_cast<int>(std::lround(h * ratio));
   if (*width <= 0)
     *width = 1280;
   if (*height <= 0)
@@ -113,6 +116,17 @@ CWinSystemWasmGLESContext::~CWinSystemWasmGLESContext()
     emscripten_webgl_destroy_context(m_webglContext);
 }
 
+void CWinSystemWasmGLESContext::SetCanvasSize(int width, int height)
+{
+  // Pointer positions arrive in CSS pixels: scale them by the drawing buffer
+  // pixels each CSS pixel of the canvas now holds.
+  double cssWidth = 0;
+  double cssHeight = 0;
+  emscripten_get_element_css_size("#canvas", &cssWidth, &cssHeight);
+  emscripten_set_canvas_element_size("#canvas", width, height);
+  WinEvents().SetPointerScale(cssWidth > 0 ? width / cssWidth : 1.0);
+}
+
 bool CWinSystemWasmGLESContext::InitWindowSystem()
 {
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
@@ -126,7 +140,7 @@ bool CWinSystemWasmGLESContext::InitWindowSystem()
   int initW = 0;
   int initH = 0;
   GetCanvasSize(&initW, &initH);
-  emscripten_set_canvas_element_size("#canvas", initW, initH);
+  SetCanvasSize(initW, initH);
 
   m_webglContext = CreateProxiedGLContext();
   if (m_webglContext <= 0)
@@ -166,7 +180,7 @@ bool CWinSystemWasmGLESContext::CreateNewWindow(const std::string& name,
                                                 bool fullScreen,
                                                 RESOLUTION_INFO& res)
 {
-  // Render at the viewport's CSS pixel size so mouse coordinates map 1:1.
+  // Render at the viewport's size in device pixels; pointer positions are scaled to match.
   int w = 0;
   int h = 0;
   GetCanvasSize(&w, &h);
@@ -174,7 +188,7 @@ bool CWinSystemWasmGLESContext::CreateNewWindow(const std::string& name,
   UpdateDesktopResolution(res, "Browser", w, h, static_cast<float>(VSYNC::RefreshRate()), 0);
   res.bFullScreen = fullScreen;
 
-  emscripten_set_canvas_element_size("#canvas", w, h);
+  SetCanvasSize(w, h);
 
   if (emscripten_webgl_get_current_context() != m_webglContext)
     emscripten_webgl_make_context_current(m_webglContext);
@@ -199,7 +213,7 @@ bool CWinSystemWasmGLESContext::DestroyWindow()
 
 bool CWinSystemWasmGLESContext::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  emscripten_set_canvas_element_size("#canvas", newWidth, newHeight);
+  SetCanvasSize(newWidth, newHeight);
   SetWindowResolution(newWidth, newHeight);
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
   m_nWidth = static_cast<unsigned int>(newWidth);
@@ -217,9 +231,9 @@ bool CWinSystemWasmGLESContext::SetFullScreen(bool fullScreen,
 void CWinSystemWasmGLESContext::ForceFullScreen(const RESOLUTION_INFO& resInfo)
 {
   // AppInboundProtocol calls us with the cached RES_DESKTOP on browser resize,
-  // so resInfo is stale.  Re-query the live canvas CSS size and update
-  // RES_DESKTOP + the cached mouse resolution so mouse events (which arrive in
-  // CSS pixels) stay identity-mapped to Kodi's GUI coordinate space.
+  // so resInfo is stale.  Re-query the live canvas size and update
+  // RES_DESKTOP + the cached mouse resolution so mouse events stay mapped to
+  // Kodi's GUI coordinate space.
   int w = 0;
   int h = 0;
   GetCanvasSize(&w, &h);

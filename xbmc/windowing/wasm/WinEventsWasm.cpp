@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <climits>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -249,11 +250,11 @@ XBMC_Event TranslateKeyEvent(const EmscriptenKeyboardEvent* e, uint8_t type)
   return ev;
 }
 
-// Identity mapping: render resolution == canvas CSS size.
-void TranslateMousePosition(const EmscriptenMouseEvent* e, uint16_t& x, uint16_t& y)
+// Positions arrive in CSS pixels, the GUI renders in device pixels.
+void TranslateMousePosition(const EmscriptenMouseEvent* e, double ratio, uint16_t& x, uint16_t& y)
 {
-  const int rawX = std::max(0, e->targetX);
-  const int rawY = std::max(0, e->targetY);
+  const int rawX = std::max(0, static_cast<int>(std::lround(e->targetX * ratio)));
+  const int rawY = std::max(0, static_cast<int>(std::lround(e->targetY * ratio)));
   x = static_cast<uint16_t>(std::min(rawX, static_cast<int>(UINT16_MAX)));
   y = static_cast<uint16_t>(std::min(rawY, static_cast<int>(UINT16_MAX)));
 }
@@ -328,7 +329,7 @@ EM_BOOL OnMouseMove(int /*eventType*/, const EmscriptenMouseEvent* e, void* user
   auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEMOTION;
-  TranslateMousePosition(e, ev.motion.x, ev.motion.y);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.motion.x, ev.motion.y);
   events.MessagePush(ev);
   return EM_FALSE;
 }
@@ -338,7 +339,7 @@ EM_BOOL OnMouseButtonDown(int /*eventType*/, const EmscriptenMouseEvent* e, void
   auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONDOWN;
-  TranslateMousePosition(e, ev.button.x, ev.button.y);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = TranslateMouseButton(e->button);
   events.MessagePush(ev);
   return EM_TRUE;
@@ -349,7 +350,7 @@ EM_BOOL OnMouseButtonUp(int /*eventType*/, const EmscriptenMouseEvent* e, void* 
   auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONUP;
-  TranslateMousePosition(e, ev.button.x, ev.button.y);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = TranslateMouseButton(e->button);
   events.MessagePush(ev);
   return EM_TRUE;
@@ -365,7 +366,7 @@ EM_BOOL OnWheel(int /*eventType*/, const EmscriptenWheelEvent* e, void* userData
   auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONDOWN;
-  TranslateMousePosition(&e->mouse, ev.button.x, ev.button.y);
+  TranslateMousePosition(&e->mouse, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = e->deltaY < 0.0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
   events.MessagePush(ev);
   ev.type = XBMC_MOUSEBUTTONUP;
@@ -380,7 +381,8 @@ EM_BOOL OnResize(int /*eventType*/, const EmscriptenUiEvent* e, void* userData)
   ev.type = XBMC_VIDEORESIZE;
   ev.resize.width = e->windowInnerWidth;
   ev.resize.height = e->windowInnerHeight;
-  ev.resize.scale = 1.0;
+  // zooming the page changes the device pixel ratio along with the size
+  ev.resize.scale = CWinEventsWasm::DevicePixelRatio();
   events.MessagePush(ev);
   return EM_FALSE;
 }
@@ -427,6 +429,17 @@ void CWinEventsWasm::MessagePush(const XBMC_Event& newEvent)
 {
   std::unique_lock lock(m_mutex);
   m_events.push_back(newEvent);
+}
+
+double CWinEventsWasm::DevicePixelRatio()
+{
+  const double ratio = emscripten_get_device_pixel_ratio();
+  return ratio > 0 ? ratio : 1.0;
+}
+
+void CWinEventsWasm::SetPointerScale(double scale)
+{
+  m_pointerScale = scale;
 }
 
 void CWinEventsWasm::AddSwallowedKey(unsigned long keyCode)

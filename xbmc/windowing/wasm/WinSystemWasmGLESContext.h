@@ -63,6 +63,10 @@ protected:
   void PresentRenderImpl(bool rendered) override;
 
 private:
+  CWinEventsWasm& WinEvents() { return static_cast<CWinEventsWasm&>(*m_winEvents); }
+  //! \brief Sizes the canvas' drawing buffer and scales pointer positions to match.
+  void SetCanvasSize(int width, int height);
+
   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE m_webglContext{0};
   uint32_t m_lastVsyncSeen{0};
   bool m_framePending{false};
