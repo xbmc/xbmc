@@ -831,7 +831,9 @@ bool CScraper::GetArtwork(CVideoInfoTag& details)
              "Reading artwork for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              details.GetUniqueID(), Name(), Path(), Content(), Version().asString());
 
+  // With their types: the default id may be another site's
+  const auto& ids = details.GetUniqueIDs();
   return PythonDetails(*this, "id", details.GetUniqueID(), "getartwork", GetPathSettingsAsJSON(),
-                       details);
+                       UniqueIDs(ids.begin(), ids.end()), details);
 }
 } // namespace ADDON
