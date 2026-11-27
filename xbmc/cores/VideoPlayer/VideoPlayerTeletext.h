@@ -13,12 +13,15 @@
 #include "threads/Thread.h"
 #include "video/TeletextDefines.h"
 
+#include <atomic>
+
+class CDVDClock;
 class CDVDStreamInfo;
 
 class CDVDTeletextData : public CThread, public IDVDStreamPlayer
 {
 public:
-  explicit CDVDTeletextData(CProcessInfo &processInfo);
+  CDVDTeletextData(CDVDClock* clock, CProcessInfo& processInfo);
   ~CDVDTeletextData() override;
 
   bool CheckStream(CDVDStreamInfo &hints);
@@ -46,12 +49,15 @@ protected:
   void Process() override;
 
 private:
+  bool WaitForPresentationTime(double pts, unsigned int generation);
   void ResetTeletextCache();
   void Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptExtData);
   void SavePage(int p, int sp, unsigned char* buffer);
   void ErasePage(int magazine);
   void AllocateCache(int magazine);
 
+  CDVDClock* m_clock;
+  std::atomic_uint m_flushGeneration{0};
   int m_speed;
   std::shared_ptr<TextCacheStruct_t> m_TXTCache = std::make_shared<TextCacheStruct_t>();
   CDVDMessageQueue m_messageQueue;
