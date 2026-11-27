@@ -2047,7 +2047,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     if (!bUseFolderNames)
     {
       // Special case is a bluray/dvd in a compressed file
-      const std::string name{url.GetHostName()};
+      const std::string& name{url.GetHostName()};
       if (!name.empty() && (URIUtils::IsBDFile(strMovieName) || URIUtils::IsDVDFile(strMovieName)))
       {
         // We have two choices - if there is a folder within the archive then use that, otherwise use the file name of the archive

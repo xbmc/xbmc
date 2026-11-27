@@ -351,7 +351,7 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
   const auto i = std::ranges::find_if(m_processing, JobFinder(job));
   if (i != m_processing.cend())
   {
-    CWorkItem item(*i);
+    const CWorkItem& item(*i);
     lock.unlock(); // leave section prior to call
     if (!item.GetCallbacks().empty())
     {

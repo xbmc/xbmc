@@ -1709,7 +1709,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   }
   else
   {
-    const std::string selPath = pSelItem->GetPath();
+    const std::string& selPath = pSelItem->GetPath();
     std::string selPathWithSlash = selPath;
     URIUtils::AddSlashAtEnd(selPathWithSlash);
     const bool isMovieUrl = selPath.starts_with(VIDEO::DB_PATH::MOVIE_TITLES) ||

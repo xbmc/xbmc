@@ -87,7 +87,7 @@ class EscapeConversionsTester : public testing::WithParamInterface<EscapeConvers
 
 TEST_P(EscapeConversionsTester, EscapeStringConversions)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expected, TestEscapeStringConversions(params.format));
 }
 
@@ -140,14 +140,14 @@ class VPrepareNoParamTester : public testing::WithParamInterface<VPrepareNoParam
 
 TEST_P(VPrepareNoParamTester, Sqlite)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expectedSqlite, TestPrepareSQL<dbiplus::SqliteDatabase>(params.format));
 }
 
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)
 TEST_P(VPrepareNoParamTester, MySql)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expectedMySql, TestPrepareSQL<dbiplus::MysqlDatabase>(params.format));
 }
 #endif
@@ -189,7 +189,7 @@ class VPrepareStringParamTester : public testing::WithParamInterface<VPrepareStr
 
 TEST_P(VPrepareStringParamTester, Sqlite)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expected,
             TestPrepareSQL<dbiplus::SqliteDatabase>(params.format, params.param.c_str()));
 }
@@ -226,14 +226,14 @@ class VPrepareInt64ParamTester : public testing::WithParamInterface<VPrepareInt6
 
 TEST_P(VPrepareInt64ParamTester, Sqlite)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expected, TestPrepareSQL<dbiplus::SqliteDatabase>(params.format, params.param));
 }
 
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)
 TEST_P(VPrepareInt64ParamTester, MySql)
 {
-  const auto params = GetParam();
+  const auto& params = GetParam();
   EXPECT_EQ(params.expected, TestPrepareSQL<dbiplus::MysqlDatabase>(params.format, params.param));
 }
 #endif

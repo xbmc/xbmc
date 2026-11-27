@@ -36,7 +36,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
 {
   struct __stat64 m_StatData = {};
 
-  const std::string strFile = url.GetHostName();
+  const std::string& strFile = url.GetHostName();
   if (CFile::Stat(strFile, &m_StatData))
   {
     CLog::LogF(LOGERROR, "Failed to stat file {}", url.GetRedacted());
