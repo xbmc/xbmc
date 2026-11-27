@@ -158,7 +158,7 @@ void CDiscManagerDiscList::UpdateItems()
 
     if (const auto stemAndNumber = GetNormalizedStemAndTrailingNumber(row.label); stemAndNumber)
     {
-      row.normalizedStem = std::move(stemAndNumber->first);
+      row.normalizedStem = stemAndNumber->first;
       row.trailingNumber = stemAndNumber->second;
     }
 

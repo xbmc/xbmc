@@ -516,7 +516,7 @@ bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
 
     const std::string path{playlist < 0 ? disc : URIUtils::GetBlurayPlaylistPath(disc, playlist)};
     CFileItem asset{path, false};
-    *asset.GetVideoInfoTag() = std::move(entry.tag);
+    *asset.GetVideoInfoTag() = entry.tag;
     asset.GetVideoInfoTag()->m_strFileNameAndPath = path;
 
     if (m_database.GetVideoVersionInfo(path).IsAsset())

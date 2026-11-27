@@ -29,7 +29,8 @@ using namespace CONTEXTMENU;
 using namespace KODI;
 
 CMusicInfoBase::CMusicInfoBase(MEDIA::TYPE mediaType)
-  : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
+  : CStaticContextMenuAction(19033),
+    m_mediaType(mediaType)
 {
 }
 

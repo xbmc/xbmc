@@ -2061,9 +2061,9 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_TwoCandidates_MostChaptersPr
         return PlaylistMap{
             {600u, MakePlaylist(600u, 7200s, {1000u, 1001u, 1002u}, {2400s, 2400s, 2400s})},
             {601u, MakePlaylist(601u, 2400s, {1000u}, {2400s})},
-            {602u, MakePlaylist(602u, 2400s, {1001u}, std::move(chapters602), "eng")},
+            {602u, MakePlaylist(602u, 2400s, {1001u}, chapters602, "eng")},
             {603u, MakePlaylist(603u, 2400s, {1002u}, {2400s})},
-            {650u, MakePlaylist(650u, 2400s, {1001u}, std::move(chapters650), "eng")}};
+            {650u, MakePlaylist(650u, 2400s, {1001u}, chapters650, "eng")}};
       }};
   ClipMap clips{{1000u, MakeClip(2400s, {600u, 601u})},
                 {1001u, MakeClip(2400s, {600u, 602u, 650u})},

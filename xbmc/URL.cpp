@@ -48,8 +48,8 @@ CURL& CURL::operator=(CURL&& other)
     m_strFileType = std::move(other.m_strFileType);
     m_strOptions = std::move(other.m_strOptions);
     m_strProtocolOptions = std::move(other.m_strProtocolOptions);
-    m_options = std::move(other.m_options);
-    m_protocolOptions = std::move(other.m_protocolOptions);
+    m_options = other.m_options;
+    m_protocolOptions = other.m_protocolOptions;
     other.Reset();
   }
   return *this;
