@@ -205,7 +205,7 @@ const std::string CWinSystemGbm::GetName()
     name += " / ";
   if (video)
     name += DRMHELPERS::FourCCToString(video->GetFormat());
-  name += ")";
+  name += ')';
   return name;
 }
 

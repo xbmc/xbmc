@@ -317,7 +317,7 @@ std::string CPlayerCoreFactory::SelectPlayerDialog(const std::vector<std::string
     std::string strCaption = players[0];
     strCaption += " (";
     strCaption += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13278);
-    strCaption += ")";
+    strCaption += ')';
     choices.Add(0, strCaption);
 
     //Add all other players

@@ -49,7 +49,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   // we make sure, to have an LF at the end of buffer
   if (*m_strBuffer.rbegin() != '\n')
   {
-    m_strBuffer += "\n";
+    m_strBuffer += '\n';
   }
 
   m_POfilelength = m_strBuffer.size();

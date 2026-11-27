@@ -243,7 +243,7 @@ void SqliteDatabase::setHostName(const char* newHost)
 
   // hostname is the relative folder to the database, ensure it's slash terminated
   if (host[host.length() - 1] != '/' && host[host.length() - 1] != '\\')
-    host += "/";
+    host += '/';
 
   // ensure the fully qualified path has slashes in the correct direction
   if ((host[1] == ':') && isalpha(host[0]))

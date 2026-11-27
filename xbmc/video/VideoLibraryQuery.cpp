@@ -100,7 +100,7 @@ std::string VideoResolutionClause(const MEDIA::CLibraryQueryRule& rule,
       break;
   }
 
-  retVal += ")";
+  retVal += ')';
   return retVal;
 }
 

@@ -140,7 +140,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
   if (skin && skin->IsDebugging())
   {
     if (!info.empty())
-      info += "\n";
+      info += '\n';
     CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
     CGUIWindow *pointer = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_POINTER);
     CPoint point;

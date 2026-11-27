@@ -866,14 +866,14 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     for (std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
-        filename += "/";
+        filename += '/';
 
       filename += CURL::Encode(*it);
     }
 
     /* make sure we keep slashes */
     if(StringUtils::EndsWith(url2.GetFileName(), "/"))
-      filename += "/";
+      filename += '/';
 
     url2.SetFileName(filename);
 
@@ -2138,7 +2138,7 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
 
       // append this cookie to the string containing all cookies
       if (!cookiesStr.empty())
-        cookiesStr += "\n";
+        cookiesStr += '\n';
       cookiesStr += cookieStr;
 
       // move on to the next cookie

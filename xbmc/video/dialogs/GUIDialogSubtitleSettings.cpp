@@ -378,7 +378,7 @@ std::string FormatCodec(const SubtitleStreamInfo& info)
     codec += info.codecName;
   else
     codec += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // unknown
-  codec += ")";
+  codec += ')';
 
   return codec;
 }

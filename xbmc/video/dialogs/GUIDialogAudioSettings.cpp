@@ -343,7 +343,7 @@ std::string FormatCodec(const AudioStreamInfo& info)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(10127) // channels
     );
   }
-  codec += ")";
+  codec += ')';
 
   return codec;
 }

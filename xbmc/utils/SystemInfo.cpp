@@ -359,7 +359,7 @@ std::string CSysInfoJob::GetGatewayAddress()
 std::string CSysInfoJob::GetNetworkLinkState()
 {
   std::string linkStatus = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(151);
-  linkStatus += " ";
+  linkStatus += ' ';
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
   if (iface && iface->IsConnected())
   {
@@ -1306,7 +1306,7 @@ std::string CSysInfo::GetUserAgent()
     if (cpuStr == "x86_64" && GetXbmcBitness() == 32)
       cpuStr = "i686 on x86_64";
     result += un.sysname;
-    result += " ";
+    result += ' ';
     result += cpuStr;
   }
   else
@@ -1314,7 +1314,7 @@ std::string CSysInfo::GetUserAgent()
 #else
   result += "Unknown";
 #endif
-  result += ")";
+  result += ')';
 
   if (GetAppName() != "Kodi")
     result += " Kodi_Fork_" + GetAppName() + "/1.0"; // default fork number is '1.0', replace it with actual number if necessary

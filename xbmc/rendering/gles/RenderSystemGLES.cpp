@@ -113,7 +113,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   if (tmpExtensions != NULL)
   {
     m_RenderExtensions += tmpExtensions;
-    m_RenderExtensions += " ";
+    m_RenderExtensions += ' ';
   }
 
 #if defined(GL_KHR_debug) && defined(TARGET_LINUX)
@@ -350,7 +350,7 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension) const
     std::string name;
     name  = " ";
     name += extension;
-    name += " ";
+    name += ' ';
 
     return m_RenderExtensions.find(name) != std::string::npos;
   }

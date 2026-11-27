@@ -158,7 +158,7 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
           std::string tmpPath = relativePath;
           if (!tmpPath.empty())
           {
-            tmpPath += "/";
+            tmpPath += '/';
           }
 
           CreateSkeletonHeader(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name,
@@ -170,7 +170,7 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
           if (!relativePath.empty())
           {
             fileName += relativePath;
-            fileName += "/";
+            fileName += '/';
           }
 
           fileName += dp->d_name;

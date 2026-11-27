@@ -1523,7 +1523,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
         strSQL += PrepareSQL(", NULL");
       else
         strSQL += PrepareSQL(", '%s'", strArtistSort.c_str());
-      strSQL += ")";
+      strSQL += ')';
       m_pDS->exec(strSQL);
 
       return static_cast<int>(m_pDS->lastinsertid());
@@ -8381,7 +8381,7 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField) con
       if (!strWhen.empty())
       {
         if (!sortclause.empty())
-          sortclause += " ";
+          sortclause += ' ';
         std::string strThen = PrepareSQL(" THEN SUBSTR(%s, %i)", strField.c_str(), tokenlength + 1);
         sortclause += "WHEN " + strWhen + strThen;
         strWhen.clear();
@@ -8403,7 +8403,7 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField) con
   if (!strWhen.empty())
   {
     if (!sortclause.empty())
-      sortclause += " ";
+      sortclause += ' ';
     std::string strThen = PrepareSQL(" THEN SUBSTR(%s, %i)", strField.c_str(), tokenlength + 1);
     sortclause += "WHEN " + strWhen + strThen;
   }
@@ -8432,7 +8432,7 @@ std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias,
   if (sortAttributes & SortAttributeIgnoreArticle)
   {
     if (!sortSQL.empty())
-      sortSQL += " ";
+      sortSQL += ' ';
     // Make SQL from ignore article list, grouping tokens the same length together
     sortSQL += GetIgnoreArticleSQL(strField);
   }
@@ -13924,7 +13924,7 @@ std::vector<std::string> CMusicDatabase::GetUsedImages(
       sql += PrepareSQL("'%s',", image.c_str());
     }
     sql.pop_back(); // remove last ','
-    sql += ")";
+    sql += ')';
 
     // add arttype filters if set to "Basic"
     if (artworkLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)

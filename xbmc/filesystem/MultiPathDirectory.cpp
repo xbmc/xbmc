@@ -167,7 +167,7 @@ void CMultiPathDirectory::AddToMultiPath(std::string& strMultiPath, const std::s
   URIUtils::AddSlashAtEnd(strMultiPath);
   //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath);
   strMultiPath += CURL::Encode(strPath);
-  strMultiPath += "/";
+  strMultiPath += '/';
 }
 
 std::string CMultiPathDirectory::ConstructMultiPath(const std::vector<std::string> &vecPaths)

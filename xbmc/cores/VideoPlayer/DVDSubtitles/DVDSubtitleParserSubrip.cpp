@@ -64,7 +64,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
             break;
 
           if (!convText.empty())
-            convText += "\n";
+            convText += '\n';
           TagConv.ConvertLine(line);
           convText += line;
         }

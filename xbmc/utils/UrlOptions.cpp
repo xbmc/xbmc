@@ -28,7 +28,7 @@ std::string CUrlOptions::GetOptionsString(bool withLeadingSeparator /* = false *
   for (const auto &opt : m_options)
   {
     if (!options.empty())
-      options += "&";
+      options += '&';
 
     options += CURL::Encode(opt.first);
     if (!opt.second.empty())

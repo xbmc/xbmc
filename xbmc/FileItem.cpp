@@ -2158,7 +2158,7 @@ bool CFileItem::LoadMusicTag()
       std::string strText =
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(554); // "Track"
       if (!strText.empty() && strText[strText.size() - 1] != ' ')
-        strText += " ";
+        strText += ' ';
       const std::string strTrack = StringUtils::Format((strText + "{}"), iTrack);
       GetMusicInfoTag()->SetTitle(strTrack);
       GetMusicInfoTag()->SetLoaded(true);

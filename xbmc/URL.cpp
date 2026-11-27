@@ -704,15 +704,15 @@ std::string CURL::GetWithoutFilename() const
     if (!m_strDomain.empty())
     {
       strURL += Encode(m_strDomain);
-      strURL += ";";
+      strURL += ';';
     }
     strURL += Encode(m_strUserName);
     if (!m_strPassword.empty())
     {
-      strURL += ":";
+      strURL += ':';
       strURL += Encode(m_strPassword);
     }
-    strURL += "@";
+    strURL += '@';
   }
 
   if (!m_strHostName.empty())
@@ -731,7 +731,7 @@ std::string CURL::GetWithoutFilename() const
       strURL += StringUtils::Format(":{}", m_iPort);
     }
 
-    strURL += "/";
+    strURL += '/';
   }
 
   return strURL;

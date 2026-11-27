@@ -177,7 +177,7 @@ int MysqlDatabase::setErr(int err_code, const char* qry)
   error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
-  error += "\n";
+  error += '\n';
   return err_code;
 }
 

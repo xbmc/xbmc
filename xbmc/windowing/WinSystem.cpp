@@ -91,7 +91,7 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes,
   if (refreshRate > 1)
     newRes.strMode += StringUtils::Format(" @ {:.2f}Hz", refreshRate);
   if (dwFlags & D3DPRESENTFLAG_INTERLACED)
-    newRes.strMode += "i";
+    newRes.strMode += 'i';
   if (dwFlags & D3DPRESENTFLAG_MODE3DTB)
     newRes.strMode += "tab";
   if (dwFlags & D3DPRESENTFLAG_MODE3DSBS)

@@ -538,7 +538,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     {
       valuesSql += StringUtils::Format("c{:02} = TRIM(c{:02})", i, i);
       if (i < LOCAL_VIDEODB_MAX_COLUMNS - 1)
-        valuesSql += ",";
+        valuesSql += ',';
     }
     m_pDS->exec("UPDATE episode SET " + valuesSql);
     m_pDS->exec("UPDATE movie SET " + valuesSql);

@@ -561,7 +561,7 @@ static bool GetDetailsFromFrame(CDemuxStreamVideo* stream,
 
   vDetail.m_strHdrType = CStreamDetails::HdrTypeToString(picture.hdrType);
   vDetail.m_strHdrTypeAlt = CStreamDetails::HdrTypeToString(picture.hdrTypeAlt);
-  if (vDetail.m_strHdrDetail.find("7") != std::string::npos)
+  if (vDetail.m_strHdrDetail.find('7') != std::string::npos)
     vDetail.m_strHdrDetail += picture.strDVELType;
   return true;
 }
@@ -603,7 +603,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
         // distinguish HDR10 from HLG base
         if (vstream->dovi.dv_profile == 8)
         {
-          p->m_strHdrDetail += ".";
+          p->m_strHdrDetail += '.';
           p->m_strHdrDetail +=
               std::to_string(static_cast<int>(vstream->dovi.dv_bl_signal_compatibility_id));
           if (vstream->dovi.dv_bl_signal_compatibility_id == 4)

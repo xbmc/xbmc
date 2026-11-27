@@ -8250,7 +8250,7 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
     Filter setFilter = filter;
     setFilter.join += " JOIN `sets` ON movie_view.idSet = `sets`.idSet";
     if (!setFilter.order.empty())
-      setFilter.order += ",";
+      setFilter.order += ',';
     setFilter.order += "`sets`.idSet";
 
     if (!GetMoviesByWhere(strBaseDir, setFilter, items))
@@ -15454,7 +15454,7 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
       sql += PrepareSQL("'%s',", image.c_str());
     }
     sql.pop_back(); // remove last ','
-    sql += ")";
+    sql += ')';
 
     // add arttype filters if not set to "Maximum"
     if (artworkLevel != CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL)

@@ -66,12 +66,12 @@ std::string ModeFlagsToString(unsigned int flags, bool identifier)
 {
   std::string res;
   if(flags & D3DPRESENTFLAG_INTERLACED)
-    res += "i";
+    res += 'i';
   else
-    res += "p";
+    res += 'p';
 
   if(!identifier)
-    res += " ";
+    res += ' ';
 
   if(flags & D3DPRESENTFLAG_MODE3DSBS)
     res += "sbs";

@@ -245,7 +245,7 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url,
     strURL += "USERNAME";
     if (!url.GetPassWord().empty())
       strURL += ":PASSWORD";
-    strURL += "@";
+    strURL += '@';
   }
 
   if (!url.GetHostName().empty())
@@ -276,7 +276,7 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url,
       strURL += StringUtils::Format(":{}", url.GetPort());
     }
 
-    strURL += "/";
+    strURL += '/';
   }
   strURL += url.GetFileName();
 

@@ -213,7 +213,7 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevel::Basic */, boo
     path += EventLevelToString(level);
     // add whether to include higher levels or not to the path
     if (includeHigherLevels)
-      path += "+";
+      path += '+';
   }
 
   // activate the full eventPtr log window

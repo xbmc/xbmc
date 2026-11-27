@@ -226,7 +226,7 @@ void LogGraphicsInfo()
         if (extension)
         {
           extensions += extension;
-          extensions += " ";
+          extensions += ' ';
         }
       }
     }

@@ -336,7 +336,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
       // put together the setting ID
       std::string settingId{categoryId};
       if (!settingId.empty())
-        settingId += ".";
+        settingId += '.';
       auto id = setting->ToElement()->Attribute("id");
       if (id)
         settingId += id;

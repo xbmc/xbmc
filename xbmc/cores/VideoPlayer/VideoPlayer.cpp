@@ -6849,7 +6849,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
     // distinguish HDR10 from HLG base
     if (s.dovi.dv_profile == 8)
     {
-      info.hdrDetail += ".";
+      info.hdrDetail += '.';
       info.hdrDetail += std::to_string(static_cast<int>(s.dovi.dv_bl_signal_compatibility_id));
       if (s.dovi.dv_bl_signal_compatibility_id == 4)
         info.hdrTypeAlt = StreamHdrType::HDR_TYPE_HLG;

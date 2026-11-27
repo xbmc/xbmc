@@ -75,7 +75,7 @@ static const std::string getListOfAddonClassesAsString(
   for (const auto& iter : acs)
   {
     if (!firstTime)
-      message += ",";
+      message += ',';
     else
       firstTime = false;
     message += iter->GetClassname();

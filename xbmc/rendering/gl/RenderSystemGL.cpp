@@ -72,7 +72,7 @@ bool CRenderSystemGL::InitRenderSystem()
         if (extension)
         {
           m_RenderExtensions += extension;
-          m_RenderExtensions += " ";
+          m_RenderExtensions += ' ';
         }
       }
     }
@@ -83,7 +83,7 @@ bool CRenderSystemGL::InitRenderSystem()
     if (extensions)
     {
       m_RenderExtensions += extensions;
-      m_RenderExtensions += " ";
+      m_RenderExtensions += ' ';
     }
   }
 
@@ -363,7 +363,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension) const
   std::string name;
   name  = " ";
   name += extension;
-  name += " ";
+  name += ' ';
 
   return m_RenderExtensions.find(name) != std::string::npos;
 }

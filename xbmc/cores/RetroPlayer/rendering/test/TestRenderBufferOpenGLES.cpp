@@ -36,7 +36,7 @@ public:
   {
     m_RenderExtensions = " ";
     m_RenderExtensions += extensions;
-    m_RenderExtensions += " ";
+    m_RenderExtensions += ' ';
     CServiceBroker::RegisterWinSystem(this);
   }
 

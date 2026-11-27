@@ -1137,7 +1137,7 @@ JSONRPC_STATUS CVideoLibrary::Export(const CVariant& parameterObject, CVariant& 
     if (parameterObject["options"]["actorthumbs"].isBoolean() &&
         parameterObject["options"]["actorthumbs"].asBoolean() == true)
       cmd += ", actorthumbs";
-    cmd += ")";
+    cmd += ')';
   }
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);

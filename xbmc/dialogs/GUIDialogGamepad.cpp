@@ -62,30 +62,64 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
   {
     switch (action.GetButtonCode())
     {
-    case KEY_BUTTON_A : m_strUserInput += "A"; break;
-    case KEY_BUTTON_B : m_strUserInput += "B"; break;
-    case KEY_BUTTON_X : m_strUserInput += "X"; break;
-    case KEY_BUTTON_Y : m_strUserInput += "Y"; break;
-    case KEY_BUTTON_BLACK : m_strUserInput += "K"; break;
-    case KEY_BUTTON_WHITE : m_strUserInput += "W"; break;
-    case KEY_BUTTON_LEFT_TRIGGER : m_strUserInput += "("; break;
-    case KEY_BUTTON_RIGHT_TRIGGER : m_strUserInput += ")"; break;
-    case KEY_BUTTON_DPAD_UP : m_strUserInput += "U"; break;
-    case KEY_BUTTON_DPAD_DOWN : m_strUserInput += "D"; break;
-    case KEY_BUTTON_DPAD_LEFT : m_strUserInput += "L"; break;
-    case KEY_BUTTON_DPAD_RIGHT : m_strUserInput += "R"; break;
-    default:
-      switch (action.GetID())
-      {
-        case ACTION_MOVE_LEFT:   m_strUserInput += "L"; break;
-        case ACTION_MOVE_RIGHT:  m_strUserInput += "R"; break;
-        case ACTION_MOVE_UP:     m_strUserInput += "U"; break;
-        case ACTION_MOVE_DOWN:   m_strUserInput += "D"; break;
-        case ACTION_PLAYER_PLAY: m_strUserInput += "P"; break;
-        default:
-          return true;
-      }
-      break;
+      case KEY_BUTTON_A:
+        m_strUserInput += 'A';
+        break;
+      case KEY_BUTTON_B:
+        m_strUserInput += 'B';
+        break;
+      case KEY_BUTTON_X:
+        m_strUserInput += 'X';
+        break;
+      case KEY_BUTTON_Y:
+        m_strUserInput += 'Y';
+        break;
+      case KEY_BUTTON_BLACK:
+        m_strUserInput += 'K';
+        break;
+      case KEY_BUTTON_WHITE:
+        m_strUserInput += 'W';
+        break;
+      case KEY_BUTTON_LEFT_TRIGGER:
+        m_strUserInput += '(';
+        break;
+      case KEY_BUTTON_RIGHT_TRIGGER:
+        m_strUserInput += ')';
+        break;
+      case KEY_BUTTON_DPAD_UP:
+        m_strUserInput += 'U';
+        break;
+      case KEY_BUTTON_DPAD_DOWN:
+        m_strUserInput += 'D';
+        break;
+      case KEY_BUTTON_DPAD_LEFT:
+        m_strUserInput += 'L';
+        break;
+      case KEY_BUTTON_DPAD_RIGHT:
+        m_strUserInput += 'R';
+        break;
+      default:
+        switch (action.GetID())
+        {
+          case ACTION_MOVE_LEFT:
+            m_strUserInput += 'L';
+            break;
+          case ACTION_MOVE_RIGHT:
+            m_strUserInput += 'R';
+            break;
+          case ACTION_MOVE_UP:
+            m_strUserInput += 'U';
+            break;
+          case ACTION_MOVE_DOWN:
+            m_strUserInput += 'D';
+            break;
+          case ACTION_PLAYER_PLAY:
+            m_strUserInput += 'P';
+            break;
+          default:
+            return true;
+        }
+        break;
     }
 
     std::string strHiddenInput(m_strUserInput);
