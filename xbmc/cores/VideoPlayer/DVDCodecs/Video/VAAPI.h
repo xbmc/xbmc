@@ -296,6 +296,7 @@ public:
   {
     INIT,
     FLUSH,
+    DRAIN,
     PRECLEANUP,
     TIMEOUT,
   };
@@ -304,6 +305,7 @@ public:
     ACC,
     ERROR,
     STATS,
+    DRAINED,
   };
 };
 
@@ -358,6 +360,7 @@ protected:
   void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool HasWork();
+  bool DrainStep();
   bool PreferPP();
   void InitCycle();
   CVaapiRenderPicture* ProcessPicture(CVaapiProcessedPicture &pic);
@@ -376,6 +379,9 @@ protected:
   CEvent *m_inMsgEvent;
   int m_state;
   bool m_bStateMachineSelfTrigger;
+  bool m_draining = false;
+  bool m_drainActive = false;
+  int m_drainRequests = 0;
   CDecoder &m_vaapi;
 
   // extended state variables for state machine
@@ -588,6 +594,7 @@ protected:
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
   long ReleasePicReference();
   bool CheckSuccess(VAStatus status, const std::string& function);
+  void DrainPostproc();
 
   enum EDisplayState
   { VAAPI_OPEN
@@ -611,6 +618,8 @@ protected:
   CVaapiRenderPicture *m_presentPicture = nullptr;
 
   int m_codecControl;
+  bool m_drainFlushed = false; //!< postproc was asked to release its pictures for the ongoing drain
+  int m_drainsPending = 0;
   CProcessInfo& m_processInfo;
 
   static CCapabilities m_capFormats;
@@ -647,6 +656,13 @@ public:
   virtual void ClearRef(CVaapiProcessedPicture &pic) = 0;
   virtual void Flush() = 0;
   virtual bool UpdateDeintMethod(EINTERLACEMETHOD method) = 0;
+  /*!
+   * \brief Make the postproc release the pictures it holds back for later use (e.g. as
+   *        reference), as no further picture will arrive for now.
+   * \return true if Filter() may return pictures now
+   */
+  virtual bool Drain() { return false; }
+  virtual bool DrainBlocked() const { return false; }
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
   virtual bool UseVideoSurface() = 0;
@@ -695,6 +711,8 @@ public:
   void ClearRef(CVaapiProcessedPicture &pic) override;
   void Flush() override;
   bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
+  bool Drain() override;
+  bool DrainBlocked() const override { return m_drainBlocked; }
   bool DoesSync() override;
   bool WantsPic() override;
   bool UseVideoSurface() override;
@@ -709,8 +727,11 @@ protected:
   std::deque<CVaapiDecodedPicture> m_decodedPics;
   VABufferID m_filter = VA_INVALID_ID;
   int m_forwardRefs, m_backwardRefs;
-  int m_currentIdx;
-  int m_frameCount;
+  int m_currentIdx = 0;
+  int m_frameCount = 0;
+  int m_lastOutIdx = -1;
+  int m_drainIdx = -1;
+  bool m_drainBlocked = false;
   EINTERLACEMETHOD m_vppMethod;
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
@@ -731,6 +752,7 @@ public:
   void ClearRef(CVaapiProcessedPicture &pic) override;
   void Flush() override;
   bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
+  bool Drain() override;
   bool DoesSync() override;
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
@@ -744,6 +766,8 @@ protected:
   AVFilterContext* m_pFilterOut;
   AVFrame *m_pFilterFrameIn;
   AVFrame *m_pFilterFrameOut;
+  bool m_graphFed = false; //!< graph received pictures and may still hold some
+  bool m_graphEof = false; //!< graph was drained, it has to be rebuilt before reuse
   EINTERLACEMETHOD m_diMethod;
   VideoPicture m_DVDPic;
   double m_frametime;
