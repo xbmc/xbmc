@@ -314,6 +314,21 @@ TEST(TestURIUtilsEncoding, DecodePathEscapes)
   }
 }
 
+TEST(TestURIUtilsEncoding, ChangeBasePath)
+{
+  // http/https are the only protocols HasEncodedFilename() treats as encoded, so this is the
+  // decode direction. A subtitle download names the destination this way.
+  EXPECT_EQ(
+      "smb://server/share/file name.srt",
+      URIUtils::ChangeBasePath("http://host/videos/", "file%20name.srt", "smb://server/share/"));
+
+  // This path decodes each segment with CURL::Decode, so a + becomes a space. Pinned because
+  // it is what the destination has always been given, not because it is the desirable rule.
+  EXPECT_EQ(
+      "smb://server/share/C   Collection.srt",
+      URIUtils::ChangeBasePath("http://host/videos/", "C++ Collection.srt", "smb://server/share/"));
+}
+
 TEST(TestURIUtilsEncoding, GetDecodedFileName)
 {
   for (const auto& [path, decoded] : GetDecodedFileNameCases)
