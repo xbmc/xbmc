@@ -627,38 +627,38 @@ public:
    */
   bool GetVideoSettings(const std::string &filePath, CVideoSettings &settings);
 
-  /*! \brief Set video settings for the specified file path
-   \param fileItem to set the settings for
+  /*! \brief Set video settings for the specified item
+   \param item to set the settings for
    \sa GetVideoSettings
    */
   void SetVideoSettings(const CFileItem &item, const CVideoSettings &settings);
 
-  /*! \brief Set video settings for the specified file path
-   \param fileId to set the settings for
+  /*! \brief Set video settings for the specified file id
+   \param idFile to set the settings for
    \sa GetVideoSettings
    */
   void SetVideoSettings(int idFile, const CVideoSettings &settings);
 
-  /**
-   * Erases video settings for file item
-   * @param fileitem
+  /*!
+   * \brief Erases video settings for file item
+   * \param item the item to erase the settings of
    */
   void EraseVideoSettings(const CFileItem &item);
 
-  /**
-   * Erases all video settings
+  /*!
+   * \brief Erases all video settings
    */
   void EraseAllVideoSettings();
 
-  /**
-   * Erases video settings for files starting with path
-   * @param path pattern
+  /*!
+   * \brief Erases video settings for files starting with path
+   * \param path pattern
    */
   void EraseAllVideoSettings(const std::string& path);
 
-  /**
-   * Erases all entries for files starting with path, including the files and path entries
-   * @param path pattern
+  /*!
+   * \brief Erases all entries for files starting with path, including the files and path entries
+   * \param path pattern
    */
   void EraseAllForPath(const std::string& path);
 
@@ -1168,7 +1168,7 @@ public:
    * \param fallback optionally request fallback to the art of the parent/owner for each art type
      that is not defined for the asset
    * \param art collection of the retrieved art
-   * \return 
+   * \return true on success, false on a database error
   */
   bool GetArtForAsset(int assetId, ArtFallbackOptions fallback, KODI::ART::Artwork& art);
   /*!
@@ -1282,12 +1282,12 @@ public:
   /*!
    * \brief Remove a video from the library and transfer all of its assets to another video of the
    * same type.
-   * \param itemType[in] Type of the video being converted
-   * \param dbIdSource[in] id of the video being converted
-   * \param dbIdTarget[in] id that the video will be attached to
-   * \param idVideoVersion[in] new versiontype of the default version of the video
-   *                           special value -1: keep the current versiontype of the video.
-   * \param assetType[in] new asset type of the default version of the video.
+   * \param[in] itemType Type of the video being converted
+   * \param[in] dbIdSource id of the video being converted
+   * \param[in] dbIdTarget id that the video will be attached to
+   * \param[in] idVideoVersion new versiontype of the default version of the video
+   *            special value -1: keep the current versiontype of the video.
+   * \param[in] assetType new asset type of the default version of the video.
    * \return true for success, false otherwise
    */
   bool ConvertVideoToVersion(VideoDbContentType itemType,
@@ -1456,9 +1456,9 @@ public:
   std::string GetFileBasePathById(int idFile);
 
   /*!
-   * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
-   * @param imagesToCheck
-   * @return a list of the passed in images used by this database.
+   * \brief Check the passed in list of images if used in this database. Used to clean the image cache.
+   * \param imagesToCheck the image URLs to check
+   * \return a list of the passed in images used by this database.
    */
   std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck);
 
@@ -1731,8 +1731,8 @@ private:
    */
   int GetPlayCount(int iFileId);
 
-  /*! \brief Get the last played time of a filename and path
-   \param iFileId file id to get the playcount for
+  /*! \brief Get the last played time of a file id
+   \param iFileId file id to get the last played time for
    \return the last played time of the item, or an invalid CDateTime on error
    \sa UpdateLastPlayed
    */

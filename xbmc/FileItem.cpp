@@ -640,9 +640,6 @@ void CFileItem::Archive(CArchive& ar)
 
 void CFileItem::Serialize(CVariant& value) const
 {
-  //! @todo Why is this commented out? The implementation exists but will never be called.
-  //CGUIListItem::Serialize(value["CGUIListItem"]);
-
   value["strPath"] = m_strPath;
   value["dateTime"] = (m_dateTime.IsValid()) ? m_dateTime.GetAsRFC1123DateTime() : "";
   value["lastmodified"] = m_dateTime.IsValid() ? m_dateTime.GetAsDBDateTime() : "";
@@ -1483,7 +1480,7 @@ void CFileItem::UpdateInfo(const CFileItem& item,
 
 void CFileItem::MergeInfo(const CFileItem& item)
 {
-  // TODO: Currently merge the metadata/art info is implemented for video case only
+  //! @todo Merging metadata/art is implemented for video only
   if (item.HasVideoInfoTag())
   {
     if (item.m_videoInfoTag)
@@ -2188,7 +2185,6 @@ bool CFileItem::LoadGameTag()
   if (HasGameInfoTag() && m_gameInfoTag->IsLoaded())
     return true;
 
-  //! @todo
   GetGameInfoTag();
 
   m_gameInfoTag->SetLoaded(true);

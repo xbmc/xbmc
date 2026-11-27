@@ -8,11 +8,6 @@
 
 #pragma once
 
-/*!
- \file FileItem.h
- \brief
- */
-
 #include "SourceType.h"
 #include "URL.h"
 #include "XBDateTime.h"
@@ -390,7 +385,7 @@ public:
   /*! \brief Assemble the filename of a particular piece of local artwork for an item,
              and check for file existence.
    \param artFile the art file to search for.
-   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \param useFolder whether to look in the folder for the art file.
    \return the path to the local artwork if it exists, empty otherwise.
    \sa GetLocalArt
    */
@@ -576,7 +571,8 @@ private:
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
   /*!
-   \brief Return \p url, parsing \p path into it on first use.
+   \brief Return \p url, parsing \p path into it on first use. \p valid records whether \p url is
+   filled.
 
    The getters are const but fill their cache, so two readers are really two writers. Double-checked
    locking keeps the already-filled case a single atomic load.
