@@ -7793,9 +7793,11 @@ CDateTime CVideoDatabase::WritePlayCount(const CFileItem& item, int count, const
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
     {
       ANNOUNCEMENT::EVENT::LIBRARY::Update update{
+          .type = item.GetVideoInfoTag()->GetMediaType(),
+          .id = item.GetVideoInfoTag()->m_iDbId,
           .item = std::make_shared<CFileItem>(item),
           .transaction = CVideoLibraryQueue::GetInstance().IsScanningLibrary()};
-      // Only provide the "playcount" value if it has actually changed
+      // Only provide the play count if it has actually changed
       if (item.GetVideoInfoTag()->GetPlayCount() != count)
         update.playCount = count;
       CServiceBroker::GetAnnouncementManager()->Announce(
