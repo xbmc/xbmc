@@ -24,6 +24,7 @@ DEPENDS = \
   libplist \
   libpng \
   libshairplay \
+  libtasn1 \
   libusb \
   libxml2 \
   nettle \
