@@ -107,7 +107,7 @@ bool CDiscManagerDiscList::Update(bool forceRefresh)
 void CDiscManagerDiscList::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   items.clear();
-  for (auto item : m_items)
+  for (const auto& item : m_items)
     items.emplace_back(std::static_pointer_cast<CGUIListItem>(item));
 }
 
