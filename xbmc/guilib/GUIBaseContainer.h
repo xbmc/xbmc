@@ -103,6 +103,7 @@ public:
   void DumpTextureUse() override;
 #endif
 protected:
+  EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool OnClick(int actionID);
 
@@ -294,4 +295,10 @@ private:
   // early inertial scroll cancellation
   bool m_waitForScrollEnd = false;
   float m_lastScrollValue = 0.0f;
+
+  // The mouse move that is sent has no movement, which is what a touch sends
+  bool m_touchMove = false;
+
+  // The position of the touch doesn't lead to the item it selected any more
+  bool m_keepTouchSelection = false;
 };
