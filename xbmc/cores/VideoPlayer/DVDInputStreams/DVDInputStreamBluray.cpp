@@ -41,7 +41,6 @@
 #include <libbluray/bluray-version.h>
 #include <libbluray/bluray.h>
 #include <libbluray/clpi_data.h>
-#include <libbluray/log_control.h>
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -225,10 +224,7 @@ bool CDVDInputStreamBluray::Open()
   // root should not have trailing slash
   URIUtils::RemoveSlashAtEnd(root);
 
-  bd_set_debug_handler(CBlurayCallback::bluray_logger);
-  bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
-
-  m_bd = bd_init();
+  m_bd = CBlurayCallback::Init();
 
   if (!m_bd)
   {
@@ -240,6 +236,7 @@ bool CDVDInputStreamBluray::Open()
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening {}", CURL::GetRedacted(root));
 
+  std::unique_lock opening(CBlurayCallback::OpenLock());
   if (openStream)
   {
     if (!bd_open_stream(m_bd, this, read_blocks))
@@ -280,6 +277,9 @@ bool CDVDInputStreamBluray::Open()
       return false;
     }
   }
+  // A disc without an index has its metadata parsed by the first title info otherwise
+  bd_get_meta(m_bd);
+  opening.unlock();
 
   bd_get_event(m_bd, nullptr);
 
