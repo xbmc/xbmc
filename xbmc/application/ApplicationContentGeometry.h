@@ -55,6 +55,9 @@ public:
   //! \brief The raster in force, the override before the setting. Zero means the display's own.
   float RasterAspect() const;
 
+  //! \brief The shape the room rests at with RasterAspect() in force.
+  float AtRestAspect() const;
+
   //! \brief Where the OSD is laid out, the override taking precedence over the setting.
   KODI::VIDEO::GEOMETRY::OsdPlacement OsdPlacementInForce() const;
 

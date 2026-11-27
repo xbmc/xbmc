@@ -126,6 +126,36 @@ TEST(TestApplicationContentGeometry, StoppingRevertsEveryOverride)
   EXPECT_FLOAT_EQ(0.0f, geometry.GetOverrides().maintainAspect);
 }
 
+// A raster stated for a playback is the screen for as long as it stands, so it is the shape the
+// room rests at: what is published until a picture arrives, and the direction an ambiguous
+// measurement resolves in. Left on the setting, a 2.37 reading in a room stated as 2.40 is
+// called 2.35.
+TEST(TestApplicationContentGeometry, AStatedRasterIsTheShapeTheRoomRestsAt)
+{
+  CApplicationContentGeometry geometry;
+  OpenFile(geometry);
+  ASSERT_NEAR(1.78f, geometry.Get().aspect, 0.01f);
+
+  geometry.SetOverrides(Stated(2.40f, std::nullopt, 0.0f));
+  EXPECT_FLOAT_EQ(2.40f, geometry.AtRestAspect());
+  EXPECT_FLOAT_EQ(2.40f, geometry.Get().aspect);
+
+  geometry.Clear();
+  EXPECT_NEAR(1.78f, geometry.AtRestAspect(), 0.01f);
+  EXPECT_NEAR(1.78f, geometry.Get().aspect, 0.01f);
+}
+
+// Armed with the request to play, it is in force from the moment the file opens.
+TEST(TestApplicationContentGeometry, ARasterArmedForAFileIsRestedAtAsItOpens)
+{
+  CApplicationContentGeometry geometry;
+  geometry.SetPendingOverrides(Stated(2.40f, std::nullopt, 0.0f));
+
+  OpenFile(geometry);
+
+  EXPECT_FLOAT_EQ(2.40f, geometry.Get().aspect);
+}
+
 // The picture's rectangle is the one thing an automation cannot work out for itself: a raster
 // and a maintained ratio decide it together, and neither of those ratios is where it landed.
 TEST(TestApplicationContentGeometry, WhereThePictureWasDrawnIsRememberedForWhoeverAsks)

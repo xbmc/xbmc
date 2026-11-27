@@ -7,6 +7,8 @@
  */
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDMessage.h"
@@ -366,4 +368,38 @@ TEST_F(TestLiveGeometryMonitor, ADisplayAspectChangeAtTheSameSizeReadsTheNewPixe
   ASSERT_TRUE(posted.has_value()) << "the 4:3 frame was read at the 16:9 frame's pixel aspect";
   EXPECT_EQ(720, posted->rect.Width());
   EXPECT_NEAR(2.40f, DisplayRatio(posted->rect, 768.0f / 720.0f), 0.01f);
+}
+
+/*!
+ * 1920x810 is 2.3704, within tolerance of 2.35 and 2.40 both, and the shape the room rests at
+ * settles which. A raster stated for the playback is that shape for as long as it stands.
+ */
+TEST_F(TestLiveGeometryMonitor, AnAmbiguousReadingResolvesTowardAStatedRaster)
+{
+  CTestVideoBuffer buffer(1920, 1080);
+  buffer.Picture(0, 135, 1920, 945);
+
+  VideoPicture picture;
+  Describe(picture, buffer, 1920, 1080, "mono", 1920, 1080);
+
+  OpenStream();
+  Feed(picture);
+
+  std::optional<LiveGeometryUpdate> posted = LastPosted();
+  ASSERT_TRUE(posted.has_value());
+  EXPECT_NEAR(2.35f, DisplayRatio(posted->rect, 1.0f), 0.01f);
+
+  const auto geometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  KODI::VIDEO::GEOMETRY::GeometryOverrides stated;
+  stated.rasterAspect = 2.40f;
+  geometry->SetOverrides(stated);
+
+  OpenStream();
+  Feed(picture);
+  geometry->Clear();
+
+  posted = LastPosted();
+  ASSERT_TRUE(posted.has_value());
+  EXPECT_NEAR(2.40f, DisplayRatio(posted->rect, 1.0f), 0.01f);
 }

@@ -9,6 +9,8 @@
 #include "LiveGeometryMonitor.h"
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDMessage.h"
 #include "cores/VideoPlayer/DVDMessageQueue.h"
@@ -133,7 +135,9 @@ CRectInt CLiveGeometryMonitor::OnPicture(const VideoPicture& picture,
         MeasuredStreamGeometry(picture.stereoMode, picture.iWidth, picture.iHeight, displayAspect);
 
     m_selector.Configure(stream.coded, PixelAspectRatio(stream),
-                         ContentGeometryAtRestFromSettings());
+                         CServiceBroker::GetAppComponents()
+                             .GetComponent<CApplicationContentGeometry>()
+                             ->AtRestAspect());
     m_codedWidth = picture.iWidth;
     m_codedHeight = picture.iHeight;
     m_stereoMode = picture.stereoMode;

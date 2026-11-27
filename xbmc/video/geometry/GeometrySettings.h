@@ -25,8 +25,12 @@ bool ContentGeometryNonLiveFromSettings();
 //! \brief How the user wants a title whose geometry varies to resolve to one rectangle.
 VariableGeometryPolicy ContentGeometryPolicyFromSettings();
 
-//! \brief The shape the room rests at: what a measurement errs toward, and what is published
-//! while nothing is playing.
+//! \brief The shape the room rests at with \p rasterAspect in force: what a measurement errs
+//! toward, and what is published while nothing is playing.
+float ContentGeometryAtRest(float rasterAspect);
+
+//! \brief ContentGeometryAtRest() of the raster-shape setting, for a reader no playback's
+//! override applies to.
 float ContentGeometryAtRestFromSettings();
 
 //! \brief The ratio the raster-shape setting names, or zero for the full screen. The setting
