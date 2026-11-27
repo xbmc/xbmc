@@ -551,7 +551,7 @@ void URIUtils::GetCommonPath(std::string& parent, std::string_view path)
       const auto slash = common.rfind('/');
       common.resize(slash == std::string::npos ? 0 : slash + 1);
     }
-    if (!parentURL.SetURIPath(std::move(common)))
+    if (!parentURL.SetURIPath(common))
       parent.clear();
     else
       parent = parentURL.Get();
@@ -609,7 +609,7 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
       file.pop_back();
     const auto slash = file.rfind('/');
     file.resize(slash == std::string::npos ? 0 : slash + 1);
-    if (!url.SetURIPath(std::move(file)))
+    if (!url.SetURIPath(file))
       return false;
     strParent = url.Get();
     return true;

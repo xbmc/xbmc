@@ -93,7 +93,9 @@ PlaylistInformation MakePlaylist(unsigned int playlist,
 }
 
 // A channel count of zero means unknown, as it is when a clip's stream map is unavailable
-AudioStreamInfo MakeAudioStream(std::string codecName, std::string language, int channels = 0)
+AudioStreamInfo MakeAudioStream(std::string codecName,
+                                const std::string& language,
+                                int channels = 0)
 {
   AudioStreamInfo info;
   info.valid = true;
@@ -112,7 +114,7 @@ T AsDefault(T info)
   return info;
 }
 
-SubtitleStreamInfo MakeSubtitleStream(std::string language)
+SubtitleStreamInfo MakeSubtitleStream(const std::string& language)
 {
   SubtitleStreamInfo info;
   info.valid = true;
@@ -2055,8 +2057,8 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_TwoCandidates_MostChaptersPr
   Episodes episodes{MakeThreeEpisodes()};
 
   const auto MakeDisc{
-      [](std::vector<std::chrono::milliseconds> chapters602,
-         std::vector<std::chrono::milliseconds> chapters650)
+      [](const std::vector<std::chrono::milliseconds>& chapters602,
+         const std::vector<std::chrono::milliseconds>& chapters650)
       {
         return PlaylistMap{
             {600u, MakePlaylist(600u, 7200s, {1000u, 1001u, 1002u}, {2400s, 2400s, 2400s})},

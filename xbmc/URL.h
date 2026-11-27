@@ -100,7 +100,7 @@ public:
    * \note With an authority, paths must be empty or slash-prefixed; without one,
    *       they cannot start with "//". Magnet paths must be empty or absolute.
    */
-  bool SetURIPath(std::string path);
+  bool SetURIPath(const std::string& path);
 
   /*! \brief Replace the raw query of a lossless URI without a map or form decoding.
    * \param query No value removes the delimiter; an empty value retains an empty ?.

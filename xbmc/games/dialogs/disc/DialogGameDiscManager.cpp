@@ -28,6 +28,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <utility>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -194,7 +196,7 @@ void CDialogGameDiscManager::FocusMainMenuItem(unsigned int itemIndex)
 void CDialogGameDiscManager::SelectDiscToInsert(std::optional<size_t> selectedIndex,
                                                 std::function<void(std::optional<size_t>)> callback)
 {
-  m_insertCallback = callback;
+  m_insertCallback = std::move(callback);
 
   const std::optional<std::string> selectedDiscPath = m_discGame->GetDiscPathByIndex(selectedIndex);
 
@@ -236,7 +238,7 @@ void CDialogGameDiscManager::SelectDiscToInsert(std::optional<size_t> selectedIn
 
 void CDialogGameDiscManager::SelectDiscToDelete(std::function<void(size_t)> callback)
 {
-  m_deleteCallback = callback;
+  m_deleteCallback = std::move(callback);
 
   // Clear the disc list
   ClearDiscList();

@@ -125,7 +125,8 @@ std::vector<std::shared_ptr<CaptureRequest>> CCaptureService::TakeActive(Capture
   return matches;
 }
 
-void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request, CaptureResult result)
+void CCaptureService::Complete(const std::shared_ptr<CaptureRequest>& request,
+                               const CaptureResult& result)
 {
   bool dispatch = false;
   bool finished = false;

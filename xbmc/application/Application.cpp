@@ -1953,7 +1953,9 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   return PlayFile(item, player, false);
 }
 
-bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart /* = false */)
+bool CApplication::PlayFile(const CFileItem& item,
+                            const std::string& player,
+                            bool bRestart /* = false */)
 {
   const auto appPlayer{GetComponent<CApplicationPlayer>()};
   const auto stackHelper{GetComponent<CApplicationStackHelper>()};

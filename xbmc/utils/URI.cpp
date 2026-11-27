@@ -87,7 +87,7 @@ std::string_view CURI::GetWithoutQueryAndFragment() const
   return std::string_view(m_source).substr(0, m_components.path.offset + m_components.path.length);
 }
 
-bool CURI::SetPath(std::string path)
+bool CURI::SetPath(const std::string& path)
 {
   if (!m_valid || (HasAuthority() && !path.empty() && !path.starts_with('/')) ||
       (!HasAuthority() && path.starts_with("//")))

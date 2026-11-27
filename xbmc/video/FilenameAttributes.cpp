@@ -59,7 +59,7 @@ std::shared_ptr<CRegExp> InitFilenameAttributesRegExp(KODI::REGEXP::RegExpCache*
 void ForEachFilenameAttribute(
     const std::string& fileName,
     KODI::REGEXP::RegExpCache* cache,
-    std::function<void(int pos, int len, const std::string& key, const std::string& value)>
+    const std::function<void(int pos, int len, const std::string& key, const std::string& value)>&
         callback)
 {
   if (std::shared_ptr<CRegExp> re = InitFilenameAttributesRegExp(cache); re != nullptr)

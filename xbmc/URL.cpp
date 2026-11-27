@@ -205,9 +205,9 @@ std::string CURL::GetSchemeSpecificPart() const
   return source.substr(begin, end - begin);
 }
 
-bool CURL::SetURIPath(std::string path)
+bool CURL::SetURIPath(const std::string& path)
 {
-  if (!m_uri || !URIPolicy::CanSetPath(*m_uri, path) || !m_uri->SetPath(std::move(path)))
+  if (!m_uri || !URIPolicy::CanSetPath(*m_uri, path) || !m_uri->SetPath(path))
     return false;
   UpdateURIProjection();
   return true;
@@ -473,7 +473,7 @@ void CURL::SetFileName(std::string strFileName)
 {
   if (m_uri)
   {
-    SetURIPath(std::move(strFileName));
+    SetURIPath(strFileName);
     return;
   }
   UpdateFileName(std::move(strFileName));

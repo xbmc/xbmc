@@ -13,7 +13,7 @@
 
 using namespace KODI::UTILS::GL;
 
-CGLBufferArena::CGLBufferArena(std::vector<std::size_t> slotSizes, std::size_t bufferSize)
+CGLBufferArena::CGLBufferArena(const std::vector<std::size_t>& slotSizes, std::size_t bufferSize)
 {
   for (std::size_t slotSize : slotSizes)
   {
