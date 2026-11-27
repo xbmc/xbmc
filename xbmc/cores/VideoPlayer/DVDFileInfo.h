@@ -59,8 +59,19 @@ public:
   //! \param fileFlags as for GetFileStreamDetails()
   static bool GetFileDuration(const std::string& path, int& duration, unsigned int fileFlags = 0);
 
+  static bool StopProbes();
+  static bool ProbesStillBlocked();
+
 private:
   //! \param fileFlags as for GetFileStreamDetails()
+  static bool ProbeFileDuration(const std::string& path, int& duration, unsigned int fileFlags);
+  static bool ProbeFileStreamDetails(CFileItem* pItem,
+                                     int listingFlags,
+                                     CStreamDetails* probed,
+                                     unsigned int fileFlags);
+  static std::unique_ptr<CTexture> ProbeThumbToTexture(const CFileItem& fileItem,
+                                                       int chapterNumber);
+
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,

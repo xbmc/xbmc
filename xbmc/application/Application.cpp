@@ -49,6 +49,7 @@
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogCache.h"
@@ -179,6 +180,8 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <memory>
 #include <mutex>
 
@@ -1567,6 +1570,14 @@ void CApplication::WasmRunIteration()
 
 bool CApplication::Cleanup()
 {
+  if (CDVDFileInfo::ProbesStillBlocked())
+  {
+    CLog::Log(LOGWARNING, "File probes are still blocked in I/O, skipping service teardown");
+    CServiceBroker::GetLogging().Deinitialize();
+    std::fflush(nullptr);
+    std::_Exit(m_ExitCode);
+  }
+
   try
   {
     ResetCurrentItem();
@@ -1786,6 +1797,8 @@ bool CApplication::Stop(int exitCode)
     // cancel any jobs from the jobmanager
     CServiceBroker::GetJobManager()->CancelJobs();
 
+    const bool probesDrained{CDVDFileInfo::StopProbes()};
+
     CServiceBroker::GetAppMessenger()->Cleanup();
 
     m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
@@ -1799,12 +1812,19 @@ bool CApplication::Stop(int exitCode)
     }
 #endif
 
-    for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
-      vfsAddon->DisconnectAll();
+    if (probesDrained)
+    {
+      for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+        vfsAddon->DisconnectAll();
 
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
-    smb.Deinit();
+      smb.Deinit();
 #endif
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Skipping VFS shutdown, file probes are still blocked in I/O");
+    }
 
     CScriptInvocationManager::GetInstance().NotifyAllScriptsAborting();
 
