@@ -49,6 +49,22 @@ TEST(TestDirectory, General)
   EXPECT_FALSE(XFILE::CDirectory::Exists(tmppath1));
 }
 
+TEST(TestDirectory, ExistsAfterCreateInListedFolder)
+{
+  const std::string parent{
+      URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://temp/"), "listed")};
+  const std::string child{URIUtils::AddFileToFolder(parent, "child")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(parent));
+
+  // Listing the parent puts it in the directory cache
+  CFileItemList items;
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(parent, items, "", XFILE::DIR_FLAG_DEFAULTS));
+
+  EXPECT_TRUE(XFILE::CDirectory::Create(child));
+  EXPECT_TRUE(XFILE::CDirectory::Exists(child));
+  EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(parent));
+}
+
 TEST(TestDirectory, CreateRecursive)
 {
   auto path1 = URIUtils::AddFileToFolder(
