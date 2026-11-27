@@ -93,7 +93,15 @@ std::string CVideoDatabaseFile::TranslatePath(const CURL& url)
     return "";
 
   std::string realFilename;
-  videoDatabase.GetFilePathById(idDb, realFilename, type);
+  // The last path element of a movie version or extra is its file id
+  if (url.HasOption("assetType"))
+  {
+    CVideoInfoTag tag;
+    if (videoDatabase.GetFileInfo("", tag, static_cast<int>(idDb)))
+      realFilename = tag.m_strFileNameAndPath;
+  }
+  else
+    videoDatabase.GetFilePathById(idDb, realFilename, type);
 
   return realFilename;
 }

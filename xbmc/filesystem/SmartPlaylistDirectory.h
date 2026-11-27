@@ -26,6 +26,7 @@ namespace XFILE
     ~CSmartPlaylistDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList& items) override;
     bool AllowAll() const override { return true; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::NEVER; }
     bool ContainsFiles(const CURL& url) override;
     bool Remove(const CURL& url) override;
 

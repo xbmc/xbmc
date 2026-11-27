@@ -26,6 +26,7 @@ class CQueryParams;
     ~CMusicDatabaseDirectory(void) override;
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool AllowAll() const override { return true; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::NEVER; }
     bool Exists(const CURL& url) override;
     static MUSICDATABASEDIRECTORY::NodeType GetDirectoryChildType(const std::string& strPath);
     static MUSICDATABASEDIRECTORY::NodeType GetDirectoryType(const std::string& strPath);
