@@ -8,8 +8,8 @@
  */
 
 #include "URL.h"
-#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFile.h"
 #include "playlists/PlayListXSPF.h"
 #include "test/TestUtils.h"
 
@@ -21,7 +21,7 @@ TEST(TestPlayListFactory, XSPF)
 {
   std::string filename = XBMC_REF_FILE_PATH("/xbmc/playlists/test/newfile.xspf");
   CURL url("http://example.com/playlists/playlist.xspf");
-  PLAYLIST::CPlayList* playlist = nullptr;
+  PLAYLIST::CPlayListFile* playlist = nullptr;
 
   EXPECT_TRUE(PLAYLIST::CPlayListFactory::IsPlaylist(url));
   EXPECT_TRUE(PLAYLIST::CPlayListFactory::IsPlaylist(filename));
@@ -34,4 +34,19 @@ TEST(TestPlayListFactory, XSPF)
     EXPECT_NE(dynamic_cast<PLAYLIST::CPlayListXSPF*>(playlist), nullptr);
     delete playlist;
   }
+}
+
+TEST(TestPlayListFactory, LoadReadsAPlayListFile)
+{
+  const auto playlist =
+      PLAYLIST::CPlayListFactory::Load(XBMC_REF_FILE_PATH("/xbmc/playlists/test/test.xspf"));
+  ASSERT_NE(nullptr, playlist);
+  EXPECT_EQ(5, playlist->Size());
+}
+
+TEST(TestPlayListFactory, LoadGivesNothingForWhatIsNotAReadablePlayList)
+{
+  EXPECT_EQ(nullptr, PLAYLIST::CPlayListFactory::Load("/media/film.mkv"));
+  EXPECT_EQ(nullptr, PLAYLIST::CPlayListFactory::Load(
+                         XBMC_REF_FILE_PATH("/xbmc/playlists/test/missing.xspf")));
 }

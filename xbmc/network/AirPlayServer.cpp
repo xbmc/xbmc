@@ -18,6 +18,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationVolumeHandling.h"
+#include "application/PlayListsMessageHandler.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "input/actions/Action.h"
@@ -978,9 +979,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       fileToPlay.SetProperty(ITEM::PROPERTY::START_PERCENT, position*100.0f);
       ServerInstance->AnnounceToClients(EVENT_LOADING);
 
-      CFileItemList *l = new CFileItemList; //don't delete,
+      auto l = std::make_unique<CFileItemList>();
       l->Add(std::make_shared<CFileItem>(fileToPlay));
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+      APPLICATION::PostPlayItems(std::move(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
       if (!startPlayback)

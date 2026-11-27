@@ -9,6 +9,10 @@
 #pragma once
 
 #include "IDirectory.h"
+#include "playlists/PlayListTypes.h"
+
+#include <optional>
+#include <string>
 
 namespace XFILE
 {
@@ -19,5 +23,11 @@ namespace XFILE
     ~CPlaylistDirectory(void) override;
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool AllowAll() const override { return true; }
+
+    //! \brief The path listing the playlist of \p type.
+    static std::string PathOf(KODI::PLAYLIST::Type type);
+
+    //! \brief The playlist \p url lists, if it is a playlist path.
+    static std::optional<KODI::PLAYLIST::Type> TypeOf(const CURL& url);
   };
 }

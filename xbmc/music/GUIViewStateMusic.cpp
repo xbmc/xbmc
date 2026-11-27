@@ -16,6 +16,7 @@
 #include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "filesystem/PlaylistDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "guilib/WindowIDs.h"
@@ -71,9 +72,9 @@ std::string AlbumFormat()
 }
 } // namespace
 
-PLAYLIST::Id CGUIViewStateWindowMusic::GetPlaylist() const
+std::optional<PLAYLIST::Type> CGUIViewStateWindowMusic::GetPlayListType() const
 {
-  return PLAYLIST::Id::TYPE_MUSIC;
+  return PLAYLIST::Audio;
 }
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
@@ -693,9 +694,9 @@ void CGUIViewStateWindowMusicPlaylist::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_PLAYLIST);
 }
 
-PLAYLIST::Id CGUIViewStateWindowMusicPlaylist::GetPlaylist() const
+std::optional<PLAYLIST::Type> CGUIViewStateWindowMusicPlaylist::GetPlayListType() const
 {
-  return PLAYLIST::Id::TYPE_MUSIC;
+  return PLAYLIST::Audio;
 }
 
 bool CGUIViewStateWindowMusicPlaylist::AutoPlayNextItem()
@@ -713,7 +714,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowMusicPlaylist::GetSources()
   m_sources.clear();
   //  Playlist share
   CMediaSource share;
-  share.strPath = "playlistmusic://";
+  share.strPath = CPlaylistDirectory::PathOf(PLAYLIST::Audio);
   share.m_iDriveType = SourceType::LOCAL;
   m_sources.push_back(share);
 

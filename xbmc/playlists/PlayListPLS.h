@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 #include <string>
 #include <vector>
 
 namespace KODI::PLAYLIST
 {
-class CPlayListPLS : public CPlayList
+class CPlayListPLS : public CPlayListFile
 {
 public:
   CPlayListPLS(void);

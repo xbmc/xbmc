@@ -196,7 +196,7 @@ bool CDirectory::GetDirectory(const CURL& url,
 
         if (!result)
         {
-          // @TODO ProcessRequirements() can bring up the keyboard input dialog
+          //! @todo ProcessRequirements() can bring up the keyboard input dialog
           // filesystem must not depend on GUI
           if (CServiceBroker::GetAppMessenger()->IsProcessThread() &&
               pDirectory->ProcessRequirements())
@@ -299,6 +299,9 @@ bool CDirectory::GetDirectory(const CURL& url,
         item->SetPath(URIUtils::SubstitutePath(item->GetPath(), true));
       }
     }
+
+    for (int i = 0; i < items.Size(); ++i)
+      items[i]->SetPlayListOrder(i);
 
     return true;
   }

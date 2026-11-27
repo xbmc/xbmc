@@ -10,6 +10,7 @@
 
 #include "ServiceManager.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayLists.h"
 #include "profiles/ProfileManager.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
@@ -147,11 +148,6 @@ CDataCacheCore& CServiceBroker::GetDataCacheCore()
 CPlatform& CServiceBroker::GetPlatform()
 {
   return g_application.m_ServiceManager->GetPlatform();
-}
-
-PLAYLIST::CPlayListPlayer& CServiceBroker::GetPlaylistPlayer()
-{
-  return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
 void CServiceBroker::RegisterSettingsComponent(const std::shared_ptr<CSettingsComponent>& settings)
@@ -297,6 +293,11 @@ CMediaManager& CServiceBroker::GetMediaManager()
 CApplicationComponents& CServiceBroker::GetAppComponents()
 {
   return g_application;
+}
+
+std::shared_ptr<CApplicationPlayLists> CServiceBroker::GetPlayLists()
+{
+  return g_application.GetComponent<CApplicationPlayLists>();
 }
 
 CGUIComponent* CServiceBroker::GetGUI()
@@ -510,4 +511,3 @@ std::shared_ptr<XFILE::CBlurayDiscCache> CServiceBroker::GetBlurayDiscCache()
 {
   return g_serviceBroker.m_blurayDiscCache;
 }
-

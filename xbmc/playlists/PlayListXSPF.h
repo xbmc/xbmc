@@ -8,17 +8,17 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 namespace KODI::PLAYLIST
 {
-class CPlayListXSPF : public CPlayList
+class CPlayListXSPF : public CPlayListFile
 {
 public:
   CPlayListXSPF(void);
   ~CPlayListXSPF(void) override;
 
-  // Implementation of CPlayList
+  // Implementation of CPlayListFile
   bool Load(const std::string& strFileName) override;
 };
 }

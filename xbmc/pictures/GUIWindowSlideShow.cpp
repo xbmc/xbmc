@@ -13,13 +13,13 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/PlaybackAnnouncer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -38,8 +38,8 @@
 #include "pictures/PictureThumbLoader.h"
 #include "pictures/SlideShowDelegator.h"
 #include "pictures/UltraHdr.h"
+#include "playlists/PlayList.h"
 #include "playlists/PlayListTypes.h"
-#include "pvr/channels/PVRChannel.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -59,6 +59,8 @@
 #include <algorithm>
 #include <memory>
 #include <mutex>
+#include <optional>
+#include <utility>
 #include <variant>
 
 using namespace KODI;
@@ -195,62 +197,50 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow()
 void CGUIWindowSlideShow::OnPlayerEvent(const ANNOUNCEMENT::PlayerEvent& event)
 {
   namespace PLAYER = ANNOUNCEMENT::EVENT::PLAYER;
-  const CFileItem* item{nullptr};
+  std::optional<std::pair<const CFileItem*, KODI::MEDIA::Streams>> started;
   if (const auto* play = std::get_if<PLAYER::Play>(&event))
-    item = play->item.get();
+    started.emplace(play->item.get(), play->streams);
   else if (const auto* resume = std::get_if<PLAYER::Resume>(&event))
-    item = resume->item.get();
-  else
-    return;
+    started.emplace(resume->item.get(), resume->streams);
 
-  // Temporary: only the video playlist or a TV channel takes over the screen, as the v14 player
-  // id told, until the playlist rewrite announces the streams of what plays.
-  PLAYLIST::Id playerId{CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()};
-  if (item && item->HasPVRChannelInfoTag())
-    playerId = item->GetPVRChannelInfoTag()->IsRadio() ? PLAYLIST::Id::TYPE_MUSIC
-                                                       : PLAYLIST::Id::TYPE_VIDEO;
-
-  if (playerId == PLAYLIST::Id::TYPE_VIDEO && !PLAYER::IsPicture(item))
+  // video playback takes over the screen from the slideshow
+  if (started && KODI::MEDIA::HasVideo(started->second) && !PLAYER::IsPicture(started->first))
     Close();
 }
 
-// Temporary: the slideshow announces its own slides, as a playlist that is none of the two and
-// with the streams of the screen it takes, until the playlist rewrite announces them.
 void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(
-      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Play{
-          item, m_bSlideShow && !m_bPause ? 1 : 0, MEDIA::Streams::Video}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShow(
+      CPlaybackAnnouncer::SlideShowEvent::Play, item, m_bSlideShow && !m_bPause);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(
-      ANNOUNCEMENT::PlayerEvent{ANNOUNCEMENT::EVENT::PLAYER::Pause{item, MEDIA::Streams::Video}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShow(
+      CPlaybackAnnouncer::SlideShowEvent::Pause, item, false);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlayerEvent{
-      ANNOUNCEMENT::EVENT::PLAYER::Stop{item, true, MEDIA::Streams::Video}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShow(
+      CPlaybackAnnouncer::SlideShowEvent::Stop, item, false);
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistClear()
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(
-      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Clear{std::nullopt}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShowListChanged(
+      {PLAYLIST::PlayListChange::Type::Cleared});
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(
-      ANNOUNCEMENT::PlaylistEvent{ANNOUNCEMENT::EVENT::PLAYLIST::Add{std::nullopt, pos, item}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShowListChanged(
+      {PLAYLIST::PlayListChange::Type::Added, PLAYLIST::NO_ENTRY, pos, item});
 }
 
 void CGUIWindowSlideShow::AnnounceShuffled()
 {
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PlaylistEvent{
-      ANNOUNCEMENT::EVENT::PLAYLIST::PropertiesChanged{std::nullopt, true, std::nullopt}});
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->OnSlideShowShuffled();
 }
 
 bool CGUIWindowSlideShow::IsPlaying() const
@@ -326,12 +316,6 @@ void CGUIWindowSlideShow::ReplacePicturesIfPending()
 
 void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
 {
-  if (m_Resolution != CDisplaySettings::GetInstance().GetCurrentResolution())
-  {
-    //FIXME: Use GUI resolution for now
-    //CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), true);
-  }
-
   SetHdrOutput(false);
 
   if (m_bPlayingMotion)
@@ -740,7 +724,6 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     {
       if (m_pBackgroundLoader->IsLoading())
       {
-        //        CLog::Log(LOGDEBUG, "Having to hold the current image ({}) while we load {}", m_vecSlides[m_iCurrentSlide], m_vecSlides[m_iNextSlide]);
         m_Image[m_iCurrentPic]->Keep();
       }
     }
@@ -1220,7 +1203,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       m_Resolution = (RESOLUTION) CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PICTURES_DISPLAYRESOLUTION);
 
-      //FIXME: Use GUI resolution for now
+      //! @todo use the video resolution rather than the GUI resolution
       if (false /*m_Resolution != CDisplaySettings::GetInstance().GetCurrentResolution() && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(m_Resolution, false);
       else
@@ -1274,11 +1257,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       }
       RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom, beginSlidePath, !bPause);
     }
-    break;
-
-    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-      {
-      }
       break;
 
     case GUI_MSG_PLAYBACK_STOPPED:
@@ -1431,9 +1409,9 @@ bool CGUIWindowSlideShow::PlayVideo()
   // The clip plays inside the slideshow, so it mustn't switch the display mode like a film
   const bool startWindowed = CMediaSettings::GetInstance().DoesMediaStartWindowed();
   CMediaSettings::GetInstance().SetMediaStartWindowed(true);
-  bool ret = g_application.PlayFile(*item, "");
+  const CApplication::PlayResult result = g_application.PlayFile(*item);
   CMediaSettings::GetInstance().SetMediaStartWindowed(startWindowed);
-  if (ret == true)
+  if (result != CApplication::PlayResult::Failed)
     return true;
   else
   {
@@ -1460,7 +1438,8 @@ bool CGUIWindowSlideShow::PlayMotion()
   // The clip is part of the photo, so it mustn't switch the display mode like a film
   const bool startWindowed = CMediaSettings::GetInstance().DoesMediaStartWindowed();
   CMediaSettings::GetInstance().SetMediaStartWindowed(true);
-  const bool ret = g_application.PlayFile(CFileItem(clip, false), "");
+  const bool ret =
+      g_application.PlayFile(CFileItem(clip, false), "") == CApplication::PlayResult::Started;
   CMediaSettings::GetInstance().SetMediaStartWindowed(startWindowed);
   if (!ret)
     EndMotion();

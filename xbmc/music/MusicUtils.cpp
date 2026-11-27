@@ -11,12 +11,12 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIPassword.h"
-#include "PartyModeManager.h"
-#include "PlayListPlayer.h"
+#include "PartyMode.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayLists.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -25,6 +25,7 @@
 #include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "filesystem/PlaylistDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -34,11 +35,9 @@
 #include "music/MusicDbUrl.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
-#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
-#include "playlists/PlayListFactory.h"
+#include "playlists/PlayListEntryRules.h"
 #include "playlists/PlayListFileItemClassify.h"
-#include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -55,7 +54,9 @@
 #include "video/VideoFileItemClassify.h"
 #include "view/GUIViewState.h"
 
+#include <algorithm>
 #include <memory>
+#include <optional>
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -150,22 +151,22 @@ public:
       loaded when the playlist is shown.
       */
     bool clearcache(false);
-    const PLAYLIST::CPlayList& playlist =
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+    const auto playLists = CServiceBroker::GetPlayLists();
 
-    for (int i = 0; i < playlist.size(); ++i)
+    for (const auto& entry : playLists->GetPlayList(PLAYLIST::Audio).GetEntries())
     {
-      CFileItemPtr songitem = playlist[i];
-      if (HasSongExtraArtChanged(songitem, mediaType, itemID, db))
+      if (HasSongExtraArtChanged(entry.item, mediaType, itemID, db))
       {
-        songitem->ClearArt(); // Art gets reloaded when the current playlist is shown
+        CFileItem songitem(*entry.item);
+        songitem.ClearArt();
+        playLists->UpdateItem(PLAYLIST::Audio, songitem);
         clearcache = true;
       }
     }
     if (clearcache)
     {
       // Clear the music playlist from cache
-      CFileItemList items("playlistmusic://");
+      CFileItemList items(XFILE::CPlaylistDirectory::PathOf(PLAYLIST::Audio));
       items.RemoveDiscCache(WINDOW_MUSIC_PLAYLIST);
     }
 
@@ -439,11 +440,12 @@ bool IsValidArtType(const std::string& potentialArtType)
 
 namespace
 {
-class CAsyncGetItemsForPlaylist : public IRunnable
+class CAsyncGetItemsForPlaylist : public IRunnable, private PLAYLIST::IEntryRules
 {
 public:
-  CAsyncGetItemsForPlaylist(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
-    : m_item(item), m_queuedItems(queuedItems)
+  CAsyncGetItemsForPlaylist(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems,
+                            const std::shared_ptr<CFileItem>& startAt)
+    : m_item(item), m_queuedItems(queuedItems), m_startAt(startAt)
   {
   }
 
@@ -451,20 +453,28 @@ public:
 
   void Run() override
   {
-    // fast lookup is needed here
-    m_queuedItems.SetFastLookup(true);
-
     m_musicDatabase.Open();
-    GetItemsForPlaylist(m_item);
+    m_startPosition =
+        CApplicationPlayLists::ExpandToEntries(m_item, *this, m_startAt, m_queuedItems);
     m_musicDatabase.Close();
   }
 
+  int GetStartPosition() const { return m_startPosition.value_or(-1); }
+
 private:
-  void GetItemsForPlaylist(const std::shared_ptr<CFileItem>& item);
+  std::shared_ptr<CFileItem> Redirect(const std::shared_ptr<CFileItem>& folder) override;
+  bool IsUnlocked(CFileItem& source) override;
+  void Arrange(const CFileItem& folder,
+               CFileItemList& items,
+               std::shared_ptr<CFileItem>& startAt) override;
+  std::shared_ptr<CFileItem> Accept(const std::shared_ptr<CFileItem>& file,
+                                    const CFileItemList& entries) override;
 
   const std::shared_ptr<CFileItem> m_item;
   CFileItemList& m_queuedItems;
   CMusicDatabase m_musicDatabase;
+  const std::shared_ptr<CFileItem> m_startAt;
+  std::optional<int> m_startPosition;
 };
 
 SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemList& items)
@@ -515,115 +525,67 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
     return state.GetSortMethod(); // last resort
 }
 
-void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileItem>& item)
+std::shared_ptr<CFileItem> CAsyncGetItemsForPlaylist::Redirect(const std::shared_ptr<CFileItem>& folder)
 {
-  if (item->IsParentFolder() || !item->CanQueue() || item->IsRAR() || item->IsZIP())
+  if (!MUSIC::IsMusicDb(*folder) || folder->IsParentFolder())
+    return folder;
+
+  XFILE::CMusicDatabaseDirectory dir;
+  if (dir.ContainsSongs(folder->GetPath()))
+    return folder;
+
+  // a music database folder above the songs: take the "all" item underneath it
+
+  // Genres will still require 2 lookups, and queuing the entire Genre folder
+  // will require 3 lookups (genre, artist, album)
+  CMusicDbUrl musicUrl;
+  if (!musicUrl.FromString(folder->GetPath()))
+    return nullptr;
+  musicUrl.AppendPath("-1/");
+  return std::make_shared<CFileItem>(musicUrl.ToString(), true);
+}
+
+bool CAsyncGetItemsForPlaylist::IsUnlocked(CFileItem& source)
+{
+  return g_passwordManager.IsItemUnlocked(&source, MediaSection::MUSIC);
+}
+
+void CAsyncGetItemsForPlaylist::Arrange(const CFileItem& folder,
+                                        CFileItemList& items,
+                                        std::shared_ptr<CFileItem>& startAt)
+{
+  const std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(WINDOW_MUSIC_NAV, items));
+  if (!state)
     return;
 
-  if (MUSIC::IsMusicDb(*item) && item->IsFolder() && !item->IsParentFolder())
-  {
-    // we have a music database folder, just grab the "all" item underneath it
-    XFILE::CMusicDatabaseDirectory dir;
+  LABEL_MASKS labelMasks;
+  state->GetSortMethodLabelMasks(labelMasks);
+  CLabelFormatter::FormatItemLabels(items, labelMasks);
 
-    if (!dir.ContainsSongs(item->GetPath()))
-    {
-      // grab the ALL item in this category
-      // Genres will still require 2 lookups, and queuing the entire Genre folder
-      // will require 3 lookups (genre, artist, album)
-      CMusicDbUrl musicUrl;
-      if (musicUrl.FromString(item->GetPath()))
-      {
-        musicUrl.AppendPath("-1/");
-
-        const auto allItem = std::make_shared<CFileItem>(musicUrl.ToString(), true);
-        allItem->SetCanQueue(true); // workaround for CanQueue() check above
-        GetItemsForPlaylist(allItem);
-      }
-      return;
-    }
-  }
-
-  if (item->IsFolder())
-  {
-    // Check if we add a locked share
-    if (item->IsShareOrDrive())
-    {
-      if (!g_passwordManager.IsItemUnlocked(item.get(), MediaSection::MUSIC))
-        return;
-    }
-
-    CFileItemList items;
-    XFILE::CDirectory::GetDirectory(item->GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
-
-    const std::unique_ptr<CGUIViewState> state(
-        CGUIViewState::GetViewState(WINDOW_MUSIC_NAV, items));
-    if (state)
-    {
-      LABEL_MASKS labelMasks;
-      state->GetSortMethodLabelMasks(labelMasks);
-      CLabelFormatter::FormatItemLabels(items, labelMasks);
-
-      SortDescription sortDesc;
-      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV)
-        sortDesc = state->GetSortMethod();
-      else
-        sortDesc = GetSortDescription(*state, items);
-
-      if (sortDesc.sortBy == SortBy::LABEL)
-        items.ClearSortState();
-
-      items.Sort(sortDesc);
-    }
-
-    for (const auto& i : items)
-    {
-      GetItemsForPlaylist(i);
-    }
-  }
+  SortDescription sortDesc;
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV)
+    sortDesc = state->GetSortMethod();
   else
-  {
-    if (PLAYLIST::IsPlayList(*item))
-    {
-      const std::unique_ptr<PLAYLIST::CPlayList> playList(
-          PLAYLIST::CPlayListFactory::Create(*item));
-      if (!playList)
-      {
-        CLog::Log(LOGERROR, "{} failed to create playlist {}", __FUNCTION__, item->GetPath());
-        return;
-      }
+    sortDesc = GetSortDescription(*state, items);
 
-      if (!playList->Load(item->GetPath()))
-      {
-        CLog::Log(LOGERROR, "{} failed to load playlist {}", __FUNCTION__, item->GetPath());
-        return;
-      }
+  if (sortDesc.sortBy == SortBy::LABEL)
+    items.ClearSortState();
 
-      for (int i = 0; i < playList->size(); ++i)
-      {
-        GetItemsForPlaylist((*playList)[i]);
-      }
-    }
-    else if (NETWORK::IsInternetStream(*item) && !MUSIC::IsMusicDb(*item))
-    {
-      // just queue the internet stream, it will be expanded on play
-      m_queuedItems.Add(item);
-    }
-    else if (item->IsPlugin() && item->GetProperty("isplayable").asBoolean())
-    {
-      // python files can be played
-      m_queuedItems.Add(item);
-    }
-    else if (!item->IsNFO() && (MUSIC::IsAudio(*item) || IsVideo(*item)))
-    {
-      const auto itemCheck = m_queuedItems.Get(item->GetPath());
-      if (!itemCheck || itemCheck->GetStartOffset() != item->GetStartOffset())
-      {
-        // add item
-        m_musicDatabase.SetPropertiesForFileItem(*item);
-        m_queuedItems.Add(item);
-      }
-    }
-  }
+  items.Sort(sortDesc);
+}
+
+std::shared_ptr<CFileItem> CAsyncGetItemsForPlaylist::Accept(const std::shared_ptr<CFileItem>& file,
+                                                             const CFileItemList& entries)
+{
+  if (!PLAYLIST::CanBeEntry(*file) || (!MUSIC::IsAudio(*file) && !IsVideo(*file)))
+    return nullptr;
+
+  const auto queued = entries.Get(file->GetPath());
+  if (queued && queued->GetStartOffset() == file->GetStartOffset())
+    return nullptr;
+
+  m_musicDatabase.SetPropertiesForFileItem(*file);
+  return file;
 }
 
 void ShowToastNotification(const CFileItem& item, int titleId)
@@ -666,37 +628,11 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
                               const std::shared_ptr<CFileItem>& itemToPlay,
                               const std::string& player)
 {
-  // recursively add items to list
   CFileItemList queuedItems;
-  MUSIC_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
-
-  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-  playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_MUSIC);
-  playlistPlayer.Reset();
-  playlistPlayer.Add(PLAYLIST::Id::TYPE_MUSIC, queuedItems);
-
-  // figure out where to start playback
-  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
-  int pos = 0;
-  if (itemToPlay)
-  {
-    for (const std::shared_ptr<CFileItem>& queuedItem : queuedItems)
-    {
-      if (queuedItem->IsSamePath(itemToPlay.get()))
-        break;
-
-      pos++;
-    }
-  }
-
-  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_MUSIC))
-  {
-    playList.Swap(0, playList.FindOrder(pos));
-    pos = 0;
-  }
-
-  playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_MUSIC);
-  playlistPlayer.Play(pos, player);
+  int start = -1;
+  MUSIC_UTILS::GetItemsForPlayList(itemToQueue, queuedItems, itemToPlay, &start);
+  CServiceBroker::GetPlayLists()->PlayExpanded(PLAYLIST::Audio, queuedItems, start, itemToPlay,
+                                               {.player = player});
 }
 } // unnamed namespace
 
@@ -712,21 +648,10 @@ bool IsAutoPlayNextItem(const CFileItem& item)
          !settings->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT);
 }
 
-void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
+void PlayItem(const std::shared_ptr<CFileItem>& item,
               const std::string& player,
               ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */)
 {
-  auto item = itemIn;
-
-  //  Allow queuing of unqueueable items
-  //  when we try to queue them directly
-  if (!itemIn->CanQueue())
-  {
-    // make a copy to not alter the original item
-    item = std::make_shared<CFileItem>(*itemIn);
-    item->SetCanQueue(true);
-  }
-
   if (item->IsFolder())
   {
     AddItemToPlayListAndPlay(item, nullptr, player);
@@ -763,10 +688,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
       // song, so just play it
-      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-      playlistPlayer.Reset();
-      playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
-      playlistPlayer.Play(item, player);
+      CServiceBroker::GetPlayLists()->PlayItem(PLAYLIST::Audio, item, {.player = player});
     }
   }
   else
@@ -775,94 +697,47 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
   }
 }
 
-void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
+void QueueItem(const std::shared_ptr<CFileItem>& item, QueuePosition pos)
 {
-  auto item = itemIn;
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto playLists = CServiceBroker::GetPlayLists();
 
-  //  Allow queuing of unqueueable items
-  //  when we try to queue them directly
-  if (!itemIn->CanQueue())
-  {
-    // make a copy to not alter the original item
-    item = std::make_shared<CFileItem>(*itemIn);
-    item->SetCanQueue(true);
-  }
+  const PLAYLIST::Type type = playLists->GetQueueType(PLAYLIST::Audio);
 
-  auto& player = CServiceBroker::GetPlaylistPlayer();
-
-  PLAYLIST::Id playlistId = player.GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::Id::TYPE_NONE)
-  {
-    const auto& components = CServiceBroker::GetAppComponents();
-    playlistId = components.GetComponent<CApplicationPlayer>()->GetPreferredPlaylist();
-  }
-
-  if (playlistId == PLAYLIST::Id::TYPE_NONE)
-    playlistId = PLAYLIST::Id::TYPE_MUSIC;
-
-  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exists
-  if (PLAYLIST::IsSmartPlayList(*item) && !CFileUtils::Exists(item->GetPath()))
-  {
-    const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-    if (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp"))
-      return;
-  }
-
-  const int oldSize = player.GetPlaylist(playlistId).size();
+  // Check for the partymode playlist item, do nothing when "PartyMode.xsp" does not exist
+  if (PLAYLIST::IsSmartPlayList(*item) && !CFileUtils::Exists(item->GetPath()) &&
+      item->GetPath() == PARTYMODE::RulesPath(PLAYLIST::Audio))
+    return;
 
   CFileItemList queuedItems;
   GetItemsForPlayList(item, queuedItems);
 
-  // if party mode, add items but DONT start playing
-  if (g_partyModeManager.IsEnabled())
-  {
-    g_partyModeManager.AddUserSongs(queuedItems, false);
+  const int first = playLists->Queue(type, queuedItems,
+                                     pos == QueuePosition::POSITION_BEGIN
+                                         ? CApplicationPlayLists::Placement::Next
+                                         : CApplicationPlayLists::Placement::End);
+  if (first < 0)
     return;
-  }
 
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-
-  if (pos == QueuePosition::POSITION_BEGIN && appPlayer->IsPlaying())
-    player.Insert(playlistId, queuedItems,
-                  CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() + 1);
+  if (!components.GetComponent<CApplicationPlayer>()->IsPlaying())
+    playLists->PlayFrom(type, first);
+  else if (pos == QueuePosition::POSITION_END)
+    ShowToastNotification(*item, 38082); // Added to end of playlist
   else
-    player.Add(playlistId, queuedItems);
-
-  bool playbackStarted = false;
-
-  if (!appPlayer->IsPlaying() && player.GetPlaylist(playlistId).size())
-  {
-    const int winID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-    if (winID == WINDOW_MUSIC_NAV)
-    {
-      CGUIViewState* viewState = CGUIViewState::GetViewState(winID, queuedItems);
-      if (viewState)
-        viewState->SetPlaylistDirectory("playlistmusic://");
-    }
-
-    player.Reset();
-    player.SetCurrentPlaylist(playlistId);
-    player.Play(oldSize, ""); // start playing at the first new item
-
-    playbackStarted = true;
-  }
-
-  if (!playbackStarted)
-  {
-    if (pos == QueuePosition::POSITION_END)
-      ShowToastNotification(*item, 38082); // Added to end of playlist
-    else
-      ShowToastNotification(*item, 38083); // Added to playlist to play next
-  }
+    ShowToastNotification(*item, 38083); // Added to playlist to play next
 }
 
-bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
+bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems,
+                         const std::shared_ptr<CFileItem>& startAt /* = nullptr */,
+                         int* startPosition /* = nullptr */)
 {
-  CAsyncGetItemsForPlaylist getItems(item, queuedItems);
-  return CGUIDialogBusy::Wait(&getItems,
+  CAsyncGetItemsForPlaylist getItems(item, queuedItems, startAt);
+  const bool done = CGUIDialogBusy::Wait(&getItems,
                               500, // 500ms before busy dialog appears
                               true); // can be cancelled
+  if (startPosition)
+    *startPosition = getItems.GetStartPosition();
+  return done;
 }
 
 namespace
@@ -873,8 +748,7 @@ bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
     return false;
 
   const std::string& path{item.GetPath()};
-  const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
-  return ((profileManager->GetUserDataItem("PartyMode.xsp") == path) && !CFileUtils::Exists(path));
+  return path == PARTYMODE::RulesPath(PLAYLIST::Audio) && !CFileUtils::Exists(path);
 }
 
 bool IsEmptyMusicItem(const CFileItem& item)

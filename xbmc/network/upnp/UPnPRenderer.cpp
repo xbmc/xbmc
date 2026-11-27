@@ -17,6 +17,8 @@
 #include "UPnPInternal.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayLists.h"
+#include "application/PlayListsMessageHandler.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -28,15 +30,17 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayListTypes.h"
 #include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoFileItemClassify.h"
 
 #include <inttypes.h>
+#include <memory>
 #include <mutex>
 #include <optional>
+#include <string>
 #include <utility>
 #include <variant>
 
@@ -629,36 +633,23 @@ NPT_Result CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
     return NPT_FAILURE;
   }
 
-  //! @todo get rid of window checks (go via SlideshowDelegator)
-  if (GetTransportState() == "PLAYING" &&
-      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
+  bool showingPicture;
   {
-
-    PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_MUSIC;
-    if (VIDEO::IsVideo(*item))
-      playlistId = PLAYLIST::Id::TYPE_VIDEO;
-
-    // note: auto-deleted when the message is consumed
-    auto playlist = new CFileItemList();
-    playlist->AddFront(item, 0);
-    CServiceBroker::GetAppMessenger()->PostMsg(
-        TMSG_PLAYLISTPLAYER_ADD, static_cast<int>(playlistId), -1, static_cast<void*>(playlist));
-
-    service->SetStateVariable("NextAVTransportURI", uri);
-    service->SetStateVariable("NextAVTransportURIMetaData", meta);
-
-    NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-
-    return NPT_SUCCESS;
+    NPT_AutoLock lock(m_state);
+    showingPicture = m_showingPicture;
   }
-  else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
-  {
+  // a picture is shown by the slideshow, which plays nothing next
+  const auto playLists = CServiceBroker::GetPlayLists();
+  const std::optional<PLAYLIST::Type> playing = playLists->GetPlayingType();
+  if (GetTransportState() != "PLAYING" || !playing || showingPicture || item->IsPicture())
     return NPT_FAILURE;
-  }
-  else
-  {
-    return NPT_FAILURE;
-  }
+
+  playLists->Queue(*playing, item, CApplicationPlayLists::Placement::Next);
+
+  service->SetStateVariable("NextAVTransportURI", uri);
+  service->SetStateVariable("NextAVTransportURIMetaData", meta);
+  NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+  return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -690,13 +681,14 @@ NPT_Result CUPnPRenderer::PlayMedia(const NPT_String& uri,
   else
   {
     item->SetProperty("no-ext-subs-scan", true);
-    CFileItemList* l = new CFileItemList; //don't delete,
+    auto l = std::make_unique<CFileItemList>();
     l->Add(std::make_shared<CFileItem>(*item));
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+    APPLICATION::PostPlayItems(std::move(l));
   }
 
   // just return success because the play actions are asynchronous
   NPT_AutoLock lock(m_state);
+  m_showingPicture = item->IsPicture();
   service->SetStateVariable("TransportState", "PLAYING");
   service->SetStateVariable("TransportStatus", "OK");
   service->SetStateVariable("AVTransportURI", uri);

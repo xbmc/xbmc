@@ -17,8 +17,7 @@ set(SOURCES AutoSwitch.cpp
             MediaSource.cpp
             NfoFile.cpp
             PasswordManager.cpp
-            PlayListPlayer.cpp
-            PartyModeManager.cpp
+            PartyMode.cpp
             SectionLoader.cpp
             SeekHandler.cpp
             ServiceBroker.cpp
@@ -59,9 +58,8 @@ set(HEADERS AutoSwitch.h
             LockMode.h
             MediaSource.h
             NfoFile.h
-            PartyModeManager.h
+            PartyMode.h
             PasswordManager.h
-            PlayListPlayer.h
             SectionLoader.h
             SeekHandler.h
             ServiceBroker.h

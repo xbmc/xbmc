@@ -14,8 +14,7 @@
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "PartyModeManager.h"
-#include "PlayListPlayer.h"
+#include "PartyMode.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -27,11 +26,11 @@
 #include "media/LibraryQuery.h"
 #include "media/MediaSection.h"
 #include "messaging/ApplicationMessenger.h"
-#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
+#include "application/ApplicationPlayLists.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
@@ -52,8 +51,6 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "music/MusicFileItemClassify.h"
-#include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
@@ -471,8 +468,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLIST_CHANGED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STARTED:
-  case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     { // send a notify all to all controls on this window
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_LIST);
       OnMessage(msg);
@@ -1158,8 +1153,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     }
 
     // check for the partymode playlist items - they may not exist yet
-    if ((pItem->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) ||
-        (pItem->GetPath() == profileManager->GetUserDataItem("PartyMode-Video.xsp")))
+    if (PARTYMODE::IsRulesPath(pItem->GetPath()))
     {
       // party mode playlist item - if it doesn't exist, prompt for user to define it
       if (!CFileUtils::Exists(pItem->GetPath()))
@@ -1249,7 +1243,10 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       }
     }
 
-    if (autoplay && !g_partyModeManager.IsEnabled())
+    // party mode owns the playlist this would replace
+    const std::optional<PLAYLIST::Type> type =
+        m_guiState ? m_guiState->GetPlayListType() : std::nullopt;
+    if (autoplay && !(type && PARTYMODE::IsRunning(*type)))
     {
       return OnPlayAndQueueMedia(pItem, player);
     }
@@ -1573,19 +1570,11 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
  */
 bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
 {
-  // Reset Playlistplayer, playback started now does
-  // not use the playlistplayer.
-  CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
 
-  bool bResult = false;
-  if (NETWORK::IsInternetStream(*pItem) || PLAYLIST::IsPlayList(*pItem))
-    bResult = g_application.PlayMedia(*pItem, player, m_guiState->GetPlaylist());
-  else
-    bResult = g_application.PlayFile(*pItem, player);
+  const bool bResult = g_application.PlayMedia(*pItem, player, m_guiState->GetPlayListType());
 
   if (pItem->GetStartOffset() == STARTOFFSET_RESUME)
     pItem->SetStartOffset(0);
@@ -1603,72 +1592,21 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
  */
 bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
-  //play and add current directory to temporary playlist
-  PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
-  if (playlistId != PLAYLIST::Id::TYPE_NONE)
-  {
-    // Remove ZIP, RAR files and folders
-    CFileItemList playlist;
-    playlist.Copy(*m_vecItems, true);
-    erase_if(playlist, [](const std::shared_ptr<CFileItem>& i)
-             { return i->IsZIP() || i->IsRAR() || i->IsFolder(); });
+  // the folder plays in place: what in it can play replaces the playlist, from the chosen item
+  const std::optional<PLAYLIST::Type> type = m_guiState->GetPlayListType();
+  if (!type)
+    return true;
 
-    // Chosen item
-    int mediaToPlay = std::distance(
-        playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
-                                       [&item](const std::shared_ptr<CFileItem>& i)
-                                       {
-                                         // cue sheet tracks share one path: compare the start
-                                         // offset too, otherwise the first track always plays
-                                         return i->GetPath() == item->GetPath() &&
-                                                i->GetStartOffset() == item->GetStartOffset();
-                                       }));
-    /* For .mka albums, all tracks are in the same file so using path as above will always play the
-     * first track.  Use the track and disk number to ensure we start playback on the correct track.
-     * This only applies to mka or m4b items played back via files view. Music library takes
-     * a different play path.
-     */
-    if (MUSIC::IsAudioBook(*item))
-      mediaToPlay = std::distance(
-          playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
-                                         [&item](const std::shared_ptr<CFileItem>& i)
-                                         {
-                                           return i->GetMusicInfoTag()->GetTrackAndDiscNumber() ==
-                                                  item->GetMusicInfoTag()->GetTrackAndDiscNumber();
-                                         }));
-
-    // Add to playlist
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
-    CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(playlistId, playlist);
-
-    // Save current window and directory to know where the selected item was
-    if (m_guiState)
-      m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
-
-    // figure out where we start playback
-    if (CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistId))
-    {
-      int iIndex =
-          CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).FindOrder(mediaToPlay);
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).Swap(0, iIndex);
-      mediaToPlay = 0;
-    }
-
-    // play
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
-    CServiceBroker::GetPlaylistPlayer().Play(mediaToPlay, player);
-  }
+  std::optional<int> position;
+  for (int i = 0; i < m_vecItems->Size(); ++i)
+    if (m_vecItems->Get(i) == item)
+      position = i;
+  CServiceBroker::GetPlayLists()->PlayItems(*type, *m_vecItems, position,
+                                            {.player = player, .inOrder = PlaysFolderInOrder()},
+                                            m_vecItems->GetPath());
   return true;
 }
 
-/*!
- * \brief Update file list
- *
- * Synchronize the fileitems with the playlistplayer
- * also recreates the playlist of the playlistplayer based
- * on the fileitems of the window
- */
 void CGUIMediaWindow::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
@@ -1682,32 +1620,14 @@ void CGUIMediaWindow::UpdateFileList()
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(strSelected);
 
-  //  set the currently playing item as selected, if its in this directory
-  if (m_guiState.get() && m_guiState->IsCurrentPlaylistDirectory(m_vecItems->GetPath()))
+  // a folder playing in place follows its new order
+  const auto playLists = CServiceBroker::GetPlayLists();
+  if (const std::optional<PLAYLIST::Type> type =
+          m_guiState ? m_guiState->GetPlayListType() : std::nullopt;
+      type && type == playLists->GetPlayingType() &&
+      URIUtils::PathEquals(playLists->GetPlayingSourcePath(), m_vecItems->GetPath(), true))
   {
-    PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
-    int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
-    CFileItem playlistItem;
-    if (nSong > -1 && playlistId != PLAYLIST::Id::TYPE_NONE)
-      playlistItem = *CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId)[nSong];
-
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
-    CServiceBroker::GetPlaylistPlayer().Reset();
-
-    for (int i = 0; i < m_vecItems->Size(); i++)
-    {
-      CFileItemPtr pItem = m_vecItems->Get(i);
-      if (pItem->IsFolder())
-        continue;
-
-      if (!PLAYLIST::IsPlayList(*pItem) && !pItem->IsZIP() && !pItem->IsRAR())
-        CServiceBroker::GetPlaylistPlayer().Add(playlistId, pItem);
-
-      if (pItem->GetPath() == playlistItem.GetPath() &&
-          pItem->GetStartOffset() == playlistItem.GetStartOffset())
-        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(
-            CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() - 1);
-    }
+    playLists->Replace(*type, *m_vecItems);
   }
 }
 
@@ -2122,11 +2042,6 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
     //! Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
     //! but it's re-enabled on the way back out.
     std::string match;
-    /*    if (item->GetFocusedLayout())
-     match = item->GetFocusedLayout()->GetAllText();
-     else if (item->GetLayout())
-     match = item->GetLayout()->GetAllText();
-     else*/
     match = item->GetLabel(); // Filter label only for now
 
     if (numericMatch)

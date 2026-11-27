@@ -486,6 +486,19 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   return extensions;
 }
 
+std::shared_ptr<CFileItem> CGameUtils::GetGameAddonItem(const std::string& path)
+{
+  const CURL url(path);
+  if (url.GetProtocol() != "game")
+    return nullptr;
+
+  ADDON::AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON::AddonType::GAMEDLL,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return nullptr;
+  return std::make_shared<CFileItem>(addon);
+}
+
 std::string CGameUtils::GetGameFolder(const std::string& gamePath)
 {
   // A game reaches here as the item's path or as the game client loaded it,

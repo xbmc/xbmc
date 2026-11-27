@@ -9,10 +9,10 @@
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 
 #include "FileItem.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayLists.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementV14.h"
 #include "music/MusicDatabase.h"
@@ -135,26 +135,30 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
     NSMutableDictionary* item = dict[@"item"];
     NSDictionary* player = dict[@"player"];
 
+    // the playing item is replaced on the GUI thread, so it is held for the whole notification
+    const std::shared_ptr<const CFileItem> playing = g_application.CurrentFileItemPtr();
+
     // Common properties
     item[@"speed"] = player[@"speed"];
-    std::string thumb = g_application.CurrentFileItem().GetArt("thumb");
+    std::string thumb = playing->GetArt("thumb");
     double duration = g_application.GetTotalTime();
     if (duration > 0)
       item[@"duration"] = @(duration);
     item[@"elapsed"] = @(g_application.GetTime());
-    int current = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
-    if (current >= 0)
+    const auto playLists = CServiceBroker::GetPlayLists();
+    if (const std::optional<KODI::PLAYLIST::Type> type = playLists->GetPlayingType(); type)
     {
-      item[@"current"] = @(current);
-      item[@"total"] = @(CServiceBroker::GetPlaylistPlayer()
-                             .GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist())
-                             .size());
+      if (const int current = playLists->GetPlayingDisplayPosition(*type); current >= 0)
+      {
+        item[@"current"] = @(current);
+        item[@"total"] = @(playLists->GetPlayList(*type).Size());
+      }
     }
 
     // Music properties
-    if (g_application.CurrentFileItem().HasMusicInfoTag())
+    if (playing->HasMusicInfoTag())
     {
-      const auto& genre = g_application.CurrentFileItem().GetMusicInfoTag()->GetGenre();
+      const auto& genre = playing->GetMusicInfoTag()->GetGenre();
       if (!genre.empty())
       {
         NSMutableArray* genreArray = [[NSMutableArray alloc] initWithCapacity:genre.size()];
@@ -167,9 +171,9 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
     }
 
     // Live TV properties
-    if (g_application.CurrentFileItem().IsPVRChannel())
+    if (playing->IsPVRChannel())
     {
-      auto epg_now = g_application.CurrentFileItem().GetPVRChannelInfoTag()->GetEPGNow();
+      auto epg_now = playing->GetPVRChannelInfoTag()->GetEPGNow();
       if (epg_now)
       {
         auto epg_title = epg_now->Title();

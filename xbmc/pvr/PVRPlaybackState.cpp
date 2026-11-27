@@ -467,7 +467,7 @@ void CPVRPlaybackState::StartPlayback(std::unique_ptr<CFileItem>& item,
     }
   }
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY_ITEM, 0, 0,
                                              static_cast<void*>(item.release()));
 }
 

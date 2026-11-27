@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 namespace KODI::PLAYLIST
 {
-class CPlayListURL : public CPlayList
+class CPlayListURL : public CPlayListFile
 {
 public:
   CPlayListURL(void);

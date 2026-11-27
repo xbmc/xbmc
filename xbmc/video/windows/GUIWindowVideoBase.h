@@ -92,10 +92,10 @@ protected:
   bool OnPlayOrResumeItem(int iItem, const std::string& player = "");
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
   bool OnPlayMedia(const std::shared_ptr<CFileItem>& item, const std::string& player);
-  bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
+  bool PlaysFolderInOrder() const override { return true; }
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList,
-                    KODI::PLAYLIST::Id playlistId = KODI::PLAYLIST::Id::TYPE_VIDEO);
+                    KODI::PLAYLIST::Type type = KODI::PLAYLIST::Video);
 
   /*!
    \brief Lookup the information of an item and display an Info dialog

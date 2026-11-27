@@ -38,6 +38,12 @@
 #include "video/VideoLibraryQueue.h"
 #include "windowing/WinSystem.h"
 
+void CApplicationPowerHandling::WakeScreen()
+{
+  ResetScreenSaver();
+  WakeUpScreenSaverAndDPMS();
+}
+
 void CApplicationPowerHandling::ResetScreenSaver()
 {
   // reset our timers

@@ -34,13 +34,12 @@ TEST(TestPlayListB4S, LoadData)
   EXPECT_TRUE(playlist.LoadData(is));
   fb.close();
 
-  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_EQ(playlist.Size(), 3);
   EXPECT_STREQ(playlist.GetName().c_str(), "Playlist 001");
 
   EXPECT_STREQ(playlist[1]->GetLabel().c_str(), "demo 2");
   // It would be nice to test path, however cross platform handling makes this difficult
   // windows strips the leading /
-  //EXPECT_STREQ(playlist[2]->GetPath().c_str(), "/Users/Shared/test.mp3");
 
   const CFileItemPtr item {playlist[2]};
   EXPECT_EQ(item->GetMusicInfoTag()->GetDuration(), 264);

@@ -118,6 +118,15 @@ public:
   static bool IsStandaloneGame(const ADDON::AddonPtr& addon);
 
   /*!
+   * \brief The game add-on a game:// path names, as an item to play
+   *
+   * \param path The game:// path
+   *
+   * \return nullptr for any other path, or if the add-on is not enabled
+   */
+  static std::shared_ptr<CFileItem> GetGameAddonItem(const std::string& path);
+
+  /*!
    * \brief Called when the cache of installable game add-ons should be
    * refreshed, such as when a new add-on repo is installed
    */

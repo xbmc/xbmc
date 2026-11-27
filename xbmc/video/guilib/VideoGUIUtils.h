@@ -22,7 +22,7 @@ namespace KODI::VIDEO::UTILS
 {
 /*! \brief Start playback of the given item. If the item is a folder, build a playlist with
   all items contained in the folder and start playback of the playlist. If item is a single video
-  item, start playback directly, without adding it to the video playlist first.
+  item, it replaces the video playlist and plays.
   \param item [in] the item to play
   \param player [in] the player to use, empty for default player
   \param mode [in] queue all successors and play them after item
@@ -33,14 +33,13 @@ void PlayItem(const std::shared_ptr<CFileItem>& item,
 
 enum class QueuePosition
 {
-  POSITION_BEGIN, // place at begin of queue, before other items
-  POSITION_END, // place at end of queue, after other items
+  POSITION_BEGIN, // play next if the playlist is playing, otherwise at the end
+  POSITION_END, // at the end of the playlist
 };
 
-/*! \brief Queue the given item in the currently active playlist. If no playlist is active,
- put the item into the video playlist.
+/*! \brief Queue the given item on the video playlist.
   \param item [in] the item to queue
-  \param pos [in] whether to place the item and the begin or the end of the queue
+  \param pos [in] whether to play the item next or add it at the end
   */
 void QueueItem(const std::shared_ptr<CFileItem>& item, QueuePosition pos);
 
@@ -51,14 +50,18 @@ void QueueItem(const std::shared_ptr<CFileItem>& item, QueuePosition pos);
   \param item [in] the item to add to the playlist
   \param queuedItems [out] the items that can be put in a play list
   \param mode [in] queue all successors and play them after item
+  \param startAt [in] the item to start at, if any; resuming starts at the last played item
+  \param startPosition [out] where the start landed in queuedItems, or -1 if nowhere
   \return true on success, false otherwise
   */
 bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item,
                          CFileItemList& queuedItems,
-                         ContentUtils::PlayMode mode);
+                         ContentUtils::PlayMode mode,
+                         const std::shared_ptr<CFileItem>& startAt = nullptr,
+                         int* startPosition = nullptr);
 
 /*!
- \brief Check whether the given item can be played by the app playlist player as one or more videos.
+ \brief Check whether the given item can be played as one or more videos.
  \param item The item to check
  \return True if playable, false otherwise.
  */
@@ -91,6 +94,8 @@ bool ChooseDiscPlaylist(CFileItem& item);
 /*!
  \brief Tell any open window and playlist that an item's path has changed, so that they update the
  item.
+ \param item [in] The item, with its new path
+ \param oldPath [in] The path the item had before
  \param oldFileId [in] The library file id the item had before, when the change gave it a new one
  */
 void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, int oldFileId = -1);

@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 #include <iostream>
 
 namespace KODI::PLAYLIST
 {
-class CPlayListRAM : public CPlayList
+class CPlayListRAM : public CPlayListFile
 {
 public:
   bool LoadData(std::istream& stream) override;

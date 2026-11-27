@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
 #include "threads/CriticalSection.h"
 #include "video/geometry/EffectiveGeometry.h"
@@ -16,6 +17,7 @@
 #include <string>
 
 class CApplicationPlayer;
+class CApplicationPlayLists;
 class CVideoInfoTag;
 
 namespace KODI::GUILIB::GUIINFO
@@ -73,6 +75,8 @@ private:
   mutable KODI::VIDEO::GEOMETRY::ContentAspectSet m_playerAspects;
 
   const std::shared_ptr<CApplicationPlayer> m_appPlayer;
+  const std::shared_ptr<CApplicationPlayLists> m_playLists;
+  mutable CLookedUpItems m_lookedUp;
 };
 
 } // namespace KODI::GUILIB::GUIINFO

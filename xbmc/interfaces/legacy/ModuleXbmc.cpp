@@ -15,6 +15,7 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "LanguageHook.h"
+#include "PlayList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/Skin.h"
@@ -33,7 +34,6 @@
 #include "network/Network.h"
 #include "network/NetworkServices.h"
 #include "peripherals/Peripherals.h"
-#include "playlists/PlayListTypes.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -137,12 +137,10 @@ namespace XBMCAddon
       if (! jsonrpccommand)
         return ret;
 
-      //    String method = jsonrpccommand;
-
       CAddOnTransport transport;
       CAddOnTransport::CAddOnClient client;
 
-      return JSONRPC::CJSONRPC::MethodCall(/*method*/ jsonrpccommand, &transport, &client);
+      return JSONRPC::CJSONRPC::MethodCall(jsonrpccommand, &transport, &client);
     }
 
     void sleep(long timemillis)
@@ -233,39 +231,6 @@ namespace XBMCAddon
       KODI::MEMORY::GetMemoryStatus(&stat);
       return static_cast<long>(stat.availPhys  / ( 1024 * 1024 ));
     }
-
-    // getCpuTemp() method
-    // ## Doesn't work right, use getInfoLabel('System.CPUTemperature') instead.
-    /*PyDoc_STRVAR(getCpuTemp__doc__,
-      "getCpuTemp() -- Returns the current cpu temperature as an integer."
-      ""
-      "example:"
-      "  - cputemp = xbmc.getCpuTemp()");
-
-      PyObject* XBMC_GetCpuTemp(PyObject *self, PyObject *args)
-      {
-      unsigned short cputemp;
-      unsigned short cpudec;
-
-      _outp(0xc004, (0x4c<<1)|0x01);
-      _outp(0xc008, 0x01);
-      _outpw(0xc000, _inpw(0xc000));
-      _outp(0xc002, (0) ? 0x0b : 0x0a);
-      while ((_inp(0xc000) & 8));
-      cputemp = _inpw(0xc006);
-
-      _outp(0xc004, (0x4c<<1)|0x01);
-      _outp(0xc008, 0x10);
-      _outpw(0xc000, _inpw(0xc000));
-      _outp(0xc002, (0) ? 0x0b : 0x0a);
-      while ((_inp(0xc000) & 8));
-      cpudec = _inpw(0xc006);
-
-      if (cpudec<10) cpudec = cpudec * 100;
-      if (cpudec<100) cpudec = cpudec *10;
-
-      return PyInt_FromLong((long)(cputemp + cpudec / 1000.0f));
-      }*/
 
     String getInfoLabel(const char* cLine)
     {
@@ -427,7 +392,7 @@ namespace XBMCAddon
       {
         result = langInfo.GetTemperatureUnitString();
       }
-      //TODO - There is a (low) risk that these 'raw' formats could be changed on Windows if they contain a '%-' sequence.
+      //! @todo There is a (low) risk that these 'raw' formats could be changed on Windows if they contain a '%-' sequence.
       else if (StringUtils::CompareNoCase(id, "datelongraw") == 0)
       {
         result = langInfo.GetDateFormat(true);
@@ -487,9 +452,7 @@ namespace XBMCAddon
       else if (StringUtils::CompareNoCase(mediaType, "picture") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
 
-      //! @todo implement
-      //    else
-      //      return an error
+      //! @todo return an error for an unknown media type
 
       return result;
     }
@@ -577,11 +540,11 @@ namespace XBMCAddon
 
     int getPLAYLIST_MUSIC()
     {
-      return static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+      return PLAYLIST_MUSIC_ID;
     }
     int getPLAYLIST_VIDEO()
     {
-      return static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
+      return PLAYLIST_VIDEO_ID;
     }
     int getTRAY_OPEN()
     {

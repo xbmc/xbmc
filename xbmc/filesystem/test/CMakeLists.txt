@@ -9,6 +9,7 @@ set(SOURCES TestAddonsPaths.cpp
             TestFileCache.cpp
             TestFileFactory.cpp
             TestLibraryPaths.cpp
+            TestPlaylistDirectory.cpp
             TestSmartPlaylistDirectory.cpp
             TestSourcesDirectory.cpp
             TestVideoDatabaseFile.cpp

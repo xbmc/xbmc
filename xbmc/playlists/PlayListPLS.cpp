@@ -103,7 +103,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
     if (!file.ReadLine(strLine))
     {
       file.Close();
-      return size() > 0;
+      return !IsEmpty();
     }
     StringUtils::Trim(strLine);
     if(StringUtils::EqualsNoCase(strLine, START_PLAYLIST_MARKER))
@@ -210,7 +210,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
 
 void CPlayListPLS::Save(const std::string& strFileName) const
 {
-  if (m_vecItems.empty())
+  if (m_items.empty())
     return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
@@ -225,9 +225,9 @@ void CPlayListPLS::Save(const std::string& strFileName) const
   g_charsetConverter.utf8ToStringCharset(strPlayListName);
   write += StringUtils::Format("PlaylistName={}\n", strPlayListName);
 
-  for (int i = 0; i < (int)m_vecItems.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItemPtr item = m_vecItems[i];
+    CFileItemPtr item = m_items[i];
     std::string strFileName=item->GetPath();
     g_charsetConverter.utf8ToStringCharset(strFileName);
     std::string strDescription=item->GetLabel();
@@ -238,7 +238,7 @@ void CPlayListPLS::Save(const std::string& strFileName) const
         StringUtils::Format("Length{}={}\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000);
   }
 
-  write += StringUtils::Format("NumberOfEntries={0}\n", m_vecItems.size());
+  write += StringUtils::Format("NumberOfEntries={0}\n", m_items.size());
   write += StringUtils::Format("Version=2\n");
   file.Write(write.c_str(), write.size());
   file.Close();

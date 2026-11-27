@@ -18,7 +18,6 @@
 #include "media/LibraryQueryDatabase.h"
 #include "media/LibraryQueryReferences.h"
 #include "media/LibraryQueryType.h"
-#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ItemProperties.h"
@@ -238,19 +237,6 @@ bool CSmartPlaylistDirectory::GetDirectory(const MEDIA::CLibraryQuery& playlist,
 
   if (auto watchedMode = playlist.GetWatchedMode(); watchedMode.has_value())
     items.SetProperty(ITEM::PROPERTY::WATCHED_MODE, static_cast<int>(watchedMode.value()));
-
-  // Hint for playlist files like STRM
-  const PLAYLIST::Id playlistTypeHint{sources.back().section == MEDIA::MediaSection::MUSIC
-                                          ? PLAYLIST::Id::TYPE_MUSIC
-                                          : PLAYLIST::Id::TYPE_VIDEO};
-
-  // go through and set the playlist order
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr item = items[i];
-    item->SetProgramCount(i); //! @todo remove this hack for playlist order
-    item->SetProperty("playlist_type_hint", static_cast<int>(playlistTypeHint));
-  }
 
   return success;
 }

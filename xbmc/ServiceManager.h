@@ -27,11 +27,6 @@ namespace PVR
 class CPVRManager;
 }
 
-namespace KODI::PLAYLIST
-{
-class CPlayListPlayer;
-}
-
 class CContextMenuManager;
 #ifdef HAS_PYTHON
 class XBPython;
@@ -105,7 +100,6 @@ public:
    *
    *   - Platform startup glue via \ref CPlatform::InitStageOne
    *   - Python script registration when Python support is enabled
-   *   - Playlist playback coordination
    *   - Slideshow delegation
    *   - Network backend discovery
    */
@@ -194,7 +188,6 @@ public:
   KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
   PERIPHERALS::CPeripherals& GetPeripherals();
 
-  KODI::PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   CSlideShowDelegator& GetSlideShowDelegator();
   int init_level = 0;
 
@@ -234,7 +227,6 @@ protected:
   std::unique_ptr<CContextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
-  std::unique_ptr<KODI::PLAYLIST::CPlayListPlayer> m_playlistPlayer;
   std::unique_ptr<KODI::GAME::CControllerManager> m_gameControllerManager;
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;
   std::unique_ptr<KODI::RETRO::CGUIGameRenderManager> m_gameRenderManager;

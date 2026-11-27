@@ -35,7 +35,7 @@ TEST(TestPlayListASX, LoadData)
   EXPECT_TRUE(playlist.LoadData(is));
   fb.close();
 
-  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_EQ(playlist.Size(), 3);
 
   EXPECT_STREQ(playlist[1]->GetLabel().c_str(), "Example radio");
 

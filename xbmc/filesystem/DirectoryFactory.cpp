@@ -195,8 +195,8 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();
-  if (url.IsProtocol("playlistmusic")) return new CPlaylistDirectory();
-  if (url.IsProtocol("playlistvideo")) return new CPlaylistDirectory();
+  if (CPlaylistDirectory::TypeOf(url))
+    return new CPlaylistDirectory();
   if (url.IsProtocol("musicdb")) return new CMusicDatabaseDirectory();
   if (url.IsProtocol("musicsearch")) return new CMusicSearchDirectory();
   if (url.IsProtocol("videodb")) return new CVideoDatabaseDirectory();

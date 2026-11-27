@@ -2285,54 +2285,32 @@ constexpr std::array<InfoMap, 8> network_labels = {{
 ///     @return **True** if Party Mode is enabled.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`MusicPartyMode.SongsPlayed`</b>,
-///                  \anchor MusicPartyMode_SongsPlayed
+///   \table_row3{   <b>`MusicPartyMode.MatchingEntries`</b>,
+///                  \anchor MusicPartyMode_MatchingEntries
 ///                  _string_,
-///     @return The number of songs played during Party Mode.
+///     @return The number of entries Party Mode's rules matched.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link MusicPartyMode_MatchingEntries `MusicPartyMode.MatchingEntries`\endlink
+///     replaces `MusicPartyMode.MatchingSongs`.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`MusicPartyMode.MatchingSongs`</b>,
-///                  \anchor MusicPartyMode_MatchingSongs
+///   \table_row3{   <b>`MusicPartyMode.MatchingEntriesLeft`</b>,
+///                  \anchor MusicPartyMode_MatchingEntriesLeft
 ///                  _string_,
-///     @return The number of songs available to Party Mode.
-///     <p>
-///   }
-///   \table_row3{   <b>`MusicPartyMode.MatchingSongsPicked`</b>,
-///                  \anchor MusicPartyMode_MatchingSongsPicked
-///                  _string_,
-///     @return The number of songs picked already for Party Mode.
-///     <p>
-///   }
-///   \table_row3{   <b>`MusicPartyMode.MatchingSongsLeft`</b>,
-///                  \anchor MusicPartyMode_MatchingSongsLeft
-///                  _string_,
-///     @return The number of songs left to be picked from for Party Mode.
-///     <p>
-///   }
-///   \table_row3{   <b>`MusicPartyMode.RelaxedSongsPicked`</b>,
-///                  \anchor MusicPartyMode_RelaxedSongsPicked
-///                  _string_,
-///     @todo Not currently used
-///     <p>
-///   }
-///   \table_row3{   <b>`MusicPartyMode.RandomSongsPicked`</b>,
-///                  \anchor MusicPartyMode_RandomSongsPicked
-///                  _string_,
-///     @return The number of unique random songs picked during Party Mode.
+///     @return The number of matched entries Party Mode has not placed on the playlist yet.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link MusicPartyMode_MatchingEntriesLeft `MusicPartyMode.MatchingEntriesLeft`\endlink
+///     replaces `MusicPartyMode.MatchingSongsLeft`.
 ///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 7> musicpartymode = {{
+constexpr std::array<InfoMap, 3> musicpartymode = {{
     {"enabled",             MUSICPM_ENABLED},
-    {"songsplayed",         MUSICPM_SONGSPLAYED},
-    {"matchingsongs",       MUSICPM_MATCHINGSONGS},
-    {"matchingsongspicked", MUSICPM_MATCHINGSONGSPICKED},
-    {"matchingsongsleft",   MUSICPM_MATCHINGSONGSLEFT},
-    {"relaxedsongspicked",  MUSICPM_RELAXEDSONGSPICKED},
-    {"randomsongspicked",   MUSICPM_RANDOMSONGSPICKED},
+    {"matchingentries",     MUSICPM_MATCHINGENTRIES},
+    {"matchingentriesleft", MUSICPM_MATCHINGENTRIESLEFT},
 }};
 // clang-format on
 
@@ -2950,7 +2928,8 @@ constexpr std::array<InfoMap, 7> musicpartymode = {{
 ///   \table_row3{   <b>`MusicPlayer.PlaylistPosition`</b>,
 ///                  \anchor MusicPlayer_PlaylistPosition
 ///                  _string_,
-///     @return The position of the current song in the current music playlist.
+///     @return The place of the current song in the music playlist's play order\, counted from 1;
+///     with shuffle off this is its position in the list.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.PlaylistLength`</b>,
@@ -3170,6 +3149,22 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     - <b>episodes</b>
 ///     - <b>musicvideos</b>
 ///     - <b>livetv</b>
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasPrevious`</b>,
+///                  \anchor VideoPlayer_HasPrevious
+///                  _boolean_,
+///     @return **True** if the video playlist is playing and an entry plays before the current one.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link VideoPlayer_HasPrevious `VideoPlayer.HasPrevious`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.HasNext`</b>,
+///                  \anchor VideoPlayer_HasNext
+///                  _boolean_,
+///     @return **True** if the video playlist is playing and skipping forward reaches another entry.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link VideoPlayer_HasNext `VideoPlayer.HasNext`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasSubtitles`</b>,
@@ -3677,7 +3672,8 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///   \table_row3{   <b>`VideoPlayer.PlaylistPosition`</b>,
 ///                  \anchor VideoPlayer_PlaylistPosition
 ///                  _string_,
-///     @return The position of the current song in the current video playlist.
+///     @return The place of the current video in the video playlist's play order\, counted from 1;
+///     with shuffle off this is its position in the list.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.PlaylistLength`</b>,
@@ -4424,7 +4420,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 94> videoplayer = {{
+constexpr std::array<InfoMap, 96> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4483,6 +4479,8 @@ constexpr std::array<InfoMap, 94> videoplayer = {{
     {"subtitlelanguageex",    VIDEOPLAYER_SUBTITLE_LANG_EX},
     {"subtitlecodec",         VIDEOPLAYER_SUBTITLE_CODEC},
     {"subtitlename",          VIDEOPLAYER_SUBTITLE_NAME},
+    {"hasprevious",           VIDEOPLAYER_HASPREVIOUS},
+    {"hasnext",               VIDEOPLAYER_HASNEXT},
     {"starttime",             VIDEOPLAYER_STARTTIME},
     {"endtime",               VIDEOPLAYER_ENDTIME},
     {"nexttitle",             VIDEOPLAYER_NEXT_TITLE},
@@ -8852,7 +8850,8 @@ constexpr std::array<InfoMap, 4> control_labels = {{
 ///   \table_row3{   <b>`Playlist.Position(media)`</b>,
 ///                  \anchor Playlist_Position
 ///                  _integer_,
-///     @return The position of the current item in the current playlist.
+///     @return The place of the current item in the playlist's play order\, counted from 1;
+///     with shuffle off this is its position in the list.
 ///     @param media - [opt] mediatype with is either
 ///     video or music.
 ///     <p>
@@ -11146,6 +11145,14 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 /// \page modules__infolabels_boolean_conditions
 /// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
 /// <hr>
+/// \subsection modules_rm_infolabels_booleans_v23 Kodi v23
+/// @skinning_v23 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `MusicPartyMode.RelaxedSongsPicked` - it was never implemented and always returned 0
+///   - `MusicPartyMode.SongsPlayed` - use \link Playlist_Position `Playlist.Position(music)`\endlink
+///   - `MusicPartyMode.MatchingSongsPicked` and `MusicPartyMode.RandomSongsPicked` - use \link Playlist_Length `Playlist.Length(music)`\endlink
+///   - `MusicPartyMode.MatchingSongs` and `MusicPartyMode.MatchingSongsLeft` - use \link MusicPartyMode_MatchingEntries `MusicPartyMode.MatchingEntries`\endlink and \link MusicPartyMode_MatchingEntriesLeft `MusicPartyMode.MatchingEntriesLeft`\endlink
+///
+/// <hr>
 /// \subsection modules_rm_infolabels_booleans_v22 Kodi v22
 /// @skinning_v22 **[Removed Infolabels]** The following infolabels have been removed:
 ///   - `Player.Cutlist` - Please use \link Player_Editlist `Player.EditList`\endlink for the EDL list and \link Player_Cuts `Player.Cuts`\endlink for the cut markers
@@ -11972,14 +11979,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
           return ret;
         else
         {
-          PLAYLIST::Id playlistid = PLAYLIST::Id::TYPE_NONE;
-          if (StringUtils::EqualsNoCase(prop.param(), "video"))
-            playlistid = PLAYLIST::Id::TYPE_VIDEO;
-          else if (StringUtils::EqualsNoCase(prop.param(), "music"))
-            playlistid = PLAYLIST::Id::TYPE_MUSIC;
-
-          if (playlistid != PLAYLIST::Id::TYPE_NONE)
-            return AddMultiInfo(CGUIInfo(ret, static_cast<int>(playlistid), 1));
+          // data1 is the named playlist; data2 = 1 marks that a playlist was named
+          if (const std::optional<PLAYLIST::Type> type = PLAYLIST::TypeFromName(prop.param()); type)
+            return AddMultiInfo(CGUIInfo(ret, static_cast<int>(*type), 1));
         }
       }
     }

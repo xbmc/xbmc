@@ -10614,43 +10614,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(
                     rows);
 }
 
-unsigned int CVideoDatabase::GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int,int> > &songIDs)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return 0;
-    if (nullptr == m_pDS)
-      return 0;
-
-    std::string strSQL = "select distinct idMVideo from musicvideo_view";
-    if (!strWhere.empty())
-      strSQL += " where " + strWhere;
-    strSQL += PrepareSQL(" ORDER BY RANDOM()");
-
-    if (!m_pDS->query(strSQL)) return 0;
-    songIDs.clear();
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      return 0;
-    }
-    songIDs.reserve(m_pDS->num_rows());
-    while (!m_pDS->eof())
-    {
-      songIDs.emplace_back(std::make_pair<int, int>(2, m_pDS->fv(0).get_asInt()));
-      m_pDS->next();
-    }    // cleanup
-    m_pDS->close();
-    return static_cast<unsigned int>(songIDs.size());
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}) failed", strWhere);
-  }
-  return 0;
-}
-
 int CVideoDatabase::GetMatchingMusicVideo(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle)
 {
   try

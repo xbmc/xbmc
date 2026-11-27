@@ -9,36 +9,17 @@
 #pragma once
 
 #include "GUIWindowVideoBase.h"
+#include "windows/GUIWindowPlayList.h"
 
-class CGUIWindowVideoPlaylist : public CGUIWindowVideoBase
+class CGUIWindowVideoPlaylist : public CGUIWindowPlayList<CGUIWindowVideoBase>
 {
 public:
-  CGUIWindowVideoPlaylist(void);
-  ~CGUIWindowVideoPlaylist(void) override;
+  CGUIWindowVideoPlaylist();
+  ~CGUIWindowVideoPlaylist() override;
 
   void OnPrepareFileItems(CFileItemList& items) override;
-  bool OnMessage(CGUIMessage& message) override;
-  bool OnAction(const CAction &action) override;
-  bool OnBack(int actionID) override;
   bool OnSelect(int iItem) override;
 
 protected:
-  bool OnPlayMedia(int iItem, const std::string &player = "") override;
-  void UpdateButtons() override;
-  void MarkPlaying();
-
-  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-
-  void OnMove(int iItem, int iAction);
-
-  void ClearPlayList();
-  void RemovePlayListItem(int iItem);
-  bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
-  void MoveItem(int iStart, int iDest);
-
-  void SavePlayList();
-
-  int m_movingFrom;
-  std::vector<CMediaSource> m_shares;
+  void PlayEntry(int iItem, const std::string& player) override;
 };

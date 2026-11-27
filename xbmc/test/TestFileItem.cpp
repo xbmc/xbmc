@@ -1530,6 +1530,27 @@ TEST(TestFileItemIsSamePath, OriginalListItemUrlIsTheIdentity)
   EXPECT_FALSE(Same(resolved, MakeItem("plugin://source/item/2")));
 }
 
+TEST(TestFileItemPlayListOrder, SortingByPlayListOrderRestoresTheSourceOrder)
+{
+  CFileItemList items;
+  for (const char* name : {"c", "a", "b"})
+  {
+    auto item = std::make_shared<CFileItem>(std::string("/media/") + name + ".mkv", false);
+    item->SetLabel(name);
+    item->SetPlayListOrder(items.Size());
+    item->SetProgramCount(9 - items.Size()); // a count of something else must not decide the order
+    items.Add(item);
+  }
+
+  items.Sort(SortBy::LABEL, SortOrder::ASCENDING);
+  ASSERT_EQ("a", items[0]->GetLabel());
+
+  items.Sort(SortBy::PLAYLIST_ORDER, SortOrder::ASCENDING);
+  EXPECT_EQ("c", items[0]->GetLabel());
+  EXPECT_EQ("a", items[1]->GetLabel());
+  EXPECT_EQ("b", items[2]->GetLabel());
+}
+
 TEST(TestFileItemList, AddSortMethodLeavesTheSortOrderToTheView)
 {
   CFileItemList items;

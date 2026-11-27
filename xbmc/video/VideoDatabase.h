@@ -1151,14 +1151,6 @@ public:
                 const SortDescription& sortDescription = SortDescription());
   std::string GetItemById(const std::string &itemType, int id);
 
-  // partymode
-  /*! \brief Gets music video IDs in random order that match the where clause
-  \param strWhere the SQL where clause to apply in the query
-  \param songIDs a vector of <2, id> pairs suited to party mode use
-  \return count of music video IDs found.
-  */
-  unsigned int GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int, int> > &songIDs);
-
   void UpdateArtForItem(int mediaId, const std::string& mediaType) const;
 
   /*!

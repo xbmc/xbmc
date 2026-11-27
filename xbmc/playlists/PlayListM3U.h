@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 #include <map>
 #include <string>
 
 namespace KODI::PLAYLIST
 {
-class CPlayListM3U : public CPlayList
+class CPlayListM3U : public CPlayListFile
 {
 public:
   static const char *StartMarker;

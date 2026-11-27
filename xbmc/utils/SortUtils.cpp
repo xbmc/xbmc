@@ -214,8 +214,7 @@ std::string ByProgramCount(SortAttribute attributes, const SortItem &values)
 
 std::string ByPlaylistOrder(SortAttribute attributes, const SortItem &values)
 {
-  //! @todo Playlist order is hacked into program count variable (not nice, but ok until 2.0)
-  return ByProgramCount(attributes, values);
+  return std::to_string(values.at(Field::PLAYLIST_ORDER).asInteger());
 }
 
 std::string ByGenre(SortAttribute attributes, const SortItem &values)
@@ -748,7 +747,7 @@ std::map<SortBy, Fields> fillSortingFields()
     {SortBy::VOTES,                      {Field::VOTES}},
     {SortBy::TOP250,                     {Field::TOP250}},
     {SortBy::PROGRAM_COUNT,              {Field::PROGRAM_COUNT}},
-    {SortBy::PLAYLIST_ORDER,             {Field::PROGRAM_COUNT}},
+    {SortBy::PLAYLIST_ORDER,             {Field::PLAYLIST_ORDER}},
     {SortBy::EPISODE_NUMBER,             {Field::EPISODE_NUMBER, Field::SEASON, Field::EPISODE_NUMBER_SPECIAL_SORT,
                                           Field::SEASON_SPECIAL_SORT, Field::TITLE, Field::SORT_TITLE}},
     {SortBy::SEASON,                     {Field::SEASON, Field::SEASON_SPECIAL_SORT}},
@@ -1091,7 +1090,7 @@ const auto table = std::array{
   sort_map{SortBy::ORIG_DATE,                   SortMethod::ORIG_DATE,                       SortAttributeNone,          38079 },
   sort_map{SortBy::BPM,                         SortMethod::BPM,                             SortAttributeNone,          38080 },
 
-  // the following have no corresponding SortMetho d::*
+  // the following have no corresponding SortMethod::*
   sort_map{SortBy::ALBUM_TYPE,                  SortMethod::NONE,                            SortAttributeNone,          564 },
   sort_map{SortBy::VOTES,                       SortMethod::NONE,                            SortAttributeNone,          205 },
   sort_map{SortBy::TOP250,                      SortMethod::NONE,                            SortAttributeNone,          13409 },

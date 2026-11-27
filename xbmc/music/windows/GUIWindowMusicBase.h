@@ -88,6 +88,11 @@ protected:
   void RetrieveMusicInfo();
   void OnItemInfo(int iItem);
   void OnItemInfoAll(const std::string& strPath, bool refresh = false);
+  /*!
+   * \brief Queue the selected item, and start the playlist if nothing is playing.
+   * \param iItem The selected item in the list or thumb control
+   * \param first Queue it to play next rather than at the end
+   */
   virtual void OnQueueItem(int iItem, bool first = false);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
 

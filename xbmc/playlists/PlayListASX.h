@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 #include <iostream>
 
@@ -20,7 +20,7 @@ class XMLNode;
 
 namespace KODI::PLAYLIST
 {
-class CPlayListASX : public CPlayList
+class CPlayListASX : public CPlayListFile
 {
 public:
   bool LoadData(std::istream& stream) override;

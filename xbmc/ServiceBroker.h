@@ -37,11 +37,6 @@ namespace PVR
 class CPVRManager;
 }
 
-namespace KODI::PLAYLIST
-{
-class CPlayListPlayer;
-}
-
 namespace KODI
 {
 namespace MESSAGING
@@ -59,6 +54,7 @@ class CCaptureService;
 } // namespace KODI
 
 class CAppParams;
+class CApplicationPlayLists;
 template<class T>
 class CComponentContainer;
 class CContextMenuManager;
@@ -167,7 +163,6 @@ public:
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static CPlatform& GetPlatform();
-  static KODI::PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSlideShowDelegator& GetSlideShowDelegator();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
@@ -188,6 +183,7 @@ public:
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
+  static std::shared_ptr<CApplicationPlayLists> GetPlayLists();
 
   static CGUIComponent* GetGUI();
   static const CGUIComponent* GetGUIConst();

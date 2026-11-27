@@ -129,15 +129,15 @@ bool CExecString::Parse(const CFileItem& item, const std::string& contextWindow)
   else // assume a media file
   {
     if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
-      BuildPlayMedia(item, StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath));
+      Build("PlayMedia", {StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath)});
     else if (MUSIC::IsMusicDb(item) && item.HasMusicInfoTag())
-      BuildPlayMedia(item, StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()));
+      Build("PlayMedia", {StringUtils::Paramify(item.GetMusicInfoTag()->GetURL())});
     else if (item.IsPicture())
       Build("ShowPicture", {StringUtils::Paramify(item.GetPath())});
     else
     {
       // Everything else will be treated as PlayMedia for item's path
-      BuildPlayMedia(item, StringUtils::Paramify(item.GetPath()));
+      Build("PlayMedia", {StringUtils::Paramify(item.GetPath())});
     }
   }
   return true;
@@ -148,16 +148,6 @@ void CExecString::Build(const std::string& function, const std::vector<std::stri
   m_function = function;
   m_params = params;
   SetExecString();
-}
-
-void CExecString::BuildPlayMedia(const CFileItem& item, const std::string& target)
-{
-  std::vector<std::string> params{target};
-
-  if (item.HasProperty("playlist_type_hint"))
-    params.emplace_back("playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString());
-
-  Build("PlayMedia", params);
 }
 
 void CExecString::SetExecString()

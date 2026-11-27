@@ -35,7 +35,7 @@ std::string ShowSelectArtTypeDialog(CFileItemList& artitems);
   This fetches the possible types of art for a song, album or artist, and the
   current art URL (if the item has art of that type), for display on a dialog.
   \param musicitem a music CFileItem (song, album or artist)
-  \param artitems [out] a fileitem list,  each item having "arttype" property
+  \param artlist [out] a fileitem list,  each item having "arttype" property
   e.g. "thumb", current art URL (if art exists), and localized label (for common arttypes)
   \return true if art types are retrieved, false if none is found.
   \sa ShowSelectArtTypeDialog
@@ -47,7 +47,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist);
   For the song, album or artist this adds a job to the queue to update the art table
   modifying, adding or deleting that type of art. Changes to album or artist art are
   then passed to the currently playing song (if there is one).
-  \param item a shared pointer to a music CFileItem (song, album or artist)
+  \param pItem a shared pointer to a music CFileItem (song, album or artist)
   \param strType the type of art e.g. "fanart" or "thumb" etc.
   \param strArt art URL, when empty the entry for that type of art is deleted.
   */
@@ -75,7 +75,7 @@ void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating
 std::vector<std::string> GetArtTypesToScan(KODI::MEDIA::TYPE mediaType);
 
 /*! \brief Validate string is acceptable as the name of an additional art type
-  - limited length, and ascii alphanumberic characters only
+  - limited length, and ascii alphanumeric characters only
   \param potentialArtType [in] potential art type name
   \return true if the art type is valid
   */
@@ -89,7 +89,7 @@ bool IsAutoPlayNextItem(const CFileItem& item);
 
 /*! \brief Start playback of the given item. If the item is a folder, build a playlist with
   all items contained in the folder and start playback of the playlist. If item is a single music
-  item, start playback directly, without adding it to the music playlist first.
+  item, it replaces the music playlist and plays.
   \param item [in] the item to play
   \param player [in] the player to use, empty for default player
   \param mode [in] queue all successors and play them after item
@@ -100,14 +100,14 @@ void PlayItem(const std::shared_ptr<CFileItem>& item,
 
 enum class QueuePosition
 {
-  POSITION_BEGIN, // place at begin of queue, before other items
-  POSITION_END, // place at end of queue, after other items
+  POSITION_BEGIN, // play next if the playlist is playing, otherwise at the end
+  POSITION_END, // at the end of the playlist
 };
 
-/*! \brief Queue the given item in the currently active playlist. If none is active, put the
-  item into the music playlist. Start playback of the playlist, if player is not already playing.
+/*! \brief Queue the given item on the music playlist, or on the video playlist while audio
+  follows what it plays. Start playback of the playlist, if player is not already playing.
   \param item [in] the item to queue
-  \param pos [in] whether to place the item and the begin or the end of the queue
+  \param pos [in] whether to play the item next or add it at the end
   */
 void QueueItem(const std::shared_ptr<CFileItem>& item, QueuePosition pos);
 
@@ -117,12 +117,16 @@ void QueueItem(const std::shared_ptr<CFileItem>& item, QueuePosition pos);
   busy dialog if action takes certain amount of time to give the user visual feedback.
   \param item [in] the item to add to the playlist
   \param queuedItems [out] the items that can be put in a play list
+  \param startAt [in] the item to start at, if any
+  \param startPosition [out] where the start landed in queuedItems, or -1 if nowhere
   \return true on success, false otherwise
   */
-bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems);
+bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems,
+                         const std::shared_ptr<CFileItem>& startAt = nullptr,
+                         int* startPosition = nullptr);
 
 /*!
- \brief Check whether the given item can be played by the app playlist player as one or more songs.
+ \brief Check whether the given item can be played on the music playlist as one or more songs.
  \param item The item to check
  \return True if playable, false otherwise.
  */

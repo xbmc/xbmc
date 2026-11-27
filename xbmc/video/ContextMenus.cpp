@@ -240,7 +240,7 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
 {
   if (item->IsLiveTV()) // pvr tv or pvr radio?
   {
-    g_application.PlayMedia(*item, "", PLAYLIST::Id::TYPE_VIDEO);
+    g_application.PlayMedia(*item, "", PLAYLIST::Video);
   }
   else
   {

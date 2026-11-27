@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "application/PlaybackOptions.h"
 #include "cores/IPlayer.h"
 
 #include <cstdint>
@@ -41,11 +42,13 @@ public:
    * \param player The default player to be used for playback
    * \param restart A flag indicating whether file shall be played from the beginning, ignoring
    * possibly existing resume points.
+   * \param startsRun Whether this playback starts a run rather than continuing one.
    * \return the result
    */
   GatherPlaybackDetailsResult GatherPlaybackDetails(const CFileItem& item,
                                                     std::string player,
-                                                    bool restart);
+                                                    bool restart,
+                                                    KODI::APPLICATION::StartsRun startsRun);
 
   /*!
    * \brief Get the resolved item, that is to be used for playback.
@@ -86,9 +89,11 @@ private:
   bool GetPlaylistIfDisc();
 
   /*!
-   * \brief Determine if playback should go fullscreen based on media type and settings
+   * \brief Whether a run that starts here goes fullscreen: audio by the music select-action
+   * setting, anything else by the start-movies-fullscreen setting.
+   * \param startsRun Only the start of a run may go fullscreen.
    */
-  void DetermineFullScreen();
+  void DetermineFullScreen(KODI::APPLICATION::StartsRun startsRun);
 
   CApplicationStackHelper& m_stackHelper;
   CFileItem m_item;

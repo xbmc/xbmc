@@ -2,6 +2,7 @@ set(SOURCES PlayList.cpp
             PlayListASX.cpp
             PlayListB4S.cpp
             PlayListFactory.cpp
+            PlayListFile.cpp
             PlayListFileItemClassify.cpp
             PlayListM3U.cpp
             PlayListPLS.cpp
@@ -16,8 +17,10 @@ set(SOURCES PlayList.cpp
 set(HEADERS PlayList.h
             PlayListASX.h
             PlayListB4S.h
+            PlayListEntryRules.h
             PlayListFactory.h
             PlayListFeed.h
+            PlayListFile.h
             PlayListFileItemClassify.h
             PlayListM3U.h
             PlayListPLS.h

@@ -259,17 +259,6 @@ bool CApplicationPlayer::HasGame() const
   return (player && player->HasGame());
 }
 
-PLAYLIST::Id CApplicationPlayer::GetPreferredPlaylist() const
-{
-  if (IsPlayingVideo())
-    return PLAYLIST::Id::TYPE_VIDEO;
-
-  if (IsPlayingAudio())
-    return PLAYLIST::Id::TYPE_MUSIC;
-
-  return PLAYLIST::Id::TYPE_NONE;
-}
-
 bool CApplicationPlayer::HasRDS() const
 {
   std::shared_ptr<const IPlayer> player = GetInternal();

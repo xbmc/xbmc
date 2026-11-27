@@ -17,7 +17,6 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
-#include "playlists/PlayListTypes.h"
 #include "tags/MusicInfoTag.h"
 #include "utils/ItemProperties.h"
 #include "utils/Variant.h"
@@ -95,8 +94,6 @@ namespace
 {
 void Play(const std::shared_ptr<CFileItem>& item, const std::string& player)
 {
-  item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_MUSIC));
-
   const ContentUtils::PlayMode mode =
       item->GetProperty(ITEM::PROPERTY::CHECK_AUTOPLAY_NEXT_ITEM).asBoolean()
           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM

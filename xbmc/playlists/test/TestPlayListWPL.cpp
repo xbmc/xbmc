@@ -36,7 +36,7 @@ TEST(TestPlayListWPL, LoadData)
   EXPECT_TRUE(playlist.LoadData(is));
   fb.close();
 
-  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_EQ(playlist.Size(), 3);
   EXPECT_STREQ(playlist[0]->GetLabel().c_str(), "track01.mp3");
 
   std::string track_url = "\\\\server\\vol\\music\\Classical\\Composer\\OrganWorks\\cd03\\track01.mp3";

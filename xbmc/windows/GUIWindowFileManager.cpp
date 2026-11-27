@@ -11,7 +11,6 @@
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -44,8 +43,6 @@
 #include "network/Network.h"
 #include "pictures/SlideShowDelegator.h"
 #include "platform/Filesystem.h"
-#include "playlists/PlayList.h"
-#include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -223,7 +220,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
             CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
           else if (m_Directory[i]->IsRemovable() && !m_rootDir.IsInSource(m_Directory[i]->GetPath()))
-          { //
+          {
             if (IsActive())
               Update(i, "");
             else
@@ -257,8 +254,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLIST_CHANGED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-  case GUI_MSG_PLAYLISTPLAYER_STARTED:
-  case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     { // send a notify all to all controls on this window
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_LIST);
       OnMessage(msg);
@@ -622,37 +617,17 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     OnStart(pItem.get(), "");
     return ;
   }
-  // UpdateButtons();
 }
 
 //! @todo 2.0: Can this be removed, or should we run without the "special" file directories while
 // in filemanager view.
 void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 {
-  // start playlists from file manager
-  if (PLAYLIST::IsPlayList(*pItem))
+  const bool isPlayList = PLAYLIST::IsPlayList(*pItem);
+  if (isPlayList || MUSIC::IsAudio(*pItem) || VIDEO::IsVideo(*pItem) || pItem->IsGame())
   {
-    const std::string& strPlayList = pItem->GetPath();
-    std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
-    if (nullptr != pPlayList)
-    {
-      if (!pPlayList->Load(strPlayList))
-      {
-        HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
-        return;
-      }
-    }
-    g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST::Id::TYPE_MUSIC);
-    return;
-  }
-  if (MUSIC::IsAudio(*pItem) || VIDEO::IsVideo(*pItem))
-  {
-    CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*pItem), player);
-    return;
-  }
-  if (pItem->IsGame())
-  {
-    g_application.PlayFile(*pItem, player);
+    if (!g_application.PlayMedia(*pItem, player) && isPlayList)
+      HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
     return ;
   }
 #ifdef HAS_PYTHON
@@ -729,7 +704,6 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
   }
 
   UpdateItemCounts();
-  // UpdateButtons();
 }
 
 void CGUIWindowFileManager::OnCopy(int iList)

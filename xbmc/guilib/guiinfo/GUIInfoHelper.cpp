@@ -9,21 +9,23 @@
 #include "GUIInfoHelper.h"
 
 #include "FileItem.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "Util.h"
+#include "application/ApplicationPlayLists.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/IGUIContainer.h"
+#include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "playlists/PlayList.h"
-#include "resources/LocalizeStrings.h"
-#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
+
+#include <mutex>
 
 namespace KODI::GUILIB::GUIINFO
 {
@@ -31,49 +33,6 @@ namespace KODI::GUILIB::GUIINFO
 // conditions for window retrieval
 static const int WINDOW_CONDITION_HAS_LIST_ITEMS = 1;
 static const int WINDOW_CONDITION_IS_MEDIA_WINDOW = 2;
-
-std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistId /* = TYPE_NONE */)
-{
-  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-
-  if (playlistId == PLAYLIST::Id::TYPE_NONE)
-    playlistId = player.GetCurrentPlaylist();
-
-  switch (item)
-  {
-    case PLAYLIST_LENGTH:
-    {
-      return std::to_string(player.GetPlaylist(playlistId).size());
-    }
-    case PLAYLIST_POSITION:
-    {
-      int currentSong = player.GetCurrentItemIdx();
-      if (currentSong > -1)
-        return std::to_string(currentSong + 1);
-      break;
-    }
-    case PLAYLIST_RANDOM:
-    {
-      if (player.IsShuffled(playlistId))
-        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16041); // 16041: On
-      else
-        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(591); // 591: Off
-    }
-    case PLAYLIST_REPEAT:
-    {
-      PLAYLIST::RepeatState state = player.GetRepeat(playlistId);
-      if (state == PLAYLIST::RepeatState::ONE)
-        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(592); // 592: One
-      else if (state == PLAYLIST::RepeatState::ALL)
-        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(593); // 593: All
-      else
-        return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(594); // 594: Off
-    }
-    default:
-      break;
-  }
-  return std::string();
-}
 
 namespace
 {
@@ -203,6 +162,96 @@ std::string GetFileInfoLabelValueFromPath(int info, const std::string& filenameA
   }
 
   return value;
+}
+
+bool GetFileFallbackLabel(std::string& value, const CFileItem& item, int info)
+{
+  switch (info)
+  {
+    case PLAYER_PATH:
+    case PLAYER_FILENAME:
+    case PLAYER_FILEPATH:
+      value = GetFileInfoLabelValueFromPath(info, item.GetPath());
+      return true;
+    case PLAYER_TITLE:
+    case MUSICPLAYER_TITLE:
+    case VIDEOPLAYER_TITLE:
+      value = item.GetLabel();
+      if (value.empty())
+        value = CUtil::GetTitleFromPath(item.GetPath());
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool IsPlayListEntryInfo(const CGUIInfo& info, int first, int last)
+{
+  return info.GetData1() && ((info.GetInfo() >= first && info.GetInfo() <= last) ||
+                             (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+                              info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST));
+}
+
+std::optional<PlayListEntryLabel> GetPlayListEntry(const CApplicationPlayLists& playLists,
+                                                   PLAYLIST::Type type,
+                                                   const CGUIInfo& info)
+{
+  if (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+      info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST && playLists.GetPlayingType() != type)
+    return std::nullopt;
+
+  const int position =
+      info.GetData1() == 1 ? playLists.GetPlayingPosition(type, info.GetData2()) : info.GetData2();
+  const PLAYLIST::CPlayList& playList = playLists.GetPlayList(type);
+  const PLAYLIST::EntryId entry = playList.GetEntryId(position);
+  std::shared_ptr<CFileItem> item = playList.GetItem(entry);
+  if (!item)
+    return std::nullopt;
+  return PlayListEntryLabel{entry, std::move(item)};
+}
+
+bool CLookedUpItems::NeedsLookUp(PLAYLIST::EntryId entry,
+                                 const std::shared_ptr<const CFileItem>& item) const
+{
+  std::unique_lock lock(m_section);
+  const auto it = m_items.find(entry);
+  return it == m_items.end() || it->second.lock() != item;
+}
+
+void CLookedUpItems::Add(PLAYLIST::EntryId entry, const std::shared_ptr<const CFileItem>& item)
+{
+  std::unique_lock lock(m_section);
+  std::erase_if(m_items, [](const auto& looked) { return looked.second.expired(); });
+  m_items[entry] = item;
+}
+
+std::shared_ptr<CFileItem> LookUpOnce(CApplicationPlayLists& playLists,
+                                      PLAYLIST::Type type,
+                                      const PlayListEntryLabel& found,
+                                      CLookedUpItems& lookedUp,
+                                      const std::function<void(CFileItem&)>& load)
+{
+  if (!lookedUp.NeedsLookUp(found.entry, found.item))
+    return found.item;
+
+  auto item = std::make_shared<CFileItem>(*found.item);
+  load(*item);
+  playLists.ReplaceItem(type, found.entry, *item);
+  lookedUp.Add(found.entry, playLists.GetPlayList(type).GetItem(found.entry));
+  return item;
+}
+
+std::string GetPlayListLengthLabel(const CApplicationPlayLists& playLists,
+                                   std::optional<PLAYLIST::Type> type)
+{
+  return std::to_string(type ? playLists.GetPlayList(*type).Size() : 0);
+}
+
+std::string GetPlayListPositionLabel(const CApplicationPlayLists& playLists,
+                                     std::optional<PLAYLIST::Type> type)
+{
+  const int position = type ? playLists.GetPlayingDisplayPosition(*type) : -1;
+  return position < 0 ? std::string{} : std::to_string(position + 1);
 }
 
 } // namespace KODI::GUILIB::GUIINFO
