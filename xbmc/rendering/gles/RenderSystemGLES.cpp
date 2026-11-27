@@ -736,6 +736,8 @@ void CRenderSystemGLES::InitialiseShaders()
 
 void CRenderSystemGLES::ReleaseShaders()
 {
+  glUseProgram(0);
+
   if (Shader(ShaderMethodGLES::SM_DEFAULT))
     Shader(ShaderMethodGLES::SM_DEFAULT)->Free();
   Shader(ShaderMethodGLES::SM_DEFAULT).reset();
@@ -818,7 +820,14 @@ void CRenderSystemGLES::EnableGUIShader(ShaderMethodGLES method)
   m_method = method;
   if (Shader(m_method))
   {
-    Shader(m_method)->Enable();
+    // Binding the program that is already current still makes some drivers revalidate it, and
+    // other renderers and add-ons may have bound theirs since the last GUI draw.
+    GLint current = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current);
+    if (Shader(m_method)->OK() && static_cast<GLuint>(current) == Shader(m_method)->ProgramHandle())
+      Shader(m_method)->OnEnabled();
+    else
+      Shader(m_method)->Enable();
   }
   else
   {
@@ -828,10 +837,8 @@ void CRenderSystemGLES::EnableGUIShader(ShaderMethodGLES method)
 
 void CRenderSystemGLES::DisableGUIShader()
 {
-  if (Shader(m_method))
-  {
-    Shader(m_method)->Disable();
-  }
+  // The program stays bound: unbinding it makes the driver revalidate all of its state when the
+  // next GUI draw binds it again, which is costly on tile-based GPUs such as Mali.
   m_method = ShaderMethodGLES::SM_DEFAULT;
 }
 
