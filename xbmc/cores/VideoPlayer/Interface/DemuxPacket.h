@@ -49,6 +49,8 @@ extern "C"
 
     //! @brief Empty packet replacing input the demuxer read and dropped.
     bool m_inputDropped{false};
+
+    bool m_hasDisplayTime{false};
   };
 
 #ifdef __cplusplus
