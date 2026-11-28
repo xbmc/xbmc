@@ -147,8 +147,8 @@ namespace XBMCAddon { namespace xbmc {
 %feature("director") WindowXMLDialog;
 
 // scripts compare Actions to ints: a non-Action operand compares against the id.
-%feature("python:slot", "tp_richcompare", functype="richcmpfunc") XBMCAddon::xbmcgui::Action::__eq__;
 %feature("kwargs", "0") XBMCAddon::xbmcgui::Action::__eq__;
+%feature("kwargs", "0") XBMCAddon::xbmcgui::Action::__ne__;
 %extend XBMCAddon::xbmcgui::Action {
   PyObject* __eq__(PyObject* obj2) {
     void* argp = 0;
@@ -163,6 +163,22 @@ namespace XBMCAddon { namespace xbmc {
     }
     PyObject* o1 = PyLong_FromLong($self->id);
     PyObject* r = PyObject_RichCompare(o1, obj2, Py_EQ);
+    Py_DECREF(o1);
+    return r;
+  }
+  PyObject* __ne__(PyObject* obj2) {
+    void* argp = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr(obj2, &argp, SWIGTYPE_p_XBMCAddon__xbmcgui__Action, 0)) && argp)
+    {
+      XBMCAddon::xbmcgui::Action* a2 = reinterpret_cast<XBMCAddon::xbmcgui::Action*>(argp);
+      if ($self->id == a2->id && $self->buttonCode == a2->buttonCode &&
+          $self->fAmount1 == a2->fAmount1 && $self->fAmount2 == a2->fAmount2 &&
+          $self->fRepeat == a2->fRepeat && $self->strAction == a2->strAction)
+        Py_RETURN_FALSE;
+      Py_RETURN_TRUE;
+    }
+    PyObject* o1 = PyLong_FromLong($self->id);
+    PyObject* r = PyObject_RichCompare(o1, obj2, Py_NE);
     Py_DECREF(o1);
     return r;
   }
