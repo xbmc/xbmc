@@ -40,8 +40,12 @@ function(generate_file file)
                              -DFILE=${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}
                              -DSWIG_VERSION=${_swig_version}
                              -P ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
+                     COMMAND ${CMAKE_COMMAND}
+                             -DFILE=${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}
+                             -P ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-subclass-setattr.cmake
                      DEPENDS SWIG::SWIG ${CMAKE_CURRENT_SOURCE_DIR}/${file}
                              ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
+                             ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-subclass-setattr.cmake
                      DEPFILE ${DEP_FILE})
 
   set_source_files_properties(${CPP_FILE} PROPERTIES SKIP_LINTING ON)
