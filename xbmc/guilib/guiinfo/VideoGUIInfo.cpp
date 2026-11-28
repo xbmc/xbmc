@@ -585,6 +585,13 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       case LISTITEM_SUBTITLE_LANGUAGE:
         value = tag->m_streamDetails.GetSubtitleLanguage().ToString();
         return true;
+      case LISTITEM_AUDIO_LANGUAGE_NAME:
+        value = tag->m_streamDetails.GetAudioLanguage(tag->GetDescribedAudioStreamIndex())
+                    .ToEnglishName();
+        return true;
+      case LISTITEM_SUBTITLE_LANGUAGE_NAME:
+        value = tag->m_streamDetails.GetSubtitleLanguage().ToEnglishName();
+        return true;
       case LISTITEM_FIRST_AUDIO_LANGUAGE:
         value = tag->m_streamDetails.GetFirstAudioLanguage().ToString();
         return true;

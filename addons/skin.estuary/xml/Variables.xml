@@ -960,13 +960,13 @@
 		<value condition="String.IsEqual(ListItem.AudioLanguage,und) + [Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)]">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]</value>
 		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]$INFO[ListItem.FirstAudioLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 		<value condition="String.IsEqual(ListItem.AudioLanguage,und)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
-		<value>$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.AudioLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
+		<value>$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.AudioLanguageName, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 	</variable>
 	<variable name="MediaSubtitlePropVar">
 		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + [String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)] ">$VAR[SubtitleCodecVar]</value>
 		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitleCodec) + ![String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)]">$INFO[VideoPlayer.SubtitlesLanguage]</value>
 		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + ![String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)]">$VAR[SubtitleCodecVar]$INFO[VideoPlayer.SubtitlesLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
-		<value condition="!String.IsEqual(ListItem.SubtitleLanguage,und)">$INFO[ListItem.SubtitleLanguage]</value>
+		<value condition="!String.IsEqual(ListItem.SubtitleLanguage,und)">$INFO[ListItem.SubtitleLanguageName]</value>
 	</variable>
 	<variable name="MediaMusicPropVar">
 		<value condition="RDS.HasRDS + Window.IsActive(visualisation)">RDS$VAR[AudioCodecFlagVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[AudioChannelsVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[MusicPlayer.SampleRate, [COLOR border_alpha]&#8226;[/COLOR] ,kHz]$INFO[MusicPlayer.BitRate, [COLOR border_alpha]&#8226;[/COLOR] ,kbps]$VAR[MusicBitsPerSampleVar, [COLOR border_alpha]&#8226;[/COLOR] ,bit]$VAR[MusicBMPVar, [COLOR border_alpha]&#8226;[/COLOR] ,bmp]</value>
