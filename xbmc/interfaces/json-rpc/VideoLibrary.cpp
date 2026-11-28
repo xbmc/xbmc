@@ -419,8 +419,9 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CVariant& parameterOb
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMoviesNav(
-          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES, items, 0, RequiresAdditionalDetails(KODI::MEDIA::TYPE::MOVIE, parameterObject)))
+  if (!videodatabase.GetRecentlyAdded(
+          KODI::MEDIA::TYPE::MOVIE, items, 0,
+          RequiresAdditionalDetails(KODI::MEDIA::TYPE::MOVIE, parameterObject)))
     return InternalError;
 
   return HandleItems("movieid", "movies", items, parameterObject, result, true);
@@ -434,8 +435,9 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CVariant& parameter
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedEpisodesNav(
-          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES, items, 0, RequiresAdditionalDetails(KODI::MEDIA::TYPE::EPISODE, parameterObject)))
+  if (!videodatabase.GetRecentlyAdded(
+          KODI::MEDIA::TYPE::EPISODE, items, 0,
+          RequiresAdditionalDetails(KODI::MEDIA::TYPE::EPISODE, parameterObject)))
     return InternalError;
 
   return HandleItems("episodeid", "episodes", items, parameterObject, result, true);
@@ -449,8 +451,9 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CVariant& parame
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMusicVideosNav(
-          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS, items, 0, RequiresAdditionalDetails(KODI::MEDIA::TYPE::MUSIC_VIDEO, parameterObject)))
+  if (!videodatabase.GetRecentlyAdded(
+          KODI::MEDIA::TYPE::MUSIC_VIDEO, items, 0,
+          RequiresAdditionalDetails(KODI::MEDIA::TYPE::MUSIC_VIDEO, parameterObject)))
     return InternalError;
 
   return HandleItems("musicvideoid", "musicvideos", items, parameterObject, result, true);

@@ -27,7 +27,6 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoDbPaths.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 
@@ -61,7 +60,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES, items, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAdded(KODI::MEDIA::TYPE::MOVIE, items, NUM_ITEMS))
   {
     for (; i < items.Size(); ++i)
     {
@@ -104,7 +103,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList  TVShowItems;
 
-  if (videodatabase.GetRecentlyAddedEpisodesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES, TVShowItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAdded(KODI::MEDIA::TYPE::EPISODE, TVShowItems, NUM_ITEMS))
   {
     for (; i < TVShowItems.Size(); ++i)
     {
@@ -128,15 +127,9 @@ bool CRecentlyAddedJob::UpdateVideo()
       if (!item->HasArt(KODI::ART::TYPE::THUMB))
         loader.LoadItem(item.get());
 
-      std::string seasonThumb;
-      if (item->GetVideoInfoTag()->m_iIdSeason > 0)
-        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason,
-                                                  KODI::MEDIA::TYPE::SEASON,
-                                                  KODI::ART::TYPE::THUMB);
-
       home->SetProperty("LatestEpisode." + value + ".Thumb", item->GetArt(KODI::ART::TYPE::THUMB));
       home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
-      home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
+      home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , item->GetArt("season.thumb"));
       home->SetProperty("LatestEpisode." + value + ".Fanart",
                         item->GetArt(KODI::ART::TYPE::FANART));
     }
@@ -167,7 +160,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList MusicVideoItems;
 
-  if (videodatabase.GetRecentlyAddedMusicVideosNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS, MusicVideoItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAdded(KODI::MEDIA::TYPE::MUSIC_VIDEO, MusicVideoItems, NUM_ITEMS))
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {
@@ -359,33 +352,26 @@ bool CRecentlyAddedJob::UpdateTotal()
   if (items.Size() == 1 && items.Get(0)->HasProperty("total"))
     MusArtistTotals = static_cast<int>(items.Get(0)->GetProperty("total").asInteger());
 
-  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
-  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
+  int MusSongTotals   = musicdatabase.GetSongsCount();
+  int MusAlbumTotals  = musicdatabase.GetAlbumNamesCount();
   musicdatabase.Close();
 
   videodatabase.Open();
-  int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshow_view"     , "count(1)").c_str());
-  int movieTotals     = atoi(videodatabase.GetSingleValue("movie_view"      , "count(1)").c_str());
-  int movieWatched    = atoi(videodatabase.GetSingleValue("movie_view"      , "count(playCount)").c_str());
-  int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(1)").c_str());
-  int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideo_view" , "count(playCount)").c_str());
-  int EpWatched       = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount)").c_str());
-  int EpCount         = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(totalcount)").c_str());
-  int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshow_view"     , "sum(watchedcount = totalcount)").c_str());
+  const CVideoDatabase::Totals video{videodatabase.GetTotals()};
   videodatabase.Close();
 
-  home->SetProperty("TVShows.Count"         , tvShowCount);
-  home->SetProperty("TVShows.Watched"       , TvShowsWatched);
-  home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
-  home->SetProperty("Episodes.Count"        , EpCount);
-  home->SetProperty("Episodes.Watched"      , EpWatched);
-  home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);
-  home->SetProperty("Movies.Count"          , movieTotals);
-  home->SetProperty("Movies.Watched"        , movieWatched);
-  home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
-  home->SetProperty("MusicVideos.Count"     , MusVidTotals);
-  home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
-  home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
+  home->SetProperty("TVShows.Count"         , video.tvShows);
+  home->SetProperty("TVShows.Watched"       , video.tvShowsWatched);
+  home->SetProperty("TVShows.UnWatched"     , video.tvShows - video.tvShowsWatched);
+  home->SetProperty("Episodes.Count"        , video.episodes);
+  home->SetProperty("Episodes.Watched"      , video.episodesWatched);
+  home->SetProperty("Episodes.UnWatched"    , video.episodes - video.episodesWatched);
+  home->SetProperty("Movies.Count"          , video.movies);
+  home->SetProperty("Movies.Watched"        , video.moviesWatched);
+  home->SetProperty("Movies.UnWatched"      , video.movies - video.moviesWatched);
+  home->SetProperty("MusicVideos.Count"     , video.musicVideos);
+  home->SetProperty("MusicVideos.Watched"   , video.musicVideosWatched);
+  home->SetProperty("MusicVideos.UnWatched" , video.musicVideos - video.musicVideosWatched);
   home->SetProperty("Music.SongsCount"      , MusSongTotals);
   home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
   home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);

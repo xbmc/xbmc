@@ -30,7 +30,8 @@ bool CDirectoryNodeRecentlyAddedMusicVideos::GetContent(CFileItemList& items) co
 
   const int details =
       items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS).asInteger32(VideoDbDetailsNone);
-  bool bSuccess = videodatabase.GetRecentlyAddedMusicVideosNav(BuildPath(), items, 0, details);
+  bool bSuccess = videodatabase.GetRecentlyAdded(KODI::MEDIA::TYPE::MUSIC_VIDEO, items, 0, details,
+                                                 BuildPath());
 
   videodatabase.Close();
 
