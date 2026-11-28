@@ -1,5 +1,6 @@
 if(TARGET ${APP_NAME_LC}::Python)
-  set(SOURCES TestPythonBindings.cpp
+  set(SOURCES TestLanguageHook.cpp
+              TestPythonBindings.cpp
               TestWindowGetControl.cpp)
 
   core_add_test_library(python_test)
