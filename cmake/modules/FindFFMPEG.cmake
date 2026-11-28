@@ -207,9 +207,6 @@ macro(buildFFMPEG)
                       COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/008-ffmpeg-all-pgssubdec-use-caller-colorspace.patch
                       <SOURCE_DIR>
-                      COMMAND ${CMAKE_COMMAND} -E copy
-                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/009-ffmpeg-all-swscale-yuv2rgb-odd-width.patch
-                      <SOURCE_DIR>
     )
 
     if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
@@ -302,13 +299,13 @@ else()
   # have latest version to properly track rebuiling.
   if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
     # required ffmpeg library versions - tools/depends/target/ffmpeg versions
-    set(REQUIRED_FFMPEG_VERSION 9.0.2)
-    set(_avutil_ver "=61.1.102")
-    set(_avcodec_ver "=63.1.102")
-    set(_avformat_ver "=63.1.102")
-    set(_avfilter_ver "=12.1.102")
-    set(_swscale_ver "=10.1.102")
-    set(_swresample_ver "=7.1.102")
+    set(REQUIRED_FFMPEG_VERSION 9.0.3)
+    set(_avutil_ver "=61.1.103")
+    set(_avcodec_ver "=63.1.103")
+    set(_avformat_ver "=63.1.103")
+    set(_avfilter_ver "=12.1.103")
+    set(_swscale_ver "=10.1.103")
+    set(_swresample_ver "=7.1.103")
     set(_postproc_ver "=59.1.100")
   else()
     # required ffmpeg library versions - minimum supported API compat versions
