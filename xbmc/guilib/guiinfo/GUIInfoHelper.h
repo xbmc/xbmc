@@ -33,6 +33,11 @@ std::shared_ptr<CGUIListItem> GetCurrentListItem(int contextWindow,
                                                  int containerId = 0,
                                                  int itemOffset = 0,
                                                  unsigned int itemFlags = 0);
+//! The locked walk GetCurrentListItem() falls back to, and what a publisher calls directly
+std::shared_ptr<CGUIListItem> GetCurrentListItemLive(int contextWindow,
+                                                     int containerId = 0,
+                                                     int itemOffset = 0,
+                                                     unsigned int itemFlags = 0);
 
 std::string GetFileInfoLabelValueFromPath(int info, const std::string& filenameAndPath);
 

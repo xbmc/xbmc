@@ -12659,8 +12659,30 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string& thumbFileName)
   }
 }
 
+void CGUIInfoManager::PublishCurrentListItem()
+{
+  std::shared_ptr<CGUIListItem> item = GUIINFO::GetCurrentListItemLive(INFO::DEFAULT_CONTEXT);
+  std::unique_lock lock(m_publishedItemSection);
+  m_publishedItem.swap(item);
+  m_listItemPublished = true;
+}
+
+bool CGUIInfoManager::GetPublishedListItem(std::shared_ptr<CGUIListItem>& item) const
+{
+  std::unique_lock lock(m_publishedItemSection);
+  item = m_publishedItem;
+  return m_listItemPublished;
+}
+
 void CGUIInfoManager::Clear()
 {
+  {
+    std::shared_ptr<CGUIListItem> item;
+    std::unique_lock lock(m_publishedItemSection);
+    m_publishedItem.swap(item);
+    m_listItemPublished = false;
+  }
+
   std::unique_lock lock(m_critInfo);
   m_skinVariableStrings.clear();
 

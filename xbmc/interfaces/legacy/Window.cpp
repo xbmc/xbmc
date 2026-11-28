@@ -8,6 +8,7 @@
 
 #include "Window.h"
 
+#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "WindowException.h"
 #include "WindowInterceptor.h"
@@ -390,6 +391,12 @@ namespace XBMCAddon
         m_actionEvent.Set();
     }
 
+    void Window::PublishListItem()
+    {
+      XBMC_TRACE;
+      CServiceBroker::GetGUI()->GetInfoManager().PublishCurrentListItem();
+    }
+
     bool Window::WaitForActionEvent(unsigned int milliseconds)
     {
       XBMC_TRACE;
@@ -414,6 +421,7 @@ namespace XBMCAddon
         return ret;
 
       AddonClass::Ref<Action> inf(new Action(action));
+      PublishListItem();
       invokeCallback(new CallbackFunction<Window,AddonClass::Ref<Action> >(this,&Window::onAction,inf.get()));
       PulseActionEvent();
 
@@ -472,6 +480,7 @@ namespace XBMCAddon
             // currently we only accept messages from a button or controllist with a select action
             if (inf->canAcceptMessages(message.GetParam1()))
             {
+              PublishListItem();
               invokeCallback(new CallbackFunction<Window,AddonClass::Ref<Control> >(this,&Window::onControl,inf.get()));
               PulseActionEvent();
 

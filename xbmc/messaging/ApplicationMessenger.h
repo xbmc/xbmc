@@ -13,10 +13,12 @@
 #include "threads/Thread.h"
 
 #include <atomic>
+#include <functional>
 #include <map>
 #include <memory>
 #include <queue>
 #include <string>
+#include <utility>
 #include <vector>
 
 // clang-format off
@@ -445,6 +447,15 @@ public:
   //! \brief Returns true if this is the process / app loop thread.
   bool IsProcessThread() const;
 
+  /*!
+   * \brief Set a function the process thread calls after handling a message that a sender
+   * waits for, just before the sender wakes up
+   */
+  void SetMessageHandledCallback(std::function<void()> callback)
+  {
+    m_messageHandled = std::move(callback);
+  }
+
 private:
   CApplicationMessenger(const CApplicationMessenger&) = delete;
   CApplicationMessenger const& operator=(CApplicationMessenger const&) = delete;
@@ -460,6 +471,7 @@ private:
   std::thread::id m_guiThreadId;
   std::thread::id m_processThreadId;
   std::atomic<bool> m_bStop{false};
+  std::function<void()> m_messageHandled;
 };
 }
 }
