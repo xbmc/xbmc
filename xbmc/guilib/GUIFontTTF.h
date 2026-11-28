@@ -123,6 +123,7 @@ protected:
     Primary,
     Emoji,
     Symbols,
+    Text,
   };
 
   struct Glyph
@@ -284,6 +285,10 @@ protected:
 
   FT_Face m_symbolsFace{nullptr};
   hb_font_t* m_hbSymbolsFont{nullptr};
+
+  // Kodi's own font, for letters neither the font nor the emoji and symbol fonts have
+  FT_Face m_textFace{nullptr};
+  hb_font_t* m_hbTextFont{nullptr};
 
   float m_originX{0.0f};
   float m_originY{0.0f};

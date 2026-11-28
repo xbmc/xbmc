@@ -64,6 +64,7 @@ constexpr int GLYPH_STRENGTH_LIGHT = -48;
 constexpr int TAB_SPACE_LENGTH = 4;
 constexpr const char* EMOJI_FONT = "special://xbmc/media/Fonts/TwemojiMozilla.ttf";
 constexpr const char* SYMBOLS_FONT = "special://xbmc/media/Fonts/UnicodeSymbols.ttf";
+constexpr const char* TEXT_FONT = "special://xbmc/media/Fonts/arial.ttf";
 // face identity in Character::m_glyphAndStyle
 constexpr character_t FONT_FACE_MASK = 3 << 24;
 // set in Character::m_glyphAndStyle for glyphs cached in their own colors
@@ -261,6 +262,11 @@ public:
     return GetFallbackFont(m_symbolsFontFile, size, aspect);
   }
 
+  FT_Face GetTextFont(float size, float aspect)
+  {
+    return GetFallbackFont(m_textFontFile, size, aspect);
+  }
+
   FT_Stroker GetStroker()
   {
     if (!m_library)
@@ -349,6 +355,7 @@ private:
   FT_Library m_library{nullptr};
   FallbackFont m_emojiFontFile{EMOJI_FONT};
   FallbackFont m_symbolsFontFile{SYMBOLS_FONT};
+  FallbackFont m_textFontFile{TEXT_FONT};
 };
 
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
@@ -428,6 +435,12 @@ void CGUIFontTTF::Clear()
   if (m_symbolsFace)
     g_freeTypeLibrary.ReleaseFont(m_symbolsFace);
   m_symbolsFace = nullptr;
+  if (m_hbTextFont)
+    hb_font_destroy(m_hbTextFont);
+  m_hbTextFont = nullptr;
+  if (m_textFace)
+    g_freeTypeLibrary.ReleaseFont(m_textFace);
+  m_textFace = nullptr;
   if (m_stroker)
     g_freeTypeLibrary.ReleaseStroker(m_stroker);
   m_stroker = nullptr;
@@ -457,6 +470,9 @@ bool CGUIFontTTF::Load(
   m_symbolsFace = g_freeTypeLibrary.GetSymbolsFont(height, aspect);
   if (m_symbolsFace)
     m_hbSymbolsFont = hb_ft_font_create(m_symbolsFace, 0);
+  m_textFace = g_freeTypeLibrary.GetTextFont(height, aspect);
+  if (m_textFace)
+    m_hbTextFont = hb_ft_font_create(m_textFace, 0);
   /*
    the values used are described below
 
@@ -1074,6 +1090,9 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
     else if (m_hbSymbolsFont && !FT_Get_Char_Index(m_face, codepoint) &&
              FT_Get_Char_Index(m_symbolsFace, codepoint))
       fontFaces[i] = FontFace::Symbols;
+    else if (m_hbTextFont && !FT_Get_Char_Index(m_face, codepoint) &&
+             FT_Get_Char_Index(m_textFace, codepoint))
+      fontFaces[i] = FontFace::Text;
   }
 
   lastScript = scripts[0];
@@ -1121,6 +1140,8 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
       font = m_hbEmojiFont;
     else if (run.m_fontFace == FontFace::Symbols)
       font = m_hbSymbolsFont;
+    else if (run.m_fontFace == FontFace::Text)
+      font = m_hbTextFont;
     hb_shape(font, run.m_buffer, nullptr, 0);
     unsigned int glyphCount;
     run.m_glyphInfos = hb_buffer_get_glyph_infos(run.m_buffer, &glyphCount);
@@ -1143,6 +1164,8 @@ FT_Face CGUIFontTTF::GetFace(FontFace fontFace) const
     return m_emojiFace;
   if (fontFace == FontFace::Symbols)
     return m_symbolsFace;
+  if (fontFace == FontFace::Text)
+    return m_textFace;
   return m_face;
 }
 
