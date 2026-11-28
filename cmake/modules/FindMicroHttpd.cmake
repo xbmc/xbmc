@@ -76,6 +76,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC})
+
+      # Static lib needs its private deps (e.g. gnutls) that the imported target omits
+      if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES)
+        list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 _mhd_lib)
+        if(_mhd_lib MATCHES "\\.a$")
+          # Keep "-framework <name>" together, otherwise <name> is linked as -l<name>
+          string(REPLACE "-framework;" "-framework " _mhd_ldflags "${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_STATIC_LDFLAGS}")
+          target_link_libraries(PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC} INTERFACE ${_mhd_ldflags})
+        endif()
+      endif()
     elseif(TARGET libmicrohttpd::libmicrohttpd AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # Kodi target - windows prebuilt lib
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libmicrohttpd::libmicrohttpd)
