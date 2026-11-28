@@ -60,6 +60,12 @@ public:
   void SetVideoInterlaced(bool isInterlaced);
 
   /*!
+   * @brief Set whether the video is currently scaled by a hardware post-processor.
+   */
+  void SetVideoHwScaling(bool active);
+  bool IsVideoHwScaling();
+
+  /*!
    * @brief Check if the video is interlaced from cache
    * @return True if interlaced, otherwise false
    */
@@ -240,6 +246,7 @@ protected:
     float fps;
     float dar;
     bool m_isInterlaced;
+    bool m_hwScaling{false};
     int liveBitRate;
     int queueLevel;
     int queueDataLevel;

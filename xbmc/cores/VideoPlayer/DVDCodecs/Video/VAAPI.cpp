@@ -16,6 +16,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/MathUtils.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
@@ -23,9 +24,16 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#if defined(HAVE_GBM)
+#include "windowing/gbm/WinSystemGbm.h"
+#endif
+
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <mutex>
 #include <optional>
+#include <string_view>
 
 #include <drm_fourcc.h>
 #include <va/va_drm.h>
@@ -64,6 +72,67 @@ constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVC1 = "videoplayer.usevaapivc1";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP8 = "videoplayer.usevaapivp8";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP9 = "videoplayer.usevaapivp9";
 constexpr auto SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapirender";
+constexpr auto SETTING_VIDEOPLAYER_VAAPIHWSCALING = "videoplayer.vaapihwscaling";
+constexpr auto SETTING_VIDEOPLAYER_VAAPIHWSCALINGQUALITY = "videoplayer.vaapihwscalingquality";
+
+namespace
+{
+bool IsGbmWindowSystem()
+{
+#if defined(HAVE_GBM)
+  return dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem()) !=
+         nullptr;
+#else
+  return false;
+#endif
+}
+
+// The setting is only meaningful on GBM; never read it without this check.
+bool IsHwScalingEnabled()
+{
+  if (!IsGbmWindowSystem())
+    return false;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  return settings && settings->GetBool(SETTING_VIDEOPLAYER_VAAPIHWSCALING);
+}
+
+// The scaling quality setting is only offered, and only honoured, with Intel
+// drivers: Mesa ignores VA_FILTER_SCALING_HQ, so there it would do nothing.
+bool IsIntelVaDriver(VADisplay dpy)
+{
+  if (!dpy)
+    return false;
+
+  const char* vendor = vaQueryVendorString(dpy);
+  if (!vendor)
+    return false;
+
+  return std::string_view(vendor).find("Intel") != std::string_view::npos;
+}
+
+// Scaling filter flags for the scaling VPP. Read when the postproc is created,
+// so a changed setting applies from the next playback.
+unsigned int GetHwScalingFilterFlags(VADisplay dpy)
+{
+  if (!IsIntelVaDriver(dpy))
+    return VA_FILTER_SCALING_HQ;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return VA_FILTER_SCALING_HQ;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (settings && settings->GetInt(SETTING_VIDEOPLAYER_VAAPIHWSCALINGQUALITY) == 0)
+    return VA_FILTER_SCALING_DEFAULT;
+
+  return VA_FILTER_SCALING_HQ;
+}
+} // namespace
 
 // a released decoder must not overwrite the label of the codec that replaced it
 static void SetDeintLabel(const CVaapiConfig& config, const std::string& label)
@@ -130,6 +199,7 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
   }
 
   m_context = new CVAAPIContext();
+  m_context->m_refCount = 1;
   *ctx = m_context;
   {
     std::unique_lock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -141,8 +211,6 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
       return false;
     }
   }
-
-  m_context->m_refCount++;
 
   if (!m_context->IsValidDecoder(decoder))
     m_context->m_decoders.push_back(decoder);
@@ -832,9 +900,16 @@ void CDecoder::Close()
 {
   CLog::Log(LOGINFO, "VAAPI::{}", __FUNCTION__);
 
+  if (m_registeredDispResource)
+  {
+    if (auto winSystem = CServiceBroker::GetWinSystem())
+      winSystem->Unregister(this);
+    m_registeredDispResource = false;
+  }
+
   std::unique_lock lock(m_DecoderSection);
 
-  FiniVAAPIOutput();
+  FiniVAAPIOutput(true);
 
   m_framesRef.reset();
   m_deviceRef.reset();
@@ -1320,46 +1395,181 @@ bool CDecoder::ConfigVAAPI()
     m_videoSurfaces.AddSurface(surfaces[i]);
   }
 
-  // initialize output
-  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  m_vaapiConfig.stats = &m_bufferStats;
-  m_bufferStats.Reset();
-  m_vaapiOutput.Start();
-  Message *reply;
-  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
-                                                     &m_vaapiConfig, sizeof(m_vaapiConfig)))
   {
-    bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
-    if (!success)
+    // Hold the gfx lock only for output INIT. It is released at the end of
+    // this scope, before decoder/resource locks are taken.
+    std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+    const auto [scaleWidth, scaleHeight] =
+        GetScaleTarget(m_vaapiConfig.vidWidth, m_vaapiConfig.vidHeight, m_vaapiConfig.aspect);
+    m_vaapiConfig.scaleWidth = scaleWidth;
+    m_vaapiConfig.scaleHeight = scaleHeight;
+    if (m_vaapiConfig.scaleWidth > 0 && m_vaapiConfig.scaleHeight > 0)
     {
+      CLog::Log(LOGINFO, "VAAPI - hardware scaling {}x{} -> {}x{} (VPP)", m_vaapiConfig.vidWidth,
+                m_vaapiConfig.vidHeight, m_vaapiConfig.scaleWidth, m_vaapiConfig.scaleHeight);
+    }
+
+    m_vaapiConfig.stats = &m_bufferStats;
+    m_bufferStats.Reset();
+    m_vaapiOutput.Start();
+    Message* reply;
+    if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
+                                                       &m_vaapiConfig, sizeof(m_vaapiConfig)))
+    {
+      bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
+      if (!success)
+      {
+        reply->Release();
+        CLog::Log(LOGERROR, "VAAPI::{} - vaapi output returned error", __FUNCTION__);
+        m_vaapiOutput.Dispose();
+        return false;
+      }
       reply->Release();
-      CLog::Log(LOGERROR, "VAAPI::{} - vaapi output returned error", __FUNCTION__);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "VAAPI::{} - failed to init output", __FUNCTION__);
       m_vaapiOutput.Dispose();
       return false;
     }
-    reply->Release();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "VAAPI::{} - failed to init output", __FUNCTION__);
-    m_vaapiOutput.Dispose();
-    return false;
   }
 
   m_inMsgEvent.Reset();
-  m_vaapiConfigured = true;
+  {
+    std::unique_lock decoderLock(m_DecoderSection);
+    m_vaapiConfigured = true;
+  }
   m_ErrorCount = 0;
+
+  if (!m_registeredDispResource && IsHwScalingEnabled())
+  {
+    if (auto winSystem = CServiceBroker::GetWinSystem())
+    {
+      winSystem->Register(this);
+      m_registeredDispResource = true;
+      OnResetDisplay();
+    }
+  }
 
   return true;
 }
 
-void CDecoder::FiniVAAPIOutput()
+std::pair<int, int> CDecoder::GetScaleTarget(int vidWidth, int vidHeight, AVRational sar)
+{
+#if defined(HAS_GLES)
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (IsHwScalingEnabled() && winSystem && vidWidth > 0 && vidHeight > 0)
+  {
+    // Read RESOLUTION_INFO under the gfx-context lock.
+    RESOLUTION_INFO resInfo;
+    {
+      std::unique_lock gfxLock(winSystem->GetGfxContext());
+      resInfo = winSystem->GetGfxContext().GetResInfo();
+    }
+
+    // Calculate the aspect-correct destination rectangle.
+    const double effectiveAspect = (sar.num > 0 && sar.den > 0)
+                                       ? (double)vidWidth * sar.num / ((double)vidHeight * sar.den)
+                                       : (double)vidWidth / vidHeight;
+    // Screen resolutions can use non-square pixels (fPixelRatio != 1), so the
+    // on-screen aspect ratio isn't always iScreenWidth/iScreenHeight.
+    const double pixelRatio =
+        static_cast<double>(resInfo.fPixelRatio > 0.0f ? resInfo.fPixelRatio : 1.0f);
+    const double screenAspect =
+        (resInfo.iScreenHeight > 0)
+            ? static_cast<double>(resInfo.iScreenWidth) * pixelRatio / resInfo.iScreenHeight
+            : 0.0;
+
+    if (screenAspect > 0.0 && vidWidth > 0 && vidHeight > 0)
+    {
+      int destWidth;
+      int destHeight;
+      if (effectiveAspect > screenAspect)
+      {
+        // Fill width and letterbox vertically.
+        destWidth = resInfo.iScreenWidth;
+        destHeight = MathUtils::round_int(destWidth * pixelRatio / effectiveAspect);
+      }
+      else
+      {
+        // Fill height and pillarbox horizontally.
+        destHeight = resInfo.iScreenHeight;
+        destWidth = MathUtils::round_int(destHeight * effectiveAspect / pixelRatio);
+      }
+
+      // Tolerance avoids triggering hw scaling for a near-1:1 fit that only
+      // differs by integer-rounding noise (a pixel or two).
+      constexpr double SCALE_RATIO_TOLERANCE = 0.02; // ~2%
+      const double ratioW = (double)destWidth / vidWidth;
+      const double ratioH = (double)destHeight / vidHeight;
+      const bool needsScaling = std::fabs(ratioW - 1.0) > SCALE_RATIO_TOLERANCE ||
+                                std::fabs(ratioH - 1.0) > SCALE_RATIO_TOLERANCE;
+
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "VAAPI - scale check: vid {}x{} sar={}/{} displayAspect={:.4f} fit {}x{} "
+                "(screen {}x{}) needsScaling={}",
+                vidWidth, vidHeight, sar.num, sar.den, effectiveAspect, destWidth, destHeight,
+                resInfo.iScreenWidth, resInfo.iScreenHeight, needsScaling);
+
+      if (needsScaling)
+        return {destWidth, destHeight};
+    }
+  }
+#endif
+
+  return {0, 0};
+}
+
+void CDecoder::OnResetDisplay()
+{
+  int vidWidth;
+  int vidHeight;
+  AVRational sar;
+  int curScaleWidth;
+  int curScaleHeight;
+  bool configured;
+  {
+    std::unique_lock lock(m_DecoderSection);
+    configured = m_vaapiConfigured;
+    vidWidth = m_vaapiConfig.vidWidth;
+    vidHeight = m_vaapiConfig.vidHeight;
+    sar = m_vaapiConfig.aspect;
+    curScaleWidth = m_vaapiConfig.scaleWidth;
+    curScaleHeight = m_vaapiConfig.scaleHeight;
+  }
+  if (!configured)
+    return;
+
+  // Avoid lock inversion with the graphics context
+  const auto [scaleWidth, scaleHeight] = GetScaleTarget(vidWidth, vidHeight, sar);
+
+  if (scaleWidth == curScaleWidth && scaleHeight == curScaleHeight)
+    return;
+
+  {
+    std::unique_lock lock(m_DecoderSection);
+    if (!m_vaapiConfigured)
+      return;
+    m_vaapiConfig.scaleWidth = scaleWidth;
+    m_vaapiConfig.scaleHeight = scaleHeight;
+
+    CLog::Log(LOGINFO, "VAAPI - display reset, updating hw scale target {}x{} -> {}x{}",
+              curScaleWidth, curScaleHeight, scaleWidth, scaleHeight);
+
+    SScaleTarget target{scaleWidth, scaleHeight};
+    m_vaapiOutput.m_controlPort.SendOutMessage(COutputControlProtocol::SETSCALETARGET, &target,
+                                               sizeof(target));
+  }
+}
+
+void CDecoder::FiniVAAPIOutput(bool force)
 {
   if (!m_vaapiConfigured)
     return;
 
   // uninit output
-  m_vaapiOutput.Dispose();
+  m_vaapiOutput.Dispose(force);
   m_vaapiConfigured = false;
 
   // destroy surfaces
@@ -1402,6 +1612,7 @@ void CDecoder::Register(IVaapiWinSystem* winSystem, bool /*deepColor*/)
     return;
 
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
+  const bool isIntel = IsIntelVaDriver(config.context->GetDisplay());
   config.context->Release(nullptr);
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
@@ -1412,16 +1623,25 @@ void CDecoder::Register(IVaapiWinSystem* winSystem, bool /*deepColor*/)
   if (!settings)
     return;
 
-  constexpr std::array<const char*, 10> vaapiSettings = {
-      SETTING_VIDEOPLAYER_USEVAAPI,     SETTING_VIDEOPLAYER_USEVAAPIMPEG4,
-      SETTING_VIDEOPLAYER_USEVAAPIVC1,  SETTING_VIDEOPLAYER_USEVAAPIMPEG2,
-      SETTING_VIDEOPLAYER_USEVAAPIVP8,  SETTING_VIDEOPLAYER_USEVAAPIVP9,
-      SETTING_VIDEOPLAYER_USEVAAPIHEVC, SETTING_VIDEOPLAYER_PREFERVAAPIRENDER,
-      SETTING_VIDEOPLAYER_USEVAAPIAV1,  SETTING_VIDEOPLAYER_USEVAAPIAVC};
+  constexpr std::array<std::string_view, 12> vaapiSettings = {
+      SETTING_VIDEOPLAYER_USEVAAPI,       SETTING_VIDEOPLAYER_USEVAAPIMPEG4,
+      SETTING_VIDEOPLAYER_USEVAAPIVC1,    SETTING_VIDEOPLAYER_USEVAAPIMPEG2,
+      SETTING_VIDEOPLAYER_USEVAAPIVP8,    SETTING_VIDEOPLAYER_USEVAAPIVP9,
+      SETTING_VIDEOPLAYER_USEVAAPIHEVC,   SETTING_VIDEOPLAYER_PREFERVAAPIRENDER,
+      SETTING_VIDEOPLAYER_USEVAAPIAV1,    SETTING_VIDEOPLAYER_USEVAAPIAVC,
+      SETTING_VIDEOPLAYER_VAAPIHWSCALING, SETTING_VIDEOPLAYER_VAAPIHWSCALINGQUALITY};
+
+  const bool isGbm = IsGbmWindowSystem();
 
   for (const auto vaapiSetting : vaapiSettings)
   {
-    auto setting = settings->GetSetting(vaapiSetting);
+    if (!isGbm && vaapiSetting == SETTING_VIDEOPLAYER_VAAPIHWSCALING)
+      continue;
+
+    if ((!isGbm || !isIntel) && vaapiSetting == SETTING_VIDEOPLAYER_VAAPIHWSCALINGQUALITY)
+      continue;
+
+    auto setting = settings->GetSetting(std::string(vaapiSetting));
     if (!setting)
     {
       CLog::Log(LOGERROR, "Failed to load setting for: {}", vaapiSetting);
@@ -1647,7 +1867,7 @@ COutput::~COutput()
   Dispose();
 }
 
-void COutput::Dispose()
+void COutput::Dispose(bool force)
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
@@ -1655,6 +1875,30 @@ void COutput::Dispose()
   StopThread();
   m_controlPort.Purge();
   m_dataPort.Purge();
+
+  if (force && !m_discardedPostprocs.empty())
+  {
+    // Pictures still away point at these postprocs; release them first.
+    ReleaseOutstandingPictures();
+
+    if (!m_discardedPostprocs.empty())
+    {
+      CLog::Log(LOGWARNING, "VAAPI output: force-releasing {} postproc(s) still awaiting disposal",
+                m_discardedPostprocs.size());
+      m_discardedPostprocs.clear();
+    }
+  }
+}
+
+void COutput::ReleaseOutstandingPictures()
+{
+  for (auto& pic : m_bufferPool->processedPicsAway)
+    ReleaseProcessedPicture(pic);
+  m_bufferPool->processedPicsAway.clear();
+
+  for (auto& pic : m_bufferPool->processedPics)
+    ReleaseProcessedPicture(pic);
+  m_bufferPool->processedPics.clear();
 }
 
 void COutput::OnStartup()
@@ -1783,6 +2027,20 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = O_TOP_UNCONFIGURED;
           m_extTimeout = 10s;
           return;
+        case COutputControlProtocol::SETSCALETARGET:
+        {
+          // Defer postproc recreation until the IDLE state.
+          SScaleTarget* target = reinterpret_cast<SScaleTarget*>(msg->data);
+          if (target &&
+              (target->width != m_config.scaleWidth || target->height != m_config.scaleHeight))
+          {
+            m_config.scaleWidth = target->width;
+            m_config.scaleHeight = target->height;
+            m_scaleTargetChanged = true;
+          }
+          m_extTimeout = 0ms;
+          return;
+        }
         default:
           break;
         }
@@ -1825,6 +2083,34 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
+          if (m_scaleTargetChanged)
+          {
+            m_scaleTargetChanged = false;
+            if (m_pp)
+            {
+              CLog::Log(LOGDEBUG, LOGVIDEO,
+                        "VAAPI output: scale target changed, discarding postproc");
+              std::shared_ptr<CPostproc> pp(m_pp);
+              m_discardedPostprocs.push_back(pp);
+              m_pp->Discard(this, &COutput::ReadyForDisposal);
+              m_pp = nullptr;
+              m_config.processInfo->SetVideoDeintMethod("unknown");
+            }
+          }
+          if (m_hwScalingRetryPending)
+          {
+            m_hwScalingRetryPending = false;
+            if (m_pp)
+            {
+              CLog::Log(LOGDEBUG, LOGVIDEO,
+                        "VAAPI output: retrying hw scaling, discarding postproc");
+              std::shared_ptr<CPostproc> pp(m_pp);
+              m_discardedPostprocs.push_back(pp);
+              m_hwScalingRetryDiscardedPp = m_pp;
+              m_pp->Discard(this, &COutput::ReadyForDisposal);
+              m_pp = nullptr;
+            }
+          }
           ProcessSyncPicture();
           m_extTimeout = 100ms;
           if (HasWork())
@@ -2169,6 +2455,29 @@ bool COutput::PreferPP()
   return false;
 }
 
+bool COutput::WantsHwScaling() const
+{
+  return m_config.scaleWidth > 0 && m_config.scaleHeight > 0;
+}
+
+bool COutput::IsHwScalingBlocked()
+{
+  const size_t blockingCount =
+      std::count_if(m_discardedPostprocs.begin(), m_discardedPostprocs.end(),
+                    [this](const std::shared_ptr<CPostproc>& p)
+                    { return p.get() != m_hwScalingRetryDiscardedPp; });
+  m_hwScalingRetryDiscardedPp = nullptr;
+
+  const bool blocked = WantsHwScaling() && blockingCount > 0;
+  if (blocked)
+  {
+    CLog::Log(LOGWARNING,
+              "VAAPI output: hw scaling deferred - {} postproc(s) still awaiting disposal",
+              blockingCount);
+  }
+  return blocked;
+}
+
 void COutput::InitCycle()
 {
   uint64_t latency;
@@ -2202,20 +2511,38 @@ void COutput::InitCycle()
     }
     if (!m_pp)
     {
+      bool preInitOk;
       if (method == VS_INTERLACEMETHOD_DEINTERLACE ||
           method == VS_INTERLACEMETHOD_RENDER_BOB)
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
         m_config.stats->SetVpp(false);
+        preInitOk = m_pp->PreInit(m_config);
+        m_hwScalingSuppressed = false;
       }
       else
       {
+        const bool hwScalingBlocked = IsHwScalingBlocked();
+
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
         m_pp = new CVppPostproc();
         m_config.stats->SetVpp(true);
+
+        const int savedScaleWidth = m_config.scaleWidth;
+        const int savedScaleHeight = m_config.scaleHeight;
+        if (hwScalingBlocked)
+        {
+          m_config.scaleWidth = 0;
+          m_config.scaleHeight = 0;
+        }
+        preInitOk = m_pp->PreInit(m_config);
+        m_config.scaleWidth = savedScaleWidth;
+        m_config.scaleHeight = savedScaleHeight;
+        m_hwScalingSuppressed = preInitOk && hwScalingBlocked;
       }
-      if (m_pp->PreInit(m_config))
+
+      if (preInitOk)
       {
         m_pp->Init(method);
       }
@@ -2245,21 +2572,32 @@ void COutput::InitCycle()
     {
       const bool preferVaapiRender = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+      // Hardware scaling requires the VAAPI VPP pipeline.
+      const bool wantsHwScaling = WantsHwScaling();
+      const bool hwScalingBlocked = IsHwScalingBlocked();
 
-      m_config.stats->SetVpp(false);
-      if (!preferVaapiRender)
+      if (wantsHwScaling && !hwScalingBlocked)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc for hw scaling");
+        m_pp = new CVppPostproc();
+        m_config.stats->SetVpp(true);
+      }
+      else if (!preferVaapiRender)
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
+        m_config.stats->SetVpp(false);
       }
       else
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc");
         m_pp = new CSkipPostproc();
+        m_config.stats->SetVpp(false);
       }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
+        m_hwScalingSuppressed = wantsHwScaling && hwScalingBlocked;
       }
       else
       {
@@ -2277,6 +2615,8 @@ void COutput::InitCycle()
     if (m_pp->PreInit(m_config))
       m_pp->Init(method);
   }
+
+  m_config.processInfo->SetVideoHwScaling(m_pp && m_pp->IsHwScaling());
 }
 
 CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
@@ -2285,9 +2625,8 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   retPic = m_bufferPool->GetVaapi();
   retPic->DVDPic.SetParams(pic.DVDPic);
 
-  // Stamp the surface fourcc so renderers can dispatch sampling per-fourcc
-  // (NV12/P010/P012/P016 semi-planar vs YUY2/Y210 packed).
-  pic.fourcc = m_config.pixelFormat;
+  if (pic.fourcc == 0)
+    pic.fourcc = m_config.pixelFormat;
 
   if (!pic.source)
   {
@@ -2309,6 +2648,8 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     av_frame_move_ref(retPic->avFrame, pic.frame);
     pic.source->ClearRef(pic);
     retPic->procPic.videoSurface = VA_INVALID_ID;
+    retPic->procPic.outWidth = 0;
+    retPic->procPic.outHeight = 0;
   }
 
   retPic->DVDPic.dts = DVD_NOPTS_VALUE;
@@ -2403,6 +2744,15 @@ void COutput::ReadyForDisposal(CPostproc *pp)
       m_discardedPostprocs.erase(it);
       break;
     }
+  }
+
+  if (m_discardedPostprocs.empty() && m_hwScalingSuppressed && m_pp && m_config.scaleWidth > 0 &&
+      m_config.scaleHeight > 0)
+  {
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "VAAPI output: retrying hw scaling now that pending postproc disposal has completed");
+    m_hwScalingSuppressed = false;
+    m_hwScalingRetryPending = true;
   }
 }
 
@@ -2511,28 +2861,55 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     return false;
   }
 
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  m_outFourcc = VA_FOURCC_NV12;
+  const auto fmtIt = std::find_if(
+      std::begin(kVaFormatTable), std::end(kVaFormatTable), [&config](const VaFormatEntry& e)
+      { return static_cast<std::int32_t>(e.vaFourcc) == config.pixelFormat; });
+  if (fmtIt != std::end(kVaFormatTable))
+  {
+    format = fmtIt->vaRtFormat;
+    m_outFourcc = static_cast<std::int32_t>(fmtIt->vaFourcc);
+  }
+  else if (m_config.profile == VAProfileHEVCMain10)
+  {
+    format = VA_RT_FORMAT_YUV420_10BPP;
+    m_outFourcc = VA_FOURCC_P010;
+  }
+
   VASurfaceAttrib attribs[1], *attrib;
   attrib = attribs;
   attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
   attrib->type = VASurfaceAttribPixelFormat;
   attrib->value.type = VAGenericValueTypeInteger;
-  attrib->value.value.i = VA_FOURCC_NV12;
+  attrib->value.value.i = m_outFourcc;
+
+  // Use the VPP target size when scaling.
+  m_scalingRequested = (config.scaleWidth > 0 && config.scaleHeight > 0);
+  if (m_scalingRequested)
+  {
+    m_scaleWidth = config.scaleWidth;
+    m_scaleHeight = config.scaleHeight;
+    // Only needed when scaling; skips a vendor string query and a settings read
+    // for a deinterlace-only VPP.
+    m_scalingFilterFlags = GetHwScalingFilterFlags(m_config.dpy);
+  }
+  else
+  {
+    m_scaleWidth = m_config.surfaceWidth;
+    m_scaleHeight = m_config.surfaceHeight;
+  }
 
   // create surfaces
   VASurfaceID surfaces[32];
-  unsigned int format = VA_RT_FORMAT_YUV420;
-  if (m_config.profile == VAProfileHEVCMain10)
-  {
-    format = VA_RT_FORMAT_YUV420_10BPP;
-    attrib->value.value.i = VA_FOURCC_P010;
-  }
   int nb_surfaces = NUM_RENDER_PICS;
-  if (!CheckSuccess(
-      vaCreateSurfaces(m_config.dpy, format, m_config.surfaceWidth, m_config.surfaceHeight,
-          surfaces, nb_surfaces,
-          attribs, 1), "vaCreateSurfaces"))
+  if (!CheckSuccess(vaCreateSurfaces(m_config.dpy, format, m_scaleWidth, m_scaleHeight, surfaces,
+                                     nb_surfaces, attribs, 1),
+                    "vaCreateSurfaces"))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateSurfaces");
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "CVppPostproc::PreInit  - VPP init failed in vaCreateSurfaces (fourcc {:#x})",
+              m_outFourcc);
 
     return false;
   }
@@ -2542,10 +2919,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
 
   // create vaapi decoder context
-  if (!CheckSuccess(
-      vaCreateContext(m_config.dpy, m_configId, m_config.surfaceWidth, m_config.surfaceHeight, 0,
-          surfaces,
-          nb_surfaces, &m_contextId), "vaCreateContext"))
+  if (!CheckSuccess(vaCreateContext(m_config.dpy, m_configId, m_scaleWidth, m_scaleHeight, 0,
+                                    surfaces, nb_surfaces, &m_contextId),
+                    "vaCreateContext"))
   {
     m_contextId = VA_INVALID_ID;
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateContext");
@@ -2798,15 +3174,32 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   }
   memset(pipelineParams, 0, sizeof(VAProcPipelineParameterBuffer));
 
-  inputRegion.x = outputRegion.x = 0;
-  inputRegion.y = outputRegion.y = 0;
-  inputRegion.width = outputRegion.width = m_config.surfaceWidth;
-  inputRegion.height = outputRegion.height = m_config.surfaceHeight;
+  const bool scaling = m_scalingRequested;
+
+  inputRegion.x = 0;
+  inputRegion.y = 0;
+  outputRegion.x = 0;
+  outputRegion.y = 0;
+  if (scaling)
+  {
+    // Scale only the visible decoded picture, not codec padding.
+    inputRegion.width = m_config.vidWidth;
+    inputRegion.height = m_config.vidHeight;
+    outputRegion.width = m_scaleWidth;
+    outputRegion.height = m_scaleHeight;
+  }
+  else
+  {
+    inputRegion.width = m_config.surfaceWidth;
+    inputRegion.height = m_config.surfaceHeight;
+    outputRegion.width = m_config.surfaceWidth;
+    outputRegion.height = m_config.surfaceHeight;
+  }
 
   pipelineParams->output_region = &outputRegion;
   pipelineParams->surface_region = &inputRegion;
   pipelineParams->output_background_color = 0xff000000;
-  pipelineParams->filter_flags = 0;
+  pipelineParams->filter_flags = scaling ? m_scalingFilterFlags : 0;
 
   VASurfaceID forwardRefs[32];
   VASurfaceID backwardRefs[32];
@@ -2916,9 +3309,20 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   m_step++;
   outPic.videoSurface = m_videoSurfaces.GetFree(surf);
   outPic.source = this;
+  outPic.fourcc = m_outFourcc;
   outPic.DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                             DVP_FLAG_REPEAT_TOP_FIELD |
                             DVP_FLAG_INTERLACED);
+  if (scaling)
+  {
+    outPic.outWidth = m_scaleWidth;
+    outPic.outHeight = m_scaleHeight;
+  }
+  else
+  {
+    outPic.outWidth = 0;
+    outPic.outHeight = 0;
+  }
 
   return true;
 }

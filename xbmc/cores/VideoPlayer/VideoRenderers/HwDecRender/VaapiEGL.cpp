@@ -69,7 +69,9 @@ bool CVaapi2Texture::Import(CVaapiRenderPicture* pic)
     return failImport();
   }
 
-  m_textureSize.Set(pic->DVDPic.iWidth, pic->DVDPic.iHeight);
+  // Use the actual surface size when VPP scaling is active.
+  m_textureSize.Set(pic->procPic.outWidth ? pic->procPic.outWidth : pic->DVDPic.iWidth,
+                    pic->procPic.outHeight ? pic->procPic.outHeight : pic->DVDPic.iHeight);
 
   for (uint32_t layerNo = 0; layerNo < surface.num_layers; layerNo++)
   {

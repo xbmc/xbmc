@@ -11,6 +11,7 @@
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoSettings.h"
+#include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/SharedSection.h"
@@ -20,6 +21,7 @@
 
 #include "platform/linux/sse4/DllLibSSE4.h"
 
+#include <atomic>
 #include <cstdint>
 #include <list>
 #include <map>
@@ -206,6 +208,9 @@ struct CVaapiConfig
   // pictures so the renderer can pick its sampling path per-fourcc without
   // re-inspecting the surface.
   std::int32_t pixelFormat{};
+  // VPP output size. 0/0 disables scaling.
+  int scaleWidth{};
+  int scaleHeight{};
   // owned by CDecoder; a plain pointer as the config is passed as a raw message payload
   CVaapiDeintLabelGate* deintLabelGate{nullptr};
 };
@@ -253,6 +258,8 @@ struct CVaapiProcessedPicture
     source = rhs.source;
     crop = rhs.crop;
     fourcc = rhs.fourcc;
+    outWidth = rhs.outWidth;
+    outHeight = rhs.outHeight;
     return *this;
   };
 
@@ -265,6 +272,9 @@ struct CVaapiProcessedPicture
   // VA fourcc of the underlying surface. Set by COutput from
   // CVaapiConfig::pixelFormat.
   std::int32_t fourcc{};
+  // Actual output surface size. 0/0 uses the decoded picture size.
+  unsigned int outWidth{0};
+  unsigned int outHeight{0};
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
@@ -298,6 +308,8 @@ public:
     FLUSH,
     PRECLEANUP,
     TIMEOUT,
+    // Display resolution changed; payload is SScaleTarget.
+    SETSCALETARGET,
   };
   enum InSignal
   {
@@ -305,6 +317,13 @@ public:
     ERROR,
     STATS,
   };
+};
+
+// Payload for SETSCALETARGET.
+struct SScaleTarget
+{
+  int width;
+  int height;
 };
 
 class COutputDataProtocol : public Protocol
@@ -349,7 +368,7 @@ public:
   COutput(CDecoder &decoder, CEvent *inMsgEvent);
   ~COutput() override;
   void Start();
-  void Dispose();
+  void Dispose(bool force = false);
   COutputControlProtocol m_controlPort;
   COutputDataProtocol m_dataPort;
 protected:
@@ -366,6 +385,9 @@ protected:
   void ProcessReturnProcPicture(int id);
   void ProcessSyncPicture();
   void ReleaseProcessedPicture(CVaapiProcessedPicture &pic);
+  void ReleaseOutstandingPictures();
+  bool WantsHwScaling() const;
+  bool IsHwScalingBlocked();
   bool Init();
   bool Uninit();
   void Flush();
@@ -388,6 +410,10 @@ protected:
   CPostproc *m_pp;
   std::list<std::shared_ptr<CPostproc>> m_discardedPostprocs;
   SDiMethods m_diMethods;
+  bool m_scaleTargetChanged{false};
+  bool m_hwScalingSuppressed{false};
+  bool m_hwScalingRetryPending{false};
+  CPostproc* m_hwScalingRetryDiscardedPp{nullptr};
 };
 
 //-----------------------------------------------------------------------------
@@ -544,8 +570,7 @@ public:
 // VAAPI main class
 //-----------------------------------------------------------------------------
 
-class CDecoder
- : public IHardwareDecoder
+class CDecoder : public IHardwareDecoder, public IDispResource
 {
    friend class CVaapiBufferPool;
 
@@ -568,6 +593,9 @@ public:
   const std::string Name() override { return "vaapi"; }
   void SetCodecControl(int flags) override;
 
+  // Update the VPP scaling target when the display mode changes.
+  void OnResetDisplay() override;
+
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
@@ -583,8 +611,12 @@ public:
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVAAPI();
+
+  // Returns the VPP scaling target (width, height), or 0/0 if disabled.
+  static std::pair<int, int> GetScaleTarget(int vidWidth, int vidHeight, AVRational aspect);
+
   bool CheckStatus(VAStatus vdp_st, int line);
-  void FiniVAAPIOutput();
+  void FiniVAAPIOutput(bool force = false);
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
   long ReleasePicReference();
   bool CheckSuccess(VAStatus status, const std::string& function);
@@ -604,6 +636,8 @@ protected:
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
   int m_getBufferError;
+
+  std::atomic<bool> m_registeredDispResource{false};
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;
@@ -649,6 +683,7 @@ public:
   virtual bool UpdateDeintMethod(EINTERLACEMETHOD method) = 0;
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
+  virtual bool IsHwScaling() const { return false; }
   virtual bool UseVideoSurface() = 0;
   virtual void Discard(COutput* output, ReadyToDispose cb) { (output->*cb)(this); }
 
@@ -696,6 +731,7 @@ public:
   void Flush() override;
   bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
   bool DoesSync() override;
+  bool IsHwScaling() const override { return m_scalingRequested; }
   bool WantsPic() override;
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
@@ -712,6 +748,13 @@ protected:
   int m_currentIdx;
   int m_frameCount;
   EINTERLACEMETHOD m_vppMethod;
+  // Output surface size used by the VPP pipeline.
+  int m_scaleWidth{0};
+  int m_scaleHeight{0};
+  bool m_scalingRequested{false};
+  // VA_FILTER_SCALING_* flags for the scaling VPP, read from settings in PreInit.
+  unsigned int m_scalingFilterFlags{VA_FILTER_SCALING_HQ};
+  std::int32_t m_outFourcc{0};
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
 };
