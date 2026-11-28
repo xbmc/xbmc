@@ -64,6 +64,7 @@
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "platform/android/storage/AndroidStorageProvider.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -291,6 +292,39 @@ bool isHeadsetPlugged()
   {
     return audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
   }
+}
+
+// Not wrapped by libandroidjni
+constexpr const char* EXTRA_ENCODINGS = "android.media.extra.ENCODINGS";
+constexpr int TYPE_HDMI_EARC = 29; // API 31
+
+std::vector<int> getHdmiEncodings(const CJNIIntent& intent)
+{
+  std::vector<int> encodings;
+  if (intent.hasExtra(EXTRA_ENCODINGS))
+  {
+    // The encodings of the sink this event is about
+    encodings = jcast<std::vector<int>>(
+        call_method<jhintArray>(intent.get_raw(), "getIntArrayExtra", "(Ljava/lang/String;)[I",
+                                jcast<jhstring>(std::string(EXTRA_ENCODINGS))));
+  }
+  else
+  {
+    CJNIAudioManager audioManager(CXBMCApp::getSystemService(CJNIContext::AUDIO_SERVICE));
+    for (const CJNIAudioDeviceInfo& device :
+         audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS))
+    {
+      const int type = device.getType();
+      if (type == CJNIAudioDeviceInfo::TYPE_HDMI || type == CJNIAudioDeviceInfo::TYPE_HDMI_ARC ||
+          type == TYPE_HDMI_EARC)
+      {
+        const std::vector<int> deviceEncodings = device.getEncodings();
+        encodings.insert(encodings.end(), deviceEncodings.begin(), deviceEncodings.end());
+      }
+    }
+  }
+  std::sort(encodings.begin(), encodings.end());
+  return encodings;
 }
 } // namespace
 
@@ -1257,11 +1291,33 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
-    if (m_hdmiPlugged && m_aeReset)
+    if (m_hdmiPlugged)
     {
-      android_printf("CXBMCApp::onReceive: Reset audio engine");
-      CServiceBroker::GetActiveAE()->DeviceChange();
-      m_aeReset = false;
+      // A sink such as an AVR powering on changes the HDMI encodings, while a
+      // refresh rate switch keeps them, so only the former needs a rescan.
+      // The first event only tells what the sink supported at startup.
+      std::vector<int> encodings = getHdmiEncodings(intent);
+      const bool encodingsChanged = m_hdmiEncodings && encodings != *m_hdmiEncodings;
+      m_hdmiEncodings = std::move(encodings);
+
+      if (m_aeReset || (encodingsChanged && g_application.IsInitialized()))
+      {
+        android_printf("CXBMCApp::onReceive: Reset audio engine");
+        IAE* iae = CServiceBroker::GetActiveAE();
+        if (iae)
+          iae->DeviceChange();
+        m_aeReset = false;
+      }
+      else if (encodingsChanged)
+      {
+        // Changed during startup; the next plug event will see them unchanged.
+        m_aeReset = true;
+      }
+    }
+    else if (!m_hdmiEncodings)
+    {
+      // Starting unplugged, e.g. with the AVR off: its first plug is a change.
+      m_hdmiEncodings.emplace();
     }
     if (m_hdmiPlugged && m_wakeUp)
     {
