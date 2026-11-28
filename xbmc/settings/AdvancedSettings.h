@@ -201,6 +201,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoAutoScaleMaxFps;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     std::vector<RefreshVideoLatency> m_videoRefreshLatency;
+    bool m_videoDebugThreads;
+    int m_videoDebugThreadsCount;
+    bool m_videoDebugThreadsCores;
+    int m_videoDebugThreadsGraph; //!< 0 off, 1 bars, 2 history
     float m_videoDefaultLatency;
     float m_videoDefaultHdrExtraLatency;
     bool m_DXVACheckCompatibility;

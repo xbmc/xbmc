@@ -13,6 +13,7 @@
 #include "platform/posix/CPUInfoPosix.h"
 
 #include <string>
+#include <vector>
 
 class CCPUInfoLinux : public CCPUInfoPosix
 {
@@ -20,9 +21,11 @@ public:
   CCPUInfoLinux();
   ~CCPUInfoLinux() = default;
 
+  bool SupportsCoreUsage() const override { return true; }
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
   bool GetTemperature(CTemperature& temperature) override;
+  std::vector<ThreadCpuTime> GetThreadCpuTimes() override;
 
 private:
   std::string m_freqPath;

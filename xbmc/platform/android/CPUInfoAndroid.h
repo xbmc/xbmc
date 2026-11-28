@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include <sys/types.h>
 
@@ -26,8 +27,10 @@ public:
   CCPUInfoAndroid();
   ~CCPUInfoAndroid() = default;
 
+  bool SupportsCoreUsage() const override { return true; }
   int GetUsedPercentage() override;
   float GetCPUFrequency() override;
+  std::vector<ThreadCpuTime> GetThreadCpuTimes() override;
 
 private:
   std::unique_ptr<CPosixFile> m_posixFile;
