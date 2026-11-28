@@ -81,6 +81,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       m_iSection = message.GetParam2() - CGUIDialogSettingsManagerBase::GetID();
       CGUIDialogSettingsManagerBase::OnMessage(message);
+      m_builtLevel = GetSettingLevel();
       m_returningFromSkinLoad = false;
 
       if (!message.GetStringParam(0).empty())
@@ -113,6 +114,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           CreateSettings();
         }
       }
+      else if (message.GetParam1() == GUI_MSG_SETTING_LEVEL_CHANGED)
+      {
+        if (IsActive())
+          OnSettingLevelChanged();
+      }
       break;
     }
 
@@ -144,33 +150,9 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::GetInstance().GetNextSettingLevel(), true))
         return false;
 
+      // The window rebuilds on the Settings.OnLevelChanged announcement this raises
       CViewStateSettings::GetInstance().CycleSettingLevel();
       CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
-
-      // try to keep the current position
-      std::string oldCategory;
-      if (m_iCategory >= 0 && m_iCategory < (int)m_categories.size())
-        oldCategory = m_categories[m_iCategory]->GetId();
-
-      SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
-      // only re-create the categories, the settings will be created later
-      SetupControls(false);
-
-      m_iCategory = 0;
-      // try to find the category that was previously selected
-      if (!oldCategory.empty())
-      {
-        for (int i = 0; i < (int)m_categories.size(); i++)
-        {
-          if (m_categories[i]->GetId() == oldCategory)
-          {
-            m_iCategory = i;
-            break;
-          }
-        }
-      }
-
-      CreateSettings();
       return true;
     }
 
@@ -191,6 +173,40 @@ void CGUIWindowSettingsCategory::OnWindowLoaded()
 {
   SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
   CGUIDialogSettingsManagerBase::OnWindowLoaded();
+}
+
+void CGUIWindowSettingsCategory::OnSettingLevelChanged()
+{
+  // The notification reaches this window once for each id in its range
+  if (GetSettingLevel() == m_builtLevel)
+    return;
+  m_builtLevel = GetSettingLevel();
+
+  // try to keep the current position
+  std::string oldCategory;
+  if (m_iCategory >= 0 && m_iCategory < static_cast<int>(m_categories.size()))
+    oldCategory = m_categories[m_iCategory]->GetId();
+
+  SET_CONTROL_LABEL(CONTROL_BTN_LEVELS,
+                    10036 + static_cast<int>(CViewStateSettings::GetInstance().GetSettingLevel()));
+  // only re-create the categories, the settings will be created later
+  SetupControls(false);
+
+  m_iCategory = 0;
+  // try to find the category that was previously selected
+  if (!oldCategory.empty())
+  {
+    for (size_t i = 0; i < m_categories.size(); i++)
+    {
+      if (m_categories[i]->GetId() == oldCategory)
+      {
+        m_iCategory = static_cast<int>(i);
+        break;
+      }
+    }
+  }
+
+  CreateSettings();
 }
 
 int CGUIWindowSettingsCategory::GetSettingLevel() const
