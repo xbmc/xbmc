@@ -206,6 +206,12 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
     int  m_videoFpsDetect;
+    bool m_videoDebugGraph;
+    bool m_videoDebugGraphLogScale;
+    bool m_videoDebugGraphSweep;
+    bool m_videoDebugGraphFrameTypes;
+    int m_videoDebugGraphHeight; //!< percent of the video height
+    int m_videoDebugGraphAudio; //!< 0 off, 1 overlay, 2 band
     float m_gamesPacingMarginMs;
     float m_minTempo;
     float m_maxTempo;

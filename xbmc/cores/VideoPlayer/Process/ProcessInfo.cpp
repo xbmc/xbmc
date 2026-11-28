@@ -13,6 +13,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#include <cmath>
 #include <memory>
 #include <mutex>
 
@@ -97,6 +98,11 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoQueueLevel(m_videoQueueLevel);
     m_dataCache->SetVideoQueueDataLevel(m_videoQueueDataLevel);
   }
+
+  std::unique_lock framesLock(m_videoFramesSection);
+  m_videoFrames.clear();
+  m_videoFrameCount = 0;
+  m_videoFrameSerial++;
 }
 
 void CProcessInfo::SetVideoDecoderName(const std::string &name, bool isHw)
@@ -294,6 +300,109 @@ bool CProcessInfo::GetVideoInterlaced()
   std::unique_lock lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
+}
+
+namespace
+{
+constexpr double AUDIO_SLOT_SECONDS = 0.05;
+constexpr int64_t AUDIO_SLOTS_PER_SECOND = 20;
+
+int64_t TimeToAudioSlot(double time)
+{
+  return static_cast<int64_t>(std::floor(time / AUDIO_SLOT_SECONDS));
+}
+} // namespace
+
+void CProcessInfo::AddVideoFrameSize(uint32_t size, char type, double time)
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  if (m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX)
+    m_videoFrames.push_back({size, type, time});
+  else
+    m_videoFrames[m_videoFrameCount % DEBUG_INFO_FRAMES_MAX] = {size, type, time};
+
+  m_videoFrameCount++;
+  m_videoFrameSerial++;
+}
+
+void CProcessInfo::AddAudioPacketSize(uint32_t size, double time)
+{
+  if (std::isnan(time))
+    return;
+
+  std::unique_lock lock(m_videoFramesSection);
+
+  const int64_t slot = TimeToAudioSlot(time);
+  auto& entry = m_audioSlots[static_cast<size_t>(slot) % m_audioSlots.size()];
+  if (entry.slot != slot)
+    entry = {slot, 0};
+  entry.bytes += size;
+  m_audioSlotsUsed = true;
+}
+
+void CProcessInfo::ResetAudioPacketSizes()
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  m_audioSlots.fill({});
+  m_audioSlotsUsed = false;
+}
+
+void CProcessInfo::GetVideoFrameSizes(DEBUG_INFO_FRAMES& info)
+{
+  const float fps = GetVideoFps();
+
+  std::unique_lock lock(m_videoFramesSection);
+
+  m_videoFramesRead = std::chrono::steady_clock::now();
+
+  if (info.serial == m_videoFrameSerial)
+    return;
+
+  // m_videoFrames is a ring buffer once full, return it oldest first
+  const size_t start =
+      m_videoFrames.size() < DEBUG_INFO_FRAMES_MAX ? 0 : m_videoFrameCount % DEBUG_INFO_FRAMES_MAX;
+  info.frames.assign(m_videoFrames.begin() + start, m_videoFrames.end());
+  info.frames.insert(info.frames.end(), m_videoFrames.begin(), m_videoFrames.begin() + start);
+  info.count = m_videoFrameCount;
+  info.serial = m_videoFrameSerial;
+  info.fps = fps;
+
+  info.audioRates.clear();
+  if (!m_audioSlotsUsed)
+    return;
+
+  // Audio and video are matched by time stamp, as they are decoded independently.
+  // Frames whose audio has not been decoded yet get no value, rather than a dip.
+  info.audioRates.reserve(info.frames.size());
+  for (const auto& frame : info.frames)
+  {
+    float rate = NAN;
+    if (!std::isnan(frame.time))
+    {
+      const int64_t last = TimeToAudioSlot(frame.time);
+      if (m_audioSlots[static_cast<size_t>(last) % m_audioSlots.size()].slot == last)
+      {
+        uint64_t bytes = 0;
+        for (int64_t slot = last - AUDIO_SLOTS_PER_SECOND + 1; slot <= last; ++slot)
+        {
+          const auto& entry = m_audioSlots[static_cast<size_t>(slot) % m_audioSlots.size()];
+          if (entry.slot == slot)
+            bytes += entry.bytes;
+        }
+        rate = static_cast<float>(static_cast<double>(bytes) * 8 / 1e6);
+      }
+    }
+    info.audioRates.push_back(rate);
+  }
+}
+
+bool CProcessInfo::IsVideoFrameGraphShown()
+{
+  std::unique_lock lock(m_videoFramesSection);
+
+  return std::chrono::steady_clock::now() - m_videoFramesRead < std::chrono::seconds(1);
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()

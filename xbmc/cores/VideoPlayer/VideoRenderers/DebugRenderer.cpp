@@ -8,10 +8,15 @@
 
 #include "DebugRenderer.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 using namespace OVERLAY;
 
@@ -56,6 +61,7 @@ void CDebugRenderer::Dispose()
     return;
 
   m_isInitialized = false;
+  m_frameGraph.Reset();
   m_overlayRenderer.Flush();
   m_overlay.reset();
   OVERLAY::MarkDirty();
@@ -66,10 +72,15 @@ void CDebugRenderer::Dispose()
   }
 }
 
-void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
+void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info, const DEBUG_INFO_FRAMES& frames)
 {
   if (!m_isInitialized)
     return;
+
+  m_showFrameGraph =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDebugGraph;
+  if (m_showFrameGraph)
+    m_frameGraph.SetFrames(frames);
 
   // FIXME: We currently force ASS_Event's and the current PTS
   // of rendering with fixed values to allow perpetual
@@ -80,6 +91,14 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
   m_adapter->AddSubtitle(info.audio, 0., 5000000.);
   m_adapter->AddSubtitle(info.video, 0., 5000000.);
   m_adapter->AddSubtitle(info.player, 0., 5000000.);
+
+  if (m_showFrameGraph)
+  {
+    std::string legend = m_frameGraph.GetLegend();
+    if (!legend.empty())
+      m_adapter->AddSubtitle(legend, 0., 5000000.);
+  }
+
   m_adapter->AddSubtitle(info.vsync, 0., 5000000.);
   if (!info.contentGeometry.empty())
     m_adapter->AddSubtitle(info.contentGeometry, 0., 5000000.);
@@ -89,6 +108,8 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
 {
   if (!m_isInitialized)
     return;
+
+  m_showFrameGraph = false;
 
   // FIXME: We currently force ASS_Event's and the current PTS
   // of rendering with fixed values to allow perpetual
@@ -109,6 +130,9 @@ void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
 {
   if (!m_isInitialized)
     return;
+
+  if (m_showFrameGraph && CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
+    m_frameGraph.Render(view);
 
   m_overlayRenderer.SetVideoRect(src, dst, view);
   m_overlayRenderer.Render(0);

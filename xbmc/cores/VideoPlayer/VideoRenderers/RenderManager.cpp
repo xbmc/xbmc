@@ -740,7 +740,10 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
                                             refreshrate, missedvblanks, clockspeed * 100);
         }
 
-        m_debugRenderer.SetInfo(info);
+        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDebugGraph &&
+            m_debugRenderer.IsFrameGraphUpdateDue())
+          m_playerPort->GetDebugFrames(m_debugFrames);
+        m_debugRenderer.SetInfo(info, m_debugFrames);
       }
 
       m_debugRenderer.Render(src, dst, view);

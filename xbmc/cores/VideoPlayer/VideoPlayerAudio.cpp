@@ -14,11 +14,13 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 
+#include <cmath>
 #include <mutex>
 
 #ifdef TARGET_RASPBERRY_PI
@@ -113,6 +115,11 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
   m_pAudioCodec = std::move(codec);
 
   m_processInfo.ResetAudioCodecInfo();
+  m_processInfo.ResetAudioPacketSizes();
+
+  const auto& advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  m_collectPacketSizes =
+      advancedSettings->m_videoDebugGraph && advancedSettings->m_videoDebugGraphAudio != 0;
 
   /* store our stream hints */
   m_streaminfo = hints;
@@ -346,6 +353,7 @@ void CVideoPlayerAudio::Process()
       m_audioClock = 0;
       audioframe.nb_frames = 0;
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+      m_processInfo.ResetAudioPacketSizes();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -364,6 +372,7 @@ void CVideoPlayerAudio::Process()
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
+      m_processInfo.ResetAudioPacketSizes();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
@@ -449,6 +458,13 @@ void CVideoPlayerAudio::Process()
       }
 
       m_audioStats.AddSampleBytes(pPacket->iSize);
+      if (m_collectPacketSizes)
+      {
+        const double time = pPacket->pts != DVD_NOPTS_VALUE ? pPacket->pts : pPacket->dts;
+        m_processInfo.AddAudioPacketSize(static_cast<uint32_t>(pPacket->iSize),
+                                         time != DVD_NOPTS_VALUE ? time / DVD_TIME_BASE
+                                                                 : std::nan(""));
+      }
       UpdatePlayerInfo();
 
       if (ProcessDecoderOutput(audioframe))
