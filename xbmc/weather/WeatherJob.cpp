@@ -68,13 +68,8 @@ bool CWeatherJob::DoWork()
   int scriptId = -1;
   if ((scriptId = CScriptInvocationManager::GetInstance().ExecuteAsync(argv[0], addon, argv)) >= 0)
   {
-    while (true)
-    {
-      if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-        break;
-
-      KODI::TIME::Sleep(100ms);
-    }
+    CScriptInvocationManager::GetInstance().WaitForScript(scriptId,
+                                                          std::chrono::milliseconds::max());
 
     CLog::Log(LOGINFO, "WEATHER: Successfully downloaded weather");
 
