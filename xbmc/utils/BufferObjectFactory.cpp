@@ -30,6 +30,20 @@ std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObject(bool nee
   return nullptr;
 }
 
+std::unique_ptr<CBufferObject> CBufferObjectFactory::CreateBufferObjectByName(
+    const std::string& name)
+{
+  for (const auto& bufferObject : m_bufferObjects)
+  {
+    auto bo = bufferObject();
+
+    if (bo->GetName() == name)
+      return bo;
+  }
+
+  return nullptr;
+}
+
 void CBufferObjectFactory::RegisterBufferObject(
     const std::function<std::unique_ptr<CBufferObject>()>& createFunc)
 {
