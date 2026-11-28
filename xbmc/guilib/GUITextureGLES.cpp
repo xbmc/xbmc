@@ -182,7 +182,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
 
   if (hasAlpha)
   {
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glEnable( GL_BLEND );
   }
   else
