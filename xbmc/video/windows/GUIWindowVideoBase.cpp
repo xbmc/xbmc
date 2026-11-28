@@ -252,12 +252,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLAYBACK_ERROR:
     case GUI_MSG_PLAYBACK_STOPPED:
     case GUI_MSG_PLAYBACK_ENDED:
-    {
-      const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
-      if (!appPlayer->IsPlaying() && !appPlayer->HasNextItem())
-        RestartThumbLoader();
+      RestartThumbLoaderIfIdle();
       break;
-    }
     case GUI_MSG_SEARCH:
       OnSearch();
       break;
@@ -1251,9 +1247,13 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
 {
   const bool partyMode{g_partyModeManager.IsEnabled(PartyModeContext::VIDEO)};
   // before the hold, so that the loader stops instead of going on with another item
-  const bool loaderStopped{!partyMode && m_thumbLoader.IsLoading()};
+  const bool loaderStopped{!partyMode && (m_thumbLoader.IsLoading() || m_restartThumbLoader)};
   if (loaderStopped)
+  {
     m_thumbLoader.StopAsync();
+    // a pending restart must not run from a dialog that the playback start opens
+    m_restartThumbLoader = false;
+  }
 
   const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, pItem.get()};
 
@@ -1291,11 +1291,8 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
 
   if (loaderStopped)
   {
-    const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
-    if (appPlayer->IsPlaying() || appPlayer->HasNextItem())
-      m_restartThumbLoader = true;
-    else
-      m_thumbLoader.Load(*m_vecItems);
+    m_restartThumbLoader = true;
+    RestartThumbLoaderIfIdle();
   }
   return true;
 }
@@ -1307,6 +1304,22 @@ void CGUIWindowVideoBase::RestartThumbLoader()
 
   m_restartThumbLoader = false;
   m_thumbLoader.Load(*m_vecItems);
+}
+
+void CGUIWindowVideoBase::RestartThumbLoaderIfIdle()
+{
+  const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
+  if (appPlayer->IsPlaying() || appPlayer->HasNextItem())
+    return;
+
+  const auto restartWhenDone{[this] {
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &m_thumbLoaderDoneCallback);
+  }};
+  // the loader thread stopped for playback may still be busy with an item, Load() would join it
+  if (m_restartThumbLoader && m_thumbLoader.CallWhenDone(restartWhenDone))
+    return;
+
+  RestartThumbLoader();
 }
 
 bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string& player)

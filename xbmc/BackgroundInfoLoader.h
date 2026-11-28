@@ -13,6 +13,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/IRunnable.h"
 
+#include <atomic>
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -44,6 +46,13 @@ public:
 
   void StopThread(); // will actually stop the loader thread.
   void StopAsync();  // will ask loader to stop as soon as possible, but not block
+
+  /*!
+   \brief Calls the function on the loader thread once it has finished loading. StopThread() drops
+   a function that thread has not taken yet.
+   \return false if no load is in progress, the function is not called then.
+   */
+  bool CallWhenDone(std::function<void()> function);
 
   /*!
    \brief Keeps the loader thread away from an item for as long as it lives, so that another thread
@@ -78,7 +87,7 @@ protected:
   CCriticalSection m_itemLock;
   std::vector<const CFileItem*> m_heldItems; //!< items the loader thread has to leave alone
 
-  volatile bool m_bIsLoading{false};
+  std::atomic<bool> m_bIsLoading{false};
   volatile bool m_bStop{true};
   std::unique_ptr<CThread> m_thread{};
 
@@ -109,5 +118,6 @@ private:
 
   XbmcThreads::ConditionVariable m_itemChanged;
   const CFileItem* m_currentItem{nullptr}; //!< item the loader thread is working on
+  std::function<void()> m_whenDone; //!< guarded by m_lock
 };
 
