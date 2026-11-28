@@ -8,6 +8,7 @@ set(SOURCES TestAddonsPaths.cpp
             TestFile.cpp
             TestFileCache.cpp
             TestFileFactory.cpp
+            TestFTPParse.cpp
             TestLibraryPaths.cpp
             TestSmartPlaylistDirectory.cpp
             TestSourcesDirectory.cpp
