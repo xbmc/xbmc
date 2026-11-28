@@ -13,14 +13,17 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "VideoDecodeSession.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/Texture.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/Thread.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -31,6 +34,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
@@ -57,9 +61,211 @@ extern "C" {
 
 using namespace KODI;
 
-bool CDVDFileInfo::GetFileDuration(const std::string& path,
-                                   int& duration,
-                                   unsigned int fileFlags /* = 0 */)
+namespace
+{
+constexpr std::chrono::seconds PROBE_TIMEOUT{30};
+constexpr std::chrono::seconds PROCESS_THREAD_TIMEOUT{5};
+constexpr std::chrono::milliseconds CANCEL_POLL{100};
+constexpr std::chrono::seconds SHUTDOWN_WAIT{5};
+constexpr int MAX_PROBE_WORKERS = 8;
+
+struct ProbeState
+{
+  bool finished{false};
+  bool abandoned{false};
+};
+
+struct ProbeRegistry
+{
+  std::mutex mutex;
+  std::condition_variable idle;
+  std::unordered_map<std::string, int> stuck;
+  int live{0};
+  bool stopping{false};
+  std::atomic<bool> blockedAtStop{false};
+};
+
+ProbeRegistry& Registry()
+{
+  static auto* registry{new ProbeRegistry};
+  return *registry;
+}
+
+enum class Reservation
+{
+  GRANTED,
+  EXHAUSTED,
+  STUCK,
+};
+
+Reservation ReserveWorker(const std::string& path)
+{
+  auto& registry{Registry()};
+  std::unique_lock lock(registry.mutex);
+  if (registry.stopping || registry.live >= MAX_PROBE_WORKERS)
+    return Reservation::EXHAUSTED;
+  if (registry.stuck.contains(path))
+    return Reservation::STUCK;
+  ++registry.live;
+  return Reservation::GRANTED;
+}
+
+bool AbandonWorker(const std::string& path, ProbeState& state)
+{
+  auto& registry{Registry()};
+  std::unique_lock lock(registry.mutex);
+  if (state.finished)
+    return false;
+  state.abandoned = true;
+  ++registry.stuck[path];
+  return true;
+}
+
+void ReleaseWorker(const std::string& path, ProbeState& state)
+{
+  auto& registry{Registry()};
+  {
+    std::unique_lock lock(registry.mutex);
+    state.finished = true;
+    if (state.abandoned)
+    {
+      const auto it{registry.stuck.find(path)};
+      if (--it->second == 0)
+        registry.stuck.erase(it);
+    }
+    --registry.live;
+  }
+  registry.idle.notify_all();
+}
+
+std::chrono::seconds GetProbeTimeout()
+{
+  const auto messenger{CServiceBroker::GetAppMessenger()};
+  return messenger && messenger->IsProcessThread() ? PROCESS_THREAD_TIMEOUT : PROBE_TIMEOUT;
+}
+
+bool IsStopping()
+{
+  auto& registry{Registry()};
+  std::unique_lock lock(registry.mutex);
+  return registry.stopping;
+}
+
+template<typename Fn>
+auto RunWithTimeout(std::string_view what,
+                    const std::string& path,
+                    Fn&& fn) -> std::optional<std::invoke_result_t<std::decay_t<Fn>>>
+{
+  using Result = std::invoke_result_t<std::decay_t<Fn>>;
+  using Promise = std::promise<std::optional<Result>>;
+
+  switch (ReserveWorker(path))
+  {
+    case Reservation::GRANTED:
+      break;
+    case Reservation::STUCK:
+      CLog::LogF(LOGDEBUG, "{}: an earlier probe of {} is still blocked, skipping", what,
+                 CURL::GetRedacted(path));
+      return std::nullopt;
+    case Reservation::EXHAUSTED:
+      CLog::LogF(LOGWARNING, "{}: probe workers exhausted or shutting down, skipping {}", what,
+                 CURL::GetRedacted(path));
+      return std::nullopt;
+  }
+
+  auto state{std::make_shared<ProbeState>()};
+  Promise promise;
+  std::future<std::optional<Result>> future = promise.get_future();
+
+  try
+  {
+    std::thread(
+        [promise = std::move(promise), fn = std::forward<Fn>(fn), path, state]() mutable
+        {
+          {
+            auto work{std::move(fn)};
+            try
+            {
+              if (IsStopping())
+                promise.set_value(std::nullopt);
+              else
+                promise.set_value(work());
+            }
+            catch (...)
+            {
+              promise.set_exception(std::current_exception());
+            }
+          }
+          ReleaseWorker(path, *state);
+        })
+        .detach();
+  }
+  catch (const std::system_error& e)
+  {
+    ReleaseWorker(path, *state);
+    CLog::LogF(LOGERROR, "{}: unable to start worker for {}: {}", what, CURL::GetRedacted(path),
+               e.what());
+    return std::nullopt;
+  }
+  catch (...)
+  {
+    ReleaseWorker(path, *state);
+    throw;
+  }
+
+  const auto timeout{GetProbeTimeout()};
+  const auto deadline{std::chrono::steady_clock::now() + timeout};
+  while (future.wait_until(std::min(deadline, std::chrono::steady_clock::now() + CANCEL_POLL)) !=
+         std::future_status::ready)
+  {
+    const CThread* thread{CThread::GetCurrentThread()};
+    const bool stopRequested{thread && thread->IsStopRequested()};
+    const bool expired{std::chrono::steady_clock::now() >= deadline};
+    if (!stopRequested && !expired)
+      continue;
+
+    if (!AbandonWorker(path, *state))
+      break;
+
+    if (expired)
+    {
+      CLog::LogF(LOGWARNING, "{}: no result after {}s, giving up on {}", what, timeout.count(),
+                 CURL::GetRedacted(path));
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG, "{}: caller is stopping, giving up on {}", what,
+                 CURL::GetRedacted(path));
+    }
+    return std::nullopt;
+  }
+  return future.get();
+}
+} // namespace
+
+bool CDVDFileInfo::StopProbes()
+{
+  auto& registry{Registry()};
+  std::unique_lock lock(registry.mutex);
+  registry.stopping = true;
+  CDVDDemuxFFmpeg::AbortFileInfoProbes();
+  const bool drained{
+      registry.idle.wait_for(lock, SHUTDOWN_WAIT, [&registry] { return registry.live == 0; })};
+  if (!drained)
+  {
+    registry.blockedAtStop = true;
+    CLog::LogF(LOGWARNING, "{} probe workers still blocked in I/O, services must not be torn down",
+               registry.live);
+  }
+  return drained;
+}
+
+bool CDVDFileInfo::ProbesStillBlocked()
+{
+  return Registry().blockedAtStop.load();
+}
+
+bool CDVDFileInfo::ProbeFileDuration(const std::string& path, int& duration, unsigned int fileFlags)
 {
   std::unique_ptr<CDVDDemux> demux;
 
@@ -82,6 +288,66 @@ bool CDVDFileInfo::GetFileDuration(const std::string& path,
     return true;
   else
     return false;
+}
+
+bool CDVDFileInfo::GetFileDuration(const std::string& path,
+                                   int& duration,
+                                   unsigned int fileFlags /* = 0 */)
+{
+  const auto result = RunWithTimeout("GetFileDuration", path,
+                                     [path, fileFlags]
+                                     {
+                                       int length{0};
+                                       const bool ok{ProbeFileDuration(path, length, fileFlags)};
+                                       return std::pair{ok, length};
+                                     });
+  if (!result || !result->first)
+    return false;
+
+  duration = result->second;
+  return true;
+}
+
+std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
+                                                              int chapterNumber)
+{
+  if (!CanExtract(fileItem))
+    return {};
+
+  auto result = RunWithTimeout("ExtractThumbToTexture", fileItem.GetPath(),
+                               [item = CFileItem(fileItem), chapterNumber]
+                               { return ProbeThumbToTexture(item, chapterNumber); });
+  return result ? std::move(*result) : nullptr;
+}
+
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
+                                        int listingFlags /* = 0 */,
+                                        CStreamDetails* probed /* = nullptr */,
+                                        unsigned int fileFlags /* = 0 */)
+{
+  if (!pItem || !CanExtract(*pItem))
+    return false;
+
+  // The worker may outlive this call if it is abandoned on timeout, so it only touches its own
+  // copies, which are handed back to the caller once it has finished
+  auto work = std::make_shared<CFileItem>(*pItem);
+  auto workProbed = std::make_shared<CStreamDetails>();
+  const bool wantProbed{probed != nullptr};
+  const auto ok = RunWithTimeout("GetFileStreamDetails", pItem->GetPath(),
+                                 [work, workProbed, wantProbed, listingFlags, fileFlags]
+                                 {
+                                   return ProbeFileStreamDetails(
+                                       work.get(), listingFlags,
+                                       wantProbed ? workProbed.get() : nullptr, fileFlags);
+                                 });
+  if (!ok)
+    return false;
+
+  if (work->HasVideoInfoTag())
+    pItem->GetVideoInfoTag()->m_streamDetails = work->GetVideoInfoTag()->m_streamDetails;
+  if (probed)
+    *probed = *workProbed;
+  return *ok;
 }
 
 int DegreeToOrientation(int degrees)
@@ -374,8 +640,8 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 
 } // namespace
 
-std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
-                                                              int chapterNumber)
+std::unique_ptr<CTexture> CDVDFileInfo::ProbeThumbToTexture(const CFileItem& fileItem,
+                                                            int chapterNumber)
 {
   if (!CanExtract(fileItem))
     return {};
@@ -455,10 +721,10 @@ bool CDVDFileInfo::IsExtractableLocation(const std::string& path)
  * \brief Open the item pointed to by pItem and extract streamdetails
  * \return true if the stream details have changed
  */
-bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem,
-                                        int listingFlags /* = 0 */,
-                                        CStreamDetails* probed /* = nullptr */,
-                                        unsigned int fileFlags /* = 0 */)
+bool CDVDFileInfo::ProbeFileStreamDetails(CFileItem* pItem,
+                                          int listingFlags,
+                                          CStreamDetails* probed,
+                                          unsigned int fileFlags)
 {
   if (!pItem)
     return false;
