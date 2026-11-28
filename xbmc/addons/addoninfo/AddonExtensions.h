@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <string_view>
 #include <vector>
