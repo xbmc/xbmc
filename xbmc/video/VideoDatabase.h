@@ -1610,13 +1610,13 @@ protected:
   CVideoInfoTag GetDetailsForMusicVideo(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
   bool GetPeopleNav(const std::string& strBaseDir,
                     CFileItemList& items,
-                    const char* type,
+                    KODI::MEDIA::TYPE kind,
                     VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
                     const Filter& filter = Filter(),
                     bool countOnly = false);
   bool GetNavCommon(const std::string& strBaseDir,
                     CFileItemList& items,
-                    const char* type,
+                    KODI::MEDIA::TYPE kind,
                     VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
                     const Filter& filter = Filter(),
                     bool countOnly = false);

@@ -280,10 +280,7 @@ std::string CVideoItemArtworkArtistHandler::GetCurrentArt() const
     return {};
   }
 
-  std::string currentArt;
-  const int idArtist = musicdb.GetArtistByName(m_item->GetLabel());
-  if (idArtist >= 0)
-    currentArt = musicdb.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, ART::TYPE::THUMB);
+  std::string currentArt{musicdb.GetArtistArtByName(m_item->GetLabel(), ART::TYPE::THUMB)};
 
   if (currentArt.empty())
   {
@@ -614,7 +611,7 @@ std::unique_ptr<IVideoItemArtworkHandler> IVideoItemArtworkHandlerFactory::Creat
     artHandler = std::make_unique<CVideoItemArtworkFanartHandler>(item, artType);
   else if (mediaType == NameOf(MEDIA::TYPE::ARTIST))
     artHandler = std::make_unique<CVideoItemArtworkArtistHandler>(item, artType);
-  else if (mediaType == "actor")
+  else if (MEDIA::MediaTypeOf(mediaType) == MEDIA::TYPE::ACTOR)
     artHandler = std::make_unique<CVideoItemArtworkActorHandler>(item, artType);
   else if (mediaType == NameOf(MEDIA::TYPE::SEASON))
     artHandler = std::make_unique<CVideoItemArtworkSeasonHandler>(item, artType);

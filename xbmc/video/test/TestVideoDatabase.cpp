@@ -842,6 +842,48 @@ TEST_F(TestVideoDatabase, AMusicVideoListedIsItsIdAndAnArtistsListIsTitledWithTh
   EXPECT_EQ("Singer", byArtist.GetProperty(KODI::ITEM::PROPERTY::CUSTOM_TITLE).asString());
 }
 
+TEST_F(TestVideoDatabase, AnItemOfABrowseListingIsOfTheKindBrowsedBy)
+{
+  CVideoInfoTag movie{Tag("/videos/film.mkv")};
+  movie.SetGenre({"Drama"});
+  movie.SetCountry({"France"});
+  movie.SetStudio({"Studio"});
+  movie.SetTags({"Favourite"});
+  movie.SetDirector({"Jane Director"});
+  movie.SetWritingCredits({"Joe Writer"});
+  SActorInfo actor;
+  actor.strName = "Ann Actor";
+  movie.m_cast = {actor};
+  ASSERT_GT(m_db.SetDetailsForMovie(movie, KODI::ART::Artwork{}), 0);
+
+  struct Browse
+  {
+    bool (CVideoDatabase::*nav)(
+        const std::string&, CFileItemList&, VideoDbContentType, const CDatabase::Filter&, bool);
+    std::string path;
+    KODI::MEDIA::TYPE kind;
+    std::string type;
+  };
+  using enum KODI::MEDIA::TYPE;
+  for (const auto& [nav, path, kind, type] : std::vector<Browse>{
+           {&CVideoDatabase::GetGenresNav, "videodb://movies/genres/", GENRE, "genre"},
+           {&CVideoDatabase::GetCountriesNav, "videodb://movies/countries/", COUNTRY, "country"},
+           {&CVideoDatabase::GetStudiosNav, "videodb://movies/studios/", STUDIO, "studio"},
+           {&CVideoDatabase::GetTagsNav, "videodb://movies/tags/", TAG, "tag"},
+           {&CVideoDatabase::GetActorsNav, "videodb://movies/actors/", ACTOR, "actor"},
+           {&CVideoDatabase::GetDirectorsNav, "videodb://movies/directors/", DIRECTOR, "director"},
+           {&CVideoDatabase::GetWritersNav, "videodb://movies/", WRITER, "writer"},
+       })
+  {
+    CFileItemList items;
+    ASSERT_TRUE((m_db.*nav)(path, items, VideoDbContentType::MOVIES, CDatabase::Filter(), false))
+        << type;
+    ASSERT_EQ(1, items.Size()) << type;
+    EXPECT_EQ(kind, items[0]->GetVideoInfoTag()->GetMediaType()) << type;
+    EXPECT_EQ(type, items[0]->GetVideoInfoTag()->m_type);
+  }
+}
+
 TEST_F(TestVideoDatabase, AListingsTotalCountsEveryMatchNotOnlyThoseItsLimitReturns)
 {
   for (const char* name : {"C.mkv", "A.mkv", "B.mkv"})

@@ -1061,7 +1061,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::setMediaTypeRaw(CVideoInfoTag* infoTag, const String& mediaType)
     {
-      if (MediaTypeFromName(mediaType) != KODI::MEDIA::TYPE::NONE)
+      if (KODI::MEDIA::IsMedia(MediaTypeFromName(mediaType)))
         infoTag->m_type = mediaType;
     }
 

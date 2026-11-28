@@ -10683,6 +10683,18 @@ int CMusicDatabase::GetArtistByName(const std::string& strArtist)
   return -1;
 }
 
+bool CMusicDatabase::GetArtistArtByName(const std::string& name, KODI::ART::Artwork& art)
+{
+  const int idArtist{GetArtistByName(name)};
+  return idArtist >= 0 && GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, art);
+}
+
+std::string CMusicDatabase::GetArtistArtByName(const std::string& name, const std::string& artType)
+{
+  const int idArtist{GetArtistByName(name)};
+  return idArtist >= 0 ? GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, artType) : std::string{};
+}
+
 int CMusicDatabase::GetArtistByMatch(const CArtist& artist)
 {
   std::string strSQL;

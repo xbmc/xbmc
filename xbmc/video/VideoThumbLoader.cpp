@@ -657,7 +657,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       item.SetArt(artwork);
     database.Close();
   }
-  else if (tag.m_type == "actor" && !tag.m_artist.empty() &&
+  else if (tag.GetMediaType() == MEDIA::TYPE::ACTOR && !tag.m_artist.empty() &&
            item.GetProperty(ITEM::PROPERTY::MUSICVIDEO_MEDIA_TYPE) == NameOf(MEDIA::TYPE::ARTIST))
   {
     // Try to match artist in music db on name, get bio if available and fetch artist art
@@ -671,9 +671,9 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       database.GetArtist(idArtist, artist);
       tag.m_strPlot = artist.strBiography;
       item.SetProperty(ITEM::PROPERTY::ARTIST_MUSICID, idArtist);
+      if (database.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, artwork))
+        item.SetArt(artwork);
     }
-    if (database.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, artwork))
-      item.SetArt(artwork);
     database.Close();
   }
 
@@ -698,15 +698,14 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     {
       item.AppendArt(artwork);
     }
-    else if (tag.m_type == "actor" && !tag.m_artist.empty() &&
+    else if (tag.GetMediaType() == MEDIA::TYPE::ACTOR && !tag.m_artist.empty() &&
              item.GetProperty(ITEM::PROPERTY::MUSICVIDEO_MEDIA_TYPE) != NameOf(MEDIA::TYPE::ARTIST))
     {
       // Fallback to music library for actors without art
       //! @todo Is m_artist set other than musicvideo? Remove this fallback if not.
       CMusicDatabase database;
       database.Open();
-      int idArtist = database.GetArtistByName(item.GetLabel());
-      if (database.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, artwork))
+      if (database.GetArtistArtByName(item.GetLabel(), artwork))
         item.SetArt(artwork);
       database.Close();
     }

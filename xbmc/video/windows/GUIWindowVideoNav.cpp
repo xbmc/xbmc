@@ -865,7 +865,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (type == MEDIA::TYPE::MOVIE || type == MEDIA::TYPE::TV_SHOW ||
               type == MEDIA::TYPE::SEASON || type == MEDIA::TYPE::EPISODE ||
               type == MEDIA::TYPE::MUSIC_VIDEO || type == MEDIA::TYPE::VIDEO_COLLECTION ||
-              item->GetVideoInfoTag()->m_type == "tag")
+              type == MEDIA::TYPE::TAG)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
         if (node == NodeType::ACTOR)

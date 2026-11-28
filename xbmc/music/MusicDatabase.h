@@ -428,6 +428,12 @@ public:
 
   std::string GetArtistById(int id) const;
   int GetArtistByName(const std::string& strArtist);
+
+  //! \brief The art of the artist of this name. False if no artist has the name, or it has none.
+  bool GetArtistArtByName(const std::string& name, KODI::ART::Artwork& art);
+
+  //! \brief A piece of art of the artist of this name. Empty if no artist has the name.
+  std::string GetArtistArtByName(const std::string& name, const std::string& artType);
   int GetArtistByMatch(const CArtist& artist);
   bool GetArtistFromSong(int idSong, CArtist& artist);
   bool IsSongArtist(int idSong, int idArtist) const;

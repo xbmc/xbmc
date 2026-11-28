@@ -16,7 +16,7 @@
 namespace KODI::MEDIA
 {
 
-//! \brief What a library item is.
+//! \brief What an item in a library listing is: media, or a kind the library is browsed by.
 enum class TYPE
 {
   NONE,
@@ -32,6 +32,13 @@ enum class TYPE
   SEASON,
   EPISODE,
   VIDEO_VERSION,
+  GENRE,
+  COUNTRY,
+  STUDIO,
+  TAG,
+  ACTOR,
+  DIRECTOR,
+  WRITER,
 };
 
 //! \brief The name a type is stored and exposed under, e.g. "movie". Empty for NONE.
@@ -52,10 +59,13 @@ TYPE MediaTypeFromName(std::string_view name);
 //! \brief The type whose stored name is exactly \p name. NONE for any other text.
 TYPE MediaTypeOf(std::string_view name);
 
-//! \brief Whether an item of this type holds other items, as an album holds songs.
+//! \brief Whether an item of this type is media: false for NONE and the kinds browsed by.
+bool IsMedia(TYPE type);
+
+//! \brief Whether a media item of this type holds other items, as an album holds songs.
 bool IsContainer(TYPE type);
 
-//! \brief The localized name as a heading, e.g. "Movie". Empty for NONE.
+//! \brief The localized name of a media type as a heading, e.g. "Movie". Empty for the others.
 std::string GetCapitalLocalization(TYPE type);
 
 } // namespace KODI::MEDIA

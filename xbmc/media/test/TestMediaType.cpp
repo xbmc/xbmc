@@ -8,6 +8,10 @@
 
 #include "media/MediaType.h"
 
+#include <string>
+#include <tuple>
+#include <vector>
+
 #include <gtest/gtest.h>
 
 using namespace KODI::MEDIA;
@@ -15,7 +19,7 @@ using namespace KODI::MEDIA;
 namespace
 {
 constexpr KODI::MEDIA::TYPE FIRST{KODI::MEDIA::TYPE::MUSIC};
-constexpr KODI::MEDIA::TYPE LAST{KODI::MEDIA::TYPE::VIDEO_VERSION};
+constexpr KODI::MEDIA::TYPE LAST{KODI::MEDIA::TYPE::WRITER};
 
 KODI::MEDIA::TYPE Next(KODI::MEDIA::TYPE type)
 {
@@ -42,6 +46,33 @@ TEST(TestMediaType, NamesAreTheStoredSpellings)
   EXPECT_EQ(NameOf(KODI::MEDIA::TYPE::NONE), "");
 }
 
+TEST(TestMediaType, AKindTheLibraryIsBrowsedByIsNamedAsItsItemsAndListingsAre)
+{
+  using enum KODI::MEDIA::TYPE;
+  const std::vector<std::tuple<KODI::MEDIA::TYPE, std::string, std::string>> kinds{
+      {GENRE, "genre", "genres"},    {COUNTRY, "country", "countries"},
+      {STUDIO, "studio", "studios"}, {TAG, "tag", "tags"},
+      {ACTOR, "actor", "actors"},    {DIRECTOR, "director", "directors"},
+      {WRITER, "writer", "writers"},
+  };
+  for (const auto& [kind, name, plural] : kinds)
+  {
+    EXPECT_EQ(NameOf(kind), name);
+    EXPECT_EQ(PluralNameOf(kind), plural);
+    EXPECT_EQ(MediaTypeOf(name), kind) << name;
+    EXPECT_EQ(MediaTypeFromName(plural), kind) << plural;
+    EXPECT_FALSE(IsMedia(kind)) << name;
+    EXPECT_FALSE(IsContainer(kind)) << name;
+  }
+}
+
+TEST(TestMediaType, OnlyAMediaTypeIsMedia)
+{
+  for (KODI::MEDIA::TYPE type{FIRST}; type <= KODI::MEDIA::TYPE::VIDEO_VERSION; type = Next(type))
+    EXPECT_TRUE(IsMedia(type)) << NameOf(type);
+  EXPECT_FALSE(IsMedia(KODI::MEDIA::TYPE::NONE));
+}
+
 TEST(TestMediaType, FormatsAsItsName)
 {
   const KODI::MEDIA::TYPE movie{KODI::MEDIA::TYPE::MOVIE};
@@ -53,8 +84,6 @@ TEST(TestMediaType, FormatsAsItsName)
 TEST(TestMediaType, AFacetOrUnknownNameIsNoType)
 {
   EXPECT_EQ(MediaTypeFromName(""), KODI::MEDIA::TYPE::NONE);
-  EXPECT_EQ(MediaTypeFromName("genre"), KODI::MEDIA::TYPE::NONE);
-  EXPECT_EQ(MediaTypeFromName("actor"), KODI::MEDIA::TYPE::NONE);
   EXPECT_EQ(MediaTypeFromName("year"), KODI::MEDIA::TYPE::NONE);
 }
 
@@ -70,7 +99,6 @@ TEST(TestMediaType, OnlyTheStoredNameIsTheTypeExactly)
     EXPECT_EQ(MediaTypeOf(NameOf(type)), type) << NameOf(type);
   EXPECT_EQ(MediaTypeOf("movies"), KODI::MEDIA::TYPE::NONE);
   EXPECT_EQ(MediaTypeOf("Movie"), KODI::MEDIA::TYPE::NONE);
-  EXPECT_EQ(MediaTypeOf("genre"), KODI::MEDIA::TYPE::NONE);
   EXPECT_EQ(MediaTypeOf(""), KODI::MEDIA::TYPE::NONE);
 }
 
