@@ -197,6 +197,12 @@ public:
   */
   void UnlockFrameMoveGuard();
 
+  /*!
+  \brief Stops the service add-ons, letting calls from outside kodi through until they have
+  stopped. Call it without holding a lock those calls may need, such as the profile lock.
+  */
+  void StopServiceAddons();
+
 protected:
   bool OnSettingsSaving() const override;
   void PlaybackCleanup();

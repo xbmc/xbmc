@@ -2120,6 +2120,14 @@ bool CApplication::IsFullScreen()
          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW;
 }
 
+void CApplication::StopServiceAddons()
+{
+  // a service waiting on the GUI only sees the request to stop once it gets in
+  CSingleExit exitGfx(CServiceBroker::GetWinSystem()->GetGfxContext());
+  CSingleExit exitFrameMove(m_frameMoveGuard);
+  CServiceBroker::GetServiceAddons().Stop();
+}
+
 void CApplication::StopPlaying()
 {
   CGUIComponent *gui = CServiceBroker::GetGUI();

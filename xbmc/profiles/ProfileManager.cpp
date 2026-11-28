@@ -465,6 +465,9 @@ void CProfileManager::LogOff()
   if (m_currentProfile != MASTER_PROFILE_ID)
   {
     networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
+
+    // LoadProfile() would stop them while holding m_critical
+    g_application.StopServiceAddons();
   }
 
   LoadMasterProfileForLogin();
