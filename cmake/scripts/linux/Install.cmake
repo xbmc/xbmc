@@ -42,8 +42,7 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop @ONLY)
 
 # Configure metainfo
-configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.metainfo.xml.in
-               ${CORE_BUILD_DIR}/${APP_PACKAGE}.metainfo.xml @ONLY)
+include(${CMAKE_SOURCE_DIR}/cmake/scripts/linux/AppStream.cmake)
 
 # Install app
 install(TARGETS ${APP_NAME_LC}

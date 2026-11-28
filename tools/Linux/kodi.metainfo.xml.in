@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
     <id>@APP_PACKAGE@</id>
-    <name>@APP_NAME@</name>
+    <name translate="no">@APP_NAME@</name>
     <project_license>GPL-2.0-only GPL-2.0-or-later LGPL-2.1-or-later MIT BSD-3-Clause BSD-4-Clause</project_license>
     <metadata_license>CC0-1.0</metadata_license>
-    <developer_name>@DEV_NAME@</developer_name>
+    <developer_name translate="no">@DEV_NAME@</developer_name>
     <summary>Ultimate entertainment center</summary>
     <url type="homepage">https://kodi.tv/</url>
     <url type="donation">https://kodi.tv/contribute/donate</url>
@@ -27,8 +27,8 @@
         supported by a dedicated team of volunteers and a huge community.</p>
     </description>
     <keywords>
-        <keyword>Kodi</keyword>
-        <keyword>xbmc</keyword>
+        <keyword translate="no">Kodi</keyword>
+        <keyword translate="no">xbmc</keyword>
         <keyword>audio</keyword>
         <keyword>video</keyword>
         <keyword>media</keyword>
