@@ -16,6 +16,8 @@
 #include "GUIWindow.h"
 #include "WindowIDs.h"
 
+#include <atomic>
+
 #ifdef TARGET_WINDOWS_STORE
 #pragma pack(push, 8)
 #endif
@@ -80,4 +82,6 @@ protected:
   unsigned int m_showDuration;
   bool m_bAutoClosed;
   DialogModalityType m_modalityType;
+  //! the thread that opened it stopped waiting, so nothing reads the result
+  std::atomic<bool> m_abandoned{false};
 };

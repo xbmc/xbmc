@@ -80,7 +80,8 @@ public:
       params(std::move(other.params)),
       waitEvent(std::move(other.waitEvent)),
       result(std::move(other.result)),
-      claimed(std::move(other.claimed))
+      claimed(std::move(other.claimed)),
+      payloadOwner(std::move(other.payloadOwner))
   {
   }
 
@@ -98,6 +99,7 @@ public:
     waitEvent = other.waitEvent;
     result = other.result;
     claimed = other.claimed;
+    payloadOwner = other.payloadOwner;
     return *this;
   }
 
@@ -115,6 +117,7 @@ public:
     waitEvent = std::move(other.waitEvent);
     result = std::move(other.result);
     claimed = std::move(other.claimed);
+    payloadOwner = std::move(other.payloadOwner);
     return *this;
   }
 
@@ -144,6 +147,8 @@ protected:
   std::shared_ptr<int> result;
   //! set by whichever of processing or an aborting sender gets there first
   std::shared_ptr<std::atomic<bool>> claimed;
+  //! keeps lpVoid alive for a sender that stopped waiting
+  std::shared_ptr<void> payloadOwner;
 };
 }
 }

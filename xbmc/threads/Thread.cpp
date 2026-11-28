@@ -100,6 +100,7 @@ void CThread::Create(bool bAutoDelete)
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   m_StopEvent.Reset();
+  m_StopWaitEvent.Reset();
   m_StartEvent.Reset();
 
   // lock?
@@ -225,6 +226,7 @@ void CThread::StopThread(bool bWait /*= true*/)
   const std::shared_future<bool> future = m_future;
   if (lthread != nullptr && bWait && !IsCurrentThread())
   {
+    m_StopWaitEvent.Set();
     lock.unlock();
     future.wait();
     lock.lock();
