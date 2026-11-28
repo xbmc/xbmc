@@ -2,6 +2,7 @@ set(SOURCES TestBaseRenderBufferPool.cpp
             TestHdrOutput.cpp
             TestHwRenderingContextEGL.cpp
             TestRenderBufferOpenGLES.cpp
+            TestRenderBezel.cpp
             TestRenderBufferPoolFBO.cpp
             TestRenderUtils.cpp
             TestRPProcessInfoEGL.cpp

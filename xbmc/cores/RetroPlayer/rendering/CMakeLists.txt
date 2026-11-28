@@ -1,4 +1,5 @@
 set(SOURCES HdrOutput.cpp
+            RenderBezel.cpp
             RenderContext.cpp
             RenderSettings.cpp
             RenderTranslator.cpp
@@ -9,6 +10,7 @@ set(SOURCES HdrOutput.cpp
 
 set(HEADERS HdrOutput.h
             IRenderManager.h
+            RenderBezel.h
             RenderContext.h
             RenderSettings.h
             RenderTranslator.h

@@ -36,9 +36,13 @@ public:
   unsigned int RotationDegCCW() const { return m_rotationDegCCW; }
   void SetRotationDegCCW(unsigned int rotation);
 
+  bool BezelEnabled() const { return m_bezelEnabled; }
+  void SetBezelEnabled(bool enabled);
+
 private:
   // Video settings
   std::string m_videoFilter;
   KODI::RETRO::STRETCHMODE m_stretchMode;
   unsigned int m_rotationDegCCW;
+  bool m_bezelEnabled;
 };

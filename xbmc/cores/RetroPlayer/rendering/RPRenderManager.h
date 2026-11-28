@@ -34,6 +34,7 @@ namespace KODI
 namespace RETRO
 {
 class CGUIRenderTargetFactory;
+class CRenderBezel;
 class CRenderContext;
 class CRenderSettings;
 class CRPBaseRenderer;
@@ -123,6 +124,21 @@ public:
   // Functions called from the player
   void SetSpeed(double speed);
 
+  /*!
+   * \brief Frame the game with a bezel
+   *
+   * The picture loads in the background. Until it has, or if it has no window
+   * for the game, the game is drawn as it would be without one.
+   *
+   * \param url The bezel's picture
+   */
+  void SetBezel(const std::string& url);
+
+  /*!
+   * \brief True once a bezel has loaded that has a window for the game
+   */
+  bool HasBezel() const { return m_hasBezel; }
+
   // Functions called from render thread
   void FrameMove();
 
@@ -181,6 +197,12 @@ private:
                       uint32_t alpha);
 
   /*!
+   * \brief Give a renderer a new frame to draw, uploading it first if needed
+   */
+  void SetRendererBuffer(const std::shared_ptr<CRPBaseRenderer>& renderer,
+                         IRenderBuffer* renderBuffer);
+
+  /*!
    * \brief Return true if we have a render buffer belonging to the specified pool
    */
   bool HasRenderBuffer(IRenderBufferPool* bufferPool);
@@ -235,6 +257,11 @@ private:
                  unsigned int height);
 
   CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings* settings) const;
+
+  /*!
+   * \brief Get the bezel, once it has loaded
+   */
+  std::shared_ptr<CRenderBezel> GetBezel();
 
   void CheckFlush();
 
@@ -344,6 +371,16 @@ private:
   unsigned int m_cachedHeight = 0;
   float m_cachedDisplayAspectRatio{0.0f}; // 0.0f means square pixels
   unsigned int m_cachedRotationCCW{0};
+  struct BezelLoad
+  {
+    std::mutex mutex;
+    bool done{false};
+    std::shared_ptr<CRenderBezel> bezel;
+  };
+  std::shared_ptr<BezelLoad> m_bezelLoad;
+  std::shared_ptr<CRenderBezel> m_bezel;
+  std::atomic<bool> m_hasBezel{false};
+  std::mutex m_bezelMutex;
 
   // State parameters
   enum class RENDER_STATE

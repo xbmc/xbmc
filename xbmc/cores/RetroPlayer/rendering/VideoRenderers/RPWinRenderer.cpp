@@ -392,4 +392,7 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
                            m_context.UseLimitedColor() ? 1 : 0, alpha);
     }
   }
+
+  // What's drawn next, such as a bezel over the game, expects blending
+  renderingDx->SetAlphaBlendEnable(true);
 }
