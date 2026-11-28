@@ -76,7 +76,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
     DebugLog("corrupt spu data: packet does not fit");
     m_spuData.iNeededSize = 0;
     m_spuData.iSize = 0;
-    return NULL;
+    return nullptr;
   }
 
   // check if we are about to start a new packet
@@ -84,21 +84,65 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
   {
     // for now we don't delete the memory associated with m_spuData.data
     pSPUData->iSize = 0;
+    pSPUData->iNeededSize = 0;
 
-    // check spu data length, only needed / possible in the first spu packet
-    uint16_t length = data[0] << 8 | data[1];
+    // set presentation time stamp
+    pSPUData->pts = pts;
+  }
+
+  // reading the 2-byte length header requires at least 2 bytes total
+  if (pSPUData->iNeededSize == 0)
+  {
+    if (pSPUData->iSize + iSize < 2)
+    {
+      // not enough data for the length header yet -- buffer and wait
+      if (iSize > 0 && pSPUData->iAllocatedSize == 0)
+      {
+        uint8_t* tmpptr = (uint8_t*)realloc(pSPUData->data, ALIGN(iSize, 0x4000));
+        if (!tmpptr)
+        {
+          free(pSPUData->data);
+          pSPUData->data = nullptr;
+          return nullptr;
+        }
+        pSPUData->data = tmpptr;
+        pSPUData->iAllocatedSize = ALIGN(iSize, 0x4000);
+      }
+      if (pSPUData->data)
+      {
+        memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
+        pSPUData->iSize += iSize;
+      }
+      return nullptr;
+    }
+
+    // build the 2-byte header, possibly spanning two AddData calls
+    uint8_t hdr[2];
+    if (pSPUData->iSize > 0 && pSPUData->data)
+    {
+      hdr[0] = pSPUData->data[0];
+      hdr[1] = data[0];
+    }
+    else
+    {
+      hdr[0] = data[0];
+      hdr[1] = data[1];
+    }
+
+    uint16_t length = hdr[0] << 8 | hdr[1];
     if (length == 0)
     {
       DebugLog("corrupt spu data: zero packet");
       m_spuData.iNeededSize = 0;
       m_spuData.iSize = 0;
-      return NULL;
+      return nullptr;
     }
-    if (length > iSize) pSPUData->iNeededSize = length;
-    else pSPUData->iNeededSize = iSize;
 
-    // set presentation time stamp
-    pSPUData->pts = pts;
+    unsigned int totalAvail = pSPUData->iSize + iSize;
+    if (length > totalAvail)
+      pSPUData->iNeededSize = length;
+    else
+      pSPUData->iNeededSize = totalAvail;
   }
 
   // allocate data if not already done ( done in blocks off 16384 bytes )
@@ -109,13 +153,13 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
     if (!tmpptr)
     {
       free(pSPUData->data);
-      return NULL;
+      return nullptr;
     }
     pSPUData->data = tmpptr;
   }
 
   if(!pSPUData->data)
-    return NULL; // crap realloc failed, this will have leaked some memory due to odd realloc
+    return nullptr; // crap realloc failed, this will have leaked some memory due to odd realloc
 
   // add new data
   memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
@@ -136,7 +180,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
     return ParsePacket(pSPUData);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 #define CMD_END     0xFF
@@ -151,8 +195,11 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
 
 std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 {
+  if (pSPUData->iSize < 4)
+    return nullptr;
+
   unsigned int alpha[4];
-  uint8_t* pUnparsedData = NULL;
+  uint8_t* pUnparsedData = nullptr;
 
   if (pSPUData->iNeededSize != pSPUData->iSize)
   {
@@ -170,6 +217,12 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   // get data length
   uint16_t datalength = p[2] << 8 | p[3]; // datalength + 4 control bytes
 
+  if (datalength > pSPUData->iSize)
+  {
+    DebugLog("GetPacket, datalength %u exceeds packet size %u", datalength, pSPUData->iSize);
+    return nullptr;
+  }
+
   pUnparsedData = pSPUData->data + 4;
 
   // if it is set to 0 it means it's a menu overlay by default
@@ -179,10 +232,17 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   //skip data packet and goto control sequence
   p += datalength;
 
+  const uint8_t* pEnd = pSPUData->data + pSPUData->iSize;
+
   bool bHasNewDCSQ = true;
   while (bHasNewDCSQ)
   {
     DebugLog("  starting new SP_DCSQT");
+    if (p + 4 > pEnd)
+    {
+      DebugLog("GetPacket, not enough data for SP_DCSQT header");
+      return nullptr;
+    }
     // p is beginning of first SP_DCSQT now
     uint16_t delay = p[0] << 8 | p[1];
     uint16_t next_DCSQ = p[2] << 8 | p[3];
@@ -192,7 +252,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
     // skip 4 bytes
     p += 4;
 
-    while (*p != CMD_END && (unsigned int)(p - pSPUData->data) <= pSPUData->iSize)
+    while (p < pEnd && *p != CMD_END)
     {
       switch (*p)
       {
@@ -223,6 +283,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_COLOR:
         {
           p++;
+          if (p + 2 > pEnd)
+            return nullptr;
 
           if (m_bHasClut)
           {
@@ -252,6 +314,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_CONTR:  // alpha
         {
           p++;
+          if (p + 2 > pEnd)
+            return nullptr;
           // 3, 2, 1, 0
           alpha[0] = (p[0] >> 4) & 0x0f;
           alpha[1] = (p[0]) & 0x0f;
@@ -277,6 +341,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DAREA:
         {
           p++;
+          if (p + 6 > pEnd)
+            return nullptr;
           pSPUInfo->x = (p[0] << 4) | (p[1] >> 4);
           pSPUInfo->y = (p[3] << 4) | (p[4] >> 4);
           pSPUInfo->width = (((p[1] & 0x0f) << 8) | p[2]) - pSPUInfo->x + 1;
@@ -289,8 +355,12 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DSPXA:
         {
           p++;
+          if (p + 4 > pEnd)
+            return nullptr;
           uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
           uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
+          if (tfaddr < 4 || bfaddr < 4 || tfaddr >= pSPUData->iSize || bfaddr >= pSPUData->iSize)
+            return nullptr;
           pSPUInfo->pTFData = (tfaddr - 4); //pSPUInfo->pData + (tfaddr - 4); // pSPUData->data = packet startaddr - 4
           pSPUInfo->pBFData = (bfaddr - 4); //pSPUInfo->pData + (bfaddr - 4); // pSPUData->data = packet startaddr - 4
           p += 4;
@@ -300,7 +370,11 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case CHG_COLCON:
         {
           p++;
+          if (p + 2 > pEnd)
+            return nullptr;
           uint16_t paramlength = p[0] << 8 | p[1];
+          if (p + paramlength > pEnd)
+            return nullptr;
           DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlength);
           p += paramlength;
         }
@@ -308,11 +382,16 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
       default:
         DebugLog("GetPacket, error parsing control sequence");
-        return NULL;
+        return nullptr;
         break;
       }
     }
     DebugLog("  end off SP_DCSQT");
+    if (p >= pEnd)
+    {
+      DebugLog("GetPacket, reached end of packet without CMD_END");
+      return nullptr;
+    }
     if (*p == CMD_END) p++;
     else
     {
@@ -322,14 +401,19 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
   // parse the rle.
   // this should be changed so it gets converted to a yuv overlay
-  return ParseRLE(pSPUInfo, pUnparsedData);
+  return ParseRLE(pSPUInfo, pUnparsedData, pSPUData->iSize > 4 ? pSPUData->iSize - 4 : 0);
 }
 
 /*****************************************************************************
  * AddNibble: read a nibble from a source packet and add it to our integer.
  *****************************************************************************/
-inline unsigned int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigned int* pi_index)
+inline int AddNibble(unsigned int i_code,
+                     const uint8_t* p_src,
+                     unsigned int* pi_index,
+                     unsigned int i_src_size)
 {
+  if ((*pi_index >> 1) >= i_src_size)
+    return -1;
   if ( *pi_index & 0x1 )
   {
     return ( i_code << 4 | ( p_src[(*pi_index)++ >> 1] & 0xf ) );
@@ -348,7 +432,8 @@ inline unsigned int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigne
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
 std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverlaySpu> pSPU,
-                                                       uint8_t* pUnparsedData)
+                                                       uint8_t* pUnparsedData,
+                                                       unsigned int iUnparsedSize)
 {
   uint8_t* p_src = pUnparsedData;
 
@@ -378,19 +463,31 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
 
     for ( i_x = 0 ; i_x < i_width ; i_x += i_code >> 2 )
     {
-      i_code = AddNibble( 0, p_src, pi_offset );
+      int nibble = AddNibble(0, p_src, pi_offset, iUnparsedSize);
+      if (nibble < 0)
+        return nullptr;
+      i_code = static_cast<unsigned int>(nibble);
 
       if ( i_code < 0x04 )
       {
-        i_code = AddNibble( i_code, p_src, pi_offset );
+        nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+        if (nibble < 0)
+          return nullptr;
+        i_code = static_cast<unsigned int>(nibble);
 
         if ( i_code < 0x10 )
         {
-          i_code = AddNibble( i_code, p_src, pi_offset );
+          nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+          if (nibble < 0)
+            return nullptr;
+          i_code = static_cast<unsigned int>(nibble);
 
           if ( i_code < 0x040 )
           {
-            i_code = AddNibble( i_code, p_src, pi_offset );
+            nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+            if (nibble < 0)
+              return nullptr;
+            i_code = static_cast<unsigned int>(nibble);
 
             if ( i_code < 0x0100 )
             {
@@ -404,7 +501,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
               {
                 /* We have a boo boo ! */
                 CLog::Log(LOGERROR, "ParseRLE: unknown RLE code {:#4x}", i_code);
-                return NULL;
+                return nullptr;
               }
             }
           }
@@ -415,7 +512,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
       {
         CLog::Log(LOGERROR, "ParseRLE: out of bounds, {} at ({},{}) is out of {}x{}", i_code >> 2,
                   i_x, i_y, i_width, i_height);
-        return NULL;
+        return nullptr;
       }
 
       // keep trace of all occurring pixels, even keeping the background in mind
@@ -436,7 +533,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need {} bytes",
                   (long)((uint8_t*)p_dest - pSPU->result));
-        return NULL;
+        return nullptr;
       }
       *p_dest++ = i_code;
     }
@@ -445,7 +542,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
     if ( i_x > i_width )
     {
       CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, {} > {}", i_x, i_width);
-      return NULL;
+      return nullptr;
     }
 
     /* Byte-align the stream */
@@ -474,13 +571,13 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need {} bytes",
                   (long)((uint8_t*)p_dest - pSPU->result));
-        return NULL;
+        return nullptr;
       }
       *p_dest++ = i_width << 2;
       i_y++;
     }
 
-    return NULL;
+    return nullptr;
   }
 
   DebugLog("ParseRLE: valid subtitle, size: %ix%i, position: %i,%i",
