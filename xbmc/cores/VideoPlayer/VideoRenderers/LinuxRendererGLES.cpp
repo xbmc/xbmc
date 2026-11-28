@@ -950,6 +950,25 @@ void CLinuxRendererGLES::LoadShaders(int field)
               if (m_useDithering && m_ditherTex)
                 m_pYUVProgShader->SetDitherUniforms(ditherActive, m_ditherTex, effectiveDitherDepth,
                                                     dither_size);
+
+              m_pYUVBobShader = new YUV2RGBBobShader(
+                  shaderFormat,
+                  m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+                  m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma,
+                  m_useDithering);
+              m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+              if (m_pYUVBobShader->CompileAndLink())
+              {
+                if (m_useDithering && m_ditherTex)
+                  m_pYUVBobShader->SetDitherUniforms(ditherActive, m_ditherTex,
+                                                     effectiveDitherDepth, dither_size);
+              }
+              else
+              {
+                CLog::Log(LOGERROR, "GLES: Error compiling bob shader for filter path");
+                delete m_pYUVBobShader;
+                m_pYUVBobShader = nullptr;
+              }
               m_renderMethod = RENDER_GLSL;
               UpdateVideoFilter();
               break;
@@ -1204,7 +1223,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   VerifyGLState();
 
   Shaders::GLES::BaseYUV2RGBGLSLShader* pYUVShader;
-  if (field != FIELD_FULL)
+  if (field != FIELD_FULL && m_pYUVBobShader)
   {
     pYUVShader = m_pYUVBobShader;
   }
