@@ -1,4 +1,5 @@
 xbmc/addons/gui/skin/test/testdata/Timers.xml
+xbmc/addons/test/test.parent.zip
 xbmc/cores/VideoPlayer/Edl/test/testdata/comskipversion1.txt
 xbmc/cores/VideoPlayer/Edl/test/testdata/comskipversion2.txt
 xbmc/cores/VideoPlayer/Edl/test/testdata/edlautowindautowait.edl

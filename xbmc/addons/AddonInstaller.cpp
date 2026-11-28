@@ -498,7 +498,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
 
   lock.lock();
   auto i = m_downloadJobs.find(addon->ID());
-  m_downloadJobs.erase(i);
+  if (i != m_downloadJobs.end())
+    m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
     m_idle.Set();
 
@@ -1128,7 +1129,12 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
         if (CAddonInstaller::GetInstance().HasJob(addonID))
         {
           while (CAddonInstaller::GetInstance().HasJob(addonID))
+          {
+            if (ShouldCancel(static_cast<unsigned int>(std::distance(deps.begin(), it)),
+                             totalSteps))
+              return false;
             KODI::TIME::Sleep(50ms);
+          }
 
           if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addonID))
           {
