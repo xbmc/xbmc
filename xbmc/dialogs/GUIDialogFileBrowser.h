@@ -89,6 +89,9 @@ protected:
   bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
   void OnAddMediaSource();
+#if defined(TARGET_WASM)
+  void OnAddDeviceFolder();
+#endif
   void OnEditMediaSource(CFileItem* pItem);
   CGUIControl *GetFirstFocusableControl(int id) override;
 

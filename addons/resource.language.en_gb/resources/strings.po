@@ -4313,7 +4313,11 @@ msgctxt "#1044"
 msgid "Set plug-in thumb"
 msgstr ""
 
-#empty string with id 1045
+#. Entry of the file browser that opens the web browser's folder picker (WebAssembly build)
+#: xbmc/dialogs/GUIDialogFileBrowser.cpp
+msgctxt "#1045"
+msgid "Add folder from this device..."
+msgstr ""
 
 msgctxt "#1046"
 msgid "Access points"

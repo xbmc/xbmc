@@ -397,6 +397,12 @@ Audio only starts after the first user interaction (keyboard, mouse or touch); t
 
 For manual validation use at least one H.264 MP4 and one VP9 WebM sample and check that playback starts in sync, that pause/resume and repeated seeks keep lip-sync, and that end of stream drains cleanly.
 
+## Folders of this device
+
+In a browser with the File System Access API (desktop Chromium browsers), the file browser has an **Add folder from this device...** entry next to **Add network location...**. It opens the browser's folder picker; the chosen folder then appears among the local drives as `device://<folder name>/` and can be added as a source. This is also the way to play from a network share: mount it in the operating system and choose the mounted folder.
+
+The browser keeps the access for later sessions and may ask to confirm it again. Access is read-only. The browser refuses some folders, such as the home folder, the desktop and the documents and downloads folders; their subfolders are accepted.
+
 ## Samsung TV information
 
 On a Samsung TV the wasm build reads the Samsung product APIs (`webapis.network`, `webapis.productinfo`), which `tools/wasm/kodi.html` loads from `$WEBAPIS/webapis/webapis.js` only when it detects the Tizen runtime. Their privileges, `network.public` and `productinfo`, are declared in `tools/wasm/tizen/config.xml.in`; both are public-level, so the Public distributor certificate from **[README.Tizen.md](README.Tizen.md)** is sufficient.
