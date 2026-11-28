@@ -88,6 +88,55 @@ TEST_F(TestZipFile, Read)
   file.Close();
 }
 
+TEST_F(TestZipFile, ReadDeflate64)
+{
+  const std::string reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.deflate64.zip");
+
+  CFileItemList itemlist;
+  CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(zipUrl, itemlist, "", XFILE::DIR_FLAG_NO_FILE_DIRS));
+  ASSERT_GT(itemlist.Size(), 0);
+
+  XFILE::CFile file;
+  char buf[20]{};
+  ASSERT_TRUE(file.Open(itemlist[0]->GetPath()));
+  EXPECT_EQ(1616, file.GetLength());
+  EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
+  EXPECT_TRUE(!memcmp("About\n-----\nXBMC is ", buf, sizeof(buf)));
+  EXPECT_EQ(1596, file.Seek(-static_cast<int64_t>(sizeof(buf)), SEEK_END));
+  EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
+  EXPECT_TRUE(!memcmp("multimedia jukebox.\n", buf, sizeof(buf)));
+  file.Close();
+}
+
+TEST_F(TestZipFile, Deflate64SameFileName)
+{
+  const CURL archive(XBMC_REF_FILE_PATH("xbmc/filesystem/test/samename.deflate64.zip"));
+
+  XFILE::CFile file;
+  char buf[13]{};
+  ASSERT_TRUE(file.Open(URIUtils::CreateArchivePath("zip", archive, "a/same.txt")));
+  EXPECT_EQ(1200, file.GetLength());
+  EXPECT_EQ(12, file.Read(buf, 12));
+  EXPECT_TRUE(!memcmp("first entry\n", buf, 12));
+  file.Close();
+
+  ASSERT_TRUE(file.Open(URIUtils::CreateArchivePath("zip", archive, "b/same.txt")));
+  EXPECT_EQ(1300, file.GetLength());
+  EXPECT_EQ(13, file.Read(buf, 13));
+  EXPECT_TRUE(!memcmp("second entry\n", buf, 13));
+  file.Close();
+}
+
+TEST_F(TestZipFile, Deflate64SizeOrCrcMismatch)
+{
+  const CURL archive(XBMC_REF_FILE_PATH("xbmc/filesystem/test/corrupt.deflate64.zip"));
+
+  XFILE::CFile file;
+  EXPECT_FALSE(file.Open(URIUtils::CreateArchivePath("zip", archive, "badcrc.txt")));
+  EXPECT_FALSE(file.Open(URIUtils::CreateArchivePath("zip", archive, "badsize.txt")));
+}
+
 TEST_F(TestZipFile, Exists)
 {
   std::string reffile, strpathinzip;
