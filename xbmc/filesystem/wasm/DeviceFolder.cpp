@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cerrno>
 #include <cstdlib>
 #include <memory>
@@ -39,6 +40,7 @@ enum Op
   OP_OPEN = 3,
   OP_PICK = 4,
   OP_CLOSE = 5,
+  OP_WATCH = 6,
 };
 
 struct Call
@@ -53,6 +55,8 @@ struct Call
 };
 
 constexpr size_t MAX_READ_BYTES = 4 * 1024 * 1024;
+
+std::atomic<bool> g_storagesChanged{false};
 } // namespace
 
 extern "C"
@@ -79,6 +83,11 @@ extern "C"
     call->mtime = static_cast<int64_t>(mtime);
     call->isDir = isDir != 0;
     emscripten_proxy_finish(ctx);
+  }
+
+  EMSCRIPTEN_KEEPALIVE void kodi_device_folder_changed()
+  {
+    g_storagesChanged = true;
   }
 }
 
@@ -123,7 +132,7 @@ void ParseFolders(const std::string& text, std::vector<DeviceFolder>& folders)
   {
     const std::vector<std::string> fields = StringUtils::Split(line, "\t");
     if (fields.size() == 5)
-      folders.push_back({"device://" + fields[3] + "/", fields[4]});
+      folders.push_back({"device://" + fields[3] + "/", fields[4], fields[0] == "r"});
   }
 }
 } // namespace
@@ -161,6 +170,18 @@ bool CDeviceFolderDirectory::PickFolder(DeviceFolder& folder)
   return true;
 }
 
+void CDeviceFolderDirectory::WatchStorages()
+{
+  Call call;
+  call.op = OP_WATCH;
+  Run(call);
+}
+
+bool CDeviceFolderDirectory::HaveStoragesChanged()
+{
+  return g_storagesChanged.exchange(false);
+}
+
 bool CDeviceFolderDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const bool isRoot = url.GetHostName().empty();
@@ -185,7 +206,7 @@ bool CDeviceFolderDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     if (fields.size() != 5)
       continue;
 
-    const bool isDir = fields[0] == "d";
+    const bool isDir = fields[0] != "f";
     auto item = std::make_shared<CFileItem>(fields[4]);
     item->SetPath(base + fields[3] + (isDir ? "/" : ""));
     item->SetFolder(isDir);

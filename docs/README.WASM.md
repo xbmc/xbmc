@@ -403,6 +403,8 @@ In a browser with the File System Access API (desktop Chromium browsers), the fi
 
 The browser keeps the access for later sessions and may ask to confirm it again. Access is read-only. The browser refuses some folders, such as the home folder, the desktop and the documents and downloads folders; their subfolders are accepted.
 
+On a Samsung TV there is no folder picker. The USB storages plugged into the TV are listed as removable drives instead, as `device://<storage label>/` (for example `device://removable_sda1/`), and follow the drive being plugged in and removed. The TV does not report the volume name, so a drive shows under the name of its mount point, such as `USBDriveA1`. This uses the Tizen Filesystem API with the `filesystem.read` and `externalstorage` privileges, declared in `tools/wasm/tizen/config.xml.in`.
+
 ## Samsung TV information
 
 On a Samsung TV the wasm build reads the Samsung product APIs (`webapis.network`, `webapis.productinfo`), which `tools/wasm/kodi.html` loads from `$WEBAPIS/webapis/webapis.js` only when it detects the Tizen runtime. Their privileges, `network.public` and `productinfo`, are declared in `tools/wasm/tizen/config.xml.in`; both are public-level, so the Public distributor certificate from **[README.Tizen.md](README.Tizen.md)** is sufficient.

@@ -11,9 +11,16 @@
 // browser thread, whose API is asynchronous; the calling Kodi thread waits until
 // kodi_device_folder_finish() is called. File contents are read on the calling thread,
 // from a blob: URL of the file.
+//
+// On a Samsung TV the folders are the USB storages instead, through the Tizen Filesystem
+// API: device://<storage label>/<path> is the Tizen path <storage label>/<path>. That API
+// only exists on the browser thread and its reads are slow, so file contents are read from
+// the file: URL of the file.
 
 mergeInto(LibraryManager.library, {
-  $DeviceFolder__deps : [ 'kodi_device_folder_finish', '$stringToNewUTF8', '$UTF8ToString' ],
+  $DeviceFolder__deps : [
+    'kodi_device_folder_finish', 'kodi_device_folder_changed', '$stringToNewUTF8', '$UTF8ToString'
+  ],
   $DeviceFolder : {
     // Keep in sync with DeviceFolder.cpp.
     OP_AVAILABLE : 0,
@@ -22,6 +29,7 @@ mergeInto(LibraryManager.library, {
     OP_OPEN : 3,
     OP_PICK : 4,
     OP_CLOSE : 5,
+    OP_WATCH : 6,
 
     DB : 'kodi-device-folders',
     STORE : 'folders',
@@ -127,6 +135,56 @@ mergeInto(LibraryManager.library, {
       return handle;
     },
 
+    tizenFs : function() { return typeof tizen !== 'undefined' && tizen.filesystem; },
+
+    tizenFile : function(path) {
+      return new Promise(function(resolve, reject) {
+        tizen.filesystem.resolve(path.replace(/\/+$/, ''), resolve, reject, 'r');
+      });
+    },
+
+    tizenMtime : function(file) {
+      return file.modified ? Math.floor(file.modified.getTime() / 1000) : 0;
+    },
+
+    tizenList : async function(path) {
+      var text = '';
+      if (path === '')
+      {
+        var storages =
+            await new Promise(function(resolve, reject) { tizen.filesystem.listStorages(resolve, reject); });
+        storages.forEach(function(storage) {
+          // The API has no volume name: show the name of the mount point, like "USBDriveA1".
+          if (storage.type === 'EXTERNAL' && storage.state === 'MOUNTED')
+            text += DeviceFolder.line('r', 0, 0, storage.label,
+                                      tizen.filesystem.toURI(storage.label).split('/').pop());
+        });
+        return {text : text};
+      }
+      var dir = await DeviceFolder.tizenFile(path);
+      var files = await new Promise(function(resolve, reject) { dir.listFiles(resolve, reject); });
+      files.forEach(function(file) {
+        text += DeviceFolder.line(file.isDirectory ? 'd' : 'f', file.isDirectory ? 0 : file.fileSize,
+                                  DeviceFolder.tizenMtime(file), file.name, file.name);
+      });
+      return {text : text};
+    },
+
+    tizenStat : async function(path) {
+      var file = await DeviceFolder.tizenFile(path);
+      if (file.isDirectory)
+        return {isDir : true};
+      return {size : file.fileSize, mtime : DeviceFolder.tizenMtime(file)};
+    },
+
+    tizenOpen : async function(path) {
+      var file = await DeviceFolder.tizenFile(path);
+      if (file.isDirectory)
+        throw new DOMException(path + ' is a folder', 'TypeMismatchError');
+      var url = file.toURI().split('/').map(encodeURIComponent).join('/').replace(/^file%3A/, 'file:');
+      return {text : url, size : file.fileSize};
+    },
+
     line : function(kind, size, mtime, segment, label) {
       return kind + '\t' + size + '\t' + mtime + '\t' + segment + '\t' + label + '\n';
     },
@@ -196,15 +254,21 @@ mergeInto(LibraryManager.library, {
             throw new DOMException('no folder picker', 'NotSupportedError');
           return {};
         case DeviceFolder.OP_LIST:
-          return DeviceFolder.list(path);
+          return DeviceFolder.tizenFs() ? DeviceFolder.tizenList(path) : DeviceFolder.list(path);
         case DeviceFolder.OP_STAT:
-          return DeviceFolder.stat(path);
+          return DeviceFolder.tizenFs() ? DeviceFolder.tizenStat(path) : DeviceFolder.stat(path);
         case DeviceFolder.OP_OPEN:
-          return DeviceFolder.open(path);
+          return DeviceFolder.tizenFs() ? DeviceFolder.tizenOpen(path) : DeviceFolder.open(path);
         case DeviceFolder.OP_PICK:
           return DeviceFolder.pick();
         case DeviceFolder.OP_CLOSE:
           URL.revokeObjectURL(path);
+          return {};
+        case DeviceFolder.OP_WATCH:
+          if (DeviceFolder.tizenFs())
+            tizen.filesystem.addStorageStateChangeListener(function() {
+              _kodi_device_folder_changed();
+            });
           return {};
       }
       throw new DOMException('bad op ' + op, 'NotSupportedError');
@@ -241,17 +305,19 @@ mergeInto(LibraryManager.library, {
             function(e) { _kodi_device_folder_finish(ctx, call, DeviceFolder.errno(e), 0, 0, 0, 0); });
   },
 
-  // Runs on the calling thread: one synchronous range request on the file's blob: URL.
+  // Runs on the calling thread: one synchronous range request on the file's URL. A file: URL
+  // answers with the range and status 200.
   kodi_device_folder_read__sig : 'ipdpi',
   kodi_device_folder_read : function(urlPtr, offset, bufPtr, length) {
     try
     {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', UTF8ToString(urlPtr), false);
+      var url = UTF8ToString(urlPtr);
+      xhr.open('GET', url, false);
       xhr.responseType = 'arraybuffer';
       xhr.setRequestHeader('Range', 'bytes=' + offset + '-' + (offset + length - 1));
       xhr.send(null);
-      if (xhr.status !== 206)
+      if (xhr.status !== 206 && !(xhr.status === 200 && url.startsWith('file:')))
         return -1;
       var data = new Uint8Array(xhr.response);
       if (data.length > length)
