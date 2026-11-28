@@ -4153,9 +4153,8 @@ void ApplyPlaylistDetails(CFileItem& item,
     // Episode bookmarks. One already set was given explicitly - by an nfo, or by the user - where
     // this one is derived from the disc, so only an absent one is filled in. CBookmark records no
     // source of its own, unlike the streamdetails above.
-    if (const CBookmark & bookmark{playlistTag->m_EpBookmark};
-        bookmark.IsSet() && !tag->m_EpBookmark.IsSet())
-      tag->m_EpBookmark = bookmark;
+    if (playlistTag->HasEpisodeBookmark() && !tag->HasEpisodeBookmark())
+      tag->m_EpBookmark = playlistTag->m_EpBookmark;
 
     if (discDurationDescribesItem)
       tag->SetDuration(static_cast<int>(discDuration));

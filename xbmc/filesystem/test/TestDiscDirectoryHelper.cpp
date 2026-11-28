@@ -2196,10 +2196,11 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
 
     const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
     EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
-    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+    EXPECT_EQ(tag->HasEpisodeBookmark(), expectedEpisode.bookmark > 0.0)
         << "episode index " << episodeIndex;
     if (expectedEpisode.bookmark > 0.0)
     {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark);
       EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 5479.0);
     }
   }
@@ -2221,7 +2222,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithF
       items, [](const auto& i) { return GetPlaylistFromPath(i->GetPath()) == 602u; })};
   ASSERT_NE(allEpisodeItem, items.cend());
   EXPECT_EQ((*allEpisodeItem)->GetVideoInfoTag()->GetDuration(), 5479);
-  EXPECT_DOUBLE_EQ((*allEpisodeItem)->GetVideoInfoTag()->m_EpBookmark.timeInSeconds, 0.0);
+  EXPECT_FALSE((*allEpisodeItem)->GetVideoInfoTag()->HasEpisodeBookmark());
 }
 
 // As GetEpisodePlaylists_RelaxedPlayAllPlaylist_WithFourEpisodePlaylist, but with the stream
@@ -2331,7 +2332,7 @@ TEST_F(TestDiscDirectoryHelper,
 
     // No episode bookmark, and the whole playlist as the duration
     const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
-    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, 0.0) << "episode index " << episodeIndex;
+    EXPECT_FALSE(tag->HasEpisodeBookmark()) << "episode index " << episodeIndex;
     if (EXPECTED_PLAYLISTS[episodeIndex] == 602u)
     {
       EXPECT_EQ(tag->GetDuration(), 5479) << "episode index " << episodeIndex;
@@ -2394,10 +2395,11 @@ TEST_F(TestDiscDirectoryHelper,
 
     const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
     EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
-    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+    EXPECT_EQ(tag->HasEpisodeBookmark(), expectedEpisode.bookmark > 0.0)
         << "episode index " << episodeIndex;
     if (expectedEpisode.bookmark > 0.0)
     {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark);
       EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 2948.0);
     }
   }
@@ -3697,9 +3699,10 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_ThreeEpisodes_SingleEpisodeC
     EXPECT_EQ(tag->GetDuration(), static_cast<int>(expectedDuration));
 
     // The first episode starts at zero so needs no bookmark
-    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedStart);
+    EXPECT_EQ(tag->HasEpisodeBookmark(), expectedStart > 0.0);
     if (expectedStart > 0.0)
     {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedStart);
       EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 16065.0);
     }
   }
@@ -4119,10 +4122,11 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
 
     const CVideoInfoTag* tag{items[0]->GetVideoInfoTag()};
     EXPECT_EQ(tag->GetDuration(), expectedEpisode.duration) << "episode index " << episodeIndex;
-    EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark)
+    EXPECT_EQ(tag->HasEpisodeBookmark(), expectedEpisode.bookmark > 0.0)
         << "episode index " << episodeIndex;
     if (expectedEpisode.bookmark > 0.0)
     {
+      EXPECT_DOUBLE_EQ(tag->m_EpBookmark.timeInSeconds, expectedEpisode.bookmark);
       EXPECT_DOUBLE_EQ(tag->m_EpBookmark.totalTimeInSeconds, 5100.0);
     }
   }
@@ -4135,7 +4139,7 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_FourEpisodesOneDouble_GroupM
       items, [](const auto& i) { return GetPlaylistFromPath(i->GetPath()) == 802u; })};
   ASSERT_NE(allEpisodeItem, items.cend());
   EXPECT_EQ((*allEpisodeItem)->GetVideoInfoTag()->GetDuration(), 5100);
-  EXPECT_DOUBLE_EQ((*allEpisodeItem)->GetVideoInfoTag()->m_EpBookmark.timeInSeconds, 0.0);
+  EXPECT_FALSE((*allEpisodeItem)->GetVideoInfoTag()->HasEpisodeBookmark());
 }
 
 // Consecutive playlists → group method assigns the nth playlist to episode n

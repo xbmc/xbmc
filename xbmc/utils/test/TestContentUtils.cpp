@@ -113,7 +113,7 @@ TEST(TestContentUtils, GeneratePlayableTrailerItemResetsPlaybackState)
   EXPECT_FALSE(resumePoint.HasSavedPlayerState());
 
   EXPECT_EQ(tag->m_iBookmarkId, -1);
-  EXPECT_FALSE(tag->m_EpBookmark.IsSet());
+  EXPECT_FALSE(tag->HasEpisodeBookmark());
   EXPECT_EQ(tag->m_EpBookmark.type, CBookmark::EPISODE);
   EXPECT_FALSE(tag->m_EpBookmark.HasSavedPlayerState());
 

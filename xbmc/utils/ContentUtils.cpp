@@ -58,6 +58,7 @@ std::unique_ptr<CFileItem> ContentUtils::GeneratePlayableTrailerItem(const CFile
   videoInfoTag->m_iBookmarkId = -1;
   // Assign a new bookmark rather than Reset(), which doesn't clear the saved player state
   CBookmark epBookmark;
+  epBookmark.timeInSeconds = -1.0;
   epBookmark.type = CBookmark::EPISODE;
   videoInfoTag->m_EpBookmark = epBookmark;
   videoInfoTag->ResetPlayCount();
