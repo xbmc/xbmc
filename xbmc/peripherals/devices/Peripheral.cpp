@@ -1019,6 +1019,11 @@ void CPeripheral::SetControllerProfile(const GAME::ControllerPtr& controller)
   }
 }
 
+PeripheralBattery CPeripheral::GetBattery() const
+{
+  return {PeripheralBatteryState::NOT_SUPPORTED};
+}
+
 void CPeripheral::InstallController(
     const std::string& controllerId,
     const std::function<void(const KODI::GAME::ControllerPtr& installedController)>& callback)

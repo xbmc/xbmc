@@ -498,3 +498,15 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
   else if (std::ranges::find(m_features, FEATURE_POWER_OFF) == m_features.end())
     m_features.push_back(FEATURE_POWER_OFF);
 }
+
+PeripheralBattery CPeripheralJoystick::GetBattery() const
+{
+  std::unique_lock lock(m_batteryMutex);
+  return m_battery;
+}
+
+void CPeripheralJoystick::SetBattery(const PeripheralBattery& battery)
+{
+  std::unique_lock lock(m_batteryMutex);
+  m_battery = battery;
+}

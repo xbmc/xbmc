@@ -18599,7 +18599,11 @@ msgctxt "#35012"
 msgid "A new controller has been detected. Configuration can be done at any time in \"Settings -> System Settings -> Input\". Would you like to configure it now?"
 msgstr ""
 
-#empty string with id 35013
+#. Label of a controller in the peripherals list that is powered by its cable
+#: xbmc/peripherals/dialogs/GUIDialogPeripherals.cpp
+msgctxt "#35013"
+msgid "Wired"
+msgstr ""
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. {0:s} - list of disabled buttons and axes
 #: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
@@ -20069,7 +20073,33 @@ msgctxt "#35382"
 msgid "{0:d} frames"
 msgstr ""
 
-#empty strings from id 35383 to 35504
+#empty strings from id 35383 to 35399
+
+#. Heading of the notification when a player's controller disconnects during a game
+#: xbmc/games/agents/input/AgentInput.cpp
+msgctxt "#35400"
+msgid "Controller disconnected"
+msgstr ""
+
+#. Heading of the notification when a player's controller is low on battery
+#: xbmc/games/agents/input/AgentInput.cpp
+msgctxt "#35401"
+msgid "Controller battery low"
+msgstr ""
+
+#. Text of the notification when a player's controller is low on battery. {0} is the player number, {1} the charge in percent
+#: xbmc/games/agents/input/AgentInput.cpp
+msgctxt "#35402"
+msgid "Player {0}'s controller has {1}% left"
+msgstr ""
+
+#. Text of the notification when a player's controller disconnects during a game. {} is the player number
+#: xbmc/games/agents/input/AgentInput.cpp
+msgctxt "#35403"
+msgid "Player {}'s controller has gone. The game is paused."
+msgstr ""
+
+#empty strings from id 35404 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp

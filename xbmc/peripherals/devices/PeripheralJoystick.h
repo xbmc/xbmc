@@ -68,6 +68,7 @@ public:
   void SetLastActive(const CDateTime& lastActive) override;
   KODI::GAME::ControllerPtr ControllerProfile() const override;
   void SetControllerProfile(const KODI::GAME::ControllerPtr& controller) override;
+  PeripheralBattery GetBattery() const override;
 
   bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
   bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
@@ -112,6 +113,7 @@ public:
   void SetAxisCount(unsigned int axisCount) { m_axisCount = axisCount; }
   void SetMotorCount(unsigned int motorCount); // specialized to update m_features
   void SetSupportsPowerOff(bool bSupportsPowerOff); // specialized to update m_features
+  void SetBattery(const PeripheralBattery& battery);
 
 protected:
   void InitializeDeadzoneFiltering(KODI::JOYSTICK::IButtonMap& buttonMap);
@@ -134,6 +136,7 @@ protected:
   unsigned int m_motorCount = 0;
   bool m_supportsPowerOff = false;
   CDateTime m_lastActive;
+  PeripheralBattery m_battery;
 
   // Input clients
   std::unique_ptr<KODI::KEYMAP::CKeymapHandling> m_appInput;
@@ -145,5 +148,6 @@ protected:
 
   // Synchronization parameters
   CCriticalSection m_handlerMutex;
+  mutable CCriticalSection m_batteryMutex;
 };
 } // namespace PERIPHERALS

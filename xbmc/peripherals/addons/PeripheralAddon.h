@@ -108,6 +108,13 @@ public:
 private:
   void UnregisterButtonMap(CPeripheral* device);
 
+  /*!
+   * @brief Ask the add-on for the battery of each joystick
+   *
+   * Must be called with m_dllSection held.
+   */
+  void UpdateBatteries();
+
   // Binary add-on callbacks
   void TriggerDeviceScan();
   void RefreshButtonMaps(const std::string& strDeviceName = "");
