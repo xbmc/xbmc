@@ -30,6 +30,10 @@ constexpr auto PAUSE_SLEEP = 5s;
 // rather than trying to run them back to back
 constexpr unsigned int MAX_FRAME_DEFICIT = 2;
 
+// How long pacing stays off after a frame that didn't fit in the time it's
+// shown for
+constexpr auto PACING_RESUME_DELAY = 1s;
+
 double ToMs(std::chrono::duration<double> duration)
 {
   return duration.count() * 1000.0;
@@ -219,6 +223,7 @@ bool CGameLoop::PaceToDisplay()
   const Clock::duration lead = m_frameCost + m_displayPacing->Margin();
   if (lead >= interval)
   {
+    m_lastSlowFrame = now;
     if (PacingChanged(PacingState::FRAME_TOO_SLOW))
       CLog::Log(LOGINFO,
                 "RetroPlayer[PACING]: Not pacing, a {:.1f} ms frame and the {:.1f} ms margin "
@@ -226,6 +231,10 @@ bool CGameLoop::PaceToDisplay()
                 ToMs(m_frameCost), ToMs(m_displayPacing->Margin()), ToMs(interval));
     return false;
   }
+
+  // Frames that only just fit would stop and start pacing every few frames
+  if (now - m_lastSlowFrame < PACING_RESUME_DELAY)
+    return false;
 
   if (PacingChanged(PacingState::PACED))
     CLog::Log(LOGINFO,
