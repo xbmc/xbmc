@@ -394,6 +394,10 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     }
   }
 
+  // Folder of this device chosen in the browser (wasm)
+  else if (url.IsProtocol("device") && strFilename.empty())
+    strFilename = url.GetHostName();
+
   // Root file views
   else if (url.IsProtocol("sources"))
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744);

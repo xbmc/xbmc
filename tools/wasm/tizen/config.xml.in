@@ -7,6 +7,8 @@
    <feature name="http://tizen.org/feature/screen.size.normal.1080.1920"></feature>
    <tizen:setting screen-orientation="landscape" context-menu="enable" background-support="disable" encryption="disable" install-location="auto" hwkey-event="enable"></tizen:setting>
    <tizen:application id="kodiplayer.Kodi" package="kodiplayer" required_version="6.5"></tizen:application>
+   <tizen:privilege name="http://tizen.org/privilege/externalstorage"></tizen:privilege>
+   <tizen:privilege name="http://tizen.org/privilege/filesystem.read"></tizen:privilege>
    <tizen:privilege name="http://tizen.org/privilege/internet"></tizen:privilege>
    <tizen:privilege name="http://developer.samsung.com/privilege/network.public"></tizen:privilege>
    <tizen:privilege name="http://developer.samsung.com/privilege/productinfo"></tizen:privilege>

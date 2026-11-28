@@ -103,6 +103,9 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
     else if (pItem->IsRemovable() &&
              CServiceBroker::GetGUI()->GetTextureManager().HasTexture(ART::DEFAULT::REMOVABLE_DISK))
       strIcon = ART::DEFAULT::REMOVABLE_DISK;
+    // Folder of this device chosen in the browser (wasm)
+    else if (URIUtils::IsProtocol(pItem->GetPath(), "device"))
+      strIcon = ART::DEFAULT::FOLDER;
     else
       strIcon = ART::DEFAULT::HARD_DISK;
 

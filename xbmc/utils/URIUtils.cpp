@@ -1160,6 +1160,10 @@ bool URIUtils::IsRemote(const std::string& strFile)
   if (url.IsLibraryFolder())
     return false;
 
+  // Folder of this device chosen in the browser (wasm)
+  if (url.IsProtocol("device"))
+    return false;
+
   if (url.IsPlugin())
     return false;
 

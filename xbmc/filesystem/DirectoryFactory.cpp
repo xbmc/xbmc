@@ -57,6 +57,9 @@
 #endif
 #include "ZipDirectory.h"
 #include "addons/VFSEntry.h"
+#if defined(TARGET_WASM)
+#include "wasm/DeviceFolder.h"
+#endif
 #include "network/WakeOnAccess.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
@@ -176,6 +179,10 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #error Local directory access is not implemented for this platform
 #endif
   if (url.IsProtocol("special")) return new CSpecialProtocolDirectory();
+#if defined(TARGET_WASM)
+  if (url.IsProtocol("device"))
+    return new CDeviceFolderDirectory();
+#endif
   if (url.IsProtocol("sources")) return new CSourcesDirectory();
   if (url.IsProtocol("addons")) return new CAddonsDirectory();
 #if defined(HAS_OPTICAL_DRIVE)

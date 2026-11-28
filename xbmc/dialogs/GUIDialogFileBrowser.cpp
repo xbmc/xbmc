@@ -24,6 +24,10 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
+#if defined(TARGET_WASM)
+#include "filesystem/wasm/DeviceFolder.h"
+#include "threads/IRunnable.h"
+#endif
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,6 +49,13 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#if defined(TARGET_WASM)
+namespace
+{
+constexpr const char* ADD_DEVICE_FOLDER_PATH = "adddevicefolder://";
+} // namespace
+#endif
 
 using namespace KODI::MESSAGING;
 using namespace XFILE;
@@ -444,6 +455,17 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     pItem->SetFolder(true);
     m_vecItems->Add(pItem);
   }
+#if defined(TARGET_WASM)
+  if (m_Directory->GetPath().empty() && m_addNetworkShareEnabled &&
+      XFILE::CDeviceFolderDirectory::IsPickerAvailable())
+  {
+    auto pItem = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1045));
+    pItem->SetPath(ADD_DEVICE_FOLDER_PATH);
+    pItem->SetFolder(true);
+    m_vecItems->Add(pItem);
+  }
+#endif
   if (m_Directory->GetPath().empty() && m_addSourceSection)
   {
     auto pItem = std::make_shared<CFileItem>(
@@ -501,6 +523,13 @@ void CGUIDialogFileBrowser::FrameMove()
                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                             1032)); // "Add Network Location..."
     }
+#if defined(TARGET_WASM)
+    else if (m_selectedPath == ADD_DEVICE_FOLDER_PATH)
+    {
+      SET_CONTROL_LABEL(CONTROL_LABEL_PATH,
+                        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1045));
+    }
+#endif
     else
     {
       // Update the current path label
@@ -555,6 +584,13 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
       OnAddMediaSource();
       return;
     }
+#if defined(TARGET_WASM)
+    if (pItem->GetPath() == ADD_DEVICE_FOLDER_PATH)
+    {
+      OnAddDeviceFolder();
+      return;
+    }
+#endif
     if (m_addSourceSection)
     {
       OnEditMediaSource(pItem.get());
@@ -949,6 +985,34 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   m_rootDir.SetSources(m_shares);
   Update(m_vecItems->GetPath());
 }
+
+#if defined(TARGET_WASM)
+void CGUIDialogFileBrowser::OnAddDeviceFolder()
+{
+  // The picker is a dialog of the browser: wait for it off the GUI thread.
+  struct CPickJob : IRunnable
+  {
+    void Run() override { m_picked = XFILE::CDeviceFolderDirectory::PickFolder(m_folder); }
+    bool m_picked{false};
+    XFILE::DeviceFolder m_folder;
+  } job;
+
+  if (!CGUIDialogBusy::Wait(&job, 100, false) || !job.m_picked)
+    return;
+
+  if (std::ranges::none_of(m_shares, [&job](const CMediaSource& share)
+                           { return share.strPath == job.m_folder.path; }))
+  {
+    CMediaSource share;
+    share.strPath = job.m_folder.path;
+    share.strName = job.m_folder.name;
+    share.m_iDriveType = SourceType::LOCAL;
+    m_shares.push_back(share);
+    m_rootDir.SetSources(m_shares);
+  }
+  Update(job.m_folder.path);
+}
+#endif
 
 void CGUIDialogFileBrowser::OnAddMediaSource()
 {
