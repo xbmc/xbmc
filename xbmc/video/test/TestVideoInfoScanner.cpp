@@ -1091,6 +1091,35 @@ TEST_F(TestVideoInfoScanner, ABlurayStackHasItsFirstDiscsSubtitle)
   EXPECT_EQ("eng", tag.m_streamDetails.GetSubtitleLanguage(1).AsIso6392B());
 }
 
+#ifdef HAVE_LIBBLURAY
+// An exported nfo of a stack of a bluray and a dvd records each extra on the bluray by its
+// playlist: each is that playlist, and the movie keeps the stack
+TEST_F(TestVideoInfoScanner, TheExtrasAnNfoRecordsForAStackAreThePlaylistsOfItsBluray)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string bluray{BlurayRip(Folder(folder, "Part 1"))};
+  const std::string dvd{DvdRip(Folder(folder, "Part 2"))};
+  // With the streamdetails an export writes, which spare reading the discs
+  const std::string streamDetails{"<fileinfo><streamdetails><video><codec>h264</codec>"
+                                  "<durationinseconds>600</durationinseconds></video>"
+                                  "</streamdetails></fileinfo>"};
+  std::string nfo{"<movies><movie><title>Film</title>" + streamDetails + "</movie>"};
+  for (const int playlist : {805, 806})
+    nfo += "<movie><title>Film</title><playlist>" + std::to_string(playlist) +
+           "</playlist><videoassettitle>Extra " + std::to_string(playlist) +
+           "</videoassettitle><videoassettype>2</videoassettype>" + streamDetails + "</movie>";
+  File(URIUtils::GetDirectory(bluray), "index.nfo", nfo + "</movies>");
+
+  Scan();
+
+  ASSERT_EQ(1, CountMovies());
+  const int idMovie{m_db.GetSingleValueInt("SELECT idMovie FROM movie")};
+  EXPECT_EQ(idMovie, m_db.GetMovieId("stack://" + bluray + " , " + dvd));
+  EXPECT_TRUE(IsExtraOf(URIUtils::GetBlurayPlaylistPath(bluray, 805), idMovie));
+  EXPECT_TRUE(IsExtraOf(URIUtils::GetBlurayPlaylistPath(bluray, 806), idMovie));
+}
+#endif
+
 TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)
 {
   const std::string disc{File(Folder(m_root, "Film (2010)"), "FILM.iso")};

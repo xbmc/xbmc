@@ -1532,6 +1532,38 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return true;
   }
 
+  // Gives an nfo entry after the first of a stacked movie a file of its own: the stack with the
+  // playlists the entry records for its parts, or the one playlist it records of the stack's only
+  // bluray, as an extra or a version on that disc. Returns false where the entry records neither,
+  // or the playlist could be on more than one disc, as it would then take the stack's own file.
+  bool PlaceStackEntry(CFileItem* item,
+                       const std::string& stackPath,
+                       const std::vector<XFILE::StackPartPlaylist>& stackParts,
+                       int playlist)
+  {
+    item->SetDynPath(stackPath);
+    item->GetVideoInfoTag()->SetFileNameAndPath(stackPath);
+    if (!stackParts.empty())
+    {
+      if (!ApplyStackParts(item, stackParts))
+        return false;
+      ResolveBlurayStack(item, false);
+      return true;
+    }
+    if (playlist < 0)
+      return false;
+
+    std::vector<std::string> paths;
+    if (!CStackDirectory::GetPaths(stackPath, paths) || std::ranges::count_if(paths, IsBluray) != 1)
+      return false;
+
+    const std::string path{
+        URIUtils::GetBlurayPlaylistPath(*std::ranges::find_if(paths, IsBluray), playlist)};
+    item->SetDynPath(path);
+    item->GetVideoInfoTag()->SetFileNameAndPath(path);
+    return true;
+  }
+
   // Populates CFileItemList items with every candidate (version) bluray playlist found for item (if any).
   // item is updated in place to the first (main) playlist; any further items are additional playlists presumed to
   // be other versions of the same movie (only populated when returned by CDiscDirectoryHelper when
@@ -1736,6 +1768,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
                            item.GetVideoInfoTag()->GetAssetInfo().GetType() !=
                                VideoAssetType::UNKNOWN};
 
+      // The entries after the first are placed from the stack the scan found
+      const std::string stackPath{URIUtils::IsStack(item.GetDynPath()) ? item.GetDynPath()
+                                                                       : std::string{}};
+
       // Refreshing the recorded playlists gives the durations, and so the stack times, that the
       // nfo does not hold. A part the nfo records no playlist for stays the disc.
       if (URIUtils::IsStack(item.GetDynPath()) && ApplyStackParts(&item, loader->GetStackParts()))
@@ -1814,6 +1850,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
           item.SetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST, playlist);
         else
           item.ClearProperty(ITEM::PROPERTY::BLURAY_PLAYLIST);
+
+        // An entry of a stack left with the stack's file would take it from the movie, as a file
+        // holds one version or extra
+        if (!stackPath.empty() && !PlaceStackEntry(&item, stackPath, loader->GetStackParts(),
+                                                   loader->GetBlurayPlaylist()))
+        {
+          CLog::LogF(LOGDEBUG, "Entry {} of the nfo of {} records no file of its own - skipped",
+                     index, CURL::GetRedacted(stackPath));
+          continue;
+        }
 
         // Keep properties only if advancedsettings.xml says so
         if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
