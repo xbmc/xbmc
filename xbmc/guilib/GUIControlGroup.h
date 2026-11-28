@@ -113,7 +113,9 @@ private:
 
     COLLECTORTYPE m_items;
     size_t m_stackDepth = 0;
-  }m_idCollector;
+  };
+  // one per thread, as add-on threads send control messages too
+  static thread_local IDCollectorList m_idCollector;
 
   struct IDCollector
   {

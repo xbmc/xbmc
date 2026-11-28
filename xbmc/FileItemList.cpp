@@ -108,9 +108,9 @@ bool CFileItemList::Contains(const std::string& fileName) const
 
 void CFileItemList::Clear()
 {
-  std::unique_lock lock(m_lock);
-
   ClearItems();
+
+  std::unique_lock lock(m_lock);
   m_sortDescription.sortBy = SortBy::NONE;
   m_sortDescription.sortOrder = SortOrder::NONE;
   m_sortDescription.sortAttributes = SortAttributeNone;
@@ -123,12 +123,16 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearItems()
 {
-  std::unique_lock lock(m_lock);
+  decltype(m_items) items;
+  {
+    std::unique_lock lock(m_lock);
+    items.swap(m_items);
+    m_map.clear();
+  }
   // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
+  // outside the lock, as freeing them needs the graphics context
   FreeMemory();
-  std::ranges::for_each(m_items, [](const auto& item) { item->FreeMemory(); });
-  m_items.clear();
-  m_map.clear();
+  std::ranges::for_each(items, [](const auto& item) { item->FreeMemory(); });
 }
 
 void CFileItemList::AddFastLookupItem(const CFileItemPtr& item)
@@ -237,10 +241,10 @@ void CFileItemList::Append(const CFileItemList& itemlist)
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 {
-  std::unique_lock lock(m_lock);
   if (!append)
     Clear();
 
+  std::unique_lock lock(m_lock);
   Append(itemlist);
 
   //! @todo Is it intentional not to copy CFileItem properties, except path, label, art and property map?

@@ -18,6 +18,8 @@
 
 using namespace KODI;
 
+thread_local CGUIControlGroup::IDCollectorList CGUIControlGroup::m_idCollector;
+
 CGUIControlGroup::CGUIControlGroup()
 {
   m_defaultControl = 0;

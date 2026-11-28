@@ -158,10 +158,13 @@ void CGUIMediaWindow::OnWindowUnload()
 CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
-  if (!m_vecItems->Size() || item < 0)
+  // read once, add-on threads get here while the list is cleared and refilled
+  const int size = m_vecItems->Size();
+  if (!size || item < 0)
     return CFileItemPtr();
-  item = (item + offset) % m_vecItems->Size();
-  if (item < 0) item += m_vecItems->Size();
+  item = (item + offset) % size;
+  if (item < 0)
+    item += size;
   return m_vecItems->Get(item);
 }
 
