@@ -32,6 +32,5 @@ namespace XFILE
       CacheType GetCacheType(const CURL& url) const override { return CacheType::ONCE; }
 
     private:
-      void ParseResponse(const tinyxml2::XMLElement* element, CFileItem& item);
   };
 }

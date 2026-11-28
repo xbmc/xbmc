@@ -15,6 +15,8 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <cerrno>
+
 using namespace XFILE;
 using namespace XCURL;
 
@@ -90,6 +92,62 @@ bool CDAVFile::Execute(const CURL& url)
   }
 
   return true;
+}
+
+int CDAVFile::Stat(const CURL& url, struct __stat64* buffer)
+{
+  if (m_opened)
+    return CCurlFile::Stat(url, buffer);
+
+  // A HEAD request carries no usable modification time for WebDAV collections,
+  // so request the resource's own properties with a Depth:0 PROPFIND instead.
+  CDAVFile dav;
+  dav.SetCustomRequest("PROPFIND");
+  dav.SetMimeType("text/xml; charset=\"utf-8\"");
+  dav.SetRequestHeader("depth", 0);
+  // A missing resource is a normal Stat() outcome; don't log it as an error
+  dav.m_failOnError = false;
+  dav.SetPostData("<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
+                  " <D:propfind xmlns:D=\"DAV:\">"
+                  "   <D:prop>"
+                  "     <D:resourcetype/>"
+                  "     <D:getcontentlength/>"
+                  "     <D:getlastmodified/>"
+                  "    </D:prop>"
+                  "  </D:propfind>");
+
+  if (dav.Open(url))
+  {
+    if (dav.m_httpresponse == 404 || dav.m_httpresponse == 410)
+    {
+      dav.Close();
+      errno = ENOENT;
+      return -1;
+    }
+
+    std::string strResponse;
+    dav.ReadData(strResponse);
+    dav.Close();
+
+    CXBMCTinyXML2 davResponse;
+    if (davResponse.Parse(strResponse) && davResponse.RootElement())
+    {
+      for (auto* child = davResponse.RootElement()->FirstChild(); child;
+           child = child->NextSibling())
+      {
+        struct __stat64 st;
+        if (CDAVCommon::ValueWithoutNamespace(child, "response") &&
+            CDAVCommon::ParseDavStatResponse(child, st))
+        {
+          if (buffer)
+            *buffer = st;
+          return 0;
+        }
+      }
+    }
+  }
+
+  return CCurlFile::Stat(url, buffer);
 }
 
 bool CDAVFile::Delete(const CURL& url)

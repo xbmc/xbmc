@@ -1,5 +1,6 @@
 set(SOURCES TestAddonsPaths.cpp
             TestAudioBookFileDirectory.cpp
+            TestDAVCommon.cpp
             TestDataFile.cpp
             TestDataURI.cpp
             TestDirectory.cpp
