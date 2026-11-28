@@ -28,6 +28,11 @@ public:
   bool OnBack(int actionID) override;
   void OnWindowLoaded() override;
   void Progress();
+
+  /*! \brief Pump one iteration of the render loop, even while the dialog is
+   inactive. Lets callers that block the GUI thread keep servicing messages
+   and rendering until their work completes. */
+  void ProcessRenderLoop(bool renderOnly = false);
   bool IsCanceled() const { return m_iChoice == CHOICE_CANCELED; }
   void SetPercentage(int iPercentage);
   int GetPercentage() const { return m_percentage; }

@@ -10,7 +10,11 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
+#include "TextureDatabase.h"
 #include "filesystem/File.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "imagefiles/ImageFileURL.h"
 #include "jobs/JobManager.h"
 #include "platform/Filesystem.h"
@@ -121,6 +125,18 @@ void WriteFile(const std::string& path, const std::vector<uint8_t>& data)
   ASSERT_EQ(static_cast<ssize_t>(data.size()), file.Write(data.data(), data.size()));
 }
 
+class TestGUI : public CGUIComponent
+{
+public:
+  TestGUI() : CGUIComponent(false)
+  {
+    m_pWindowManager = std::make_unique<CGUIWindowManager>();
+    m_guiInfoManager = std::make_unique<CGUIInfoManager>();
+    CServiceBroker::RegisterGUI(this);
+  }
+  ~TestGUI() override { m_pWindowManager.reset(); }
+};
+
 std::vector<uint8_t> ReadFile(const std::string& path)
 {
   std::vector<uint8_t> data;
@@ -134,6 +150,8 @@ class TestTextureCache : public testing::Test
 protected:
   void SetUp() override
   {
+    gui = std::make_unique<TestGUI>();
+
     if (!CServiceBroker::GetDatabaseManager().CanOpen("Textures"))
     {
       ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
@@ -158,6 +176,7 @@ protected:
     CServiceBroker::GetJobManager()->Restart();
     CServiceBroker::UnregisterTextureCache();
     CServiceBroker::UnregisterJobManager();
+    gui.reset();
     CServiceBroker::UnregisterWinSystem();
 
     std::error_code ec;
@@ -198,6 +217,7 @@ protected:
 
   std::string m_tempPath;
   CTestWinSystem m_winSystem;
+  std::unique_ptr<TestGUI> gui;
   std::shared_ptr<CTextureCache> m_cache{std::make_shared<CTextureCache>()};
 };
 
@@ -359,4 +379,23 @@ TEST_F(TestTextureCache, ExportLeavesAnImageNotCachedYetWhereNotRetrievingAllArt
 
   EXPECT_FALSE(CFile::Exists(destination + ".jpg"));
   EXPECT_FALSE(m_cache->HasCachedImage(source));
+}
+
+TEST_F(TestTextureCache, CleanAllUnusedImagesWaitsForTheCleanJob)
+{
+  // The cleaner only picks up images unused for over 30 days
+  for (int i = 0; i < 1000; ++i)
+    AddStaleRow("cleansource" + std::to_string(i), ".jpg");
+
+  CTextureDatabase db;
+  ASSERT_TRUE(db.Open());
+  ASSERT_TRUE(db.ExecuteQuery("UPDATE sizes SET lastusetime=datetime('now','-31 days')"));
+
+  // With no progress dialog the clean must still finish before returning;
+  // returning early leaves the rows for a still-running job to delete.
+  EXPECT_TRUE(m_cache->CleanAllUnusedImages());
+
+  CTextureDatabase check;
+  ASSERT_TRUE(check.Open());
+  EXPECT_TRUE(check.GetOldestCachedImages(100).empty());
 }
