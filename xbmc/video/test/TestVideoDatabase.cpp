@@ -718,7 +718,9 @@ TEST_F(TestVideoDatabase, AMoviesAssetsListAsTheAssetsUnderTheMoviesTitle)
               item->GetPath().find("videodb://movies/titles/" + std::to_string(asset.m_iFileId)))
         << item->GetPath();
     if (asset.m_iFileId == idExtended)
+    {
       EXPECT_EQ("Extended", item->GetLabel());
+    }
   }
 }
 
