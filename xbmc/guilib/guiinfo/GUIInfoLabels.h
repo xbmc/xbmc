@@ -123,11 +123,7 @@ constexpr uint32_t SYSTEM_DATE                       = 111;
 constexpr uint32_t SYSTEM_CPU_TEMPERATURE            = 112;
 constexpr uint32_t SYSTEM_GPU_TEMPERATURE            = 113;
 constexpr uint32_t SYSTEM_FAN_SPEED                  = 114;
-constexpr uint32_t SYSTEM_FREE_SPACE_C               = 115;
-//constexpr uint32_t SYSTEM_FREE_SPACE_D               = 116; // reserved for space on D
-constexpr uint32_t SYSTEM_FREE_SPACE_E               = 117;
-constexpr uint32_t SYSTEM_FREE_SPACE_F               = 118;
-constexpr uint32_t SYSTEM_FREE_SPACE_G               = 119;
+// unused id 115 to 119
 constexpr uint32_t SYSTEM_BUILD_VERSION              = 120;
 constexpr uint32_t SYSTEM_BUILD_DATE                 = 121;
 constexpr uint32_t SYSTEM_ETHERNET_LINK_ACTIVE       = 122;
