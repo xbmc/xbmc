@@ -42,6 +42,11 @@ elseif(OS STREQUAL wasm)
   set(CORE_SYSTEM_NAME wasm)
   # Kodi's main module provides GL.
   set(OPENGLES_gl_LIBRARY GL CACHE STRING "")
+  # Kodi's main module provides OpenSSL; the libraries are empty archives.
+  set(ADDON_DEPENDS_PROVIDED openssl)
+  set(OPENSSL_INCLUDE_DIR @prefix@/@deps_dir@/include CACHE PATH "")
+  set(OPENSSL_SSL_LIBRARY @prefix@/@deps_dir@/lib/addon-libs/libssl.a CACHE FILEPATH "")
+  set(OPENSSL_CRYPTO_LIBRARY @prefix@/@deps_dir@/lib/addon-libs/libcrypto.a CACHE FILEPATH "")
   if(EXISTS "@use_toolchain@/cmake/Modules")
     list(PREPEND CMAKE_MODULE_PATH "@use_toolchain@/cmake/Modules")
   endif()
