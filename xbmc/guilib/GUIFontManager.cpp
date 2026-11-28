@@ -561,7 +561,7 @@ void GUIFontManager::OnAddonEvent(const ADDON::AddonEvent& event)
     {
       // the update dropped the font extension, but the old fonts are still loaded
       std::unique_lock lock(m_critSection);
-      reload = m_addonFontIds.count(event.addonId) != 0;
+      reload = m_addonFontIds.contains(event.addonId);
     }
   }
   else if (typeid(event) == typeid(AddonEvents::Disabled))
@@ -575,7 +575,7 @@ void GUIFontManager::OnAddonEvent(const ADDON::AddonEvent& event)
   {
     // Gone from the manager, so the last completed load decides
     std::unique_lock lock(m_critSection);
-    reload = m_addonFontIds.count(event.addonId) != 0;
+    reload = m_addonFontIds.contains(event.addonId);
   }
 
   if (reload)

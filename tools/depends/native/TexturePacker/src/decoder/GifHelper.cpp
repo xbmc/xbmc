@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #define UNSIGNED_LITTLE_ENDIAN(lo, hi)	((lo) | ((hi) << 8))
 #define GIF_MAX_MEMORY 82944000U // about 79 MB, which is equivalent to 10 full hd frames.
@@ -289,7 +290,7 @@ int GifHelper::ExtractFrames(unsigned int count)
   int extracted = 0;
   for (unsigned int i = 0; i < count; i++)
   {
-    FramePtr frame(new GifFrame);
+    FramePtr frame = std::make_shared<GifFrame>();
     SavedImage savedImage = m_gif->SavedImages[i];
     GifImageDesc imageDesc = m_gif->SavedImages[i].ImageDesc;
     frame->m_height = imageDesc.Height;

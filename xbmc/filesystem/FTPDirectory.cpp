@@ -19,6 +19,7 @@
 #include "utils/URIUtils.h"
 
 #include <climits>
+#include <memory>
 
 using namespace XFILE;
 
@@ -34,7 +35,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   std::string path = url.GetFileName();
   if( !path.empty() && !StringUtils::EndsWith(path, "/") )
   {
-    path += "/";
+    path += '/';
     url.SetFileName(path);
   }
 
@@ -81,7 +82,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
       else
         url.RemoveProtocolOption("utf8");
 
-      CFileItemPtr pItem(new CFileItem(name));
+      CFileItemPtr pItem = std::make_shared<CFileItem>(name);
 
       pItem->SetFolder(parse.getFlagtrycwd() != 0);
       std::string filePath = path + name;

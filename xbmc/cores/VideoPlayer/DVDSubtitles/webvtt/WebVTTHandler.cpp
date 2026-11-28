@@ -405,7 +405,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         }
         // Collect and convert all subtitle text lines
         if (!m_subtitleData.text.empty())
-          m_subtitleData.text += "\n";
+          m_subtitleData.text += '\n';
 
         TranslateEscapeChars(line);
 
@@ -538,7 +538,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
           if (m_feedCssStyle.m_selectorType == WebvttSelector::ATTRIBUTE)
           {
             selectorNameConv = selectorName.substr(0, selectorName.find('['));
-            selectorNameConv += " ";
+            selectorNameConv += ' ';
             const size_t attribPosStart = selectorName.find('"');
             const size_t attribPosEnd = selectorName.find_last_of('"');
             if (attribPosEnd > attribPosStart)

@@ -18,6 +18,9 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
+#ifdef HAS_CDDA_RIPPER
+#include "cdrip/CDDARipper.h"
+#endif
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
@@ -34,24 +37,21 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "utils/ItemProperties.h"
-#include "video/VideoFileItemClassify.h"
-
-#include <stdlib.h>
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"
 #endif
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoLibrary.h"
 
-#ifdef HAS_CDDA_RIPPER
-#include "cdrip/CDDARipper.h"
-#endif
+#include <memory>
+#include <stdlib.h>
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -231,7 +231,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
           std::string path = URIUtils::AddFileToFolder(pItem->GetPath(), "VIDEO_TS.IFO");
           if (!CFileUtils::Exists(path))
             path = URIUtils::AddFileToFolder(pItem->GetPath(), "video_ts.ifo");
-          CFileItemPtr item(new CFileItem(path, false));
+          CFileItemPtr item = std::make_shared<CFileItem>(path, false);
           item->SetLabel(CServiceBroker::GetMediaManager().GetDiskLabel(strDrive));
           item->GetVideoInfoTag()->m_strFileNameAndPath =
               CServiceBroker::GetMediaManager().GetDiskUniqueId(strDrive);

@@ -554,7 +554,7 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
   }
 
   // The list row is item itself, so it is put back on any exit that skips Refresh()
-  const CFileItem original{*item};
+  const CFileItem& original{*item};
   *item = chosen;
 
   // Chosen before the transaction below, whose lock would stop a new asset type being added

@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "EventsDirectory.h"
 
 #include "FileItem.h"
@@ -16,6 +15,8 @@
 #include "events/EventLog.h"
 #include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
+
+#include <memory>
 
 using namespace XFILE;
 
@@ -61,7 +62,7 @@ std::shared_ptr<CFileItem> CEventsDirectory::EventToFileItem(
   if (!eventItem)
     return CFileItemPtr();
 
-  CFileItemPtr item(new CFileItem(eventItem));
+  CFileItemPtr item = std::make_shared<CFileItem>(eventItem);
 
   item->SetProperty(PROPERTY_EVENT_IDENTIFIER, eventItem->GetIdentifier());
   item->SetProperty(PROPERTY_EVENT_LEVEL, CEventLog::EventLevelToString(eventItem->GetLevel()));

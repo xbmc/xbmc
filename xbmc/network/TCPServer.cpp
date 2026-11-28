@@ -874,8 +874,8 @@ bool CTCPServer::CTCPClient::Backlogged()
   return m_inboundBytes >= maxBufferLength;
 }
 
-void CTCPServer::CTCPClient::RunWorker(std::shared_ptr<CTCPClient> self,
-                                       std::shared_ptr<CTCPServer> host)
+void CTCPServer::CTCPClient::RunWorker(const std::shared_ptr<CTCPClient>& self,
+                                       const std::shared_ptr<CTCPServer>& host)
 {
   currentWorkerOf = host.get();
 

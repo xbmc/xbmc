@@ -51,9 +51,7 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
-CSystemGUIInfo::CSystemGUIInfo()
-  : m_gpuInfo(CGPUInfo::GetGPUInfo()),
-    m_lastSysHeatInfoTime(-SYSTEM_HEAT_UPDATE_INTERVAL)
+CSystemGUIInfo::CSystemGUIInfo() : m_gpuInfo(CGPUInfo::GetGPUInfo())
 {
 }
 

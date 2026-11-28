@@ -12,6 +12,7 @@ Checks: "\
   performance-move-constructor-init,\
   performance-no-automatic-move,\
   performance-noexcept-move-constructor,\
+  performance-prefer-single-char-overloads,\
   performance-trivially-destructible,\
   performance-type-promotion-in-math-fn,\
   performance-unnecessary-copy-initialization,\

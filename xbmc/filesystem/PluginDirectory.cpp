@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+#include <memory>
 #include <mutex>
 
 using namespace XFILE;
@@ -176,7 +177,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   if (!dir)
     return false;
 
-  CFileItemPtr pItem(new CFileItem(*item));
+  CFileItemPtr pItem = std::make_shared<CFileItem>(*item);
   dir->m_listItems->Add(pItem);
   dir->m_totalItems = totalItems;
 

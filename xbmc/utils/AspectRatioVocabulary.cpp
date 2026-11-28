@@ -339,7 +339,7 @@ std::optional<AspectRatioEntry> CAspectRatioVocabulary::Match(float ratio,
                                                               AspectRatioUse use,
                                                               float tolerance)
 {
-  const std::optional<AspectRatioEntry> nearest = Nearest(ratio, use);
+  std::optional<AspectRatioEntry> nearest = Nearest(ratio, use);
   if (!nearest || Distance(ratio, nearest->ratio) > tolerance)
     return std::nullopt;
 

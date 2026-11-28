@@ -148,6 +148,7 @@ TEST(TestBlurayPlaylistHints, ExtrasAreNamedWithoutTheDiscsCodes)
   };
 
   std::vector<std::pair<unsigned int, std::string>> named;
+  named.reserve(extras.size());
   for (unsigned int playlist{800}; const Extra& extra : extras)
     named.emplace_back(playlist++, extra.name);
   const CBlurayPlaylistHints hints{MakeProject(named)};
@@ -178,6 +179,7 @@ TEST(TestBlurayPlaylistHints, CopiesOfAnExtraShareItsTitle)
   };
 
   std::vector<std::pair<unsigned int, std::string>> named;
+  named.reserve(copies.size());
   for (unsigned int playlist{800}; const auto& [name, title] : copies)
     named.emplace_back(playlist++, name);
   const CBlurayPlaylistHints hints{MakeProject(named)};

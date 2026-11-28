@@ -15,6 +15,8 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
 TEST(TestFileUtils, DeleteItem_CFileItemPtr)
@@ -25,7 +27,7 @@ TEST(TestFileUtils, DeleteItem_CFileItemPtr)
   ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);

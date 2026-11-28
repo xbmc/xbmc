@@ -1970,6 +1970,7 @@ TEST_F(TestVersionSubtitles, AnExtrasArchivedSubtitlesAreThoseOfItsOwnArchive)
   std::vector<std::string> subtitles;
   CUtil::ScanForExternalSubtitles(disc, subtitles, &extra);
   std::vector<std::string> archives;
+  archives.reserve(subtitles.size());
   for (const std::string& subtitle : subtitles)
     archives.emplace_back(URIUtils::GetFileName(CURL(subtitle).GetHostName()));
   EXPECT_EQ(std::vector<std::string>{"M3GAN-00805.zip"}, archives);

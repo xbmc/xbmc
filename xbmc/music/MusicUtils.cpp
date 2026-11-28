@@ -303,7 +303,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
 
   for (const auto& type : artTypes)
   {
-    CFileItemPtr artitem(new CFileItem(type, false));
+    CFileItemPtr artitem = std::make_shared<CFileItem>(type, false);
     // Localise the names of common types of art
     if (type == ART::TYPE::BANNER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20020));
@@ -353,7 +353,7 @@ std::string ShowSelectArtTypeDialog(CFileItemList& artitems)
             false))
       return "";
     // Add new type to the list of art types
-    CFileItemPtr artitem(new CFileItem(strArtTypeName, false));
+    CFileItemPtr artitem = std::make_shared<CFileItem>(strArtTypeName, false);
     artitem->SetLabel(strArtTypeName);
     artitem->SetProperty("arttype", strArtTypeName);
     artitems.Add(artitem);

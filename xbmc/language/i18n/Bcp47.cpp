@@ -15,6 +15,7 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
+#include <utility>
 
 using namespace KODI::LANGUAGE::I18N;
 using namespace std::literals;
@@ -30,7 +31,7 @@ bool CBcp47::operator==(const ParsedBcp47Tag& other) const
 
 std::optional<CBcp47> CBcp47::ParseTag(std::string str, const CSubTagRegistryManager* registry)
 {
-  auto p = CBcp47Parser::Parse(str);
+  auto p = CBcp47Parser::Parse(std::move(str));
 
   if (!p.has_value())
     return std::nullopt;

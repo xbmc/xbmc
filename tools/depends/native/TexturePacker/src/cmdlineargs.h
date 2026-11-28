@@ -68,7 +68,7 @@ public:
         }
       }
 #ifdef TARGET_POSIX
-      cmdline += "\"";
+      cmdline += '\"';
 #endif
       m_cmdline = new char [cmdline.length() + 1];
       if (m_cmdline)

@@ -56,6 +56,7 @@ CombinedGeometry Combine(const std::vector<GeometrySample>& samples,
 TEST(TestContentGeometryCombiner, UnanimousSamples)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(9);
   for (int i = 0; i < 9; ++i)
     samples.push_back(Letterbox(263, 0.9f));
 
@@ -77,6 +78,7 @@ TEST(TestContentGeometryCombiner, UnanimousSamples)
 TEST(TestContentGeometryCombiner, LoneOutlierIsAbsorbed)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(8);
   for (int i = 0; i < 8; ++i)
     samples.push_back(Letterbox(263, 0.8f));
   samples.push_back({CRectInt{59, 869, 3121, 1884}, 0.4f, false});
@@ -97,6 +99,7 @@ TEST(TestContentGeometryCombiner, LoneOutlierIsAbsorbed)
 TEST(TestContentGeometryCombiner, DegenerateSamplesAreDiscarded)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(5);
   for (int i = 0; i < 5; ++i)
     samples.push_back(Letterbox(263, 0.9f));
   for (int i = 0; i < 4; ++i)
@@ -113,6 +116,7 @@ TEST(TestContentGeometryCombiner, DegenerateSamplesAreDiscarded)
 TEST(TestContentGeometryCombiner, LowConfidenceSamplesAreDiscarded)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(5);
   for (int i = 0; i < 5; ++i)
     samples.push_back(Letterbox(263, 0.9f));
   for (int i = 0; i < 3; ++i)
@@ -132,6 +136,7 @@ TEST(TestContentGeometryCombiner, LowConfidenceSamplesAreDiscarded)
 TEST(TestContentGeometryCombiner, TwoStationaryClustersMeanVaries)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back(FullFrame(1.0f));
   for (int i = 0; i < 2; ++i)
@@ -154,6 +159,7 @@ TEST(TestContentGeometryCombiner, TwoStationaryClustersMeanVaries)
 TEST(TestContentGeometryCombiner, VariesIsCountedNotWeighted)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back(FullFrame(1.0f));
   for (int i = 0; i < 2; ++i)
@@ -169,6 +175,7 @@ TEST(TestContentGeometryCombiner, VariesIsCountedNotWeighted)
 std::vector<GeometrySample> ANinthInRivals()
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(16);
   for (int i = 0; i < 16; ++i)
     samples.push_back(Letterbox(280, 0.9f));
   for (int i = 0; i < 2; ++i)
@@ -194,6 +201,7 @@ TEST(TestContentGeometryCombiner, ANinthOfTheSamplesIsEnoughToVary)
 TEST(TestContentGeometryCombiner, BelowTheShareTheTitleDoesNotVary)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(22);
   for (int i = 0; i < 22; ++i)
     samples.push_back(Letterbox(280, 0.9f));
   for (int i = 0; i < 2; ++i)
@@ -223,6 +231,7 @@ TEST(TestContentGeometryCombiner, TheShareIsSettable)
 TEST(TestContentGeometryCombiner, SingleRivalSampleIsNotACluster)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back(FullFrame(1.0f));
   samples.push_back({CRectInt{415, 0, WIDTH - 410, HEIGHT}, 0.26f, false});
@@ -287,6 +296,7 @@ TEST(TestContentGeometryCombiner, EdgesBeyondToleranceAreSeparateClusters)
 TEST(TestContentGeometryCombiner, DominantClusterIsChosenOnWeight)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(3);
   for (int i = 0; i < 3; ++i)
     samples.push_back(Letterbox(263, 1.0f));
   for (int i = 0; i < 4; ++i)
@@ -307,6 +317,7 @@ TEST(TestContentGeometryCombiner, DominantClusterIsChosenOnWeight)
 TEST(TestContentGeometryCombiner, StationaryUnscoredSamplesStillRead)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(8);
   for (int i = 0; i < 8; ++i)
     samples.push_back(Pillarbox(478 + i % 3, 0.0f));
 
@@ -335,6 +346,7 @@ TEST(TestContentGeometryCombiner, TooFewUnscoredSamplesDoNotRead)
 TEST(TestContentGeometryCombiner, UnscoredSamplesAreStillDroppedWhenTheTitleScored)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back(Letterbox(263, 0.9f));
   for (int i = 0; i < 4; ++i)
@@ -362,6 +374,7 @@ TEST(TestContentGeometryCombiner, ClusterCentreIsTheMedianOfItsMembers)
 TEST(TestContentGeometryCombiner, PillarboxAndLetterboxAreDistinguished)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back({CRectInt{480, 0, WIDTH - 480, HEIGHT}, 0.9f, false});
   for (int i = 0; i < 4; ++i)
@@ -383,6 +396,7 @@ TEST(TestContentGeometryCombiner, PillarboxAndLetterboxAreDistinguished)
 TEST(TestContentGeometryCombiner, AnUnexplainedShapeSurvivesAsAReasonToLookAgain)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(8);
   for (int i = 0; i < 8; ++i)
     samples.push_back(Pillarbox(480, 0.0f));
   samples.push_back(Letterbox(276, 0.0f));
@@ -399,6 +413,7 @@ TEST(TestContentGeometryCombiner, AnUnexplainedShapeSurvivesAsAReasonToLookAgain
 TEST(TestContentGeometryCombiner, ANearbyDiscardedReadingIsNotAnUnexplainedShape)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(8);
   for (int i = 0; i < 8; ++i)
     samples.push_back(Letterbox(276, 0.0f));
   samples.push_back(Letterbox(292, 0.0f));
@@ -412,6 +427,7 @@ TEST(TestContentGeometryCombiner, ANearbyDiscardedReadingIsNotAnUnexplainedShape
 TEST(TestContentGeometryCombiner, TheShapesAreTheAnswerThenEachRivalThatCounts)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(6);
   for (int i = 0; i < 6; ++i)
     samples.push_back(Letterbox(276, 0.9f));
   for (int i = 0; i < 3; ++i)
@@ -430,6 +446,7 @@ TEST(TestContentGeometryCombiner, TheShapesAreTheAnswerThenEachRivalThatCounts)
 TEST(TestContentGeometryCombiner, AFixedTitleIsInOneShape)
 {
   std::vector<GeometrySample> samples;
+  samples.reserve(6);
   for (int i = 0; i < 6; ++i)
     samples.push_back(Letterbox(276, 0.9f));
 
@@ -452,6 +469,7 @@ TEST(TestContentGeometryCombiner, ARivalAtExactlyTheVariesShareVaries)
   params.minRivalSamples = 1;
 
   std::vector<GeometrySample> samples;
+  samples.reserve(18);
   for (int i = 0; i < 18; ++i)
     samples.push_back(Letterbox(276, 0.9f));
   for (int i = 0; i < 2; ++i)
@@ -471,6 +489,7 @@ TEST(TestContentGeometryCombiner, ARivalAtExactlyTheMinimumSampleCountVaries)
   params.variesShare = 0.0f; // isolate the count rule
 
   std::vector<GeometrySample> samples;
+  samples.reserve(10);
   for (int i = 0; i < 10; ++i)
     samples.push_back(Letterbox(276, 0.9f));
   for (int i = 0; i < 2; ++i)
@@ -479,6 +498,7 @@ TEST(TestContentGeometryCombiner, ARivalAtExactlyTheMinimumSampleCountVaries)
   EXPECT_TRUE(Combine(samples, params).varies);
 
   std::vector<GeometrySample> one;
+  one.reserve(10);
   for (int i = 0; i < 10; ++i)
     one.push_back(Letterbox(276, 0.9f));
   one.push_back(Letterbox(140, 0.9f));
@@ -496,6 +516,7 @@ TEST(TestContentGeometryCombiner, ReadingsExactlyToleranceApartAreOneShape)
   const CombinerParams params;
 
   std::vector<GeometrySample> samples;
+  samples.reserve(4);
   for (int i = 0; i < 4; ++i)
     samples.push_back(Letterbox(276, 0.9f));
   for (int i = 0; i < 4; ++i)

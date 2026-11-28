@@ -37,6 +37,8 @@
 #include "utils/Variant.h"
 #include "view/ViewState.h"
 
+#include <memory>
+
 using namespace KODI::MESSAGING;
 
 #define CONTROL_BIG_LIST               52
@@ -204,7 +206,7 @@ void CGUIWindowLoginScreen::Update()
   {
     const CProfile *profile = profileManager->GetProfile(i);
 
-    CFileItemPtr item(new CFileItem(profile->getName()));
+    CFileItemPtr item = std::make_shared<CFileItem>(profile->getName());
 
     std::string strLabel;
     if (profile->getDate().empty())

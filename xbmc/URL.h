@@ -26,8 +26,8 @@ public:
   CURL(const CURL&) = default;
   CURL& operator=(const CURL&) = default;
   /*! \brief Transfer all URI/compatibility state, leaving the source Reset(). */
-  CURL(CURL&& other);
-  CURL& operator=(CURL&& other);
+  CURL(CURL&& other) noexcept;
+  CURL& operator=(CURL&& other) noexcept;
   explicit CURL(std::string strURL);
 
   bool operator==(const CURL& url) const { return url.Get() == Get(); }
@@ -100,7 +100,7 @@ public:
    * \note With an authority, paths must be empty or slash-prefixed; without one,
    *       they cannot start with "//". Magnet paths must be empty or absolute.
    */
-  bool SetURIPath(std::string path);
+  bool SetURIPath(const std::string& path);
 
   /*! \brief Replace the raw query of a lossless URI without a map or form decoding.
    * \param query No value removes the delimiter; an empty value retains an empty ?.

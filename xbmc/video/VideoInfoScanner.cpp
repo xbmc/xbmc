@@ -2167,7 +2167,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else
     {
-      CFileItemPtr newItem(new CFileItem(*item));
+      CFileItemPtr newItem = std::make_shared<CFileItem>(*item);
       items.Add(newItem);
     }
 
@@ -3519,7 +3519,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   size_t CVideoInfoScanner::RemoveSubDirectories(std::set<std::string, std::less<>>& directories,
                                                  std::string_view directory,
-                                                 std::function<void(const std::string&)> f)
+                                                 const std::function<void(const std::string&)>& f)
   {
     size_t count{0};
 

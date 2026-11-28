@@ -397,6 +397,7 @@ TEST_F(TestScriptInvocationManager, OnlyAFewThreadsAreKept)
   // The fifth ended with its run
   EXPECT_TRUE(Eventually([id = ids.back()] { return !Manager().IsRunning(id); }));
   std::vector<int> reused;
+  reused.reserve(4);
   for (int i = 0; i < 4; ++i)
     reused.push_back(Manager().GetReusablePluginHandle(m_script));
   EXPECT_EQ((std::vector<int>{1001, 1002, 1003, 1004}), reused);

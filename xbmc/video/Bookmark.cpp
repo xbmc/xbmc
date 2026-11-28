@@ -42,7 +42,7 @@ bool CBookmark::HasSavedPlayerState() const
 
 bool CBookmark::GetBookmarksForFile(const std::string& filePath,
                                     VECBOOKMARKS& bookmarks,
-                                    std::vector<EType> types)
+                                    const std::vector<EType>& types)
 {
   bookmarks.clear();
 

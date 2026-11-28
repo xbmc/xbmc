@@ -418,7 +418,7 @@ std::string CLanguageTag::AsIso6392B() const
 
 std::string CLanguageTag::AsIso6392T() const
 {
-  const std::string iso6392B{AsIso6392B()};
+  std::string iso6392B{AsIso6392B()};
 
   // A language with no ISO 639-2 code narrows to the tag itself, which is not a code to map
   if (iso6392B.length() != ALPHA3_CODE_LENGTH)

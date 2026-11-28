@@ -48,7 +48,7 @@ void CHTTPPythonInvoker::onError(const std::string& exceptionType /* = "" */, co
 
     if (!exceptionValue.empty())
       output += ": " + exceptionValue;
-    output += "\n";
+    output += '\n';
   }
 
   if (!exceptionTraceback .empty())

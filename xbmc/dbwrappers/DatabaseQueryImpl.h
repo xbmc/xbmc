@@ -116,9 +116,9 @@ std::optional<std::string> CDatabaseQueryRuleCombination<RULE>::GetWhereClause(
       return std::nullopt;
     }
     // A rule without SQL of its own neither narrows a group of all nor widens a group of any
-    where += "(";
+    where += '(';
     where += !clause->empty() ? *clause : m_type == Type::COMBINATION_AND ? "'1'" : "'0'";
-    where += ")";
+    where += ')';
   }
 
   return where;

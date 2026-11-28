@@ -14,7 +14,7 @@
 class CCaptionBlock
 {
 public:
-  explicit CCaptionBlock(int size) : m_pts(0.0), m_data(size) {}
-  double m_pts;
+  explicit CCaptionBlock(int size) : m_data(size) {}
+  double m_pts = 0.0;
   std::vector<uint8_t> m_data;
 };

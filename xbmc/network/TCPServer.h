@@ -142,7 +142,8 @@ namespace JSONRPC
       std::atomic<bool> m_disconnecting{false};
 
     private:
-      static void RunWorker(std::shared_ptr<CTCPClient> self, std::shared_ptr<CTCPServer> host);
+      static void RunWorker(const std::shared_ptr<CTCPClient>& self,
+                            const std::shared_ptr<CTCPServer>& host);
       static void RunRequests(const std::shared_ptr<CTCPClient>& self, CTCPServer* host);
 
       enum class WriteResult

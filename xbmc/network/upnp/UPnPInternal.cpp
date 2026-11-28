@@ -1130,7 +1130,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
 {
   NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
 
-  CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
+  CFileItemPtr pItem = std::make_shared<CFileItem>((const char*)entry->m_Title);
   pItem->SetLabelPreformatted(true);
   pItem->SetTitle(static_cast<const char*>(entry->m_Title));
   pItem->SetFolder(entry->IsContainer());

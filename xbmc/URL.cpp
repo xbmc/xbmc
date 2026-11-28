@@ -27,12 +27,12 @@
 
 #include <fmt/xchar.h>
 
-CURL::CURL(CURL&& other)
+CURL::CURL(CURL&& other) noexcept
 {
   *this = std::move(other);
 }
 
-CURL& CURL::operator=(CURL&& other)
+CURL& CURL::operator=(CURL&& other) noexcept
 {
   if (this != &other)
   {
@@ -48,8 +48,8 @@ CURL& CURL::operator=(CURL&& other)
     m_strFileType = std::move(other.m_strFileType);
     m_strOptions = std::move(other.m_strOptions);
     m_strProtocolOptions = std::move(other.m_strProtocolOptions);
-    m_options = std::move(other.m_options);
-    m_protocolOptions = std::move(other.m_protocolOptions);
+    m_options = other.m_options;
+    m_protocolOptions = other.m_protocolOptions;
     other.Reset();
   }
   return *this;
@@ -205,9 +205,9 @@ std::string CURL::GetSchemeSpecificPart() const
   return source.substr(begin, end - begin);
 }
 
-bool CURL::SetURIPath(std::string path)
+bool CURL::SetURIPath(const std::string& path)
 {
-  if (!m_uri || !URIPolicy::CanSetPath(*m_uri, path) || !m_uri->SetPath(std::move(path)))
+  if (!m_uri || !URIPolicy::CanSetPath(*m_uri, path) || !m_uri->SetPath(path))
     return false;
   UpdateURIProjection();
   return true;
@@ -473,7 +473,7 @@ void CURL::SetFileName(std::string strFileName)
 {
   if (m_uri)
   {
-    SetURIPath(std::move(strFileName));
+    SetURIPath(strFileName);
     return;
   }
   UpdateFileName(std::move(strFileName));
@@ -704,15 +704,15 @@ std::string CURL::GetWithoutFilename() const
     if (!m_strDomain.empty())
     {
       strURL += Encode(m_strDomain);
-      strURL += ";";
+      strURL += ';';
     }
     strURL += Encode(m_strUserName);
     if (!m_strPassword.empty())
     {
-      strURL += ":";
+      strURL += ':';
       strURL += Encode(m_strPassword);
     }
-    strURL += "@";
+    strURL += '@';
   }
 
   if (!m_strHostName.empty())
@@ -731,7 +731,7 @@ std::string CURL::GetWithoutFilename() const
       strURL += StringUtils::Format(":{}", m_iPort);
     }
 
-    strURL += "/";
+    strURL += '/';
   }
 
   return strURL;

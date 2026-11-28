@@ -570,7 +570,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
       if (info.bitrate)
         strItem += StringUtils::Format(", {} bps)", info.bitrate);
       else
-        strItem += ")";
+        strItem += ')';
 
       strItem += FormatFlags(info.flags);
       strItem += StringUtils::Format(" ({}/{})", i + 1, streamCount);

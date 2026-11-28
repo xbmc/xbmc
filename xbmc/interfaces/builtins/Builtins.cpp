@@ -136,9 +136,9 @@ void CBuiltins::GetHelp(std::string &help)
   for (const auto& it : m_command)
   {
     help += it.first;
-    help += "\t";
+    help += '\t';
     help += it.second.description;
-    help += "\n";
+    help += '\n';
   }
 }
 

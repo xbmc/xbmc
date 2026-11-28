@@ -110,7 +110,7 @@ std::string GetClientIdsSQL(const std::vector<std::shared_ptr<CPVRClient>>& clie
 
     clientIds += "iClientId = -2"; // PVR_GROUP_CLIENT_ID_UNKNOWN
   }
-  clientIds += ")";
+  clientIds += ')';
   return clientIds;
 }
 

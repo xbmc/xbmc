@@ -22,6 +22,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <inttypes.h>
+#include <memory>
 
 using namespace XFILE;
 
@@ -172,7 +173,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
 
         // Get the full path file name and add it to the the play list
         CUtil::GetQualifiedFilename(m_strBasePath, filePath);
-        CFileItemPtr newItem(new CFileItem(strInfo));
+        CFileItemPtr newItem = std::make_shared<CFileItem>(strInfo);
         newItem->SetPath(filePath);
         if (iStartOffset != 0 || iEndOffset != 0)
         {

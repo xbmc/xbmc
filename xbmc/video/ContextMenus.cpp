@@ -45,7 +45,8 @@ namespace CONTEXTMENU
 {
 
 CVideoInfoBase::CVideoInfoBase(MEDIA::TYPE mediaType)
-  : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
+  : CStaticContextMenuAction(19033),
+    m_mediaType(mediaType)
 {
 }
 

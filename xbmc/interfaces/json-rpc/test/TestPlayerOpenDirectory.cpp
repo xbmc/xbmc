@@ -69,6 +69,7 @@ protected:
   static std::vector<std::string> Names(const CFileItemList& list)
   {
     std::vector<std::string> names;
+    names.reserve(list.Size());
     for (int i = 0; i < list.Size(); ++i)
       names.push_back(URIUtils::GetFileName(list[i]->GetPath()));
     return names;

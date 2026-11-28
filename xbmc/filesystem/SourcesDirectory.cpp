@@ -28,6 +28,8 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace XFILE;
 
@@ -68,7 +70,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
   for (unsigned int i = 0; i < sources.size(); ++i)
   {
     const CMediaSource& share = sources[i];
-    CFileItemPtr pItem(new CFileItem(share));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(share);
     if (URIUtils::IsProtocol(pItem->GetPath(), "musicsearch"))
       pItem->SetCanQueue(false);
 

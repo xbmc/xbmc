@@ -459,7 +459,7 @@ namespace
 void AppendDay(std::string& strReturn, unsigned int iId)
 {
   if (!strReturn.empty())
-    strReturn += "-";
+    strReturn += '-';
 
   if (iId > 0)
     strReturn += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iId).c_str();

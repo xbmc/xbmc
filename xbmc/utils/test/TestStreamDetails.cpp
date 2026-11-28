@@ -602,7 +602,7 @@ TEST(TestStreamDetails, Version_DefaultsToCurrentAndSurvivesCopy)
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::AUDIO, 1));
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, details.GetVersion(CStreamDetail::SUBTITLE, 1));
 
-  const CStreamDetails copy{details};
+  const CStreamDetails& copy{details};
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, copy.GetVersion(CStreamDetail::VIDEO, 1));
   EXPECT_EQ(CStreamDetail::MEDIA, copy.GetSource(CStreamDetail::VIDEO, 1));
 }

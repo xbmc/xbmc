@@ -64,6 +64,8 @@
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <memory>
+
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
@@ -482,7 +484,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   { // add 'add source button'
     const std::string& strLabel =
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1026);
-    CFileItemPtr pItem(new CFileItem(strLabel));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strLabel);
     pItem->SetPath(ITEM::PLACEHOLDER::ADD_SOURCE);
     pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADD_SOURCE);
     pItem->SetLabel(strLabel);
@@ -493,7 +495,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   }
   else if (items.IsEmpty() || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS))
   {
-    CFileItemPtr pItem(new CFileItem(".."));
+    CFileItemPtr pItem = std::make_shared<CFileItem>("..");
     pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
     pItem->SetFolder(true);
     pItem->SetIsShareOrDrive(false);
@@ -504,7 +506,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
 
   if (strDirectory.empty())
   {
-    CFileItemPtr pItem(new CFileItem("special://profile/", true));
+    CFileItemPtr pItem = std::make_shared<CFileItem>("special://profile/", true);
     pItem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20070));
     pItem->SetArt(ART::TYPE::THUMB, ART::DEFAULT::FOLDER);
     pItem->SetLabelPreformatted(true);

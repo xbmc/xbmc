@@ -53,7 +53,7 @@ public:
     LEGACY = 40
   };
 
-  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(nullptr) {}
+  explicit CStreamDetail(StreamType type) : m_eType(type) {}
   ~CStreamDetail() override = default;
   CStreamDetail(const CStreamDetail&) = default;
   CStreamDetail& operator=(const CStreamDetail&) = delete;
@@ -65,7 +65,7 @@ public:
   const StreamType m_eType;
 
 protected:
-  CStreamDetails *m_pParent;
+  CStreamDetails* m_pParent = nullptr;
   Source m_source{UNDEFINED};
   int m_version{STREAM_DETAILS_VERSION};
   friend class CStreamDetails;

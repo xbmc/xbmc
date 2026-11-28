@@ -424,7 +424,7 @@ void CDialogGameLeaderboards::FetchStandingsFor(unsigned int leaderboardId)
 
   {
     std::unique_lock lock(m_section);
-    if (m_requested.count(leaderboardId) > 0)
+    if (m_requested.contains(leaderboardId))
       return;
   }
 

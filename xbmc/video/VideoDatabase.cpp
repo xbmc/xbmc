@@ -2970,7 +2970,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
     {
       const std::string& lang{details.GetOriginalLanguage().ToString()};
-      if (lang.size() > 0)
+      if (!lang.empty())
         sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
       else
         sql += ", originalLanguage = NULL";
@@ -3654,7 +3654,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     sql += ", duration = NULL";
   {
     const std::string& lang{details.GetOriginalLanguage().ToString()};
-    if (lang.size() > 0)
+    if (!lang.empty())
       sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
     else
       sql += ", originalLanguage = NULL";
@@ -8250,7 +8250,7 @@ bool CVideoDatabase::GetSetsByWhere(const std::string& strBaseDir, const Filter 
     Filter setFilter = filter;
     setFilter.join += " JOIN `sets` ON movie_view.idSet = `sets`.idSet";
     if (!setFilter.order.empty())
-      setFilter.order += ",";
+      setFilter.order += ',';
     setFilter.order += "`sets`.idSet";
 
     if (!GetMoviesByWhere(strBaseDir, setFilter, items))
@@ -8366,7 +8366,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
         isAlbum = false;
       }
 
-      CFileItemPtr pItem(new CFileItem(strAlbum));
+      CFileItemPtr pItem = std::make_shared<CFileItem>(strAlbum);
 
       CVideoDbUrl itemUrl = videoUrl;
       std::string path = StringUtils::Format("{}/", idMVideo);
@@ -8646,7 +8646,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
 
     if (countOnly)
     {
-      CFileItemPtr pItem(new CFileItem());
+      CFileItemPtr pItem = std::make_shared<CFileItem>();
       pItem->SetProperty("total", iRowsFound == 1 ? m_pDS->fv(0).get_asInt() : iRowsFound);
       items.Add(pItem);
 
@@ -12481,6 +12481,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             GetStackTimes(movie.m_strFileNameAndPath, times))
         {
           std::vector<std::string> ends;
+          ends.reserve(times.size());
           for (const auto time : times)
             ends.emplace_back(std::to_string(time.count()));
           XMLUtils::SetString(pMain->LastChild("movie"), "stacktimes",
@@ -15453,7 +15454,7 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
       sql += PrepareSQL("'%s',", image.c_str());
     }
     sql.pop_back(); // remove last ','
-    sql += ")";
+    sql += ')';
 
     // add arttype filters if not set to "Maximum"
     if (artworkLevel != CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL)

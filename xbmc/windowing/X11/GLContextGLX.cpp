@@ -269,7 +269,7 @@ void CGLContextGLX::QueryExtensions()
 {
   m_extensions  = " ";
   m_extensions += glXQueryExtensionsString(m_dpy, m_nScreen);
-  m_extensions += " ";
+  m_extensions += ' ';
 
   CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:{}", m_extensions);
 

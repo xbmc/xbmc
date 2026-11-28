@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 using namespace XFILE;
@@ -100,7 +101,7 @@ bool CPlayListB4S::LoadData(std::istream& stream)
         std::string strInfo = pNodeInfo->FirstChild()->Value();
         strFileName = URIUtils::SubstitutePath(strFileName);
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
-        CFileItemPtr newItem(new CFileItem(strInfo));
+        CFileItemPtr newItem = std::make_shared<CFileItem>(strInfo);
         newItem->SetPath(strFileName);
         newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);

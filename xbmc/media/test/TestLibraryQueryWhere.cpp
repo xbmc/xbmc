@@ -71,7 +71,7 @@ protected:
     json += c.type;
     json += "\",\"rules\":";
     json += group ? std::string{c.rules} : "{\"and\":[" + std::string{c.rules} + "]}";
-    json += "}";
+    json += '}';
 
     MEDIA::CLibraryQuery playlist;
     if (!playlist.LoadFromJson(json))

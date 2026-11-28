@@ -627,6 +627,7 @@ TEST(TestContentBarHistogram, BothWaysOfAskingAgree)
 
   // One sample per bucket, so consecutive quantiles land in different buckets.
   std::vector<std::pair<unsigned int, unsigned int>> spread;
+  spread.reserve(BUCKET_COUNT);
   for (unsigned int bucket = 0; bucket < BUCKET_COUNT; ++bucket)
     spread.emplace_back(bucket, 1);
   ExpectBothWaysAgree(Filled(spread));

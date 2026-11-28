@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <cassert>
+#include <memory>
 #include <stdexcept>
 
 using namespace KODI;
@@ -113,7 +114,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
     //if we got a path - add a item - else at least we maybe have set username and password to theurl
     if( !path.empty())
     {
-      CFileItemPtr item(new CFileItem("", true));
+      CFileItemPtr item = std::make_shared<CFileItem>("", true);
       std::string urlStr(url.Get());
       //if path has a leading slash (sure it should have one)
       if( path.at(0) == '/' )
@@ -163,7 +164,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       std::string tmp;
       if (GetXBMCProtocol(it.GetType(), tmp))
       {
-        CFileItemPtr item(new CFileItem("", true));
+        CFileItemPtr item = std::make_shared<CFileItem>("", true);
         CURL url;
         url.SetProtocol("zeroconf");
         std::string service_path(CURL::Encode(CZeroconfBrowser::ZeroconfService::toPath(it)));

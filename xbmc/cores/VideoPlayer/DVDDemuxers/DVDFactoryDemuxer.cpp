@@ -17,6 +17,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <memory>
+
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                              bool fileinfo)
 {
@@ -28,7 +30,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStre
   {
     // audio/x-xbmc-pcm this is the used codec for AirTunes
     // (apples audio only streaming)
-    std::unique_ptr<CDVDDemuxBXA> demuxer(new CDVDDemuxBXA());
+    std::unique_ptr<CDVDDemuxBXA> demuxer = std::make_unique<CDVDDemuxBXA>();
     if(demuxer->Open(pInputStream))
       return demuxer.release();
     else
@@ -43,7 +45,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStre
     {
       CLog::Log(LOGDEBUG, "DVDFactoryDemuxer: Stream is probably CD audio. Creating CDDA demuxer.");
 
-      std::unique_ptr<CDVDDemuxCDDA> demuxer(new CDVDDemuxCDDA());
+      std::unique_ptr<CDVDDemuxCDDA> demuxer = std::make_unique<CDVDDemuxCDDA>();
       if (demuxer->Open(pInputStream))
       {
         return demuxer.release();
@@ -54,7 +56,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStre
   // Input stream handles demuxing
   if (pInputStream->GetIDemux())
   {
-    std::unique_ptr<CDVDDemuxClient> demuxer(new CDVDDemuxClient());
+    std::unique_ptr<CDVDDemuxClient> demuxer = std::make_unique<CDVDDemuxClient>();
     if(demuxer->Open(pInputStream))
       return demuxer.release();
     else
@@ -64,14 +66,14 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(const std::shared_ptr<CDVDInputStre
   // Try to open the MultiFiles demuxer
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_MULTIFILES))
   {
-    std::unique_ptr<CDemuxMultiSource> demuxer(new CDemuxMultiSource());
+    std::unique_ptr<CDemuxMultiSource> demuxer = std::make_unique<CDemuxMultiSource>();
     if (demuxer->Open(pInputStream))
       return demuxer.release();
     else
       return NULL;
   }
 
-  std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+  std::unique_ptr<CDVDDemuxFFmpeg> demuxer = std::make_unique<CDVDDemuxFFmpeg>();
   if (demuxer->Open(pInputStream, fileinfo))
     return demuxer.release();
   else

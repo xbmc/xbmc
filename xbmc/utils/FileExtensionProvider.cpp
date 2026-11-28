@@ -134,7 +134,7 @@ std::string NotInitialized()
 std::string GetExtensions(const std::atomic<bool>& initialized,
                           CCriticalSection& mutex,
                           std::shared_ptr<const std::string>& cache,
-                          std::function<std::string()> newlist)
+                          const std::function<std::string()>& newlist)
 {
   if (!initialized)
     return NotInitialized();

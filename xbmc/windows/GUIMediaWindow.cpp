@@ -23,15 +23,6 @@
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
-#include "filesystem/SourcesDirectory.h"
-#include "media/LibraryQuery.h"
-#include "media/MediaSection.h"
-#include "messaging/ApplicationMessenger.h"
-#include "network/NetworkFileItemClassify.h"
-#include "playlists/PlayListFileItemClassify.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/activity/XBMCApp.h"
-#endif
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
@@ -42,6 +33,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SmartPlaylistDirectory.h"
+#include "filesystem/SourcesDirectory.h"
 #include "filesystem/VirtualDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
@@ -51,11 +43,16 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "jobs/JobManager.h"
+#include "media/LibraryQuery.h"
+#include "media/MediaSection.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -77,6 +74,11 @@
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 
+#if defined(TARGET_ANDROID)
+#include "platform/android/activity/XBMCApp.h"
+#endif
+
+#include <memory>
 #include <optional>
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -823,7 +825,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   if (!bHideParent)
   {
-    CFileItemPtr pItem(new CFileItem(".."));
+    CFileItemPtr pItem = std::make_shared<CFileItem>("..");
     pItem->SetPath(strParentPath);
     pItem->SetFolder(true);
     pItem->SetIsShareOrDrive(false);
@@ -974,7 +976,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   {
     const std::string& strLabel =
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(showLabel);
-    CFileItemPtr pItem(new CFileItem(strLabel));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strLabel);
     pItem->SetPath(ITEM::PLACEHOLDER::ADD_SOURCE);
     pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADD_SOURCE);
     pItem->SetLabel(strLabel);
@@ -2081,7 +2083,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // fileitems settings.
   if (m_vecItems->IsEmpty())
   {
-    CFileItemPtr pItem(new CFileItem(".."));
+    CFileItemPtr pItem = std::make_shared<CFileItem>("..");
     pItem->SetPath(m_history.GetParentPath());
     pItem->SetFolder(true);
     pItem->SetIsShareOrDrive(false);

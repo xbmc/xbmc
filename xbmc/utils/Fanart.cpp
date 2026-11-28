@@ -169,7 +169,7 @@ bool CFanart::ParseColors(const std::string &colorsIn, std::string &colorsOut)
       if (strTriplets.size() == 3)
       { // convert
         if (!colorsOut.empty())
-          colorsOut += ",";
+          colorsOut += ',';
         colorsOut += StringUtils::Format("FF{:2x}{:2x}{:2x}", std::stol(strTriplets[0]),
                                          std::stol(strTriplets[1]), std::stol(strTriplets[2]));
       }

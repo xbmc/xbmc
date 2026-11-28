@@ -1327,7 +1327,7 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
     CServiceBroker::GetPlaylistPlayer().SetShuffle(playlistId, false);
   }
 
-  CFileItemPtr movieItem(new CFileItem(*item));
+  CFileItemPtr movieItem = std::make_shared<CFileItem>(*item);
 
   // Call the base method to actually queue the items
   // and start playing the given item
@@ -1695,7 +1695,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
     strPath = pSelItem->GetPath();
     CURL url(strPath);
     if (pSelItem->IsSmb() && !URIUtils::HasSlashAtEnd(strPath))
-      strPath += "/";
+      strPath += '/';
 
     for (int i = 0; i < m_vecItems->Size(); i++)
     {
@@ -1709,7 +1709,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   }
   else
   {
-    const std::string selPath = pSelItem->GetPath();
+    const std::string& selPath = pSelItem->GetPath();
     std::string selPathWithSlash = selPath;
     URIUtils::AddSlashAtEnd(selPathWithSlash);
     const bool isMovieUrl = selPath.starts_with(VIDEO::DB_PATH::MOVIE_TITLES) ||

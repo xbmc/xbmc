@@ -35,6 +35,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -891,8 +892,8 @@ void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
   auto it = m_buttonMappers.find(mapper);
   if (it == m_buttonMappers.end())
   {
-    std::unique_ptr<CAddonButtonMapping> addonMapping(
-        new CAddonButtonMapping(m_manager, this, mapper));
+    std::unique_ptr<CAddonButtonMapping> addonMapping =
+        std::make_unique<CAddonButtonMapping>(m_manager, this, mapper);
 
     RegisterJoystickDriverHandler(addonMapping.get(), false);
     RegisterKeyboardDriverHandler(addonMapping.get(), false);

@@ -1268,7 +1268,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
   std::string strDest = urlDest.GetWithoutUserDetails();
   ForceForwardSlashes(strDest);
   if (!URIUtils::HasSlashAtEnd(strDest))
-    strDest += "/";
+    strDest += '/';
 
   size_t iLength = 0;
   size_t iLenPath = strDest.size();
@@ -1305,7 +1305,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
       std::string strShare = urlShare.GetWithoutUserDetails();
       ForceForwardSlashes(strShare);
       if (!URIUtils::HasSlashAtEnd(strShare))
-        strShare += "/";
+        strShare += '/';
       size_t iLenShare = strShare.size();
 
       if ((iLenPath >= iLenShare) && StringUtils::StartsWithNoCase(strDest, strShare) && (iLenShare > iLength))
@@ -2512,7 +2512,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
       name = (*it) + " " + name;
     }
   }
-  name += " ";
+  name += ' ';
   name += CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21602); // External
   StringUtils::Trim(name);
   info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);

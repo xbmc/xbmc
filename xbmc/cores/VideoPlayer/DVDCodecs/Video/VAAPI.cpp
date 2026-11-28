@@ -490,7 +490,7 @@ void CCapabilities::Add(AVPixelFormat pixFmt)
 
 bool CCapabilities::Supports(AVPixelFormat pixFmt) const
 {
-  return m_pixFmts.count(pixFmt) > 0;
+  return m_pixFmts.contains(pixFmt);
 }
 
 std::string CCapabilities::ToString() const

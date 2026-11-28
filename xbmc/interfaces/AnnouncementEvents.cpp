@@ -116,7 +116,7 @@ Announcement WithLibraryDetails(Announcement announcement)
       return announcement;
 
     auto loaded = std::make_shared<CFileItem>(*item);
-    *loaded->GetVideoInfoTag() = std::move(tag);
+    *loaded->GetVideoInfoTag() = tag;
     return WithItem(std::move(announcement), std::move(loaded));
   }
 

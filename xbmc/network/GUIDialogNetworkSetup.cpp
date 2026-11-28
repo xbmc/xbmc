@@ -56,9 +56,9 @@ CGUIDialogNetworkSetup::Protocol::Protocol(bool newSupportPath,
     supportPort(newSupportPort),
     supportBrowsing(newSupportBrowsing),
     defaultPort(newDefaultPort),
-    type(newType),
+    type(std::move(newType)),
     label(newLabel),
-    addonId(newAddonId)
+    addonId(std::move(newAddonId))
 {
 }
 

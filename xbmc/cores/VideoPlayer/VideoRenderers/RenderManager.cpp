@@ -589,7 +589,7 @@ void CRenderManager::ServiceVideoCaptures()
     {
       CaptureResult result;
       if (m_pRenderer->CaptureVideoFrame(request->spec, result))
-        captureService->Complete(request, std::move(result));
+        captureService->Complete(request, result);
       else
         captureService->Fail(request);
     }
@@ -632,7 +632,7 @@ void CRenderManager::ServiceVideoCaptures()
       result.hasLightMetadata = m_picture.hasLightMetadata;
       result.lightMetadata = m_picture.lightMetadata;
       result.content = CaptureContent::VIDEO; // this tap delivers video-only
-      captureService->Complete(request, std::move(result));
+      captureService->Complete(request, result);
     }
     else
       captureService->Fail(request);

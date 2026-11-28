@@ -177,7 +177,7 @@ int MysqlDatabase::setErr(int err_code, const char* qry)
   error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
-  error += "\n";
+  error += '\n';
   return err_code;
 }
 
@@ -2307,7 +2307,7 @@ bool MysqlDatabase::ChangeStorageEngine(std::string_view db,
 
 std::string MysqlDatabase::ResolveStorageEngine()
 {
-  const std::string serverDefault = GetServerDefaultEngine();
+  std::string serverDefault = GetServerDefaultEngine();
   if (!serverDefault.empty())
   {
     if (IsBlacklistedEngine(serverDefault))

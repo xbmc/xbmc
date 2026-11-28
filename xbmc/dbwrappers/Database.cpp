@@ -145,7 +145,7 @@ bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL) const
   if (!strWhere.empty())
     strSQL += " WHERE " + strWhere;
 
-  strSQL += ")";
+  strSQL += ')';
   return true;
 }
 

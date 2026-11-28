@@ -251,7 +251,7 @@ std::string CGameNameParser::RegionName(const GameRegion& region)
 std::string CGameNameParser::DisplayTitle(std::string_view title)
 {
   // "Legend of Zelda, The - A Link to the Past" -> article first, subtitle kept
-  const std::string text(title);
+  std::string text(title);
   const size_t subtitle = text.find(" - ");
   const std::string head = subtitle == std::string::npos ? text : text.substr(0, subtitle);
   const std::string tail = subtitle == std::string::npos ? "" : text.substr(subtitle);

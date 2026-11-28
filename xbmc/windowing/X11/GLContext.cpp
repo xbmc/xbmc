@@ -14,7 +14,7 @@ bool CGLContext::IsExtSupported(const char* extension) const
 
   name  = " ";
   name += extension;
-  name += " ";
+  name += ' ';
 
   return m_extensions.find(name) != std::string::npos;
 }

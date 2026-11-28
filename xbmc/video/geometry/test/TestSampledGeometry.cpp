@@ -77,7 +77,7 @@ TEST(TestSampledGeometry, AnAnamorphicScanStoresTheRatioItIsSeenAt)
 TEST(TestSampledGeometry, AVaryingTitleStoresEachRatioDominantFirst)
 {
   SampledGeometry scan{MakeScan()};
-  scan.combined.shapes.push_back(CRectInt{0, 0, CODED_WIDTH, CODED_HEIGHT});
+  scan.combined.shapes.emplace_back(0, 0, CODED_WIDTH, CODED_HEIGHT);
 
   const ContentGeometryRecord record{MakeContentGeometryRecord(scan, IDENTITY)};
 
@@ -92,7 +92,7 @@ TEST(TestSampledGeometry, AVaryingTitleStoresEachRatioDominantFirst)
 TEST(TestSampledGeometry, TheSameRatioTwiceIsStoredOnce)
 {
   SampledGeometry scan{MakeScan()};
-  scan.combined.shapes.push_back(CRectInt{0, CONTENT_TOP + 1, CODED_WIDTH, CONTENT_BOTTOM + 1});
+  scan.combined.shapes.emplace_back(0, CONTENT_TOP + 1, CODED_WIDTH, CONTENT_BOTTOM + 1);
 
   const ContentGeometryRecord record{MakeContentGeometryRecord(scan, IDENTITY)};
 

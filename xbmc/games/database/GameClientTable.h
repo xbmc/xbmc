@@ -40,7 +40,7 @@ public:
    * \param database The database this table lives in, which must outlive this
    */
   explicit CGameClientTable(CDatabase& database);
-  ~CGameClientTable();
+  ~CGameClientTable() = default;
 
   /*!
    * \brief Create the table

@@ -34,6 +34,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <ranges>
 
 using namespace KODI;
@@ -318,7 +319,7 @@ void CMusicInfoLoader::LoadCache(const std::string& strFileName, CFileItemList& 
     ar >> iSize;
     for (int i = 0; i < iSize; i++)
     {
-      CFileItemPtr pItem(new CFileItem());
+      CFileItemPtr pItem = std::make_shared<CFileItem>();
       ar >> *pItem;
       items.Add(pItem);
     }

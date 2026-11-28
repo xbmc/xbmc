@@ -50,7 +50,7 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
   m_Filename = filename;
   m_source = source;
 
-  std::unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
+  std::unique_ptr<CDVDSubtitleStream> pStream = std::make_unique<CDVDSubtitleStream>();
   if(!pStream->Open(filename))
     return false;
 
@@ -204,7 +204,7 @@ bool CDVDDemuxVobsub::ParseDelay(SState& state, std::string& line)
 
 bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
 {
-  std::unique_ptr<CStream> stream(new CStream(this));
+  std::unique_ptr<CStream> stream = std::make_unique<CStream>(this);
 
   StringUtils::Trim(line);
   // The language runs up to the stream index, as in "en, index: 0"

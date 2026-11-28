@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 #include <shared_mutex>
 #include <string.h>
@@ -346,7 +347,7 @@ void CPeripheralAddon::GetDirectory(const std::string& strPath, CFileItemList& i
     if (peripheral->IsHidden())
       continue;
 
-    CFileItemPtr peripheralFile(new CFileItem(peripheral->DeviceName()));
+    CFileItemPtr peripheralFile = std::make_shared<CFileItem>(peripheral->DeviceName());
     peripheralFile->SetPath(peripheral->FileLocation());
     peripheralFile->SetProperty("vendor", peripheral->VendorIdAsString());
     peripheralFile->SetProperty("product", peripheral->ProductIdAsString());

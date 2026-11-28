@@ -51,7 +51,7 @@ private:
 
   static const int SYSTEM_HEAT_UPDATE_INTERVAL = 60000;
 
-  mutable unsigned int m_lastSysHeatInfoTime;
+  mutable unsigned int m_lastSysHeatInfoTime = -SYSTEM_HEAT_UPDATE_INTERVAL;
   mutable CTemperature m_gpuTemp;
   mutable CTemperature m_cpuTemp;
   int m_fanSpeed = 0;

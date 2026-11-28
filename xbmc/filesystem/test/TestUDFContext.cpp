@@ -30,6 +30,7 @@ TEST(TestUDFContext, AnImageAskedForByThreadsAtOnceIsOneVolume)
   const std::shared_future<void> started{go.get_future().share()};
   std::vector<std::shared_ptr<CUDFContext>> volumes(count);
   std::vector<std::thread> threads;
+  threads.reserve(count);
   for (size_t i = 0; i < count; ++i)
   {
     threads.emplace_back(

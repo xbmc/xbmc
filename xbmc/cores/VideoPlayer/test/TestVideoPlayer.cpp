@@ -23,6 +23,7 @@
 #include <memory>
 #include <stdexcept>
 #include <thread>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -107,7 +108,7 @@ public:
   void SetItem(const CFileItem& item) { m_item = item; }
   void SetInputStream(std::shared_ptr<CDVDInputStream> inputStream)
   {
-    m_pInputStream = inputStream;
+    m_pInputStream = std::move(inputStream);
   }
   void SetDemuxer(std::unique_ptr<CDVDDemux> demuxer) { m_pDemuxer = std::move(demuxer); }
 

@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -139,7 +140,8 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
   }
 
   //create service info and add it to service map
-  tServiceMap::mapped_type p_service_info(new CZeroconfAvahi::ServiceInfo(fcr_type, fcr_name, f_port, txtList));
+  tServiceMap::mapped_type p_service_info =
+      std::make_shared<CZeroconfAvahi::ServiceInfo>(fcr_type, fcr_name, f_port, txtList);
   it = m_services.insert(it, std::make_pair(fcr_identifier, p_service_info));
 
   //if client is already running, directly try to add the new service

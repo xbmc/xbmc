@@ -17,6 +17,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -41,7 +43,7 @@ bool CMusicFileDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     std::string strLabel = StringUtils::Format(
         "{} - {} {:02}", strFileName,
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(554), i + 1);
-    CFileItemPtr pItem(new CFileItem(strLabel));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strLabel);
     strLabel = StringUtils::Format("{}{}-{}.{}", strPath, strFileName, i + 1, m_strExt);
     pItem->SetPath(strLabel);
 

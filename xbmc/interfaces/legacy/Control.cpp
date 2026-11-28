@@ -33,6 +33,8 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <memory>
+
 using namespace KODI;
 
 namespace XBMCAddon
@@ -1484,7 +1486,7 @@ namespace XBMCAddon
 
         // NOTE: This code has likely not worked fully correctly for some time
         //       In particular, the click behaviour won't be working.
-        CGUIStaticItemPtr newItem(new CGUIStaticItem(*pItem->item));
+        CGUIStaticItemPtr newItem = std::make_shared<CGUIStaticItem>(*pItem->item);
         items.push_back(newItem);
       }
 

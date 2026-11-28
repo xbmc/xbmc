@@ -333,7 +333,7 @@ bool CTextureDatabase::SetKeepCachedImages(const std::vector<std::string>& image
     sql += PrepareSQL("'%s',", image.c_str());
   }
   sql.pop_back(); // remove last ','
-  sql += ")";
+  sql += ')';
   return ExecuteQuery(sql);
 }
 

@@ -52,7 +52,7 @@ public:
    */
   static bool GetBookmarksForFile(const std::string& filePath,
                                   VECBOOKMARKS& bookmarks,
-                                  std::vector<EType> types);
+                                  const std::vector<EType>& types);
 
   /*!
    * \brief Create a list of the start timestamps of the standard bookmarks from the provided list

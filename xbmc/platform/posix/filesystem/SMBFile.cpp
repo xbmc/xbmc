@@ -666,15 +666,15 @@ std::string CSMB::URLEncode(const CURL& url)
     if (!url.GetDomain().empty())
     {
       flat += URLEncode(url.GetDomain());
-      flat += ";";
+      flat += ';';
     }
     flat += URLEncode(url.GetUserName());
     if (!url.GetPassWord().empty())
     {
-      flat += ":";
+      flat += ':';
       flat += URLEncode(url.GetPassWord());
     }
-    flat += "@";
+    flat += '@';
   }
   /* libsmbclient takes the first literal ':' in the server as the port separator and
      doesn't understand brackets, so the colons of an IPv6 host have to stay encoded */
@@ -690,7 +690,7 @@ std::string CSMB::URLEncode(const CURL& url)
   StringUtils::Tokenize(url.GetFileName(), parts, "/");
   for (const std::string& it : parts)
   {
-    flat += "/";
+    flat += '/';
     flat += URLEncode((it));
   }
 

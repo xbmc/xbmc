@@ -364,7 +364,7 @@ std::string CGameClientDiscModel::GetLabelByIndex(size_t index) const
   if (!disc->basename.empty())
     return disc->basename;
 
-  const std::string basename = DeriveBasename(disc->path);
+  std::string basename = DeriveBasename(disc->path);
   if (!basename.empty())
     return basename;
 

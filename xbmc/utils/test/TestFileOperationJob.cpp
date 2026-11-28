@@ -13,6 +13,8 @@
 #include "utils/FileOperationJob.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
 TEST(TestFileOperationJob, ActionCopy)
@@ -26,7 +28,7 @@ TEST(TestFileOperationJob, ActionCopy)
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -60,7 +62,7 @@ TEST(TestFileOperationJob, ActionMove)
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -96,7 +98,7 @@ TEST(TestFileOperationJob, ActionDelete)
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -121,7 +123,7 @@ TEST(TestFileOperationJob, ActionDelete)
   EXPECT_FALSE(XFILE::CFile::Exists(tmpfilepath));
 
   items.Clear();
-  CFileItemPtr item2(new CFileItem(destfile));
+  CFileItemPtr item2 = std::make_shared<CFileItem>(destfile);
   item2->SetPath(destfile);
   item2->SetFolder(false);
   item2->Select(true);
@@ -148,7 +150,7 @@ TEST(TestFileOperationJob, ActionReplace)
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -196,7 +198,7 @@ TEST(TestFileOperationJob, ActionCreateFolder)
   destpath += ".createfolder";
   ASSERT_FALSE(XFILE::CFile::Exists(destpath));
 
-  CFileItemPtr item(new CFileItem(destpath));
+  CFileItemPtr item = std::make_shared<CFileItem>(destpath);
   item->SetPath(destpath);
   item->SetFolder(true);
   item->Select(true);
@@ -232,7 +234,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
   destpath += ".deletefolder";
   ASSERT_FALSE(XFILE::CFile::Exists(destpath));
 
-  CFileItemPtr item(new CFileItem(destpath));
+  CFileItemPtr item = std::make_shared<CFileItem>(destpath);
   item->SetPath(destpath);
   item->SetFolder(true);
   item->Select(true);
@@ -264,7 +266,7 @@ TEST(TestFileOperationJob, GetFunctions)
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);
@@ -299,7 +301,7 @@ TEST(TestFileOperationJob, ExternalProgressBarStaysOpen)
   tmpfile->Close();
 
   CFileItemList items;
-  CFileItemPtr item(new CFileItem(tmpfilepath));
+  CFileItemPtr item = std::make_shared<CFileItem>(tmpfilepath);
   item->SetPath(tmpfilepath);
   item->SetFolder(false);
   item->Select(true);

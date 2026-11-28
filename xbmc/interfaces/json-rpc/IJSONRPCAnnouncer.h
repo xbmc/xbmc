@@ -30,7 +30,7 @@ namespace JSONRPC
       root["jsonrpc"] = "2.0";
 
       std::string namespaceMethod = ANNOUNCEMENT::AnnouncementFlagToString(flag);
-      namespaceMethod += ".";
+      namespaceMethod += '.';
       namespaceMethod += method;
       root["method"] = namespaceMethod;
 

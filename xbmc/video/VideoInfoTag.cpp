@@ -740,7 +740,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> info.thumb;
       std::string strXml;
       ar >> strXml;
-      info.thumbUrl.ParseFromData(std::move(strXml));
+      info.thumbUrl.ParseFromData(strXml);
     }
 
     m_set.Archive(ar);

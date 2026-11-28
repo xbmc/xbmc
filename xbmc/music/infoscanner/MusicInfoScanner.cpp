@@ -63,6 +63,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <string_view>
 #include <utility>
 
@@ -359,7 +360,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
       if (params.GetAlbumId() != -1)
       {
         //Add single album (id and path) as item to scan
-        CFileItemPtr item(new CFileItem(strDirectory, false));
+        CFileItemPtr item = std::make_shared<CFileItem>(strDirectory, false);
         item->GetMusicInfoTag()->SetDatabaseId(params.GetAlbumId(), MEDIA::TYPE::ALBUM);
         items.Add(item);
       }
@@ -424,7 +425,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
       if (params.GetArtistId() != -1)
       {
         //Add single artist (id and path) as item to scan
-        CFileItemPtr item(new CFileItem(strDirectory, false));
+        CFileItemPtr item = std::make_shared<CFileItem>(strDirectory, false);
         item->GetMusicInfoTag()->SetDatabaseId(params.GetArtistId(), MEDIA::TYPE::ARTIST);
         items.Add(item);
       }
@@ -1619,7 +1620,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
           {
             // set the label to [relevance]  album - artist
             std::string strTemp = StringUtils::Format("[{:0.2f}]  {}", relevance, info.GetTitle2());
-            CFileItemPtr item(new CFileItem("", false));
+            CFileItemPtr item = std::make_shared<CFileItem>("", false);
             item->SetLabel(strTemp);
 
             std::string strTemp2;

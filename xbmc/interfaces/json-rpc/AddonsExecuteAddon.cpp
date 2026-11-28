@@ -28,7 +28,7 @@ std::string BuildArguments(const CVariant& params)
     {
       if (it != params.begin_map())
       {
-        argv += ",";
+        argv += ',';
       }
       argv += StringUtils::Paramify(it->first + "=" + it->second.asString());
     }
@@ -39,7 +39,7 @@ std::string BuildArguments(const CVariant& params)
     {
       if (it != params.begin_array())
       {
-        argv += ",";
+        argv += ',';
       }
       argv += StringUtils::Paramify(it->asString());
     }

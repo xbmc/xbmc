@@ -76,6 +76,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -407,7 +408,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     {
       int idArtist = database.GetArtistByName(*it);
       std::string thumb = database.GetArtForItem(idArtist, MEDIA::TYPE::ARTIST, ART::TYPE::THUMB);
-      CFileItemPtr item(new CFileItem(*it));
+      CFileItemPtr item = std::make_shared<CFileItem>(*it);
       if (!thumb.empty())
         item->SetArt(ART::TYPE::THUMB, thumb);
       item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
@@ -422,7 +423,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       auto haveArtist = std::ranges::find(artists, it->strName);
       if (haveArtist == artists.end()) // artist or performer not already in the list
       {
-        CFileItemPtr item(new CFileItem(it->strName));
+        CFileItemPtr item = std::make_shared<CFileItem>(it->strName);
         if (!it->thumb.empty())
           item->SetArt(ART::TYPE::THUMB, it->thumb);
         else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -457,7 +458,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     for (auto it = m_movieItem->GetVideoInfoTag()->m_cast.begin();
          it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
-      CFileItemPtr item(new CFileItem(it->strName));
+      CFileItemPtr item = std::make_shared<CFileItem>(it->strName);
       if (!it->thumb.empty())
         item->SetArt(ART::TYPE::THUMB, it->thumb);
       else
@@ -1481,7 +1482,7 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
   }
 
   // update the "deleted" items
-  CFileItemPtr clearItem(new CFileItem());
+  CFileItemPtr clearItem = std::make_shared<CFileItem>();
   clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
   std::vector<std::shared_ptr<CFileItem>> deletedItems;
   set_difference(original.begin(),original.end(), selected.begin(),selected.end(), std::back_inserter(deletedItems), compFileItemsByDbId);
@@ -1599,13 +1600,13 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem* movieItem,
     // add clear item
     std::string strClear = StringUtils::Format(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20467), currentSetLabel);
-    CFileItemPtr clearItem(new CFileItem(strClear));
+    CFileItemPtr clearItem = std::make_shared<CFileItem>(strClear);
     clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
     listItems.AddFront(clearItem, 0);
     // add keep current set item
     std::string strKeep = StringUtils::Format(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20469), currentSetLabel);
-    CFileItemPtr keepItem(new CFileItem(strKeep));
+    CFileItemPtr keepItem = std::make_shared<CFileItem>(strKeep);
     keepItem->GetVideoInfoTag()->m_iDbId = currentSetId;
     listItems.AddFront(keepItem, 1);
   }
@@ -1642,7 +1643,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem* movieItem,
       return false;
     const int idSet{
         VIDEO::LIBRARY::AddSetForMovie(newSetTitle, movieItem->GetVideoInfoTag()->m_iDbId)};
-    CFileItemPtr newSet(new CFileItem(newSetTitle));
+    CFileItemPtr newSet = std::make_shared<CFileItem>(newSetTitle);
     newSet->GetVideoInfoTag()->m_iDbId = idSet;
     selectedSet = newSet;
     return true;
@@ -2013,7 +2014,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const std::shared_ptr<CFileItem>& it
     {
       CVideoInfoTag tag;
       database.GetTvShowInfo("", tag, ids[i], 0 , VideoDbDetailsNone);
-      CFileItemPtr show(new CFileItem(tag));
+      CFileItemPtr show = std::make_shared<CFileItem>(tag);
       list.Add(show);
     }
   }

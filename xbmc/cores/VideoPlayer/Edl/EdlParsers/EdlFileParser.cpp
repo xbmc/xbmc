@@ -49,6 +49,7 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
   std::string name;
   CUtil::GetVideoBasePathAndFileName(path, folder, name);
   std::vector<std::string> edlFiles;
+  edlFiles.reserve(ownNames.size());
   for (const std::string& own : ownNames)
     edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, own + ".edl"));
 

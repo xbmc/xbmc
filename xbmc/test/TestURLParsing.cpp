@@ -228,7 +228,7 @@ TEST(TestURLParsing, Comparison)
   CURL url1;
   CURL url2;
   CURL url3("http://www.aol.com/index.html?t=9");
-  CURL url4(url3);
+  const CURL& url4(url3);
 
   EXPECT_FALSE(url1 == url3);
   EXPECT_FALSE(url2 == url3);

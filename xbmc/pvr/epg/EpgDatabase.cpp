@@ -622,7 +622,7 @@ public:
     }
 
     StringUtils::TrimRight(result);
-    result += ")";
+    result += ')';
     return result;
   }
 

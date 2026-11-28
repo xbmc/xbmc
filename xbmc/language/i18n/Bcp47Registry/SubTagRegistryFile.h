@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace KODI::LANGUAGE::I18N
@@ -48,7 +49,7 @@ public:
     std::size_t m_pos{0};
   };
 
-  CRegistryFile(std::string filePath) : m_filePath(filePath) {}
+  CRegistryFile(std::string filePath) : m_filePath(std::move(filePath)) {}
 
   bool Load() override;
   const std::vector<RegistryFileRecord>& GetRecords() const override { return m_records; }

@@ -661,7 +661,7 @@ std::string CGUIImage::GetDescription(void) const
   // grouplists evaluate visibility before Process stages the request
   if (m_hasNewStagingTexture)
   {
-    const std::string fileName = m_nameStaging.empty() ? GetFallback(m_nameStaging) : m_nameStaging;
+    std::string fileName = m_nameStaging.empty() ? GetFallback(m_nameStaging) : m_nameStaging;
     if (m_nameCurrent == fileName || m_textureCurrent->GetFileName() == fileName)
       return GetFileName();
     if (!m_isTransitioning || (m_nameNext != fileName && m_textureNext->GetFileName() != fileName))

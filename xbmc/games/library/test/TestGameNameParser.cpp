@@ -23,6 +23,7 @@ namespace
 std::vector<std::string> Regions(const ParsedGameName& name)
 {
   std::vector<std::string> regions;
+  regions.reserve(name.regions.size());
   for (const GameRegion& region : name.regions)
     regions.emplace_back(region.ToString());
   return regions;

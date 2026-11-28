@@ -467,7 +467,7 @@ typedef struct SScanSettings
      */
     static size_t RemoveSubDirectories(std::set<std::string, std::less<>>& directories,
                                        std::string_view directory,
-                                       std::function<void(const std::string&)> f);
+                                       const std::function<void(const std::string&)>& f);
 
     /*!
      * \brief Look for the name of an edition known to the library (ex. "Director's Cut") within the

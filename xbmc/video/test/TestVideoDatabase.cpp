@@ -3254,7 +3254,7 @@ CVideoDatabase::PlayStateEdit PlayStateEdit(std::optional<int> playCount,
 {
   CVideoDatabase::PlayStateEdit edit;
   edit.playCount = playCount;
-  edit.lastPlayed = lastPlayed;
+  edit.lastPlayed = std::move(lastPlayed);
   return edit;
 }
 } // namespace

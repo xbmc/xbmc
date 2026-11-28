@@ -667,7 +667,7 @@ std::optional<std::string> CBlurayDirectory::GetBlurayTitle()
   if (std::string title; CServiceBroker::GetBlurayDiscCache()->GetDiscTitle(path, title))
     return title;
 
-  const std::string title{GetDiscInfoString(DiscInfo::TITLE)};
+  std::string title{GetDiscInfoString(DiscInfo::TITLE)};
 
   // A disc that failed to open said nothing, so it is retried rather than written off
   if (!m_blurayInitialized)
@@ -701,7 +701,7 @@ std::optional<std::string> CBlurayDirectory::GetBlurayID()
   if (std::string id; CServiceBroker::GetBlurayDiscCache()->GetDiscId(path, id))
     return id;
 
-  const std::string id{GetDiscInfoString(DiscInfo::ID)};
+  std::string id{GetDiscInfoString(DiscInfo::ID)};
   if (!m_blurayInitialized)
     return std::nullopt;
 

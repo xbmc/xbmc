@@ -9,6 +9,8 @@
 #include "language/i18n/Bcp47Registry/SubTagRegistryFile.h"
 #include "test/TestUtils.h"
 
+#include <utility>
+
 #include <gtest/gtest.h>
 
 using namespace KODI::LANGUAGE::I18N;
@@ -16,9 +18,9 @@ using namespace KODI::LANGUAGE::I18N;
 class CRegistryFileTest : public CRegistryFile
 {
 public:
-  CRegistryFileTest(std::string filePath) : CRegistryFile(filePath) {}
+  CRegistryFileTest(std::string filePath) : CRegistryFile(std::move(filePath)) {}
 
-  std::vector<RegistryFileField> CallProcessRecordLines(std::vector<std::string> lines)
+  std::vector<RegistryFileField> CallProcessRecordLines(const std::vector<std::string>& lines)
   {
     return ProcessRecordLines(lines);
   }
@@ -179,7 +181,7 @@ INSTANTIATE_TEST_SUITE_P(TestI18nRegistryFile,
                          RegistryFileRecordLinesTester,
                          testing::ValuesIn(RegistryFileRecordLinesTests));
 
-std::vector<std::vector<std::string>> ReadRecords(std::string filePath)
+std::vector<std::vector<std::string>> ReadRecords(const std::string& filePath)
 {
   CRegistryFile::CRegFile f;
   f.Open(filePath);

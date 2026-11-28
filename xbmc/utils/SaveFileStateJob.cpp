@@ -31,6 +31,8 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoManagerTypes.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace KODI::VIDEO;
 
@@ -282,7 +284,7 @@ void CSaveFileState::DoWork(CFileItem& item, CBookmark& bookmark, bool updatePla
         if (updateListing)
         {
           CUtil::DeleteVideoDatabaseDirectoryCache();
-          CFileItemPtr msgItem(new CFileItem(item));
+          CFileItemPtr msgItem = std::make_shared<CFileItem>(item);
           if (item.HasProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL))
             msgItem->SetPath(item.GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL).asString());
           if (replacedFileId > 0)

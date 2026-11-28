@@ -37,6 +37,7 @@
 #include "utils/log.h"
 
 #include <cassert>
+#include <memory>
 #include <utility>
 
 #define SETTING_PROFILE_NAME          "profile.name"
@@ -242,13 +243,13 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     CFileItemList items;
     if (!m_thumb.empty())
     {
-      CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::CURRENT, false));
+      CFileItemPtr item = std::make_shared<CFileItem>(KODI::ART::CHOICE::CURRENT, false);
       item->SetArt(KODI::ART::TYPE::THUMB, m_thumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
       items.Add(item);
     }
 
-    CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::NONE, false));
+    CFileItemPtr item = std::make_shared<CFileItem>(KODI::ART::CHOICE::NONE, false);
     item->SetArt(KODI::ART::TYPE::THUMB, KODI::ART::DEFAULT::USER);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
     items.Add(item);

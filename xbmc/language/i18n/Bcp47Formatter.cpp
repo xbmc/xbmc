@@ -37,7 +37,7 @@ std::string_view ShortestDescription(const std::vector<std::string>& list)
 
 bool AppendRegistryDescSingle(
     const std::optional<TagSubTags>& subTags,
-    std::function<std::optional<BaseSubTag>(const TagSubTags& subTag)> member,
+    const std::function<std::optional<BaseSubTag>(const TagSubTags& subTag)>& member,
     std::string& str)
 {
   if (subTags.has_value())
@@ -53,10 +53,11 @@ bool AppendRegistryDescSingle(
 }
 
 template<class T>
-bool AppendRegistryDescVector(const std::optional<TagSubTags>& subTags,
-                              std::function<std::vector<T>(const TagSubTags& subTag)> member,
-                              const std::string& sep,
-                              std::string& str)
+bool AppendRegistryDescVector(
+    const std::optional<TagSubTags>& subTags,
+    const std::function<std::vector<T>(const TagSubTags& subTag)>&& member,
+    const std::string& sep,
+    std::string& str)
 {
   if (subTags.has_value())
   {

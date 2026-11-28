@@ -216,7 +216,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const CVariant& parameterObject, 
 
   int id = (int)parameterObject["tvshowid"].asInteger();
 
-  CFileItemPtr fileItem(new CFileItem());
+  CFileItemPtr fileItem = std::make_shared<CFileItem>();
   CVideoInfoTag infos;
   if (!videodatabase.GetTvShowInfo("", infos, id, fileItem.get(), RequiresAdditionalDetails(KODI::MEDIA::TYPE::TV_SHOW, parameterObject)) || infos.m_iDbId <= 0)
     return NotFound;
@@ -956,7 +956,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshTVShow(const CVariant& parameterObject, CVa
   if (!videodatabase.Open())
     return InternalError;
 
-  CFileItemPtr item(new CFileItem());
+  CFileItemPtr item = std::make_shared<CFileItem>();
   CVideoInfoTag infos;
   if (!videodatabase.GetTvShowInfo("", infos, id, item.get()) || infos.m_iDbId <= 0)
     return NotFound;
@@ -1137,7 +1137,7 @@ JSONRPC_STATUS CVideoLibrary::Export(const CVariant& parameterObject, CVariant& 
     if (parameterObject["options"]["actorthumbs"].isBoolean() &&
         parameterObject["options"]["actorthumbs"].asBoolean() == true)
       cmd += ", actorthumbs";
-    cmd += ")";
+    cmd += ')';
   }
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
@@ -1273,7 +1273,7 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int recordingID = static_cast<int>(parameterObject["recordingid"].asInteger());
 
   bool success = false;
-  CFileItemPtr fileItem(new CFileItem());
+  CFileItemPtr fileItem = std::make_shared<CFileItem>();
   if (FillFileItem(file, fileItem))
   {
     success = true;

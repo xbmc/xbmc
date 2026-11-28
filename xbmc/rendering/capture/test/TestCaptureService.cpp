@@ -319,7 +319,7 @@ TEST_F(TestCaptureService, CopyResultLatestWins)
   m_service.Complete(active[0], MakeResult());
   CaptureResult second = MakeResult();
   second.width = 8;
-  m_service.Complete(active[0], std::move(second));
+  m_service.Complete(active[0], second);
 
   // two deliveries between waits collapse to a single wake with the latest result
   EXPECT_TRUE(handle->WaitNext(1000ms));

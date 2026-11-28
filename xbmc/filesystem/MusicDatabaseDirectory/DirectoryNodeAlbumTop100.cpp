@@ -14,6 +14,8 @@
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
 
+#include <memory>
+
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const std::string& strName,
@@ -54,7 +56,7 @@ bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
   for (const CAlbum& album : albums)
   {
     std::string strDir = StringUtils::Format("{}{}/", BuildPath(), album.idAlbum);
-    CFileItemPtr pItem(new CFileItem(strDir, album));
+    CFileItemPtr pItem = std::make_shared<CFileItem>(strDir, album);
     items.Add(pItem);
   }
 

@@ -274,7 +274,7 @@ std::optional<std::string> CDatabaseQueryRule::FormatParameter(const std::string
     for (std::string& itIn : split)
     {
       if (!parameter.empty())
-        parameter += ",";
+        parameter += ',';
       parameter += db.PrepareSQL("'%s'", StringUtils::Trim(itIn).c_str());
     }
     parameter = " IN (" + parameter + ")";

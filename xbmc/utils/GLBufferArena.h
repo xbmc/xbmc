@@ -43,7 +43,7 @@ public:
   };
 
   // slotSizes must be in ascending order.
-  CGLBufferArena(std::vector<std::size_t> slotSizes, std::size_t bufferSize);
+  CGLBufferArena(const std::vector<std::size_t>& slotSizes, std::size_t bufferSize);
   ~CGLBufferArena();
 
   CGLBufferArena(const CGLBufferArena&) = delete;

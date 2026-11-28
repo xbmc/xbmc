@@ -1085,7 +1085,7 @@ JSONRPC_STATUS CAudioLibrary::Export(const CVariant& parameterObject, CVariant& 
     if (parameterObject["options"]["overwrite"].isBoolean() &&
         parameterObject["options"]["overwrite"].asBoolean() == true)
       cmd += ", overwrite";
-    cmd += ")";
+    cmd += ')';
   }
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
@@ -1170,7 +1170,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   CFileItemList resolved;
 
   bool success = false;
-  CFileItemPtr fileItem(new CFileItem());
+  CFileItemPtr fileItem = std::make_shared<CFileItem>();
   if (FillFileItem(file, fileItem, parameterObject))
   {
     success = true;

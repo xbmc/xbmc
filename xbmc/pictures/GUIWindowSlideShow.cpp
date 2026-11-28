@@ -382,7 +382,7 @@ void CGUIWindowSlideShow::FreeResources(bool forceUnLoad)
 
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
 {
-  CFileItemPtr item(new CFileItem(*picture));
+  CFileItemPtr item = std::make_shared<CFileItem>(*picture);
   if (!item->HasVideoInfoTag() && !item->HasPictureInfoTag())
   {
     // item without tag; get mimetype then we can tell whether it's video item

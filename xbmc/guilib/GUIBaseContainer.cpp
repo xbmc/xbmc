@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 #include <tinyxml.h>
 
@@ -50,7 +51,7 @@ CGUIBaseContainer::RENDERITEM::RENDERITEM(float newPosX,
                                           bool newFocused)
   : posX(newPosX),
     posY(newPosY),
-    item(newItem),
+    item(std::move(newItem)),
     focused(newFocused)
 {
 }

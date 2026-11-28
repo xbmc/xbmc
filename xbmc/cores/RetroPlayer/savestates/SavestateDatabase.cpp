@@ -277,7 +277,7 @@ std::string CSavestateDatabase::MakeThumbnailPath(const std::string& savestatePa
 
 std::string CSavestateDatabase::MakePath(const std::string& gamePath)
 {
-  const std::string folderPath = GAME::CGameUtils::GetGameFolder(gamePath);
+  std::string folderPath = GAME::CGameUtils::GetGameFolder(gamePath);
 
   if (!CreateFolderIfNotExists(folderPath))
     return "";

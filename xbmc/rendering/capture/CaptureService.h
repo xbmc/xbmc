@@ -75,7 +75,7 @@ public:
   //! CONTINUOUS requests stay registered for the next frame. A BOTH request
   //! finishes on its composite delivery; the video-only delivery, which comes
   //! first, leaves it running.
-  void Complete(const std::shared_ptr<CaptureRequest>& request, CaptureResult result);
+  void Complete(const std::shared_ptr<CaptureRequest>& request, const CaptureResult& result);
 
   //! Render thread: fail a serviced request and wake its waiter, whatever its
   //! cadence. Use this when the capture cannot succeed for the current

@@ -46,6 +46,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <set>
 #include <utility>
 
@@ -737,7 +738,7 @@ bool CGUIControlListSetting::OnClick()
           }
           if (bValidType)
           { // Add new value to the list of options
-            CFileItemPtr pItem(new CFileItem(strLabel));
+            CFileItemPtr pItem = std::make_shared<CFileItem>(strLabel);
             pItem->Select(true);
             pItem->SetProperty("value", strLabel);
             options.Add(pItem);

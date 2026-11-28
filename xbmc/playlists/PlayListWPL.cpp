@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 using namespace XFILE;
@@ -95,7 +96,7 @@ bool CPlayListWPL::LoadData(std::istream& stream)
       std::string strFileNameClean = URIUtils::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(m_strBasePath, strFileNameClean);
       std::string strDescription = URIUtils::GetFileName(strFileNameClean);
-      CFileItemPtr newItem(new CFileItem(strDescription));
+      CFileItemPtr newItem = std::make_shared<CFileItem>(strDescription);
       newItem->SetPath(strFileNameClean);
       Add(newItem);
     }

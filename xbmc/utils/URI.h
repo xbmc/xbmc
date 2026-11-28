@@ -49,7 +49,7 @@ public:
   /*! \brief Replace a valid URI's path without changing other components.
    *  Invalid component syntax or authority shape leaves the URI unchanged.
    */
-  bool SetPath(std::string path);
+  bool SetPath(const std::string& path);
   /*! \brief Replace a raw query; nullopt removes ?, an empty string retains it.
    *  Invalid query syntax leaves the URI unchanged. Malformed candidates are supported.
    */
