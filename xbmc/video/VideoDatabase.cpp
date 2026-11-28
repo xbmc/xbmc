@@ -6548,6 +6548,7 @@ bool CVideoDatabase::AddStreamDetailsForList(const std::vector<CVideoInfoTag*>& 
         m_pDS2->next();
       }
       m_pDS2->close();
+      AddStoredContentGeometryForList(byFile, list);
     }
     return true;
   }

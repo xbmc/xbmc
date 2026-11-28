@@ -13,11 +13,13 @@
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/Artwork.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabaseDDL.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoThumbLoader.h"
 #include "video/geometry/ContentGeometryRecord.h"
 #include "video/test/VideoDatabaseTestBase.h"
 
@@ -44,6 +46,18 @@ ContentGeometryRecord MakeRecord(const FileIdentity& identity = IDENTITY)
   record.identity = identity;
   return record;
 }
+
+//! \brief A thumb loader reading a database it does not own.
+class CTestVideoThumbLoader : public CVideoThumbLoader
+{
+public:
+  explicit CTestVideoThumbLoader(CVideoDatabase& db)
+  {
+    delete m_videoDatabase;
+    m_videoDatabase = &db;
+  }
+  ~CTestVideoThumbLoader() override { m_videoDatabase = nullptr; }
+};
 
 } // unnamed namespace
 
@@ -263,6 +277,45 @@ TEST_F(TestVideoDatabaseContentGeometry, AFileWithNoRowHasNothingStored)
   const std::optional<ContentGeometryRecord> stored{m_db.GetStoredContentGeometry(idFile)};
   EXPECT_FALSE(stored);
   EXPECT_TRUE(NeedsContentGeometry(stored, {8'000'000'000, 1'700'000'000}));
+}
+
+TEST_F(TestVideoDatabaseContentGeometry, AListedItemCarriesItsStoredGeometry)
+{
+  const int idMeasured{AddTestFile("listedmeasured.mkv")};
+  const int idUnmeasured{AddTestFile("listedunmeasured.mkv")};
+  ASSERT_TRUE(m_db.SetContentGeometry(idMeasured, MakeRecord()));
+
+  CVideoInfoTag measured;
+  measured.m_iFileId = idMeasured;
+  CVideoInfoTag unmeasured;
+  unmeasured.m_iFileId = idUnmeasured;
+  ASSERT_TRUE(m_db.AddStreamDetailsForList({&measured, &unmeasured}));
+
+  EXPECT_EQ(MakeRecord().aspects, measured.m_contentGeometry.Get().aspects);
+  EXPECT_FALSE(unmeasured.m_contentGeometry.Get().HasReading());
+}
+
+TEST_F(TestVideoDatabaseContentGeometry, AListedItemWithoutStreamDetailsCarriesItsStoredGeometry)
+{
+  const int idFile{AddTestFile("listedstreamless.mkv")};
+  ASSERT_TRUE(m_db.SetContentGeometry(idFile, MakeRecord()));
+
+  // a library movie whose art is filled, so loading it reads no texture cache
+  CFileItem item{"/test/contentgeometry/listedstreamless.mkv", false};
+  CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  tag.m_iFileId = idFile;
+  tag.m_iDbId = 1;
+  tag.m_type = "movie";
+  tag.m_parsedDetails = VideoDbDetailsRating | VideoDbDetailsTag | VideoDbDetailsUniqueID;
+  item.SetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED, true);
+  item.SetArt("thumb", "/test/contentgeometry/thumb.jpg");
+
+  CTestVideoThumbLoader loader{m_db};
+  loader.Prefetch({&item});
+  loader.LoadItemCached(&item);
+
+  EXPECT_FALSE(item.GetVideoInfoTag()->HasStreamDetails());
+  EXPECT_EQ(MakeRecord().aspects, item.GetVideoInfoTag()->m_contentGeometry.Get().aspects);
 }
 
 /*!
