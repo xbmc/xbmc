@@ -4,6 +4,7 @@ set(SOURCES PVRGUIInfo.cpp
 
 set(HEADERS PVRGUIInfo.h
             PVRGUITimerInfo.h
-            PVRGUITimesInfo.h)
+            PVRGUITimesInfo.h
+            PVRGUITimeshiftProgress.h)
 
 core_add_library(pvr_guilib_guiinfo)

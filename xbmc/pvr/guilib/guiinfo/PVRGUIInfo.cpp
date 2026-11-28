@@ -143,6 +143,12 @@ void CPVRGUIInfo::Stop()
   StopThread();
 }
 
+std::optional<int64_t> CPVRGUIInfo::GetTimeshiftSeekTime(
+    double percentage, const std::shared_ptr<const CPVRChannel>& channel) const
+{
+  return m_timesInfo.GetTimeshiftSeekTime(percentage, channel);
+}
+
 void CPVRGUIInfo::OnSleep()
 {
   CPowerState::OnSleep();
