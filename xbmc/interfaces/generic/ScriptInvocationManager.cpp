@@ -579,8 +579,11 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
   if (scriptId < 0)
     return false;
 
-  std::unique_lock lock(m_critSection);
-  auto invokerThread = getInvokerThread(scriptId).thread;
+  std::shared_ptr<CLanguageInvokerThread> invokerThread;
+  {
+    std::unique_lock lock(m_critSection);
+    invokerThread = getInvokerThread(scriptId).thread;
+  }
   if (invokerThread == nullptr)
     return false;
 
