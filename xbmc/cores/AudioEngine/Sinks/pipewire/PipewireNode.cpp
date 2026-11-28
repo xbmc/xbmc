@@ -10,6 +10,7 @@
 
 #include "PipewireContext.h"
 #include "PipewireCore.h"
+#include "PipewireDevice.h"
 #include "PipewireRegistry.h"
 #include "PipewireThreadLoop.h"
 #include "ServiceBroker.h"
@@ -17,7 +18,14 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <array>
+#include <vector>
+
+#include <pipewire/keys.h>
 #include <spa/param/format.h>
+#include <spa/param/props.h>
+#include <spa/pod/builder.h>
 #include <spa/pod/iter.h>
 
 using namespace KODI;
@@ -64,6 +72,33 @@ std::string CPipewireNode::Get(const std::string& key) const
 {
   const char* value = spa_dict_lookup(m_info->props, key.c_str());
   return value ? value : "";
+}
+
+void CPipewireNode::SetVolume(float volume, bool mute)
+{
+  const std::vector<float> volumes(std::max<size_t>(m_channels.size(), 1), volume);
+
+  // a card's sink has its volume on the route its profile device is on;
+  // the node only reflects it
+  const std::string card = Get(PW_KEY_DEVICE_ID);
+  const std::string profileDevice = Get("card.profile.device");
+  if (!card.empty() && !profileDevice.empty())
+  {
+    auto& devices = GetRegistry().GetDevices();
+    const auto device = devices.find(static_cast<uint32_t>(std::stoul(card)));
+    if (device != devices.end() &&
+        device->second->SetVolume(static_cast<uint32_t>(std::stoul(profileDevice)), volumes, mute))
+      return;
+  }
+
+  std::array<uint8_t, 512> buffer;
+  auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
+  const auto* props = static_cast<const spa_pod*>(spa_pod_builder_add_object(
+      &builder, SPA_TYPE_OBJECT_Props, SPA_PARAM_Props, SPA_PROP_channelVolumes,
+      SPA_POD_Array(sizeof(float), SPA_TYPE_Float, volumes.size(), volumes.data()), SPA_PROP_mute,
+      SPA_POD_Bool(mute)));
+
+  pw_node_set_param(reinterpret_cast<pw_node*>(m_proxy.get()), SPA_PARAM_Props, 0, props);
 }
 
 template<typename T>

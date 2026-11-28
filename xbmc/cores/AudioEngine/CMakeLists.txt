@@ -78,6 +78,7 @@ if(TARGET ${APP_NAME_LC}::Pipewire)
                       Sinks/pipewire/Pipewire.cpp
                       Sinks/pipewire/PipewireContext.cpp
                       Sinks/pipewire/PipewireCore.cpp
+                      Sinks/pipewire/PipewireDevice.cpp
                       Sinks/pipewire/PipewireNode.cpp
                       Sinks/pipewire/PipewireProxy.cpp
                       Sinks/pipewire/PipewireRegistry.cpp
@@ -87,6 +88,7 @@ if(TARGET ${APP_NAME_LC}::Pipewire)
                       Sinks/pipewire/Pipewire.h
                       Sinks/pipewire/PipewireContext.h
                       Sinks/pipewire/PipewireCore.h
+                      Sinks/pipewire/PipewireDevice.h
                       Sinks/pipewire/PipewireNode.h
                       Sinks/pipewire/PipewireProxy.h
                       Sinks/pipewire/PipewireRegistry.h

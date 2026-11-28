@@ -33,6 +33,8 @@ using CreateSink =
     std::function<std::unique_ptr<IAESink>(std::string& device, AEAudioFormat& desiredFormat)>;
 using Enumerate = std::function<void(AEDeviceInfoList& list, bool force)>;
 using Cleanup = std::function<void()>;
+using HasDeviceVolume = std::function<bool(const std::string& device)>;
+using SetDeviceVolume = std::function<bool(const std::string& device, float volume, bool mute)>;
 
 struct AESinkRegEntry
 {
@@ -40,6 +42,8 @@ struct AESinkRegEntry
   CreateSink createFunc;
   Enumerate enumerateFunc;
   Cleanup cleanupFunc;
+  HasDeviceVolume hasDeviceVolumeFunc;
+  SetDeviceVolume setDeviceVolumeFunc;
 };
 
 struct AESinkDevice
@@ -65,6 +69,8 @@ public:
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo>& list, bool force, const std::string& driver);
   static void Cleanup();
+  static bool HasDeviceVolume(const std::string& device);
+  static bool SetDeviceVolume(const std::string& device, float volume, bool mute);
 
 protected:
   static std::map<std::string, AESinkRegEntry> m_AESinkRegEntry;
