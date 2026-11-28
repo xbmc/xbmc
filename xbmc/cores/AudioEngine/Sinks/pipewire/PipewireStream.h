@@ -8,11 +8,19 @@
 
 #pragma once
 
+#include "cores/AudioEngine/Utils/AERingBuffer.h"
+
+#include <atomic>
+#include <condition_variable>
+#include <functional>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include <pipewire/core.h>
 #include <pipewire/stream.h>
+
+struct spa_pod;
 
 namespace KODI
 {
@@ -38,11 +46,10 @@ public:
                const pw_stream_flags& flags);
 
   pw_stream_state GetState();
+  pw_stream_state GetState(const char** error);
+  bool HasInitError() const { return m_initError; }
+  bool HasStreamError() const { return m_streamError; }
   void SetActive(bool active);
-
-  pw_buffer* GetBuffer();
-  pw_buffer* PeekBuffer();
-  void QueueBuffer();
 
   void Flush(bool drain);
 
@@ -52,13 +59,23 @@ public:
 
   pw_time GetTime() const;
 
-  bool NeedsData() const;
+  using ParamChangedCallback = std::function<void(uint32_t id, const spa_pod* param)>;
+  void SetParamChangedCallback(ParamChangedCallback callback);
+  bool IsFormatNegotiated() const { return m_formatNegotiated; }
+  int UpdateParams(const spa_pod** params, uint32_t n_params);
+
+  // Ring buffer interface for RT_PROCESS data delivery
+  void InitRingBuffer(uint32_t size, uint32_t frameSize);
+  unsigned int Write(const uint8_t* data, unsigned int frames);
+  bool WaitForSpace(std::chrono::milliseconds timeout);
+  unsigned int GetRingBufferReadSize() const;
 
 private:
   static void StateChanged(void* userdata,
                            enum pw_stream_state old,
                            enum pw_stream_state state,
                            const char* error);
+  static void ParamChanged(void* userdata, uint32_t id, const struct spa_pod* param);
   static void Process(void* userdata);
   static void Drained(void* userdata);
   void Stop();
@@ -71,10 +88,17 @@ private:
 
   spa_hook m_streamListener;
 
-  pw_buffer* m_buffer;
+  bool m_initError{false};
+  bool m_formatNegotiated{false};
+  std::atomic<bool> m_streamError{false};
+  ParamChangedCallback m_paramChangedCallback;
 
-  bool m_waiting;
-  bool m_running;
+  // Ring buffer for decoupling audio engine thread from PipeWire RT thread
+  std::unique_ptr<AERingBuffer> m_ringBuffer;
+  std::mutex m_mutex;
+  std::condition_variable m_dataConsumed; // signaled when on_process drains data
+  std::atomic<bool> m_running{false};
+  uint32_t m_frameSize{0};
 
   struct PipewireStreamDeleter
   {
