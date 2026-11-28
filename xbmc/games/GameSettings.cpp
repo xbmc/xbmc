@@ -440,6 +440,15 @@ bool CGameSettings::GetChallengeIndicator() const
       SETTING_GAMES_ACHIEVEMENTS_INDICATOR);
 }
 
+std::string CGameSettings::GetRAUserPicUrl() const
+{
+  const std::string username = GetRAUsername();
+  if (username.empty() || !GetAchievementsLoggedIn())
+    return {};
+
+  return StringUtils::Format(RA_USER_PIC_URL_TEMPLATE, CURL::Encode(username));
+}
+
 bool CGameSettings::GetAchievementsLoggedIn() const
 {
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(

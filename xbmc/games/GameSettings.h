@@ -56,6 +56,14 @@ public:
   std::string GetRAToken() const;
 
   /*!
+   * \brief The player's RetroAchievements picture, for the notices that
+   * speak for RetroAchievements
+   *
+   * \return The picture's URL, or empty when the player isn't logged in
+   */
+  std::string GetRAUserPicUrl() const;
+
+  /*!
    * \brief Whether achievements are earned in hardcore mode
    *
    * Hardcore awards double points, and in exchange the player goes without

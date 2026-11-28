@@ -433,9 +433,10 @@ void CGameClientCheevos::OnGameCompleted(const std::string& title, bool hardcore
   CLog::Log(LOGINFO, "CGameClientCheevos: {} \"{}\"", hardcore ? "mastered" : "completed", title);
 
   // "Game mastered" / "Game completed"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                        Localize(hardcore ? 35282 : 35283), title,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(
+      CServiceBroker::GetGameServices().GameSettings().GetRAUserPicUrl(),
+      Localize(hardcore ? 35282 : 35283), title, TOAST_DISPLAY_TIME_MS, false,
+      TOAST_MESSAGE_TIME_MS);
 }
 
 void CGameClientCheevos::OnAchievementProgress(const game_rc_achievement_progress* progress,
@@ -730,8 +731,9 @@ void CGameClientCheevos::OnSubsetCompleted(const std::string& title)
   CLog::Log(LOGINFO, "CGameClientCheevos: completed subset \"{}\"", title);
 
   // "Subset completed"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Localize(35307), title,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(
+      CServiceBroker::GetGameServices().GameSettings().GetRAUserPicUrl(), Localize(35307), title,
+      TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
 }
 
 bool CGameClientCheevos::SetRetroAchievementsCredentials(const std::string& username,

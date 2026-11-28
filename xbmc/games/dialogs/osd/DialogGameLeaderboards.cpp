@@ -311,7 +311,7 @@ void CDialogGameLeaderboards::OnInitWindow()
   if (state.leaderboards.empty() && (gameId == 0 || state.loaded))
   {
     // "Leaderboards", "This game has no leaderboards"
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35331),
+    CGUIDialogKaiToast::QueueNotification(gameSettings.GetRAUserPicUrl(), strings.Get(35331),
                                           strings.Get(35334));
     Close(true);
     return;
@@ -554,8 +554,9 @@ bool CDialogGameLeaderboards::OnMessage(CGUIMessage& message)
         {
           const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
           // "Leaderboards", "This game has no leaderboards"
-          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35331),
-                                                strings.Get(35334));
+          CGUIDialogKaiToast::QueueNotification(
+              CServiceBroker::GetGameServices().GameSettings().GetRAUserPicUrl(),
+              strings.Get(35331), strings.Get(35334));
           Close();
           return true;
         }
