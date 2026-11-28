@@ -152,6 +152,8 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
     else
       ProcessInstantTransition();
   }
+  else
+    ProcessStaleTexture(frameTime);
 
   if (m_crossFadeTime)
     ProcessFades(currentTime, frameTime);
@@ -216,6 +218,7 @@ void CGUIImage::ProcessState()
   m_textureNext->SetUseCache(m_useCacheStaging);
   m_textureNext->SetFileName(fileName);
   m_nameNext = fileName;
+  m_nextLoadTime = 0;
   m_isTransitioning = true;
   m_hasNewStagingTexture = false;
 }
@@ -267,15 +270,7 @@ void CGUIImage::ProcessInstantTransition()
 
 void CGUIImage::StartFadeTransition()
 {
-  if (m_textureCurrent->ReadyToRender())
-  { // save the current image, so it can fade out on its own clock
-    // the oldest texture is the most faded out, so kill that one off first
-    if (m_fadingTextures.size() >= MAX_FADING_TEXTURES)
-      m_fadingTextures.erase(m_fadingTextures.begin());
-
-    m_fadingTextures.emplace_back(
-        std::make_unique<CFadingTexture>(m_textureCurrent.get(), m_currentFadeTime));
-  }
+  FadeOutCurrent();
 
   std::swap(m_textureCurrent, m_textureNext);
   std::swap(m_nameCurrent, m_nameNext);
@@ -285,6 +280,44 @@ void CGUIImage::StartFadeTransition()
 
   m_currentFadeTime = 0;
   m_isTransitioning = false;
+
+  MarkDirtyRegion();
+}
+
+void CGUIImage::FadeOutCurrent()
+{
+  if (!m_textureCurrent->ReadyToRender())
+    return;
+
+  // Save the current image, so it can fade out on its own clock.
+  // The oldest texture is the most faded out, so kill that one off first.
+  if (m_fadingTextures.size() >= MAX_FADING_TEXTURES)
+    m_fadingTextures.erase(m_fadingTextures.begin());
+
+  m_fadingTextures.emplace_back(
+      std::make_unique<CFadingTexture>(m_textureCurrent.get(), m_currentFadeTime));
+}
+
+void CGUIImage::ProcessStaleTexture(unsigned int frameTime)
+{
+  if (!m_isTransitioning || !m_textureNext->IsLoading())
+    return;
+
+  m_nextLoadTime += frameTime;
+  if (m_nextLoadTime < STALE_TEXTURE_DELAY)
+    return;
+
+  // The old image reads as the artwork of the new request, show the fallback instead
+  const std::string fallback = GetFallback(m_nameNext);
+  if (!m_textureCurrent->ReadyToRender() || m_textureCurrent->GetFileName() == fallback)
+    return;
+
+  if (m_crossFadeTime)
+    FadeOutCurrent();
+
+  m_textureCurrent->SetFileName(fallback);
+  m_nameCurrent = fallback;
+  m_currentFadeTime = 0;
 
   MarkDirtyRegion();
 }
