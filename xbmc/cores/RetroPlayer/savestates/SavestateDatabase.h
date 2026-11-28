@@ -51,6 +51,21 @@ public:
   bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
 
   static std::string MakeSavestatePath(const std::string& gamePath, const CDateTime& creationTime);
+
+  /*!
+   * \brief The one file a game's autosaves go to, for each game client
+   *
+   * \return The path, or empty if the game's save folder couldn't be made
+   */
+  static std::string MakeAutosavePath(const std::string& gamePath, const std::string& gameClient);
+
+  /*!
+   * \brief The one file a game's quick save goes to, for each game client
+   *
+   * \return The path, or empty if the game's save folder couldn't be made
+   */
+  static std::string MakeQuickSavePath(const std::string& gamePath, const std::string& gameClient);
+  static bool IsQuickSavePath(const std::string& savestatePath);
   static std::string MakeThumbnailPath(const std::string& savestatePath);
 
 private:

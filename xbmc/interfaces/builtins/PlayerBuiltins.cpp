@@ -20,6 +20,14 @@
 #include "application/Application.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
+#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/File.h"
+#include "games/GameUtils.h"
+#include "games/addons/GameClient.h"
+#include "games/addons/cheevos/GameClientCheevos.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -33,6 +41,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -119,6 +129,57 @@ static int PlayOffset(const std::vector<std::string>& params)
 
   return 0;
 }
+
+namespace
+{
+std::string QuickSavePath(const KODI::GAME::CGameClient& gameClient)
+{
+  return KODI::RETRO::CSavestateDatabase::MakeQuickSavePath(gameClient.GetGamePath(),
+                                                            gameClient.ID());
+}
+
+void QuickSave()
+{
+  const KODI::GAME::GameClientPtr gameClient = KODI::GAME::CGameUtils::GetPlayingGameClient();
+  if (!gameClient)
+    return;
+
+  auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  const std::string path = QuickSavePath(*gameClient);
+  auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+  if (!path.empty() && gameSettings->UpdateSavestate(path))
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35516),
+                                          strings.Get(35517), TOAST_DISPLAY_TIME, false);
+  else
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strings.Get(35516),
+                                          strings.Get(35520));
+}
+
+void QuickLoad()
+{
+  const KODI::GAME::GameClientPtr gameClient = KODI::GAME::CGameUtils::GetPlayingGameClient();
+  if (!gameClient)
+    return;
+
+  auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  const std::string path = QuickSavePath(*gameClient);
+  if (path.empty() || !XFILE::CFile::Exists(path))
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35516),
+                                          strings.Get(35519), TOAST_DISPLAY_TIME, false);
+    return;
+  }
+
+  auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+  if (gameSettings->LoadSavestate(path))
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35516),
+                                          strings.Get(35518), TOAST_DISPLAY_TIME, false);
+  // Hardcore mode explains a refused load itself
+  else if (!gameClient->Cheevos().IsHardcoreActive())
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strings.Get(35516),
+                                          strings.Get(35521));
+}
+} // namespace
 
 /*! \brief Control player.
  *  \param params The parameters
@@ -419,6 +480,14 @@ static int PlayerControl(const std::vector<std::string>& params)
         return false;
       }
     }
+  }
+  else if (paramlow == "quicksave")
+  {
+    QuickSave();
+  }
+  else if (paramlow == "quickload")
+  {
+    QuickLoad();
   }
   else if (paramlow == "reset")
   {
@@ -839,6 +908,8 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     | Partymode(video) **     | Toggles video partymode                | none                        |             |
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
+///     | QuickSave               | Saves the game over its quick save     | none                        | Kodi v23    |
+///     | QuickLoad               | Loads the game's quick save            | none                        | Kodi v23    |
 ///     | FrameAdvance(n) ***     | Advance video by _n_ frames            | none                        | Kodi v18    |
 ///     <br>
 ///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
