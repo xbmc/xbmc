@@ -34,6 +34,10 @@ public:
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) override;
   bool SetActive(bool active) override;
   void RequestModeset() override { m_need_modeset = true; }
+  bool LastCommitFellBack() const override { return m_commitFellBack; }
+  bool LastCommitFailed() const override { return m_commitFailed; }
+  bool LastFlipSubmitted() const override { return m_flipSubmitted; }
+  bool LastFlipCarriedModeset() const override { return m_flipModeset; }
   bool InitDrm() override;
   void DestroyDrm() override;
   bool SupportsFencing() override { return true; }
@@ -55,6 +59,10 @@ private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset{true};
+  bool m_commitFellBack{false};
+  bool m_commitFailed{false};
+  bool m_flipSubmitted{true};
+  bool m_flipModeset{false};
   bool m_active = true;
 
   class CDRMAtomicRequest

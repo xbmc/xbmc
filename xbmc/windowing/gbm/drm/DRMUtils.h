@@ -30,6 +30,8 @@ namespace GBM
 
 constexpr const char* SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
 constexpr const char* SETTING_VIDEOSCREEN_COLORRANGE = "videoscreen.colorrange";
+constexpr const char* SETTING_VIDEOSCREEN_COLORFORMAT = "videoscreen.colorformat";
+constexpr const char* SETTING_VIDEOSCREEN_MAXBPC = "videoscreen.maxbpc";
 
 // https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
 // gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
@@ -62,6 +64,16 @@ public:
   virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) { return false; }
   virtual bool SetActive(bool active) { return false; }
   virtual void RequestModeset() {}
+  //! True if the last commit was refused and the previous request was committed instead
+  virtual bool LastCommitFellBack() const { return false; }
+  //! True if the last commit failed outright, so nothing was committed and the requests it carried
+  //! (properties and modeset) are gone. Apart from a fallback, which commits the previous request.
+  virtual bool LastCommitFailed() const { return false; }
+  //! False if the last flip did not get as far as a commit (no mode, no framebuffer, a request that
+  //! could not be built), so it says nothing about the properties it was to carry
+  virtual bool LastFlipSubmitted() const { return true; }
+  //! True if the last flip took the modeset request, which is gone unless the commit went through
+  virtual bool LastFlipCarriedModeset() const { return false; }
   virtual bool InitDrm();
   virtual void DestroyDrm();
   virtual bool SupportsFencing() { return false; }
@@ -73,6 +85,9 @@ public:
   CDRMPlane* GetGuiPlane() const { return m_gui_plane; }
   CDRMCrtc* GetCrtc() const { return m_crtc; }
   CDRMConnector* GetConnector() const { return m_connector; }
+  //! Pixel clock of the active mode in kHz, 0 if there is none (m_mode is null then, e.g. after a
+  //! mode change that failed because the connector was disconnected)
+  uint32_t GetModeClock() const { return m_mode ? m_mode->clock : 0; }
   std::vector<outputformat>& GetOutputFormats() { return m_output_formats; }
   bool FindGuiPlane(uint32_t format, uint64_t modifier);
   bool FindVideoPlane(uint32_t format, uint64_t modifier);
@@ -85,6 +100,8 @@ public:
   std::vector<std::string> GetConnectedConnectorNames();
 
   virtual RESOLUTION_INFO GetCurrentMode();
+  //! False when there is no current mode (a mode change failed on a disconnected connector)
+  virtual bool HasCurrentMode() const { return m_mode != nullptr; }
   virtual std::vector<RESOLUTION_INFO> GetModes();
   virtual bool SetMode(const RESOLUTION_INFO& res);
 
@@ -107,6 +124,8 @@ protected:
   CDRMCrtc* m_orig_crtc{nullptr};
   CDRMPlane* m_video_plane{nullptr};
   CDRMPlane* m_gui_plane{nullptr};
+  //! The active mode, in the connector's modes or the original crtc. It is null when there is none,
+  //! and must not be kept when the connector is reloaded, as that frees the modes.
   drmModeModeInfo* m_mode = nullptr;
 
   int m_width = 0;
