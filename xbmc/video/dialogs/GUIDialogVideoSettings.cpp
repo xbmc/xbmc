@@ -13,13 +13,12 @@
 #include "addons/Skin.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "dialogs/GUIDialogYesNo.h"
+#include "cores/VideoSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -28,9 +27,9 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoStreamSelect.h"
 #include "video/ViewModeSettings.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "windowing/WinSystem.h"
 
 #include <cmath>
@@ -274,31 +273,13 @@ void CGUIDialogVideoSettings::OnSettingAction(const std::shared_ptr<const CSetti
 
 bool CGUIDialogVideoSettings::Save()
 {
-  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-
-  if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
-      !g_passwordManager.CheckSettingLevelLock(::SettingLevel::Expert))
-    return true;
-
-  // prompt user if they are sure
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12377)))
-  { // reset the settings
-    CVideoDatabase db;
-    if (!db.Open())
-      return true;
-    db.EraseAllVideoSettings();
-    db.Close();
-
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-
-    CMediaSettings::GetInstance().GetDefaultVideoSettings() = appPlayer->GetVideoSettings();
-    CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
-    CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
-    CMediaSettings::GetInstance().GetDefaultVideoSettings().ClearDeclaredAspect();
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
-  }
-
+  KODI::VIDEO::UTILS::MakeVideoSettingsDefault(
+      [](CVideoSettings& defaults)
+      {
+        defaults.m_SubtitleStream = -1;
+        defaults.m_AudioStream = -1;
+        defaults.ClearDeclaredAspect();
+      });
   return true;
 }
 
