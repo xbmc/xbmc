@@ -53,6 +53,8 @@ std::shared_ptr<CBinaryAddonBase> CBinaryAddonManager::GetAddonBase(
 void CBinaryAddonManager::ReleaseAddonBase(const std::shared_ptr<CBinaryAddonBase>& addonBase,
                                            IAddonInstanceHandler* handler)
 {
+  std::unique_lock lock(m_critSection);
+
   const auto& addon = m_runningAddons.find(addonBase->ID());
   if (addon == m_runningAddons.end())
     return;
