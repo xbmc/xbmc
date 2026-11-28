@@ -119,6 +119,18 @@ class CResolutionUtils
 {
 public:
   static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D);
+
+  /*!
+   * \brief Find the mode of the current screen size with the refresh rate closest to fps
+   *
+   * Considers the whitelisted modes, or every mode if the whitelist is empty.
+   *
+   * \param fps The refresh rate to look for
+   * \param maxDifference The largest accepted difference, as a fraction of fps
+   * \return The mode, or RES_INVALID if no refresh rate is within maxDifference
+   */
+  static RESOLUTION FindClosestRefreshRate(float fps, float maxDifference);
+
   static bool HasWhitelist();
   static void PrintWhitelist();
 

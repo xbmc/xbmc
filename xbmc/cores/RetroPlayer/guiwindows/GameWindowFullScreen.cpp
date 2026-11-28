@@ -171,7 +171,9 @@ void CGameWindowFullScreen::OnInitWindow()
   guiInfo.SetShowInfo(false);
 
   // Switch resolution
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true); //! @todo
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(
+      true, static_cast<AdjustRefreshRate>(
+                CServiceBroker::GetGameServices().GameSettings().AdjustRefreshRate())); //! @todo
 
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(true);
 
@@ -209,7 +211,9 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
 
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(false);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(
+      false, static_cast<AdjustRefreshRate>(
+                 CServiceBroker::GetGameServices().GameSettings().AdjustRefreshRate())); //! @todo
 }
 
 void CGameWindowFullScreen::TriggerOSD()

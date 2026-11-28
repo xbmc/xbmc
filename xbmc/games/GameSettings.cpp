@@ -47,6 +47,7 @@ const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
 const std::string SETTING_GAMES_REPLACE_LABELS = "gamesgeneral.replacelabels";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+const std::string SETTING_GAMES_ADJUST_REFRESH_RATE = "gamesgeneral.adjustrefreshrate";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT = "gamesgeneral.synctodisplaylimit";
 const std::string SETTING_GAMES_ENABLERUNAHEAD = "gamesgeneral.enablerunahead";
@@ -161,6 +162,11 @@ unsigned int CGameSettings::MaxRewindTimeSec()
   int rewindTimeSec = m_settings->GetInt(SETTING_GAMES_REWINDTIME);
 
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));
+}
+
+int CGameSettings::AdjustRefreshRate() const
+{
+  return m_settings->GetInt(SETTING_GAMES_ADJUST_REFRESH_RATE);
 }
 
 bool CGameSettings::SyncPlaybackToDisplay()

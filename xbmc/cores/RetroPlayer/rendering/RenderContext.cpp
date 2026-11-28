@@ -242,7 +242,7 @@ void CRenderContext::SetViewWindow(float left, float top, float right, float bot
 
 void CRenderContext::SetFullScreenVideo(bool bOnOff)
 {
-  m_graphicsContext.SetFullScreenVideo(bOnOff);
+  m_graphicsContext.SetFullScreenVideoRendering(bOnOff);
 }
 
 bool CRenderContext::IsFullScreenVideo()

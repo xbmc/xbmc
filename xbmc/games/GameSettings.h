@@ -40,6 +40,12 @@ public:
   bool ReplaceLabels();
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
+
+  /*!
+   * \brief When to change the display mode for a game, as an AdjustRefreshRate value
+   */
+  int AdjustRefreshRate() const;
+
   bool SyncPlaybackToDisplay();
   double SyncToDisplayLimit();
   bool RunaheadEnabled() const;

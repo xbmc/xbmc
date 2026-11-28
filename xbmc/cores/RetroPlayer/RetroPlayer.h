@@ -67,6 +67,7 @@ public:
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   bool IsRenderingVideo() const override;
+  void TriggerUpdateResolution() override;
   bool HasGameAgent() const override;
   bool SupportsDiscControl() const override;
   bool IsDiscEjected() const override;
@@ -161,6 +162,7 @@ private:
 
   // Game parameters
   GAME::GameClientPtr m_gameClient;
+  double m_displayModeFps{0.0}; // The frame rate the display mode was last chosen for
 
   // Synchronization parameters
   CCriticalSection m_mutex;

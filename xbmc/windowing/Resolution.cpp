@@ -19,8 +19,10 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <limits>
+#include <vector>
 
 namespace
 {
@@ -306,6 +308,47 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
   }
 
   CLog::Log(LOGDEBUG, "[WHITELIST] No resolution matched");
+}
+
+RESOLUTION CResolutionUtils::FindClosestRefreshRate(float fps, float maxDifference)
+{
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const RESOLUTION_INFO curr = gfx.GetResInfo();
+
+  std::vector<RESOLUTION> candidates;
+  const std::vector<CVariant> whitelist =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+          CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  if (whitelist.empty())
+    gfx.GetAllowedResolutions(candidates);
+  else
+  {
+    for (const auto& mode : whitelist)
+      candidates.push_back(CDisplaySettings::GetInstance().GetResFromString(mode.asString()));
+  }
+
+  RESOLUTION closest = RES_INVALID;
+  float closestDifference = 0.0f;
+
+  for (const RESOLUTION res : candidates)
+  {
+    if (res < RES_DESKTOP)
+      continue;
+
+    const RESOLUTION_INFO info = gfx.GetResInfo(res);
+    if (info.iScreenWidth != curr.iScreenWidth || info.iScreenHeight != curr.iScreenHeight ||
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK))
+      continue;
+
+    const float difference = std::abs(info.fRefreshRate - fps) / fps;
+    if (difference <= maxDifference && (closest == RES_INVALID || difference < closestDifference))
+    {
+      closest = res;
+      closestDifference = difference;
+    }
+  }
+
+  return closest;
 }
 
 bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback)
