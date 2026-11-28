@@ -33,6 +33,20 @@ int64_t ToNs(CDisplayPacing::Clock::time_point when)
 }
 } // namespace
 
+int CDisplayPacing::RefreshesPerFrame(Clock::duration interval,
+                                      double fps,
+                                      double maxRateDifference)
+{
+  if (interval <= Clock::duration::zero() || fps <= 0.0)
+    return 0;
+
+  const double refreshRate = 1.0 / std::chrono::duration<double>(interval).count();
+  const long refreshes = std::max(std::lround(refreshRate / fps), 1L);
+  const double rate = refreshRate / static_cast<double>(refreshes) / fps;
+
+  return std::abs(rate - 1.0) <= maxRateDifference ? static_cast<int>(refreshes) : 0;
+}
+
 void CDisplayPacing::OnFrameTaken(Clock::time_point when, bool newFrame)
 {
   const int64_t takeNs = ToNs(when);

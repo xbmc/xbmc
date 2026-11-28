@@ -203,8 +203,9 @@ bool CGameLoop::PaceToDisplay()
   }
 
   const double refreshRate = 1s / std::chrono::duration<double>(interval);
-  const double rate = refreshRate / m_fps.load();
-  if (std::abs(rate - 1.0) > m_displayPacing->MaxRateDifference())
+  const int refreshes = CDisplayPacing::RefreshesPerFrame(interval, m_fps.load(),
+                                                          m_displayPacing->MaxRateDifference());
+  if (refreshes == 0)
   {
     if (PacingChanged(PacingState::RATE_TOO_FAR))
       CLog::Log(LOGINFO,
@@ -214,16 +215,20 @@ bool CGameLoop::PaceToDisplay()
     return false;
   }
 
+  // Each frame is shown for this long, so the game runs at this rate
+  const Clock::duration period = interval * refreshes;
+  const double rate = (1s / std::chrono::duration<double>(period)) / m_fps.load();
+
   // Started this long before the screen takes it, a frame is ready in time.
   // One that can't be gains nothing from waiting for the screen.
   const Clock::duration lead = m_frameCost + m_displayPacing->Margin();
-  if (lead >= interval)
+  if (lead >= period)
   {
     if (PacingChanged(PacingState::FRAME_TOO_SLOW))
       CLog::Log(LOGINFO,
                 "RetroPlayer[PACING]: Not pacing, a {:.1f} ms frame and the {:.1f} ms margin "
-                "don't fit in a {:.1f} ms refresh",
-                ToMs(m_frameCost), ToMs(m_displayPacing->Margin()), ToMs(interval));
+                "don't fit in the {:.1f} ms each frame is shown",
+                ToMs(m_frameCost), ToMs(m_displayPacing->Margin()), ToMs(period));
     return false;
   }
 
@@ -232,11 +237,12 @@ bool CGameLoop::PaceToDisplay()
               "RetroPlayer[PACING]: Pacing the game to the screen's {:.3f} Hz at {:.2f}% speed",
               refreshRate, rate * 100.0);
 
-  // One frame for each one the screen takes. The renderer hasn't taken the
-  // last one yet if the next take is still the one it was run for.
+  // One frame for every so many the screen takes. The renderer hasn't taken
+  // the last one yet if the next take is still the one it was run for, and a
+  // frame shown for several refreshes keeps to the same ones.
   Clock::time_point take = m_displayPacing->NextTake(now);
-  if (m_lastPacedTake != Clock::time_point{} && take - m_lastPacedTake < interval / 2)
-    take = m_lastPacedTake + interval;
+  if (m_lastPacedTake != Clock::time_point{} && take - m_lastPacedTake < period - interval / 2)
+    take = m_lastPacedTake + period;
 
   const Clock::time_point start = take - lead;
   if (start > now && m_sleepEvent.Wait(start - now))
@@ -246,7 +252,9 @@ bool CGameLoop::PaceToDisplay()
 
   m_lastPacedTake = take;
   m_displayPacing->SetPlaybackRate(rate);
-  m_displayPacing->SetPaced(true);
+  // A frame shown for several refreshes repeats by design, so only a game
+  // with a frame for every refresh is counted for those that had none
+  m_displayPacing->SetPaced(refreshes == 1);
 
   // The timer carries on from here if pacing stops
   m_lastFrameUs = NowUs();
