@@ -437,6 +437,8 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
                    : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
   avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
   avpkt->side_data_elems = packet.iSideDataElems;
+  if (packet.m_keyFrame)
+    avpkt->flags |= AV_PKT_FLAG_KEY;
 
   int ret = avcodec_send_packet(m_pCodecContext, avpkt);
 
