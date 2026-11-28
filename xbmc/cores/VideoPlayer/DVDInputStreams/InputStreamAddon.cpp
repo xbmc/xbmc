@@ -640,7 +640,10 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
     return true;
   }
 
-  return m_ifc.inputstream->toAddon->demux_seek_time(m_ifc.inputstream, time, backward, startpts);
+  // add-ons receive startpts as a reference, so never pass null
+  double unusedStartPts{DVD_NOPTS_VALUE};
+  return m_ifc.inputstream->toAddon->demux_seek_time(m_ifc.inputstream, time, backward,
+                                                     startpts ? startpts : &unusedStartPts);
 }
 
 void CInputStreamAddon::AbortDemux()
