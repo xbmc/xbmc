@@ -1145,6 +1145,13 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   {
     if (m_requestedBytes > 0)
       break;
+    // a failed stream never requests data again, so the wait would not return
+    if (pa_stream_get_state(m_Stream) != PA_STREAM_READY)
+    {
+      CLog::Log(LOGERROR, "CAESinkPULSE::AddPackets - stream is not ready");
+      pa_threaded_mainloop_unlock(m_MainLoop);
+      return 0;
+    }
     pa_threaded_mainloop_wait(m_MainLoop);
   }
 
