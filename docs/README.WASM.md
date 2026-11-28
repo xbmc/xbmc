@@ -260,7 +260,7 @@ The build produces four files in the build directory:
 |---|---|
 | `kodi.js` | Emscripten loader and JS glue |
 | `kodi.wasm` | Compiled Kodi |
-| `kodi.data` | Virtual filesystem image: `addons`, `media`, `system` and `userdata` mounted at `/kodi`, plus the Python standard library |
+| `kodi.data` | Virtual filesystem image: `addons`, `media`, `system` and `userdata` mounted at `/kodi`, plus the Python standard library. It is LZ4-compressed: it stays compressed in memory and is decompressed as files are read. Its files are read-only and cannot be memory-mapped |
 | `audio_worklet_processor.js` | Audio processor, loaded by `kodi.js` as an `AudioWorklet` module |
 
 **[back to top](#table-of-contents)**
