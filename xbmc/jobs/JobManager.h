@@ -16,8 +16,10 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <condition_variable>
 #include <queue>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -53,13 +55,17 @@ public:
    \param job a pointer to the job to add. The job should be subclassed from CJob
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
+   \param survivingJob if non-null, receives the CJob that was actually queued. When an equal job
+   is already queued or processing, \a job is merged into it and deleted, and \a survivingJob
+   receives that existing job instead.
    \return On success, a unique identifier for this job, to be used with other interaction, 0 otherwise.
    In case of failure, the passed CJob object will be deleted before returning from this method.
    \sa CJob, IJobCallback, CancelJob()
    */
   unsigned int AddJob(CJob* job,
                       IJobCallback* callback,
-                      CJob::PRIORITY priority = CJob::PRIORITY_LOW);
+                      CJob::PRIORITY priority = CJob::PRIORITY_LOW,
+                      CJob** survivingJob = nullptr);
 
   /*!
    \brief Add a function f to this job manager for asynchronous execution.
@@ -89,9 +95,11 @@ public:
   /*!
    \brief Cancel a job with the given id.
    \param jobID the id of the job to cancel, retrieved previously from AddJob()
+   \param callback optional callback to unsubscribe; when non-null on a shared job,
+                   other subscribers keep receiving notifications.
    \sa AddJob()
    */
-  void CancelJob(unsigned int jobID);
+  void CancelJob(unsigned int jobID, const IJobCallback* callback = nullptr);
 
   /*!
    \brief Cancel all remaining jobs, preparing for shutdown
@@ -207,7 +215,18 @@ private:
       m_job = nullptr;
     }
 
-    void Cancel() { m_callbacks.clear(); }
+    bool Cancel(const IJobCallback* callback = nullptr)
+    {
+      const bool hadCallbacks = !m_callbacks.empty();
+      if (callback)
+        std::erase(m_callbacks, callback);
+      else
+        m_callbacks.clear();
+      m_subscribersCancelled |= hadCallbacks && m_callbacks.empty();
+      return m_callbacks.empty();
+    }
+    //! Whether every subscriber was cancelled while the job may still run
+    bool SubscribersCancelled() const { return m_subscribersCancelled; }
     CJob* GetJob() const { return m_job; }
     unsigned int GetId() const { return m_id; }
     const std::vector<IJobCallback*>& GetCallbacks() const { return m_callbacks; }
@@ -231,6 +250,7 @@ private:
     unsigned int m_id{0};
     std::vector<IJobCallback*> m_callbacks;
     CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};
+    bool m_subscribersCancelled{false};
   };
 
   /*! \brief Pop a job off the job queue and add to the processing queue ready to process
@@ -275,10 +295,18 @@ private:
   Processing m_processing;
   // Jobs out of m_processing whose callbacks are still running, by priority
   std::array<size_t, CJob::PRIORITY_DEDICATED + 1> m_completing{};
+  // Work items moved out of m_processing for abort notification; CancelJob can
+  // still unsubscribe their callbacks until they run
+  Processing m_runningNotify;
+  //! Job id whose abort callback is currently inside OnJobAbort, 0 if none
+  unsigned int m_abortingJob{0};
+  std::thread::id m_abortingThread{};
   Workers m_workers;
 
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;
+  //! Notified when worker membership or the in-flight abort callback changes
+  std::condition_variable_any m_stateCv;
   bool m_running{true};
 
   // Tracks pending callback count for jobs in completion phase, used by CJob::IsShared()

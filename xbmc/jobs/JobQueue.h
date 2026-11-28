@@ -147,7 +147,7 @@ private:
   public:
     explicit CJobPointer(CJob* job) : m_job(job) {}
 
-    void CancelJob();
+    void CancelJob(const IJobCallback* callback);
 
     void FreeJob()
     {
@@ -156,6 +156,7 @@ private:
     }
 
     CJob* GetJob() const { return m_job; }
+    void SetJob(CJob* job) { m_job = job; }
     unsigned int GetId() const { return m_id; }
     void SetId(unsigned int jobId) { m_id = jobId; }
 
@@ -181,6 +182,7 @@ private:
   using Processing = std::vector<CJobPointer>;
   Queue m_jobQueue;
   Processing m_processing;
+  unsigned int m_cancelling{0};
 
   //! Set whenever nothing is queued or in progress
   CEvent m_idleEvent{true, true};
