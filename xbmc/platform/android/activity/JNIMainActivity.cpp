@@ -8,7 +8,9 @@
 
 #include "JNIMainActivity.h"
 
+#include "AndroidKey.h"
 #include "CompileInfo.h"
+#include "input/keyboard/XBMC_keysym.h"
 
 #include <androidjni/Activity.h>
 #include <androidjni/Intent.h>
@@ -49,6 +51,7 @@ void CJNIMainActivity::RegisterNatives(JNIEnv* env)
         {"_callNative", "(JJ)V", reinterpret_cast<void*>(&CJNIMainActivity::_callNative)},
         {"_onVisibleBehindCanceled", "()V",
          reinterpret_cast<void*>(&CJNIMainActivity::_onVisibleBehindCanceled)},
+        {"_onBackInvoked", "()V", reinterpret_cast<void*>(&CJNIMainActivity::_onBackInvoked)},
     };
     env->RegisterNatives(cMain, methods, sizeof(methods) / sizeof(methods[0]));
   }
@@ -105,6 +108,15 @@ void CJNIMainActivity::_onVisibleBehindCanceled(JNIEnv* env, jobject context)
   (void)context;
   if (m_appInstance)
     m_appInstance->onVisibleBehindCanceled();
+}
+
+void CJNIMainActivity::_onBackInvoked(JNIEnv*, jobject)
+{
+  if (m_appInstance != nullptr)
+  {
+    CAndroidKey::XBMC_Key(AKEYCODE_BACK, XBMCK_BACKSPACE, XBMCKMOD_NONE, 0, false);
+    CAndroidKey::XBMC_Key(AKEYCODE_BACK, XBMCK_BACKSPACE, XBMCKMOD_NONE, 0, true);
+  }
 }
 
 void CJNIMainActivity::runNativeOnUiThread(void (*callback)(void*), void* variant)
