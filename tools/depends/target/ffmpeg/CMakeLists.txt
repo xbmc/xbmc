@@ -109,7 +109,17 @@ elseif(CORE_SYSTEM_NAME STREQUAL osx)
                           --disable-securetransport
               )
 elseif(CORE_SYSTEM_NAME STREQUAL wasm)
-  list(APPEND ffmpeg_conf --target-os=none)
+  list(APPEND ffmpeg_conf --target-os=none
+                          --disable-filters
+                          --enable-filter=aresample,atempo,bwdif,hflip,scale,transpose,vflip
+                          --disable-encoders
+                          --enable-encoder=flac,mjpeg,png
+                          --disable-muxers
+                          --enable-muxer=mp4
+              )
+  if(ENABLE_LIBOPUS)
+    list(APPEND ffmpeg_conf --enable-encoder=libopus)
+  endif()
   set(CONFIGARCH --arch=wasm --cpu=wasm32)
 endif()
 
