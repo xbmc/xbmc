@@ -408,7 +408,19 @@ std::vector<std::string> CAddonInstaller::RemoveOrphanedDepsRecursively() const
       }
     }
 
-    toRemove = CServiceBroker::GetAddonMgr().GetOrphanedDependencies();
+    auto nextRemove = CServiceBroker::GetAddonMgr().GetOrphanedDependencies();
+    // Stop when the orphan set reaches a fixed point: the remaining
+    // dependencies all failed to uninstall and would be retried forever.
+    // A failed uninstall can still change the set, as the add-on is
+    // unloaded before its files are deleted and may orphan new deps.
+    if (nextRemove.size() == toRemove.size() &&
+        std::ranges::all_of(nextRemove, [&toRemove](const auto& next)
+                            { return std::ranges::any_of(
+                                toRemove, [&next](const auto& prev)
+                                { return prev->ID() == next->ID(); }); }))
+      break;
+
+    toRemove = std::move(nextRemove);
   }
 
   return removedItems;
