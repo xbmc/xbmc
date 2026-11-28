@@ -110,6 +110,8 @@ public:
   bool IsSeeking();
   void SetStateRealtime(bool state);
   bool IsRealtimeStream();
+  void SetRealtimeAudioPassthrough(bool allowed);
+  bool IsRealtimeAudioPassthroughAllowed();
   void SetStateStreaming(bool isStreaming);
   bool IsStreaming();
   void SetSpeed(float speed);
@@ -204,6 +206,7 @@ protected:
   int64_t m_timeMax;
   int64_t m_timeMin;
   bool m_realTimeStream;
+  bool m_realtimeAudioPassthrough{false};
   bool m_isStreaming{false};
 
   // settings

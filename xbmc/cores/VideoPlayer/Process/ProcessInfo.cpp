@@ -654,6 +654,20 @@ bool CProcessInfo::IsRealtimeStream()
   return m_realTimeStream;
 }
 
+void CProcessInfo::SetRealtimeAudioPassthrough(bool allowed)
+{
+  std::unique_lock lock(m_stateSection);
+
+  m_realtimeAudioPassthrough = allowed;
+}
+
+bool CProcessInfo::IsRealtimeAudioPassthroughAllowed()
+{
+  std::unique_lock lock(m_stateSection);
+
+  return m_realtimeAudioPassthrough;
+}
+
 void CProcessInfo::SetStateStreaming(bool isStreaming)
 {
   std::unique_lock lock(m_stateSection);

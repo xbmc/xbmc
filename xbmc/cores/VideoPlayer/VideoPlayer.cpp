@@ -2437,6 +2437,12 @@ void CVideoPlayer::HandlePlaySpeed()
             m_clock.SetSpeedAdjust(adjust);
           }
         }
+        // An adjustment made while the audio was still decoded would otherwise stand for as
+        // long as it is passed through, with nothing left to take it off
+        else if (IsPassthrough() && m_clock.GetSpeedAdjust() < 0)
+        {
+          m_clock.SetSpeedAdjust(0.0);
+        }
       }
     }
   }
@@ -6242,6 +6248,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     bool realtime = m_pInputStream->IsRealtime();
     state.cantempo = CanTempo() && !realtime;
 
+    // Before the realtime state, which the audio player acts on as soon as it sees it
+    m_processInfo->SetRealtimeAudioPassthrough(m_pInputStream->AllowsRealtimeAudioPassthrough());
     m_processInfo->SetStateRealtime(realtime);
   }
 

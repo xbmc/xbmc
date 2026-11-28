@@ -317,6 +317,16 @@ extern "C"
   ///
 #define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
 
+  /// @brief <b>"true"</b> to let the audio of a realtime stream be passed
+  /// through to the audio device.
+  ///
+  /// Kodi otherwise decodes it so that it can resample it to follow the
+  /// source's clock. Passed-through audio cannot be resampled, so the add-on
+  /// keeps its delivery in step with playback itself, for example by dropping
+  /// or repeating whole frames. Any other value keeps decoding.
+  ///
+#define PVR_STREAM_PROPERTY_REALTIMEAUDIOPASSTHROUGH STREAM_PROPERTY_REALTIMEAUDIOPASSTHROUGH
+
   /// @brief <b>"true"</b> to denote that if the stream is from an EPG tag.
   ///
   /// It should be played is a live stream. Otherwise if it's a EPG tag it will
