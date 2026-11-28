@@ -31,6 +31,9 @@ protected:
   /* connect descriptor */
   sqlite3* conn{nullptr};
   bool _in_transaction{false};
+  //! The transaction begun has ended without its commit or rollback: it couldn't be begun, or the
+  //! engine rolled it back on an error. Nothing more is written in it, and its commit fails.
+  bool _transaction_lost{false};
 
 public:
   /* default constructor */
@@ -81,6 +84,12 @@ public:
   std::string vprepare(std::string_view format, va_list args) override;
 
   bool in_transaction() override { return _in_transaction; }
+
+  /*!
+   \brief Whether the transaction begun has ended without its commit or rollback, so that what is
+   written now would be committed alone, statement by statement
+   */
+  bool transaction_lost();
 };
 
 /***************** Class SqliteDataset definition *******************

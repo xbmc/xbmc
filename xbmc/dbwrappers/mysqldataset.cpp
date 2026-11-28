@@ -628,10 +628,34 @@ int MysqlDatabase::query_with_reconnect(std::string_view query)
          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
          (attempts-- > 0))
   {
+    // A transaction ends with its connection, the server rolling back what it wrote. The statement
+    // isn't run again on a new connection, where it would be committed alone; the statement after
+    // the transaction ends reconnects.
+    if (_in_transaction)
+    {
+      CLog::Log(LOGERROR, "MYSQL server has gone during a transaction, which is rolled back.");
+      _transaction_lost = true;
+      return result;
+    }
+
     CLog::Log(LOGINFO, "MYSQL server has gone. Will try {} more attempt(s) to reconnect.",
               attempts);
     active = false;
     connect(true);
+  }
+
+  // The server rolls back the whole transaction of a statement that would have deadlocked. Of one
+  // that waited too long for a lock, it rolls back the statement, or the whole transaction where
+  // innodb_rollback_on_timeout is on: either way, the transaction can't be written whole.
+  constexpr int LOCK_WAIT_TIMEOUT{1205}; // ER_LOCK_WAIT_TIMEOUT
+  constexpr int LOCK_DEADLOCK{1213}; // ER_LOCK_DEADLOCK
+  if (_in_transaction && (result == LOCK_DEADLOCK || result == LOCK_WAIT_TIMEOUT))
+  {
+    if (result == LOCK_DEADLOCK)
+      CLog::Log(LOGERROR, "MYSQL rolled back the transaction to end a deadlock.");
+    else
+      CLog::Log(LOGERROR, "MYSQL timed out waiting for a lock, which fails the transaction.");
+    _transaction_lost = true;
   }
 
   return result;
@@ -689,41 +713,82 @@ long MysqlDatabase::nextid(const char* sname)
 // ---------------------------------------------
 void MysqlDatabase::start_transaction()
 {
-  if (active)
+  assert(!_in_transaction);
+  if (_in_transaction)
   {
-    assert(!_in_transaction);
-    mysql_autocommit(conn, false);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Start transaction");
+    CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
+    return;
+  }
 
-    if (_in_transaction)
-      CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
-    else
-      _in_transaction = true;
+  // Run as any statement outside a transaction is, it connects again where the connection was lost,
+  // as it is with a transaction lost with it
+  constexpr const char* sql{"SET autocommit=0"};
+  const int result{conn ? query_with_reconnect(sql) : CR_SERVER_GONE_ERROR};
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Start transaction");
+
+  // Begun or not, its caller writes in it and ends it. One that couldn't be begun takes nothing,
+  // rather than have each statement committed alone, and fails its commit.
+  _in_transaction = true;
+  _transaction_lost = result != MYSQL_OK;
+  if (_transaction_lost)
+  {
+    if (!conn)
+      throw DbErrors("No Database Connection");
+    setErr(result, sql);
+    throw DbErrors("%s", getErrorMsg());
   }
 }
 
 void MysqlDatabase::commit_transaction()
 {
-  if (active)
+  assert(_in_transaction);
+  if (!_in_transaction)
+    return;
+
+  const bool lost{_transaction_lost};
+  const bool committed{!lost && mysql_commit(conn) == 0};
+  std::string error;
+  if (!committed)
   {
-    assert(_in_transaction);
-    mysql_commit(conn);
-    mysql_autocommit(conn, true);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Commit transaction");
-    _in_transaction = false;
+    if (lost)
+      error =
+          StringUtils::Format("[{}] The transaction can't be committed, as it was rolled back", db);
+    else
+    {
+      const int result{static_cast<int>(mysql_errno(conn))};
+      setErr(result, "COMMIT");
+      error = getErrorMsg();
+      // Lost before the server answered, the commit may have been made
+      if (result == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST)
+        CLog::Log(LOGERROR, "MYSQL server has gone during a commit, which may have been made.");
+    }
+    // Nothing more of it is committed
+    if (active)
+      mysql_rollback(conn);
   }
+  if (active)
+    mysql_autocommit(conn, true);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Commit transaction");
+  _in_transaction = false;
+  _transaction_lost = false;
+  if (!committed)
+    throw DbErrors("%s", error.c_str());
 }
 
 void MysqlDatabase::rollback_transaction()
 {
+  // A commit that failed has ended its transaction already
+  if (!_in_transaction)
+    return;
+
   if (active)
   {
-    assert(_in_transaction);
     mysql_rollback(conn);
     mysql_autocommit(conn, true);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Rollback transaction");
-    _in_transaction = false;
   }
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Rollback transaction");
+  _in_transaction = false;
+  _transaction_lost = false;
 }
 
 bool MysqlDatabase::exists()
@@ -1827,6 +1892,8 @@ void MysqlDataset::make_query(StringList& _sql)
   std::string query;
   if (!db)
     throw DbErrors("No Database Connection");
+  if (static_cast<MysqlDatabase*>(db)->transaction_lost())
+    throw DbErrors("Can't write in a transaction that was rolled back");
   try
   {
     if (autocommit)
@@ -1957,6 +2024,9 @@ int MysqlDataset::exec(const std::string& sql)
 {
   if (!handle())
     throw DbErrors("No Database Connection");
+  // Run alone, it would be committed alone
+  if (static_cast<MysqlDatabase*>(db)->transaction_lost())
+    throw DbErrors("Can't write in a transaction that was rolled back: %s", sql.c_str());
   const std::string qry{EnforceAutoIncrement(sql)};
 
   exec_res.clear();
