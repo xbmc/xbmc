@@ -172,6 +172,35 @@ protected:
 };
 } // namespace
 
+TEST_F(TestVideoDatabase, RecursiveTvShowDoesNotInheritFranchisePath)
+{
+  CVideoInfoTag franchise;
+  franchise.m_strTitle = "Dragon Ball";
+  const int franchiseId{m_db.SetDetailsForTvShow(
+      {"/tv/Dragon Ball/"}, franchise, KODI::ART::Artwork{}, KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(franchiseId, 0);
+
+  CVideoInfoTag original;
+  original.m_strTitle = "Dragon Ball";
+  const int originalId{m_db.SetDetailsForTvShow(
+      {"/tv/Dragon Ball/Dragon Ball/"}, original, KODI::ART::Artwork{},
+      KODI::ART::SeasonsArtwork{}, -1, true)};
+  ASSERT_GT(originalId, 0);
+  EXPECT_NE(franchiseId, originalId);
+
+  CVideoInfoTag dragonBallZ;
+  dragonBallZ.m_strTitle = "Dragon Ball Z";
+  const int zId{m_db.SetDetailsForTvShow(
+      {"/tv/Dragon Ball/Dragon Ball Z/"}, dragonBallZ, KODI::ART::Artwork{},
+      KODI::ART::SeasonsArtwork{}, -1, true)};
+  ASSERT_GT(zId, 0);
+  EXPECT_NE(franchiseId, zId);
+  EXPECT_NE(originalId, zId);
+
+  EXPECT_EQ(originalId, m_db.GetTvShowId("/tv/Dragon Ball/Dragon Ball/"));
+  EXPECT_EQ(zId, m_db.GetTvShowId("/tv/Dragon Ball/Dragon Ball Z/"));
+}
+
 TEST_F(TestVideoDatabase, GetPlayCountsForFilesInFolder)
 {
   MarkPlayed("/videos/watched.mkv", 2);

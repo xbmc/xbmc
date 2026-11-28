@@ -88,6 +88,24 @@ bool IsBrowsableFolder(const CFileItem& item)
   return item.IsFolder() && !item.GetProperty(ITEM::PROPERTY::IS_HYBRID_FOLDER).asBoolean(false);
 }
 
+bool IsInOpticalDiscStructure(const std::string& path)
+{
+  std::string current{path};
+  while (!current.empty())
+  {
+    // URIUtils::IsDiscPath handles both "BDMV" and "VIDEO_TS" without
+    // depending on language, separator case or an episode naming convention.
+    if (URIUtils::IsDiscPath(current) || URIUtils::IsOpticalMediaFile(current))
+      return true;
+
+    const std::string parent{URIUtils::GetParentPath(current)};
+    if (parent.empty() || URIUtils::PathEquals(parent, current, true))
+      break;
+    current = parent;
+  }
+  return false;
+}
+
 bool IsSubtitle(const CFileItem& item)
 {
   return item.GetURL().HasExtension(

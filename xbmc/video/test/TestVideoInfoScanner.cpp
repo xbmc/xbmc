@@ -52,6 +52,7 @@
 #include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -2131,6 +2132,29 @@ protected:
     EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
   }
 
+  void EnableRecursiveScanning()
+  {
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET scanRecursive=2147483647 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  }
+
+  void ExpectEpisodeInShow(const std::string& show,
+                           const std::string& episode,
+                           int season = 1)
+  {
+    const int idShow{m_db.GetTvShowId(show)};
+    ASSERT_GT(idShow, 0);
+    std::vector<std::string> paths;
+    ASSERT_TRUE(m_db.GetPathsLinkedToTvShow(idShow, paths));
+    EXPECT_TRUE(std::ranges::any_of(paths, [&show](const auto& path)
+                                   { return URIUtils::PathEquals(path, show, true); }));
+    const int idEpisode{m_db.GetEpisodeId(episode, 1, season)};
+    ASSERT_GT(idEpisode, 0);
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(episode, tag, idEpisode));
+    EXPECT_EQ(idShow, tag.m_iIdShow);
+  }
+
   int CountShows() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM tvshow"); }
   int CountEpisodes() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"); }
 
@@ -2139,6 +2163,217 @@ protected:
   std::shared_ptr<CJobManager> m_previousJobManager;
 };
 } // namespace
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveCategoryContainsIndependentShows)
+{
+  EnableRecursiveScanning();
+  const std::string collection{Folder(m_root, "Drama")};
+  const std::string show1{Folder(collection, "Show A")};
+  File(show1, "tvshow.nfo",
+       "<tvshow><title>Show A</title></tvshow>");
+  const std::string episode1{Episode(Folder(show1, "Season 1"),
+                                    "Show.A.S01E01.mkv")};
+  const std::string show2{Folder(collection, "Show B")};
+  File(show2, "tvshow.nfo",
+       "<tvshow><title>Show B</title></tvshow>");
+  const std::string episode2{Episode(Folder(show2, "Season 1"),
+                                    "Show.B.S01E01.mkv")};
+  Scan();
+  EXPECT_EQ(2, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show1, episode1, 1);
+  ExpectEpisodeInShow(show2, episode2, 1);
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show2));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveDragonBallFranchise)
+{
+  EnableRecursiveScanning();
+  const std::string collection{Folder(Folder(m_root, "Animation"), "Dragon Ball")};
+  const std::string show1{Folder(collection, "Dragon Ball")};
+  File(show1, "tvshow.nfo",
+       "<tvshow><title>Dragon Ball</title></tvshow>");
+  const std::string episode1{Episode(Folder(show1, "Season 2"),
+                                    "Dragon.Ball.1986.S02E01.mkv")};
+  const std::string episode2{Episode(Folder(show1, "Season 3"),
+                                    "Dragon.Ball.1986.S03E01.mkv")};
+  const std::string show2{Folder(collection, "Dragon Ball Super")};
+  File(show2, "tvshow.nfo",
+       "<tvshow><title>Dragon Ball Super</title></tvshow>");
+  const std::string episode3{Episode(show2,
+                                    "Dragon.Ball.Super.S01E01.mkv")};
+  const std::string episode4{Episode(show2,
+                                    "Dragon.Ball.Super.S02E01.mkv")};
+  const std::string show3{Folder(collection, "Dragon Ball Z Kai")};
+  File(show3, "tvshow.nfo",
+       "<tvshow><title>Dragon Ball Z Kai</title></tvshow>");
+  const std::string episode5{Episode(show3,
+                                    "Dragon.Ball.Z.Kai.S01E01.mkv")};
+  Scan();
+  EXPECT_EQ(3, CountShows());
+  EXPECT_EQ(5, CountEpisodes());
+  ExpectEpisodeInShow(show1, episode1, 2);
+  ExpectEpisodeInShow(show1, episode2, 3);
+  ExpectEpisodeInShow(show2, episode3, 1);
+  ExpectEpisodeInShow(show2, episode4, 2);
+  ExpectEpisodeInShow(show3, episode5, 1);
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show2));
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show3));
+  EXPECT_NE(m_db.GetTvShowId(show2), m_db.GetTvShowId(show3));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveSameTitleDifferentYears)
+{
+  EnableRecursiveScanning();
+  const std::string collection{Folder(m_root, "Doctor Who")};
+  const std::string show1{Folder(collection, "Doctor Who (1963)")};
+  File(show1, "tvshow.nfo",
+       "<tvshow><title>Doctor Who</title><premiered>1963-11-23</premiered></tvshow>");
+  const std::string episode1{Episode(Folder(show1, "Season 1"),
+                                    "Doctor.Who.S01E01.mkv")};
+  const std::string show2{Folder(collection, "Doctor Who (2005)")};
+  File(show2, "tvshow.nfo",
+       "<tvshow><title>Doctor Who</title><premiered>2005-03-26</premiered></tvshow>");
+  const std::string episode2{Episode(Folder(show2, "Season 1"),
+                                    "Doctor.Who.S01E01.mkv")};
+  Scan();
+  EXPECT_EQ(2, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show1, episode1, 1);
+  ExpectEpisodeInShow(show2, episode2, 1);
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show2));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveNumberInShowTitleIsNotASeason)
+{
+  EnableRecursiveScanning();
+  const std::string collection{Folder(m_root, "Stargate")};
+  const std::string show1{Folder(collection, "Stargate SG-1")};
+  File(show1, "tvshow.nfo",
+       "<tvshow><title>Stargate SG-1</title></tvshow>");
+  const std::string episode1{Episode(show1,
+                                    "Stargate.SG-1.S01E01.mkv")};
+  const std::string show2{Folder(collection, "Stargate Atlantis")};
+  File(show2, "tvshow.nfo",
+       "<tvshow><title>Stargate Atlantis</title></tvshow>");
+  const std::string episode2{Episode(show2,
+                                    "Stargate.Atlantis.S01E01.mkv")};
+  Scan();
+  EXPECT_EQ(2, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show1, episode1, 1);
+  ExpectEpisodeInShow(show2, episode2, 1);
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show2));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveOriginalSeriesAndSpinoff)
+{
+  EnableRecursiveScanning();
+  const std::string collection{Folder(m_root, "Star Trek")};
+  const std::string show1{Folder(collection, "Star Trek (1966)")};
+  File(show1, "tvshow.nfo",
+       "<tvshow><title>Star Trek</title><premiered>1966-09-08</premiered></tvshow>");
+  const std::string episode1{Episode(show1,
+                                    "Star.Trek.S01E01.mkv")};
+  const std::string show2{Folder(collection, "Star Trek Discovery")};
+  File(show2, "tvshow.nfo",
+       "<tvshow><title>Star Trek Discovery</title></tvshow>");
+  const std::string episode2{Episode(show2,
+                                    "Star.Trek.Discovery.S01E01.mkv")};
+  Scan();
+  EXPECT_EQ(2, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show1, episode1, 1);
+  ExpectEpisodeInShow(show2, episode2, 1);
+  EXPECT_NE(m_db.GetTvShowId(show1), m_db.GetTvShowId(show2));
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveSeasonPacksStayInOneShow)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET scanRecursive=2147483647 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  UseTestScraper();
+  Found("Breaking Bad");
+  Details("Breaking Bad", "<details><title>Breaking Bad</title></details>");
+  const std::string show{Folder(Folder(m_root, "Drama"), "Breaking Bad")};
+  const std::string first{Episode(Folder(show, "Breaking.Bad.S01.1080p.BluRay-GRP"),
+                                  "Breaking.Bad.S01E01.mkv")};
+  const std::string second{Episode(Folder(show, "Breaking.Bad.S02.1080p.BluRay-GRP"),
+                                   "Breaking.Bad.S02E01.mkv")};
+  Scan();
+  EXPECT_EQ(1, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show, first);
+  ExpectEpisodeInShow(show, second, 2);
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveSeasonPacksWithYearStayInOneShow)
+{
+  EnableRecursiveScanning();
+  UseTestScraper();
+  Found("Castle");
+  Details("Castle", "<details><title>Castle</title><premiered>2009-03-09</premiered></details>");
+  const std::string show{Folder(m_root, "Castle")};
+  const std::string first{Episode(Folder(show, "Castle.2009.S01.720p.BluRay.x264-GRP"),
+                                  "Castle.2009.S01E01.mkv")};
+  const std::string second{Episode(Folder(show, "Castle.2009.S02.720p.BluRay.x264-GRP"),
+                                   "Castle.2009.S02E01.mkv")};
+
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show, first);
+  ExpectEpisodeInShow(show, second, 2);
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveNamedSeasonsWithYearStayInOneShow)
+{
+  EnableRecursiveScanning();
+  UseTestScraper();
+  Found("Doctor Who");
+  Details("Doctor Who",
+          "<details><title>Doctor Who</title><premiered>2005-03-26</premiered></details>");
+  const std::string show{Folder(m_root, "Doctor Who (2005)")};
+  const std::string first{Episode(Folder(show, "Doctor Who (2005) - Season 1"),
+                                  "Doctor Who (2005) - S01E01.mkv")};
+  const std::string second{Episode(Folder(show, "Doctor Who (2005) - Season 2"),
+                                   "Doctor Who (2005) - S02E01.mkv")};
+
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+  ExpectEpisodeInShow(show, first);
+  ExpectEpisodeInShow(show, second, 2);
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveShowWithNfoAcceptsTitleVariants)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET scanRecursive=2147483647 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  const std::string show{Show("Grey\'s Anatomy")};
+  Episode(show, "Grey\'s Anatomy - S01E01.mkv");
+  Episode(show, "Greys.Anatomy.S20E01.mkv");
+  Scan();
+  EXPECT_EQ(1, CountShows());
+  EXPECT_EQ(2, CountEpisodes());
+}
+
+TEST_F(TestVideoInfoScannerTvShows, RecursiveOpticalShowSurvivesFullRefresh)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET scanRecursive=2147483647 WHERE idPath=%i", m_db.GetPathId(m_root))));
+  const std::string show{Show("Friends")};
+  BlurayRip(Folder(show, "Disc 1"));
+  Scan();
+  ASSERT_EQ(1, CountShows());
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetTvShowInfo({}, tag, m_db.GetSingleValueInt("SELECT idShow FROM tvshow")));
+  TestRefreshingJob refresh{std::make_shared<CFileItem>(tag), true, true};
+  refresh.Work(m_db);
+  EXPECT_EQ(1, CountShows());
+}
 
 TEST_F(TestVideoInfoScannerTvShows, AShowIsAddedWithItsEpisodes)
 {
