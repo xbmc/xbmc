@@ -12448,21 +12448,23 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo& info,
         { // conditional string
           compare = info.GetData3();
         }
-        StringUtils::ToLower(compare);
 
         std::string label;
         if (item && item->IsFileItem() && IsListItemInfo(info.GetData1()))
           label = GetItemImage(item, contextWindow, info.GetData1());
         else
           label = GetImage(info.GetData1(), contextWindow);
-        StringUtils::ToLower(label);
 
         if (condition == STRING_STARTS_WITH)
-          bReturn = StringUtils::StartsWith(label, compare);
+          bReturn = StringUtils::StartsWithNoCase(label, compare);
         else if (condition == STRING_ENDS_WITH)
-          bReturn = StringUtils::EndsWith(label, compare);
+          bReturn = StringUtils::EndsWithNoCase(label, compare);
         else if (condition == STRING_CONTAINS)
+        {
+          StringUtils::ToLower(compare);
+          StringUtils::ToLower(label);
           bReturn = label.find(compare) != std::string::npos;
+        }
         else
           bReturn = StringUtils::EqualsNoCase(label, compare);
         break;
