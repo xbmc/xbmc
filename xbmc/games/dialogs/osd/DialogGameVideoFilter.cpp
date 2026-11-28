@@ -350,6 +350,24 @@ void CDialogGameVideoFilter::InitVideoFilters()
   if (!xml)
     return;
 
+  // A list in the add-on's user data, which updates leave alone, replaces the add-on's own. Its
+  // paths are relative to the add-on's presets too.
+  const std::string presetsPath = URIUtils::GetBasePath(xmlPath);
+  const std::string userXmlPath = CSpecialProtocol::TranslatePath(
+      URIUtils::AddFileToFolder("special://profile/addon_data", PRESETS_ADDON_NAME, xmlFilename));
+  if (XFILE::CFile::Exists(userXmlPath))
+  {
+    auto userXml = std::make_unique<CXBMCTinyXML2>();
+    if (userXml->LoadFile(userXmlPath) && userXml->RootElement())
+    {
+      xml = std::move(userXml);
+      xmlPath = userXmlPath;
+    }
+    else
+      CLog::LogF(LOGERROR, "Couldn't load shader presets from XML, {}",
+                 CURL::GetRedacted(userXmlPath));
+  }
+
   const auto* root = xml->RootElement();
 
   for (const tinyxml2::XMLNode* child = root->FirstChild(); child; child = child->NextSibling())
@@ -361,8 +379,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
 
     const tinyxml2::XMLNode* pathNode{GetFirstChildOfNode(*child, "path")};
     if (pathNode)
-      videoFilter.path =
-          URIUtils::AddFileToFolder(URIUtils::GetBasePath(xmlPath), pathNode->Value());
+      videoFilter.path = URIUtils::AddFileToFolder(presetsPath, pathNode->Value());
 
     const tinyxml2::XMLNode* nameNode{GetFirstChildOfNode(*child, "name")};
     if (nameNode)
@@ -378,7 +395,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
     videoFilters.emplace_back(videoFilter);
   }
 
-  CLog::Log(LOGDEBUG, "Loaded {} shader presets from default XML, {}", videoFilters.size(),
+  CLog::Log(LOGDEBUG, "Loaded {} shader presets from XML, {}", videoFilters.size(),
             CURL::GetRedacted(xmlPath));
 
   for (const auto& videoFilter : videoFilters)
