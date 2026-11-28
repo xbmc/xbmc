@@ -316,7 +316,7 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
   std::string label;
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
   {
-    if (seconds > 60)
+    if (seconds > 60 && seconds % 60 == 0)
       label = StringUtils::Format(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14044), seconds / 60);
     else
