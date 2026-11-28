@@ -22,9 +22,13 @@ if(NOT TARGET PkgConfig::PkgConfig)
     set(search_pkgconf pkgconf)
   endif()
 
+  if(NATIVEPREFIX)
+    set(search_pkgconf_hints HINTS ${NATIVEPREFIX}/bin)
+  endif()
+
   # Check for existing bin.
   find_program(search_pkgconf_executable NAMES ${search_pkgconf} pkg-config
-                                         HINTS ${NATIVEPREFIX}/bin)
+                                         ${search_pkgconf_hints})
 
   if(search_pkgconf_executable)
     execute_process(COMMAND "${search_pkgconf_executable}" --version
