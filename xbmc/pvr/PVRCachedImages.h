@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <optional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -37,6 +39,13 @@ public:
   static int Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
                      const std::vector<std::string>& urlsToCheck,
                      bool clearTextureForPath = false);
+
+  /*!
+   * @brief Get the IDs of the owners that have cached images.
+   * @param ownerPattern The owners' pattern, with their ID last (e.g. "epgtag_{}").
+   * @return The IDs, or nothing if the texture db couldn't be read.
+   */
+  static std::optional<std::set<int>> GetOwnerIds(const std::string& ownerPattern);
 };
 
 } // namespace PVR

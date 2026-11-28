@@ -18,6 +18,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <string_view>
 #include <unordered_set>
 
@@ -91,4 +92,47 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
   }
 
   return iCleanedImages;
+}
+
+std::optional<std::set<int>> CPVRCachedImages::GetOwnerIds(const std::string& ownerPattern)
+{
+  CTextureDatabase db;
+  if (!db.Open())
+  {
+    CLog::LogFC(LOGERROR, LOGPVR, "Failed to open texture database");
+    return {};
+  }
+
+  // The images' URLs start with their owner, whose ID comes last
+  const std::string prefix = "image://" + StringUtils::Format(ownerPattern, "");
+  std::string escapedPrefix;
+  for (const auto& pos : prefix)
+  {
+    if (pos == '%' || pos == '_' || pos == '^')
+      escapedPrefix += '^';
+
+    escapedPrefix += pos;
+  }
+
+  CDatabase::Filter filter;
+  filter.AppendWhere(StringUtils::Format("url LIKE '{}%' ESCAPE '^'", escapedPrefix));
+
+  CVariant items;
+  if (!db.GetTextures(items, filter))
+  {
+    CLog::LogFC(LOGERROR, LOGPVR, "Failed to get items from texture database");
+    return {};
+  }
+
+  std::set<int> ids;
+  for (unsigned int i = 0; i < items.size(); ++i)
+  {
+    const std::string url = items[i]["url"].asString();
+    int id{0};
+    if (url.size() > prefix.size() &&
+        std::from_chars(url.data() + prefix.size(), url.data() + url.size(), id).ec == std::errc())
+      ids.insert(id);
+  }
+
+  return ids;
 }
