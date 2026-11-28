@@ -19,11 +19,13 @@ Usage:
   python3 ../tools/wasm/serve.py          # http://127.0.0.1:8080
   python3 ../tools/wasm/serve.py 9000
   python3 ../tools/wasm/serve.py 0.0.0.0:8080  # serve media to a Kodi on the LAN
+  python3 ../tools/wasm/serve.py 0.0.0.0:8443 --cert cert.pem --key key.pem
 
-The launcher itself only works from 127.0.0.1 or localhost: a page loaded over
-plain http from any other address is not a secure context, so the browser
+Over plain http the launcher only works from 127.0.0.1 or localhost: a page
+loaded from any other address is not a secure context, so the browser
 withholds SharedArrayBuffer and the pthread runtime cannot start. Binding to
-0.0.0.0 is for exposing this directory as a media source to another Kodi.
+0.0.0.0 is for exposing this directory as a media source to another Kodi, or,
+with --cert and --key, for opening the launcher on another device over https.
 """
 
 import http.server
@@ -31,6 +33,7 @@ import ipaddress
 import os
 import re
 import socketserver
+import ssl
 import sys
 import urllib.error
 import urllib.parse
@@ -183,11 +186,27 @@ class ThreadingServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     allow_reuse_address = True
 
 
+def take_option(args: list[str], name: str) -> str | None:
+    """Remove `name <value>` from args and return the value."""
+    if name not in args:
+        return None
+    index = args.index(name)
+    if index + 1 >= len(args):
+        sys.exit(f"{name} needs a file")
+    value = args[index + 1]
+    del args[index : index + 2]
+    return value
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if "--allow-lan-proxy" in args:
         args.remove("--allow-lan-proxy")
         Handler.allow_lan_proxy = True
+    cert = take_option(args, "--cert")
+    key = take_option(args, "--key")
+    if (cert is None) != (key is None):
+        sys.exit("--cert and --key must be given together")
     bind = "127.0.0.1"
     port_arg = args[0] if args else "8080"
     if ":" in port_arg:
@@ -195,6 +214,17 @@ if __name__ == "__main__":
         port = int(port_text)
     else:
         port = int(port_arg)
-    print(f"Serving http://{bind}:{port}/kodi.html  (Ctrl-C to stop)")
-    print(f"Proxy:   http://{bind}:{port}/proxy?u=<url-encoded>")
-    ThreadingServer((bind, port), Handler).serve_forever()
+    server = ThreadingServer((bind, port), Handler)
+    scheme = "http"
+    if cert:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(certfile=cert, keyfile=key)
+        # Handshake in the request's thread, so a stalled client can't block accept().
+        server.socket = context.wrap_socket(
+            server.socket, server_side=True, do_handshake_on_connect=False
+        )
+        scheme = "https"
+    print(f"Serving {scheme}://{bind}:{port}/kodi.html  (Ctrl-C to stop)")
+    print(f"Proxy:   {scheme}://{bind}:{port}/proxy?u=<url-encoded>")
+    server.serve_forever()

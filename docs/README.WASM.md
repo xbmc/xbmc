@@ -280,6 +280,14 @@ python3 ../tools/wasm/serve.py 0.0.0.0:8080
 
 Keep opening the launcher from `127.0.0.1` or `localhost`: over plain http, any other address is not a secure context, so the browser withholds `SharedArrayBuffer`.
 
+To open Kodi on another device, such as a phone or a tablet, serve it over https. Create a self-signed certificate once and pass it with `--cert` and `--key`:
+```
+openssl req -x509 -newkey rsa:2048 -nodes -days 365 -subj "/CN=kodi-wasm" -keyout key.pem -out cert.pem
+python3 ../tools/wasm/serve.py 0.0.0.0:8443 --cert cert.pem --key key.pem
+```
+
+Then open `https://<this machine's address>:8443/kodi.html` on the device and accept the browser's certificate warning.
+
 > [!NOTE]
 > WebGL 2 is required. Audio only starts after a first user interaction (keyboard, mouse or touch), which is the browser's autoplay policy rather than a Kodi limitation.
 
