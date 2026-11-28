@@ -132,6 +132,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
     SwitchCodecIfNeeded();
 
   m_audioClock = 0;
+  m_hasAudioTimestamp = false;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
 
   m_prevsynctype = -1;
@@ -344,6 +345,7 @@ void CVideoPlayerAudio::Process()
       m_audioSink.Flush();
       m_stalled = true;
       m_audioClock = 0;
+      m_hasAudioTimestamp = false;
       audioframe.nb_frames = 0;
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
     }
@@ -353,6 +355,7 @@ void CVideoPlayerAudio::Process()
       m_audioSink.Flush();
       m_stalled = true;
       m_audioClock = 0;
+      m_hasAudioTimestamp = false;
       audioframe.nb_frames = 0;
       m_holdPending = false;
 
@@ -431,6 +434,7 @@ void CVideoPlayerAudio::Process()
           m_audioSink.Flush();
           audioframe.nb_frames = 0;
         }
+        m_hasAudioTimestamp = false;
         m_syncState = IDVDStreamPlayer::SYNC_STARTING;
         continue;
       }
@@ -485,6 +489,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     else
     {
       m_audioClock = audioframe.pts;
+      m_hasAudioTimestamp = true;
     }
 
     if (audioframe.format.m_sampleRate && m_streaminfo.samplerate != (int) audioframe.format.m_sampleRate)
@@ -616,7 +621,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       msg.player = VideoPlayer_AUDIO;
       msg.cachetotal = m_audioSink.GetMaxDelay() * DVD_TIME_BASE;
       msg.cachetime = m_audioSink.GetDelay();
-      msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
+      msg.timestamp =
+          (audioframe.hasTimestamp || m_hasAudioTimestamp) ? audioframe.pts : DVD_NOPTS_VALUE;
       m_messageParent.Put(std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
 
       m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
@@ -713,6 +719,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   }
 
   m_pAudioCodec = std::move(codec);
+  m_hasAudioTimestamp = false;
 
   return true;
 }
