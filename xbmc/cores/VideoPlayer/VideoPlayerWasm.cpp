@@ -101,7 +101,7 @@ void CVideoPlayerWasm::CreatePlayers()
 
   m_VideoPlayerSubtitle =
       std::make_unique<CVideoPlayerSubtitle>(&m_overlayContainer, *m_processInfo);
-  m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(*m_processInfo);
+  m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(&m_clock, *m_processInfo);
   m_VideoPlayerRadioRDS = std::make_unique<CDVDRadioRDSData>(*m_processInfo);
   m_VideoPlayerAudioID3 = std::make_unique<CVideoPlayerAudioID3>(*m_processInfo);
   m_players_created = true;

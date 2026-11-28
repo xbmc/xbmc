@@ -8,6 +8,7 @@
 
 #include "VideoPlayerTeletext.h"
 
+#include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
@@ -80,11 +81,11 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
   return (x ^ hamm24cor[e]) | hamm24err[e];
 }
 
-
-CDVDTeletextData::CDVDTeletextData(CProcessInfo &processInfo)
-: CThread("DVDTeletextData")
-, IDVDStreamPlayer(processInfo)
-, m_messageQueue("teletext")
+CDVDTeletextData::CDVDTeletextData(CDVDClock* clock, CProcessInfo& processInfo)
+  : CThread("DVDTeletextData"),
+    IDVDStreamPlayer(processInfo),
+    m_clock(clock),
+    m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;
 
@@ -216,6 +217,27 @@ void CDVDTeletextData::ResetTeletextCache()
     m_TXTCache->SubPage = 0;
 }
 
+bool CDVDTeletextData::WaitForPresentationTime(double pts, unsigned int generation)
+{
+  if (pts == DVD_NOPTS_VALUE)
+    return true;
+
+  while (!m_bStop)
+  {
+    if (m_flushGeneration.load() != generation)
+      return false;
+
+    const auto waitTime = std::chrono::milliseconds(DVD_TIME_TO_MSEC(pts - m_clock->GetClock()));
+
+    if (waitTime <= 0ms)
+      return true;
+
+    CThread::Sleep(std::min(waitTime, 50ms));
+  }
+
+  return false;
+}
+
 void CDVDTeletextData::Process()
 {
   int             b1, b2, b3, b4;
@@ -230,6 +252,7 @@ void CDVDTeletextData::Process()
 
   while (!m_bStop)
   {
+    const unsigned int generation = m_flushGeneration.load();
     std::shared_ptr<CDVDMsg> pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
     MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2s, iPriority);
@@ -250,9 +273,14 @@ void CDVDTeletextData::Process()
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
+      DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
+      const double presentationTime = pPacket->pts != DVD_NOPTS_VALUE ? pPacket->pts : pPacket->dts;
+
+      if (!WaitForPresentationTime(presentationTime, generation))
+        continue;
+
       std::unique_lock lock(m_TXTCache->m_critSection);
 
-      DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
       uint8_t *Datai       = pPacket->pData;
       int rows             = (pPacket->iSize - 1) / 46;
 
@@ -657,6 +685,7 @@ void CDVDTeletextData::Flush()
   /* flush using message as this get's called from VideoPlayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
+  ++m_flushGeneration;
   m_messageQueue.Flush();
   m_messageQueue.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
 }
