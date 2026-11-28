@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <climits>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -29,8 +30,6 @@
 
 namespace
 {
-CWinEventsWasm* g_events = nullptr;
-
 constexpr const char* CANVAS_TARGET = "#canvas";
 
 XBMCMod TranslateModifiers(const EmscriptenKeyboardEvent* e)
@@ -251,11 +250,11 @@ XBMC_Event TranslateKeyEvent(const EmscriptenKeyboardEvent* e, uint8_t type)
   return ev;
 }
 
-// Identity mapping: render resolution == canvas CSS size.
-void TranslateMousePosition(const EmscriptenMouseEvent* e, uint16_t& x, uint16_t& y)
+// Positions arrive in CSS pixels, the GUI renders in device pixels.
+void TranslateMousePosition(const EmscriptenMouseEvent* e, double ratio, uint16_t& x, uint16_t& y)
 {
-  const int rawX = std::max(0, e->targetX);
-  const int rawY = std::max(0, e->targetY);
+  const int rawX = std::max(0, static_cast<int>(std::lround(e->targetX * ratio)));
+  const int rawY = std::max(0, static_cast<int>(std::lround(e->targetY * ratio)));
   x = static_cast<uint16_t>(std::min(rawX, static_cast<int>(UINT16_MAX)));
   y = static_cast<uint16_t>(std::min(rawY, static_cast<int>(UINT16_MAX)));
 }
@@ -290,21 +289,16 @@ bool IsBrowserShortcut(const EmscriptenKeyboardEvent* e)
   return std::ranges::find(keys, std::string_view(e->key)) != keys.end();
 }
 
-// Keys whose press was not passed to Kodi. Their release must be dropped too,
-// or Kodi's long-press handling acts on a release it never saw the press for.
-std::unordered_set<unsigned long> g_swallowedKeys;
-
-EM_BOOL OnKeyDown(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*userData*/)
+EM_BOOL OnKeyDown(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   if (KODI::WINDOWING::WASM::CWasmKeyboard::IsActive())
   {
-    g_swallowedKeys.insert(e->keyCode);
+    events.AddSwallowedKey(e->keyCode);
     return EM_FALSE;
   }
   // A new press means the release of a swallowed one never reached the page.
-  g_swallowedKeys.erase(e->keyCode);
+  events.RemoveSwallowedKey(e->keyCode);
   if (IsTextFieldFocused())
     return EM_FALSE;
   // The browser's "paste" event supplies the clipboard text (see
@@ -312,125 +306,150 @@ EM_BOOL OnKeyDown(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*u
   const bool isPaste = (e->ctrlKey || e->metaKey) && e->keyCode == DOM_VK_V;
   if (isPaste || IsBrowserShortcut(e))
   {
-    g_swallowedKeys.insert(e->keyCode);
+    events.AddSwallowedKey(e->keyCode);
     return EM_FALSE;
   }
-  g_events->MessagePush(TranslateKeyEvent(e, XBMC_KEYDOWN));
+  events.MessagePush(TranslateKeyEvent(e, XBMC_KEYDOWN));
   return EM_TRUE;
 }
 
-EM_BOOL OnKeyUp(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*userData*/)
+EM_BOOL OnKeyUp(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
-  if (KODI::WINDOWING::WASM::CWasmKeyboard::IsActive() || g_swallowedKeys.erase(e->keyCode) > 0)
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
+  if (KODI::WINDOWING::WASM::CWasmKeyboard::IsActive() || events.RemoveSwallowedKey(e->keyCode))
     return EM_FALSE;
   if (IsTextFieldFocused())
     return EM_FALSE;
-  g_events->MessagePush(TranslateKeyEvent(e, XBMC_KEYUP));
+  events.MessagePush(TranslateKeyEvent(e, XBMC_KEYUP));
   return EM_TRUE;
 }
 
-EM_BOOL OnMouseMove(int /*eventType*/, const EmscriptenMouseEvent* e, void* /*userData*/)
+EM_BOOL OnMouseMove(int /*eventType*/, const EmscriptenMouseEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEMOTION;
-  TranslateMousePosition(e, ev.motion.x, ev.motion.y);
-  g_events->MessagePush(ev);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.motion.x, ev.motion.y);
+  events.MessagePush(ev);
   return EM_FALSE;
 }
 
-EM_BOOL OnMouseButtonDown(int /*eventType*/, const EmscriptenMouseEvent* e, void* /*userData*/)
+EM_BOOL OnMouseButtonDown(int /*eventType*/, const EmscriptenMouseEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONDOWN;
-  TranslateMousePosition(e, ev.button.x, ev.button.y);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = TranslateMouseButton(e->button);
-  g_events->MessagePush(ev);
+  events.MessagePush(ev);
   return EM_TRUE;
 }
 
-EM_BOOL OnMouseButtonUp(int /*eventType*/, const EmscriptenMouseEvent* e, void* /*userData*/)
+EM_BOOL OnMouseButtonUp(int /*eventType*/, const EmscriptenMouseEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONUP;
-  TranslateMousePosition(e, ev.button.x, ev.button.y);
+  TranslateMousePosition(e, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = TranslateMouseButton(e->button);
-  g_events->MessagePush(ev);
+  events.MessagePush(ev);
   return EM_TRUE;
 }
 
 // Like the other backends, each wheel event is one step: DOM deltas vary too
 // much across browsers and devices to scale them.
-EM_BOOL OnWheel(int /*eventType*/, const EmscriptenWheelEvent* e, void* /*userData*/)
+EM_BOOL OnWheel(int /*eventType*/, const EmscriptenWheelEvent* e, void* userData)
 {
   // Ctrl+wheel zooms the page.
-  if (!g_events || e->deltaY == 0.0 || e->mouse.ctrlKey)
+  if (e->deltaY == 0.0 || e->mouse.ctrlKey)
     return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_MOUSEBUTTONDOWN;
-  TranslateMousePosition(&e->mouse, ev.button.x, ev.button.y);
+  TranslateMousePosition(&e->mouse, events.GetPointerScale(), ev.button.x, ev.button.y);
   ev.button.button = e->deltaY < 0.0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-  g_events->MessagePush(ev);
+  events.MessagePush(ev);
   ev.type = XBMC_MOUSEBUTTONUP;
-  g_events->MessagePush(ev);
+  events.MessagePush(ev);
   return EM_TRUE;
 }
 
-EM_BOOL OnResize(int /*eventType*/, const EmscriptenUiEvent* e, void* /*userData*/)
+EM_BOOL OnResize(int /*eventType*/, const EmscriptenUiEvent* e, void* userData)
 {
-  if (!g_events)
-    return EM_FALSE;
+  auto& events = *static_cast<CWinEventsWasm*>(userData);
   XBMC_Event ev{};
   ev.type = XBMC_VIDEORESIZE;
   ev.resize.width = e->windowInnerWidth;
   ev.resize.height = e->windowInnerHeight;
-  ev.resize.scale = 1.0;
-  g_events->MessagePush(ev);
+  // zooming the page changes the device pixel ratio along with the size
+  ev.resize.scale = CWinEventsWasm::DevicePixelRatio();
+  events.MessagePush(ev);
   return EM_FALSE;
+}
+
+// Sets the callbacks with events as their userData, or removes them for nullptr.
+void SetCallbacks(CWinEventsWasm* events)
+{
+  // Key callbacks run on the browser thread: only there does their return value
+  // cancel the browser's default action, and the native keyboard's state must be
+  // read when the key is pressed, not when the Kodi thread gets to the event.
+  // Setting and removing them is synchronous with the browser thread, so none is
+  // still running once they are removed.
+  emscripten_set_keydown_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, events, EM_TRUE,
+                                            events ? OnKeyDown : nullptr,
+                                            EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  emscripten_set_keyup_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, events, EM_TRUE,
+                                          events ? OnKeyUp : nullptr,
+                                          EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
+  emscripten_set_mousemove_callback(CANVAS_TARGET, events, EM_TRUE, events ? OnMouseMove : nullptr);
+  emscripten_set_mousedown_callback(CANVAS_TARGET, events, EM_TRUE,
+                                    events ? OnMouseButtonDown : nullptr);
+  emscripten_set_mouseup_callback(CANVAS_TARGET, events, EM_TRUE,
+                                  events ? OnMouseButtonUp : nullptr);
+  emscripten_set_wheel_callback(CANVAS_TARGET, events, EM_TRUE, events ? OnWheel : nullptr);
+  emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, events, EM_TRUE,
+                                 events ? OnResize : nullptr);
 }
 } // namespace
 
 CWinEventsWasm::CWinEventsWasm()
 {
-  g_events = this;
-  // Key callbacks run on the browser thread: only there does their return value
-  // cancel the browser's default action, and the native keyboard's state must be
-  // read when the key is pressed, not when the Kodi thread gets to the event.
-  emscripten_set_keydown_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE,
-                                            OnKeyDown,
-                                            EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
-  emscripten_set_keyup_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE, OnKeyUp,
-                                          EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
-  emscripten_set_mousemove_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseMove);
-  emscripten_set_mousedown_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseButtonDown);
-  emscripten_set_mouseup_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseButtonUp);
-  emscripten_set_wheel_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnWheel);
-  emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE, OnResize);
+  SetCallbacks(this);
 }
 
 CWinEventsWasm::~CWinEventsWasm()
 {
-  // Removal is synchronous with the browser thread, so no key callback is still
-  // running once it returns.
-  emscripten_set_keydown_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE,
-                                            nullptr,
-                                            EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
-  emscripten_set_keyup_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE, nullptr,
-                                          EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
-  g_events = nullptr;
+  SetCallbacks(nullptr);
+  // Events the browser already queued for this thread still point at this
+  // object, so run them before it goes away.
+  ProcessProxyCallbacks();
 }
 
 void CWinEventsWasm::MessagePush(const XBMC_Event& newEvent)
 {
   std::unique_lock lock(m_mutex);
   m_events.push_back(newEvent);
+}
+
+double CWinEventsWasm::DevicePixelRatio()
+{
+  const double ratio = emscripten_get_device_pixel_ratio();
+  return ratio > 0 ? ratio : 1.0;
+}
+
+void CWinEventsWasm::SetPointerScale(double scale)
+{
+  m_pointerScale = scale;
+}
+
+void CWinEventsWasm::AddSwallowedKey(unsigned long keyCode)
+{
+  m_swallowedKeys.insert(keyCode);
+}
+
+bool CWinEventsWasm::RemoveSwallowedKey(unsigned long keyCode)
+{
+  return m_swallowedKeys.erase(keyCode) > 0;
 }
 
 void CWinEventsWasm::ProcessProxyCallbacks()
