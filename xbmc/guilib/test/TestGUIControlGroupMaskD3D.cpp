@@ -31,6 +31,7 @@
 #include <cmath>
 #include <cstring>
 #include <memory>
+#include <string>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -205,8 +206,16 @@ class TestGUIControlGroupMaskD3D : public testing::TestWithParam<bool>
 protected:
   void SetUp() override
   {
+    if (!s_skipReason.empty())
+    {
+      GTEST_SKIP() << s_skipReason;
+    }
     m_previousWinSystem = CServiceBroker::GetWinSystem();
     m_previousGUI = CServiceBroker::GetGUI();
+    // With no IR Server Suite running, destroying the window system waits about 2 s for its
+    // client's connect attempt to fail.
+    m_previousScanIRServer = std::exchange(
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer, false);
     m_window = std::make_unique<CTestWinSystem>();
     CServiceBroker::RegisterWinSystem(m_window.get());
     m_window->frontToBack = GetParam();
@@ -214,31 +223,36 @@ protected:
                              TARGET_SIZE, nullptr, nullptr, GetModuleHandleW(nullptr), nullptr);
     if (!m_hwnd)
     {
-      GTEST_SKIP() << "D3D11 masking tests require a window: CreateWindowExW failed with error "
-                   << GetLastError();
+      Skip("D3D11 masking tests require a window: CreateWindowExW failed with error " +
+           std::to_string(GetLastError()));
+      return;
     }
     m_device = DX::DeviceResources::Get();
     m_device->SetWindow(m_hwnd);
     if (!m_device->HasValidDevice())
     {
-      GTEST_SKIP() << "D3D11 masking tests require a usable D3D11 device";
+      Skip("D3D11 masking tests require a usable D3D11 device");
+      return;
     }
     m_device->SetLogicalSize(TARGET_SIZE, TARGET_SIZE);
     if (!m_device->GetSwapChain())
       m_device->ResizeBuffers();
     if (!m_device->GetSwapChain())
     {
-      GTEST_SKIP() << "D3D11 masking tests require a windowed DXGI swap chain; "
-                      "none is available in this session";
+      Skip("D3D11 masking tests require a windowed DXGI swap chain; "
+           "none is available in this session");
+      return;
     }
     m_device->CreateBackBuffer();
     if (!m_device->GetBackBuffer().Get() || !m_device->GetBackBuffer().GetRenderTarget())
     {
-      GTEST_SKIP() << "D3D11 masking tests require a usable backbuffer render target";
+      Skip("D3D11 masking tests require a usable backbuffer render target");
+      return;
     }
     if (!m_device->GetDSV())
     {
-      GTEST_SKIP() << "D3D11 masking tests require a depth/stencil attachment";
+      Skip("D3D11 masking tests require a depth/stencil attachment");
+      return;
     }
     ASSERT_TRUE(m_window->InitRenderSystem());
     ASSERT_TRUE(m_window->BeginRender());
@@ -257,6 +271,10 @@ protected:
 
   void TearDown() override
   {
+    if (!m_window)
+    {
+      return;
+    }
     m_gui.reset();
     if (m_previousGUI)
       CServiceBroker::RegisterGUI(m_previousGUI);
@@ -265,12 +283,22 @@ protected:
     m_window->DestroyRenderSystem();
     CGUITexture::Register({}, {}, {});
     m_window.reset();
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bScanIRServer =
+        m_previousScanIRServer;
     if (m_previousWinSystem)
       CServiceBroker::RegisterWinSystem(m_previousWinSystem);
     else
       CServiceBroker::UnregisterWinSystem();
     if (m_hwnd)
       DestroyWindow(m_hwnd);
+  }
+
+  // The environment cannot change between tests, so the first skip skips the rest without paying
+  // for another device setup and teardown.
+  void Skip(std::string reason)
+  {
+    s_skipReason = std::move(reason);
+    GTEST_SKIP() << s_skipReason;
   }
 
   void SetProjection()
@@ -334,6 +362,8 @@ protected:
   CGUIComponent* m_previousGUI{nullptr};
   CWinSystemBase* m_previousWinSystem{nullptr};
   HWND m_hwnd{nullptr};
+  bool m_previousScanIRServer{true};
+  static inline std::string s_skipReason;
 };
 
 class TestGUIControlGroupMaskD3DWindows : public TestGUIControlGroupMaskD3D
