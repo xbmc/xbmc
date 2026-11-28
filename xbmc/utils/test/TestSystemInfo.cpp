@@ -15,6 +15,9 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include <fstream>
+#include <string>
+
 #include <gtest/gtest.h>
 
 #include "PlatformDefs.h"
@@ -123,8 +126,25 @@ TEST_F(TestSystemInfo, GetOsName)
 #endif // TARGET_DARWIN
 }
 
-TEST_F(TestSystemInfo, DISABLED_GetOsVersion)
+TEST_F(TestSystemInfo, GetOsVersion)
 {
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+  // A rolling release such as Arch or Debian testing states no VERSION_ID in os-release
+#if defined(TARGET_WEBOS)
+  std::ifstream osRelease("/usr/lib/os-release");
+#else
+  std::ifstream osRelease("/etc/os-release");
+#endif
+  bool statesVersion = false;
+  for (std::string line; !statesVersion && std::getline(osRelease, line);)
+  {
+    statesVersion = line.starts_with("VERSION_ID=");
+  }
+  if (!statesVersion)
+  {
+    GTEST_SKIP() << "this distribution states no version";
+  }
+#endif
   EXPECT_FALSE(g_sysinfo.GetOsVersion().empty()) << "'GetOsVersion()' must not return empty string";
   EXPECT_STRNE("0.0.0", g_sysinfo.GetOsVersion().c_str()) << "'GetOsVersion()' must not return '0.0.0'";
   EXPECT_STRNE("0.0", g_sysinfo.GetOsVersion().c_str()) << "'GetOsVersion()' must not return '0.0'";

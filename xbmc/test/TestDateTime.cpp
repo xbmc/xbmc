@@ -166,8 +166,7 @@ TEST_F(TestDateTime, MonthStringToMonthNum)
   }
 }
 
-// this method is broken as SetFromDBDate() will return true
-TEST_F(TestDateTime, DISABLED_SetFromDateString)
+TEST_F(TestDateTime, SetFromDateString)
 {
   CDateTime dateTime;
   EXPECT_TRUE(dateTime.SetFromDateString("tuesday may 14, 1991"));

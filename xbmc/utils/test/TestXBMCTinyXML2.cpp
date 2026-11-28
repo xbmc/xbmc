@@ -106,13 +106,7 @@ TEST(TestXBMCTinyXML2, ParseFromFileHandle)
   EXPECT_TRUE(retval);
 }
 
-#if defined(TARGET_WINDOWS)
-// Windows fails this test. Something to do with XBMC_TEMPFILEPATH
-// Todo: fix this
-TEST(TestXBMCTinyXML2, DISABLED_SaveFile)
-#else
 TEST(TestXBMCTinyXML2, SaveFile)
-#endif
 {
   bool retval = false;
   // scraper results with unescaped &
@@ -127,9 +121,10 @@ TEST(TestXBMCTinyXML2, SaveFile)
   XFILE::CFile* file;
   file = XBMC_CREATETEMPFILE(".xml");
   std::string xmlfile = XBMC_TEMPFILEPATH(file);
+  // Windows will not open a file for writing while it is still open
+  file->Close();
 
   EXPECT_TRUE(outputdoc.SaveFile(xmlfile));
-  file->Close();
 
   CXBMCTinyXML2 inputdoc;
   FILE* f = fopen(xmlfile.c_str(), "r");
