@@ -1022,15 +1022,16 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   SwsContext* context = sws_getContext(frame->width, frame->height, pixFormat, width, height,
                                        AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
 
+  int* inv_table = nullptr;
+  int* table = nullptr;
+  int srcRange, dstRange, brightness, contrast, saturation;
+  sws_getColorspaceDetails(context, &inv_table, &srcRange, &table, &dstRange, &brightness,
+                           &contrast, &saturation);
   if (range == AVCOL_RANGE_JPEG)
-  {
-    int* inv_table = nullptr;
-    int* table = nullptr;
-    int srcRange, dstRange, brightness, contrast, saturation;
-    sws_getColorspaceDetails(context, &inv_table, &srcRange, &table, &dstRange, &brightness, &contrast, &saturation);
     srcRange = 1;
-    sws_setColorspaceDetails(context, inv_table, srcRange, table, dstRange, brightness, contrast, saturation);
-  }
+  // unspecified matrices get BT.601, swscale's default
+  sws_setColorspaceDetails(context, sws_getCoefficients(frame->colorspace), srcRange, table,
+                           dstRange, brightness, contrast, saturation);
 
   sws_scale(context, frame->data, frame->linesize, 0, frame->height, pictureRGB->data,
             pictureRGB->linesize);

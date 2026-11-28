@@ -18,7 +18,8 @@ nothing in them comes from a camera or a vendor. The profiles' creation date is 
 output is the same on every run with the same Pillow and lcms2.
 
 icc-p3-grid.heic is a HEIC tile grid of two 64x64 tiles in the same colour, with the Display
-P3 profile, which heif-enc from libheif puts on the grid and on each tile. It's skipped when
+P3 profile, which heif-enc from libheif puts on the grid and on each tile. bt709-grid.heic is the
+same grid, untagged, with its YCbCr in the BT.709 matrix and limited range. They're skipped when
 heif-enc isn't installed.
 """
 
@@ -181,7 +182,7 @@ def fixtures():
     )
 
 
-def write_heic_grid(path: Path, icc: bytes) -> None:
+def write_heic_grid(path: Path, icc: bytes | None, *options: str) -> None:
     heif_enc = shutil.which("heif-enc")
     if not heif_enc:
         print(f"skipped {path}: needs heif-enc from libheif")
@@ -190,7 +191,7 @@ def write_heic_grid(path: Path, icc: bytes) -> None:
         png = Path(tmp) / "grid.png"
         Image.new("RGB", (2 * TILE, TILE), COLOUR).save(png, icc_profile=icc)
         subprocess.run(
-            [heif_enc, "--cut-tiles", str(TILE), "-q", "90", "-o", str(path), str(png)],
+            [heif_enc, "--cut-tiles", str(TILE), *options, "-q", "90", "-o", str(path), str(png)],
             check=True,
             stdout=subprocess.DEVNULL,
         )
@@ -208,6 +209,9 @@ def main() -> None:
         print(f"wrote {path} ({path.stat().st_size} bytes)")
         profiles[name] = icc
     write_heic_grid(outdir / "icc-p3-grid.heic", profiles["p3"])
+    write_heic_grid(
+        outdir / "bt709-grid.heic", None, "--matrix_coefficients", "1", "--full_range_flag", "0"
+    )
 
 
 if __name__ == "__main__":
