@@ -75,6 +75,10 @@ using namespace winrt::Windows::System::Profile;
 #include "platform/wasm/WasmWebApis.h"
 #endif
 
+#ifdef TARGET_WEBOS
+#include "utils/JSONVariantParser.h"
+#endif
+
 #include <system_error>
 
 /* Expand macro before stringify */
@@ -751,6 +755,25 @@ std::string CSysInfo::GetOsVersion(void)
   osVersion = getValueFromOs_release("VERSION_ID");
   if (osVersion.empty())
     osVersion = getValueFromLsb_release(lsb_rel_release);
+
+#ifdef TARGET_WEBOS
+  if (osVersion.empty() || osVersion == "n/a")
+  {
+    std::ifstream nyxInfo("/var/run/nyx/os_info.json");
+    if (nyxInfo.is_open())
+    {
+      std::ostringstream buf;
+      buf << nyxInfo.rdbuf();
+      CVariant json;
+      if (CJSONVariantParser::Parse(buf.str(), json))
+      {
+        std::string releaseStr;
+        if (json.isMember("webos_release"))
+          osVersion = json["webos_release"].asString();
+      }
+    }
+  }
+#endif // def (TARGET_WEBOS)
 #endif // defined(TARGET_LINUX)
 
   if (osVersion.empty())
@@ -842,6 +865,24 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
   if (osNameVer.empty())
   {
     osNameVer = getValueFromLsb_release(lsb_rel_description);
+#ifdef TARGET_WEBOS
+    if (osNameVer == "(none)")
+    {
+      std::ifstream nyxInfo("/var/run/nyx/os_info.json");
+      if (nyxInfo.is_open())
+      {
+        std::ostringstream buf;
+        buf << nyxInfo.rdbuf();
+        CVariant json;
+        if (CJSONVariantParser::Parse(buf.str(), json))
+        {
+          std::string releaseStr;
+          if (json.isMember("webos_release_codename"))
+            osNameVer = " (" + json["webos_release_codename"].asString() + ")";
+        }
+      }
+    }
+#endif
     std::string osName(GetOsName(true));
     if (!osName.empty() && osNameVer.find(osName) == std::string::npos)
       osNameVer = osName + osNameVer;
