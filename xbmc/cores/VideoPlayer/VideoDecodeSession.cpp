@@ -81,21 +81,18 @@ std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileIt
   return session;
 }
 
-bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
-                            CDVDVideoCodec& codec,
-                            int videoStream,
-                            int64_t seekToMs,
-                            const std::string& redactPath,
-                            VideoPicture& picture,
-                            int& packetsTried)
+bool SeekAndReadVideoPackets(CDVDDemux& demuxer,
+                             int videoStream,
+                             int64_t seekToMs,
+                             const std::string& redactPath,
+                             int& packetsTried,
+                             const std::function<bool(const DemuxPacket&)>& take)
 {
   CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", seekToMs,
              demuxer.GetStreamLength(), redactPath);
 
   if (!demuxer.SeekTime(static_cast<double>(seekToMs), true))
     return false;
-
-  CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
 
   // The packets of the other streams are dropped, so only the video packets count against the
   // budget: lossless audio alone brings dozens per video frame. The amount read is limited too.
@@ -135,20 +132,37 @@ bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
       continue;
     }
 
-    codec.AddData(*pPacket);
+    const bool more = take(*pPacket);
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+    if (!more)
+      break;
+  }
+
+  return true;
+}
+
+bool SeekAndDecodePictureAt(CDVDDemux& demuxer,
+                            CDVDVideoCodec& codec,
+                            int videoStream,
+                            int64_t seekToMs,
+                            const std::string& redactPath,
+                            VideoPicture& picture,
+                            int& packetsTried)
+{
+  CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
+  const auto decode = [&](const DemuxPacket& packet)
+  {
+    codec.AddData(packet);
 
     // A filter holding a frame back answers VC_NONE, so the codec is not asked for ever.
     iDecoderState = CDVDVideoCodec::VC_NONE;
     for (int asks = 50; asks > 0 && iDecoderState == CDVDVideoCodec::VC_NONE; --asks)
       iDecoderState = codec.GetPicture(&picture);
 
-    if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
-    {
-      if (!(picture.iFlags & DVP_FLAG_DROPPED))
-        break;
-    }
-  }
+    return iDecoderState != CDVDVideoCodec::VC_PICTURE || (picture.iFlags & DVP_FLAG_DROPPED);
+  };
 
-  return iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED);
+  return SeekAndReadVideoPackets(demuxer, videoStream, seekToMs, redactPath, packetsTried,
+                                 decode) &&
+         iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED);
 }

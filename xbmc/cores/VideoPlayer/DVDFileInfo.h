@@ -9,12 +9,16 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
 class CFileItem;
 class CDVDDemux;
+class CDemuxStreamVideo;
+class CStreamDetailVideo;
+struct DemuxPacket;
 class CStreamDetails;
 class CStreamDetailSubtitle;
 class CDVDInputStream;
@@ -58,6 +62,29 @@ public:
 
   //! \param fileFlags as for GetFileStreamDetails()
   static bool GetFileDuration(const std::string& path, int& duration, unsigned int fileFlags = 0);
+
+  /*!
+   * @brief Set the HDR details of a video stream that its demuxer tells: the HDR type, and the
+   * Dolby Vision profile.
+   * @return whether a picture of the stream tells more, and is read for it: whether it has HDR10+
+   * metadata, and the enhancement layer of Dolby Vision profile 7
+   */
+  static bool SetStreamHdrDetails(const CDemuxStreamVideo& stream, CStreamDetailVideo& details);
+
+  //! Hands the function it is given a video stream's packets in turn, until that returns false
+  using VideoPacketReader = std::function<void(const std::function<bool(const DemuxPacket&)>&)>;
+
+  /*!
+   * @brief Set the HDR details of a video stream that a decoded picture of it tells, from the
+   * packets the picture would be decoded from, without decoding them.
+   * @param stream isn't used once the packets are read, which may replace it
+   * @param readPackets reads the stream's packets from a keyframe on
+   * @return false when the packets don't tell, and the picture is to be decoded
+   */
+  static bool SetPictureHdrDetails(const CDemuxStreamVideo& stream,
+                                   const std::string& redactPath,
+                                   const VideoPacketReader& readPackets,
+                                   CStreamDetailVideo& details);
 
 private:
   //! \param fileFlags as for GetFileStreamDetails()
