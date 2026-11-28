@@ -727,41 +727,31 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
     return false;
   }
 
-  if (item->IsPVRChannelGroup())
+  if (info.GetInfo() == LISTITEM_PVR_GROUP_ORIGIN && item->IsPVRChannelGroup())
   {
-    switch (info.GetInfo())
+    const std::shared_ptr<CPVRChannelGroup> group{
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupByPath(item->GetPath())};
+    if (group)
     {
-      case LISTITEM_PVR_GROUP_ORIGIN:
+      const CPVRChannelGroup::Origin origin{group->GetOrigin()};
+      switch (origin)
       {
-        const std::shared_ptr<CPVRChannelGroup> group{
-            CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupByPath(item->GetPath())};
-        if (group)
-        {
-          const CPVRChannelGroup::Origin origin{group->GetOrigin()};
-          switch (origin)
-          {
-            using enum CPVRChannelGroup::Origin;
+        using enum CPVRChannelGroup::Origin;
 
-            case CLIENT:
-              strValue =
-                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(856); // Client
-              return true;
-            case SYSTEM:
-              strValue =
-                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(857); // System
-              return true;
-            case USER:
-              strValue =
-                  CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(858); // User
-              return true;
-            default:
-              break;
-          }
-        }
-        break;
+        case CLIENT:
+          strValue =
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(856); // Client
+          return true;
+        case SYSTEM:
+          strValue =
+              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(857); // System
+          return true;
+        case USER:
+          strValue = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(858); // User
+          return true;
+        default:
+          break;
       }
-      default:
-        break;
     }
     return false;
   }

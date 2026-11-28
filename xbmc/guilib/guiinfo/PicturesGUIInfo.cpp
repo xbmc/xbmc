@@ -127,8 +127,8 @@ bool CPicturesGUIInfo::GetLabel(std::string& value,
                                 const CGUIInfo& info,
                                 std::string* fallback) const
 {
-  if (item->IsPicture() && info.GetInfo() >= LISTITEM_PICTURE_START &&
-      info.GetInfo() <= LISTITEM_PICTURE_END)
+  if (info.GetInfo() >= LISTITEM_PICTURE_START && info.GetInfo() <= LISTITEM_PICTURE_END &&
+      item->IsPicture())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // LISTITEM_*
@@ -206,25 +206,14 @@ bool CPicturesGUIInfo::GetLabel(std::string& value,
     }
   }
 
-  if (item->IsPicture())
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  // LISTITEM_*
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  if (info.GetInfo() == LISTITEM_PICTURE_PATH && item->IsPicture() &&
+      !(item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
   {
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    // LISTITEM_*
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    switch (info.GetInfo())
-    {
-      case LISTITEM_PICTURE_PATH:
-      {
-        if (!(item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-        {
-          value = item->GetPath();
-          return true;
-        }
-        break;
-      }
-      default:
-        break;
-    }
+    value = item->GetPath();
+    return true;
   }
 
   return false;
