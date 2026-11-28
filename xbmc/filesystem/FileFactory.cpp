@@ -21,6 +21,7 @@
 #include "DataFile.h"
 #include "ShoutcastFile.h"
 #if defined(TARGET_WASM)
+#include "wasm/DeviceFolder.h"
 #include "wasm/XhrFile.h"
 
 #include "platform/wasm/network/TizenSockets.h"
@@ -163,6 +164,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 
 #if defined(TARGET_WASM)
+  if (url.IsProtocol("device"))
+    return new CDeviceFolderFile();
   if ((url.IsProtocol("http") || url.IsProtocol("https")) && !kodi_wasm_has_sockets())
     return new CXhrFile();
 #endif

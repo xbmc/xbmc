@@ -196,8 +196,10 @@ if(ENABLE_UPNP)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL wasm)
-  list(APPEND SOURCES wasm/XhrFile.cpp)
-  list(APPEND HEADERS wasm/XhrFile.h
+  list(APPEND SOURCES wasm/DeviceFolder.cpp
+                      wasm/XhrFile.cpp)
+  list(APPEND HEADERS wasm/DeviceFolder.h
+                      wasm/XhrFile.h
                       wasm/XhrHttpClient.h)
 endif()
 
