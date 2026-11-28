@@ -114,7 +114,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
     #define statfs64 statfs
   #endif
 #else
-  #define __stat64 stat64
+  #define __stat64 stat
 #endif
 
 struct _stati64 {
