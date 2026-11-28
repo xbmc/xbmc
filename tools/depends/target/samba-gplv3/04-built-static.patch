@@ -8,7 +8,7 @@
 +        REQUIRES_PRIVATE = []
 +        for _target, _type in t.env['TARGET_TYPE'].items():
 +            if _type == "SYSLIB" and 'LIB_' + _target.upper() in t.env:
-+                LIBS_PRIVATE.append('-l%s' % _target)
++                LIBS_PRIVATE.extend('-l%s' % l for l in t.env['LIB_' + _target.upper()] or [_target])
 +                if 'INCLUDES_' + _target.upper() in t.env and 'LIBPATH_' + _target.upper() in t.env and _target not in ['z']:
 +                    REQUIRES_PRIVATE.append(_target)
 +        t.env.LIBS_PRIVATE = ' '.join(LIBS_PRIVATE)
