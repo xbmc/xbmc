@@ -58,7 +58,16 @@ void CInputProcessorTouch::OnTouchUp(CSeat* seat, std::uint32_t serial, std::uin
     auto& point = it->second;
     point.lastEventTime = time;
     SendTouchPointEvent(TouchInputUp, point);
+    const std::int32_t liftedPointer = point.kodiPointerNumber;
     m_touchPoints.erase(it);
+
+    // The generic handler expects the numbers to stay packed: when a pointer is lifted, it moves
+    // the pointers after it down a number.
+    for (auto& entry : m_touchPoints)
+    {
+      if (entry.second.kodiPointerNumber > liftedPointer)
+        --entry.second.kodiPointerNumber;
+    }
   }
 }
 
