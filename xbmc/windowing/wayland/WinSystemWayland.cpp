@@ -1457,8 +1457,10 @@ void CWinSystemWayland::ApplyBufferScale()
 
 void CWinSystemWayland::ApplyViewportSizes()
 {
+  // No source rectangle: after a resize the next commit can still carry the old,
+  // smaller buffer, and a source of the new size would be out_of_buffer.
+  // Without one, that buffer is just scaled for a single frame.
   m_viewport.set_destination(m_surfaceSize.Width(), m_surfaceSize.Height());
-  m_viewport.set_source(0.0, 0.0, m_bufferSize.Width(), m_bufferSize.Height());
 }
 
 void CWinSystemWayland::UpdateTouchDpi()
