@@ -74,13 +74,25 @@ CGUITextureGLES::CGUITextureGLES(
 {
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   m_isGLES20 = !m_renderSystem->SupportsTextureSwizzle();
+#if HAS_GLES >= 3
+  unsigned int major = 0;
+  unsigned int minor = 0;
+  m_renderSystem->GetRenderVersion(major, minor);
+  m_useVertexArray = major >= 3;
+#endif
 }
 
 CGUITextureGLES::CGUITextureGLES(const CGUITextureGLES& texture)
   : CGUITexture(texture),
     m_renderSystem(texture.m_renderSystem),
-    m_isGLES20(texture.m_isGLES20)
+    m_isGLES20(texture.m_isGLES20),
+    m_useVertexArray(texture.m_useVertexArray)
 {
+}
+
+CGUITextureGLES::~CGUITextureGLES()
+{
+  DestroyVertexArray();
 }
 
 CGUITextureGLES* CGUITextureGLES::Clone() const
@@ -100,8 +112,20 @@ std::array<CPoint, 4> TexCoordCorners(const CRect& rect, bool swapXY)
 }
 } // namespace
 
+void CGUITextureGLES::DestroyVertexArray()
+{
+#if HAS_GLES >= 3
+  if (m_vertexArray != 0)
+  {
+    glDeleteVertexArrays(1, &m_vertexArray);
+    m_vertexArray = 0;
+  }
+#endif
+}
+
 void CGUITextureGLES::Free()
 {
+  DestroyVertexArray();
   m_quadBuffer.Destroy();
   m_quadBufferVersion = 0;
   m_quadCount = 0;
@@ -284,13 +308,46 @@ bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads,
                      CMatrixGL(context.GetGUIMatrix()));
   glUniform1f(m_renderSystem->GUIShaderGetSnap(), m_moving ? 2.0f : 1.0f);
 
-  m_quadBuffer.Bind();
   const auto attribute = [](GLint location, std::size_t member)
   {
     glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex),
                           reinterpret_cast<GLvoid*>(member));
     glEnableVertexAttribArray(location);
   };
+
+#if HAS_GLES >= 3
+  if (m_useVertexArray)
+  {
+    const std::array<GLint, 4> locations{posLoc, snapLoc, tex0Loc, m_diffuse.size() ? tex1Loc : -1};
+    if (m_vertexArray == 0 || m_vertexArrayLocations != locations)
+    {
+      DestroyVertexArray();
+      glGenVertexArrays(1, &m_vertexArray);
+      glBindVertexArray(m_vertexArray);
+      m_quadBuffer.Bind();
+      attribute(posLoc, offsetof(QuadVertex, corner));
+      attribute(snapLoc, offsetof(QuadVertex, opposite));
+      attribute(tex0Loc, offsetof(QuadVertex, texture));
+      if (m_diffuse.size())
+        attribute(tex1Loc, offsetof(QuadVertex, diffuse));
+      m_vertexArrayLocations = locations;
+    }
+    else
+    {
+      glBindVertexArray(m_vertexArray);
+    }
+
+    m_renderSystem->BindGUIQuadIndices(m_quadCount);
+    glDrawElements(GL_TRIANGLES, m_quadCount * 6, GL_UNSIGNED_SHORT, 0);
+    CRenderSystemBase::m_GUIElementCount++;
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    return true;
+  }
+#endif
+
+  m_quadBuffer.Bind();
   attribute(posLoc, offsetof(QuadVertex, corner));
   attribute(snapLoc, offsetof(QuadVertex, opposite));
   attribute(tex0Loc, offsetof(QuadVertex, texture));
