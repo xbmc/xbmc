@@ -605,7 +605,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_LOAD:
+    case GUI_MSG_REFRESH_TIMER:
+      // labels measure their text with the GUI scale that is set
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetScalingResolution(m_coordsRes,
+                                                                           m_needsScaling);
+      break;
+
+    case GUI_MSG_WINDOW_LOAD:
     {
       Initialize();
       return true;
