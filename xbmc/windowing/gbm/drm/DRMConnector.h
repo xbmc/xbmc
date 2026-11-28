@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DRMEncoder.h"
 #include "DRMObject.h"
 
 #include <string>
@@ -33,6 +34,8 @@ public:
 
   uint32_t GetEncoderId() const { return m_connector->encoder_id; }
   uint32_t* GetConnectorId() const { return &m_connector->connector_id; }
+  std::vector<CDRMEncoder*> GetPossibleEncoders(
+      const std::vector<std::unique_ptr<CDRMEncoder>>& encoders) const;
   int GetModesCount() const { return m_connector->count_modes; }
   drmModeModeInfoPtr GetModeForIndex(int index) const { return &m_connector->modes[index]; }
 
