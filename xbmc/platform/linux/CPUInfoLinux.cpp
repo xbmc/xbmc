@@ -8,6 +8,9 @@
 
 #include "CPUInfoLinux.h"
 
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Temperature.h"
 
@@ -108,26 +111,7 @@ CCPUInfoLinux::CCPUInfoLinux()
 
   for (const auto& module : modules)
   {
-    for (int i = 0; i < 20; i++)
-    {
-      CSysfsPath path{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/name"};
-      if (!path.Exists())
-        continue;
-
-      auto name = path.Get<std::string>();
-
-      if (!name.has_value() || *name != module)
-        continue;
-
-      std::string tempStr{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/temp1_input"};
-      CSysfsPath tempPath{tempStr};
-      if (!tempPath.Exists())
-        continue;
-
-      m_tempPath = tempStr;
-      break;
-    }
-
+    m_tempPath = HwmonTemperaturePath(module);
     if (!m_tempPath.empty())
       break;
   }
@@ -359,15 +343,32 @@ float CCPUInfoLinux::GetCPUFrequency()
   return freq.has_value() ? *freq / 1000.0f : 0.0f;
 }
 
+std::string CCPUInfoLinux::FindSensor() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent();
+  const auto advancedSettings = settings ? settings->GetAdvancedSettings() : nullptr;
+
+  if (advancedSettings && !advancedSettings->m_cpuTempHwmon.empty())
+    return HwmonTemperaturePath(advancedSettings->m_cpuTempHwmon);
+
+  return m_tempPath;
+}
+
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
   if (CheckUserTemperatureCommand(temperature))
     return true;
 
-  if (m_tempPath.empty())
+  if (!m_sensorResolved)
+  {
+    m_sensorPath = FindSensor();
+    m_sensorResolved = true;
+  }
+
+  if (m_sensorPath.empty())
     return false;
 
-  auto temp = CSysfsPath(m_tempPath).Get<double>();
+  auto temp = CSysfsPath(m_sensorPath).Get<double>();
   if (!temp.has_value())
     return false;
 

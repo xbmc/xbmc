@@ -14,6 +14,7 @@
 #include <fstream>
 #include <optional>
 #include <string>
+#include <string_view>
 
 class CSysfsPath
 {
@@ -56,3 +57,7 @@ private:
 
 template<>
 std::optional<std::string> CSysfsPath::Get<std::string>();
+
+/*! \brief Find a temperature input of a named hwmon device, "amdgpu" or
+ *         "amdgpu/temp2_input"; empty if there is no such device or input */
+std::string HwmonTemperaturePath(std::string_view sensor);

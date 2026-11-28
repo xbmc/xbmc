@@ -25,6 +25,12 @@ public:
   bool GetTemperature(CTemperature& temperature) override;
 
 private:
+  /*! \brief The sensor to read, resolved on first use because the settings
+   *         that may name it are read after this object is constructed */
+  std::string FindSensor() const;
+
+  std::string m_sensorPath;
   std::string m_freqPath;
   std::string m_tempPath;
+  bool m_sensorResolved{false};
 };
