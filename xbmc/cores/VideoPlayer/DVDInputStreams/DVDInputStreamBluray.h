@@ -241,6 +241,9 @@ protected:
   } m_hold = HOLD_NONE;
   //! Units libbluray has failed to read since it last returned data
   unsigned int m_readErrors = 0;
+  bool m_seekFlushed = false;
+  //! The playlist was read to its end, so a jump has nothing of it left to skip
+  bool m_readToEnd = false;
   BD_EVENT m_event;
 #ifdef HAVE_LIBBLURAY_BDJ
   struct bd_argb_buffer_s m_argb;
