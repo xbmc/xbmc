@@ -29,6 +29,7 @@ public:
   void DestroyDrm() override {}
 
   RESOLUTION_INFO GetCurrentMode() override;
+  bool HasCurrentMode() const override { return true; }
   std::vector<RESOLUTION_INFO> GetModes() override;
   bool SetMode(const RESOLUTION_INFO& res) override { return true; }
 };

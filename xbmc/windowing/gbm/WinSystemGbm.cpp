@@ -30,8 +30,11 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <algorithm>
+#include <array>
 #include <mutex>
 #include <string.h>
+#include <vector>
 
 #ifndef HAVE_HDR_OUTPUT_METADATA
 // HDR structs is copied from linux include/linux/hdmi.h
@@ -73,6 +76,42 @@ constexpr const char* BROADCAST_RGB = "Broadcast RGB";
 constexpr const char* BROADCAST_RGB_AUTOMATIC = "Automatic";
 constexpr const char* BROADCAST_RGB_FULL = "Full";
 constexpr const char* BROADCAST_RGB_LIMITED = "Limited 16:235";
+
+constexpr const char* COLOR_FORMAT = "color format";
+
+constexpr const char* MAX_BPC = "max bpc";
+// indexed by the "Maximum bit depth" setting, 0 is Auto
+constexpr std::array<uint64_t, 4> MAX_BPC_VALUES{0, 8, 10, 12};
+// The "Adaptive" option's value of the setting. It is stored in the user's settings and numbered in
+// linux.xml, so it stays put when a depth is added to MAX_BPC_VALUES, which then has to be checked.
+constexpr int MAX_BPC_ADAPTIVE = 4;
+static_assert(MAX_BPC_VALUES.size() <= static_cast<size_t>(MAX_BPC_ADAPTIVE),
+              "a new depth would take the value of Adaptive, see linux.xml");
+
+// HDMI 2.0 carries at most 600 MHz of TMDS characters: the pixel clock times bits per component
+// / 8 for RGB and YCbCr 4:4:4, half of that for 4:2:0, and as is for 4:2:2 (24 bit container).
+// 4K 50/60 Hz (594 MHz) fits as 8 bit RGB, but needs 742 MHz as 10 bit.
+constexpr uint64_t HDMI_MAX_TMDS_KHZ = 600000;
+// YCbCr 4:2:0 over TMDS carries twice the pixel clock, so an HDMI 2.0 source also lists 4:2:0
+// modes up to 1.2 GHz (e.g. 4K120 at 1188 MHz). Only a mode above that can be FRL for sure.
+constexpr uint64_t HDMI_FRL_PROOF_CLOCK_KHZ = 2 * HDMI_MAX_TMDS_KHZ;
+// Max_FRL_Rate code 3 (6 Gbit/s x 4 lanes) is the lowest that carries 4K 60 Hz 10 bit RGB
+constexpr int HDMI_FRL_MIN_RATE_RGB_10BIT = 3;
+// the kernel's enum names of "color format", indexed by ColorFormat
+constexpr std::array<const char*, 5> COLOR_FORMAT_NAMES{"AUTO", "RGB", "YUV 4:4:4", "YUV 4:2:2",
+                                                        "YUV 4:2:0"};
+
+//! The smallest depth of the "Maximum bit depth" options that carries the bits per component, the
+//! largest one if none does. Only for estimating bandwidth, "max bpc" is only a limit.
+uint64_t MaxBpcForContent(int bitsPerComponent)
+{
+  for (size_t i = 1; i < MAX_BPC_VALUES.size(); ++i)
+  {
+    if (MAX_BPC_VALUES[i] >= static_cast<uint64_t>(bitsPerComponent))
+      return MAX_BPC_VALUES[i];
+  }
+  return MAX_BPC_VALUES.back();
+}
 
 // These map to the definitions in the linux kernel
 // drivers/gpu/drm/drm_connector.c
@@ -184,11 +223,14 @@ CWinSystemGbm::CWinSystemGbm()
   // registered for the lifetime of the object: applying the setting cycles the window system,
   // which would otherwise unregister the callback that is doing the applying
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
-      this, {SETTING_VIDEOSCREEN_LIMITGUISIZE, SETTING_VIDEOSCREEN_COLORRANGE});
+      this, {SETTING_VIDEOSCREEN_LIMITGUISIZE, SETTING_VIDEOSCREEN_COLORRANGE,
+             SETTING_VIDEOSCREEN_COLORFORMAT, SETTING_VIDEOSCREEN_MAXBPC});
 }
 
 CWinSystemGbm::~CWinSystemGbm()
 {
+  RestoreDefaultMaxBpc();
+
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->UnregisterCallback(
       this);
 }
@@ -290,6 +332,38 @@ bool CWinSystemGbm::InitWindowSystem()
       legacySetting->SetVisible(false);
   }
 
+  if (auto formatSetting = settings->GetSetting(SETTING_VIDEOSCREEN_COLORFORMAT))
+  {
+    m_colorFormat = settings->GetInt(SETTING_VIDEOSCREEN_COLORFORMAT);
+
+    const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+    formatSetting->SetVisible(std::dynamic_pointer_cast<CDRMAtomic>(m_DRM) && connector &&
+                              connector->SupportsProperty(COLOR_FORMAT));
+
+    if (connector && connector->GetType().rfind("HDMI", 0) == 0)
+    {
+      CLog::LogF(LOGINFO, "HDMI sink max FRL rate code {}, a mode above {} kHz is listed: {}",
+                 connector->GetMaxFrlRate(), HDMI_FRL_PROOF_CLOCK_KHZ,
+                 connector->HasModeAboveClock(HDMI_FRL_PROOF_CLOCK_KHZ));
+    }
+  }
+
+  if (auto bpcSetting = settings->GetSetting(SETTING_VIDEOSCREEN_MAXBPC))
+  {
+    m_maxBpc = settings->GetInt(SETTING_VIDEOSCREEN_MAXBPC);
+
+    const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+    const bool supported = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM) && connector &&
+                           connector->SupportsProperty(MAX_BPC);
+
+    // Only once, after a cycle the property holds what Kodi wrote. A new process reads what the
+    // previous one left unless it was put back on exit, see RestoreDefaultMaxBpc().
+    if (supported && !m_defaultMaxBpc)
+      m_defaultMaxBpc = connector->GetPropertyValue(MAX_BPC);
+
+    bpcSetting->SetVisible(supported);
+  }
+
   auto setting = settings->GetSetting(SETTING_VIDEOSCREEN_LIMITGUISIZE);
   if (setting)
     setting->SetVisible(true);
@@ -311,6 +385,14 @@ bool CWinSystemGbm::DestroyWindowSystem()
 
 void CWinSystemGbm::UpdateResolutions()
 {
+  // a mode change that failed on a disconnected connector leaves no mode, and no modes to list
+  // either: keep the resolutions that are known rather than replace them with an empty one
+  if (!m_DRM->HasCurrentMode())
+  {
+    CLog::LogF(LOGWARNING, "there is no current mode, keeping the resolutions");
+    return;
+  }
+
   RESOLUTION_INFO current = m_DRM->GetCurrentMode();
 
   auto resolutions = m_DRM->GetModes();
@@ -375,11 +457,324 @@ void CWinSystemGbm::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
 
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &m_colorRangeCallback);
   }
+  else if (setting->GetId() == SETTING_VIDEOSCREEN_COLORFORMAT)
+  {
+    m_colorFormat = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &m_colorFormatCallback);
+  }
+  else if (setting->GetId() == SETTING_VIDEOSCREEN_MAXBPC)
+  {
+    m_maxBpc = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &m_maxBpcCallback);
+  }
+}
+
+void CWinSystemGbm::ApplyMaxBpcSetting(void* userptr)
+{
+  auto winSystem = static_cast<CWinSystemGbm*>(userptr);
+
+  winSystem->m_maxBpcFallback = false;
+  winSystem->m_bpcProbe = false;
+
+  // a format may have been refused only at the previous depth
+  winSystem->m_colorFormatSkip = 0;
+  winSystem->ApplyConnectorProperties();
+}
+
+void CWinSystemGbm::RestoreDefaultMaxBpc()
+{
+  // the kernel keeps the last written value after Kodi exits, so the next process would take it
+  // for the driver default (Adaptive leaves 8 behind whenever no video plays)
+  if (!m_defaultMaxBpc)
+    return;
+
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector || !connector->SupportsProperty(MAX_BPC))
+    return;
+
+  const auto current = connector->GetPropertyValue(MAX_BPC);
+  if (current && *current == *m_defaultMaxBpc)
+    return;
+
+  // the original mode that the DRM object restores when it is destroyed picks this up
+  if (connector->SetProperty(MAX_BPC, *m_defaultMaxBpc))
+    CLog::LogF(LOGDEBUG, "put \"{}\" back to the default {}", MAX_BPC, *m_defaultMaxBpc);
+  else
+    CLog::LogF(LOGWARNING, "could not put \"{}\" back to the default {}", MAX_BPC,
+               *m_defaultMaxBpc);
+}
+
+std::optional<uint64_t> CWinSystemGbm::GetChosenMaxBpc() const
+{
+  if (IsMaxBpcFallback())
+    return std::nullopt;
+
+  return GetSettingMaxBpc();
+}
+
+bool CWinSystemGbm::IsMaxBpcFallback() const
+{
+  if (m_bpcProbe)
+    return true;
+
+  if (!m_maxBpcFallback)
+    return false;
+
+  // The refusal holds for the depth that was refused, which is the one that was queued: within the
+  // limits of the driver. Another target (Adaptive going back to 8 bit when the video stops) is a
+  // new request that gets its own attempt.
+  const auto setting = GetSettingMaxBpc();
+  return setting && ClampMaxBpc(*setting) == m_maxBpcRefused;
+}
+
+uint64_t CWinSystemGbm::ClampMaxBpc(uint64_t value) const
+{
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector)
+    return value;
+
+  // the driver's limits, e.g. Intel stops at 12
+  if (const auto limits = connector->GetRangePropertyLimits(MAX_BPC))
+    return std::clamp(value, limits->first, limits->second);
+
+  return value;
+}
+
+std::optional<uint64_t> CWinSystemGbm::GetSettingMaxBpc() const
+{
+  const int setting = m_maxBpc;
+  if (setting == MAX_BPC_ADAPTIVE)
+    return GetAdaptiveMaxBpc();
+
+  if (setting > 0 && setting < static_cast<int>(MAX_BPC_VALUES.size()))
+    return MAX_BPC_VALUES[setting];
+
+  return std::nullopt;
+}
+
+uint64_t CWinSystemGbm::GetAdaptiveMaxBpc() const
+{
+  // 8 bit is enough for 8 bit video and the GUI, and keeps the link within reach of any mode
+  uint64_t depth = MAX_BPC_VALUES[1];
+
+  // Video with more bits gets deep colour. "max bpc" is a limit, not the depth itself: the driver
+  // uses the deepest depth it supports at or below it. Asking for the depth of the video would get
+  // 8 bit on hardware that has no 10 bit, so ask for the most there is.
+  if (m_contentBits > 8)
+    depth = MAX_BPC_VALUES.back();
+
+  return depth;
+}
+
+std::optional<uint64_t> CWinSystemGbm::GetTargetMaxBpc() const
+{
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector || !connector->SupportsProperty(MAX_BPC))
+    return std::nullopt;
+
+  uint64_t value = 0;
+  const auto limits = connector->GetRangePropertyLimits(MAX_BPC);
+  if (const auto chosen = GetChosenMaxBpc())
+    value = *chosen;
+  else if (m_defaultMaxBpc)
+    value = *m_defaultMaxBpc; // Auto, or back to it after a refusal
+  else if (limits)
+    value = limits->second; // fallback when the initial value was unavailable
+  else
+    return std::nullopt; // never written, so there is nothing to put back
+
+  return ClampMaxBpc(value);
+}
+
+uint64_t CWinSystemGbm::GetEffectiveMaxBpc() const
+{
+  // what is queued, which the connector only shows once it is committed
+  if (const auto target = GetTargetMaxBpc())
+    return *target;
+
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector)
+    return 0;
+
+  return connector->GetPropertyValue(MAX_BPC).value_or(0);
+}
+
+void CWinSystemGbm::ApplyColorFormatSetting(void* userptr)
+{
+  auto winSystem = static_cast<CWinSystemGbm*>(userptr);
+
+  // a new choice gets a fresh try, even for a mode where the previous one was refused
+  winSystem->m_colorFormatSkip = 0;
+
+  // The format can be why the depth was refused (RGB may not carry 12 bit where 4:2:0 does), so
+  // the chosen depth gets a fresh try as well
+  winSystem->m_maxBpcFallback = false;
+  winSystem->m_bpcProbe = false;
+
+  // a format that the connector does not offer would only act as Auto, so show that
+  if (!winSystem->IsColorFormatOffered(winSystem->GetColorFormat()))
+  {
+    CLog::LogF(LOGINFO, "the connector does not offer the chosen colour format, using Auto");
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(
+        SETTING_VIDEOSCREEN_COLORFORMAT, static_cast<int>(ColorFormat::AUTO));
+  }
+
+  winSystem->ApplyConnectorProperties();
+}
+
+bool CWinSystemGbm::IsColorFormatOffered(ColorFormat format) const
+{
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+
+  // nothing to judge it by, leave the choice alone
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM) || !connector ||
+      !connector->SupportsProperty(COLOR_FORMAT))
+    return true;
+
+  const auto listed = [&](ColorFormat candidate)
+  {
+    const char* name = COLOR_FORMAT_NAMES[static_cast<size_t>(candidate)];
+    return connector->GetPropertyEnumValue(COLOR_FORMAT, name).has_value();
+  };
+
+  // Adaptive only ever asks for the subsampled formats
+  if (format == ColorFormat::ADAPTIVE)
+    return listed(ColorFormat::YUV422) || listed(ColorFormat::YUV420);
+
+  return format == ColorFormat::AUTO || listed(format);
+}
+
+ColorFormat CWinSystemGbm::GetColorFormat() const
+{
+  const int value = m_colorFormat;
+  if (value < static_cast<int>(ColorFormat::AUTO) ||
+      value > static_cast<int>(ColorFormat::ADAPTIVE))
+    return ColorFormat::AUTO;
+
+  return static_cast<ColorFormat>(value);
+}
+
+ColorFormat CWinSystemGbm::GetRequestedColorFormat() const
+{
+  // The probe at the default depth changes the depth and nothing else. With Adaptive the format
+  // depends on the depth, and would go back to Auto, so a success would not tell the depth refused.
+  if (m_bpcProbe)
+    return m_probeFormat;
+
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
+    return ColorFormat::AUTO;
+
+  const auto connector = m_DRM->GetConnector();
+  if (!connector || !connector->SupportsProperty(COLOR_FORMAT))
+    return ColorFormat::AUTO;
+
+  std::vector<ColorFormat> candidates;
+  const ColorFormat format = GetColorFormat();
+  if (format == ColorFormat::ADAPTIVE)
+  {
+    if (ContentNeedsSubsampling())
+    {
+      // 4:2:2 keeps the full vertical resolution of the chroma, but only fits up to 600 MHz
+      if (m_DRM->GetModeClock() <= HDMI_MAX_TMDS_KHZ)
+        candidates.push_back(ColorFormat::YUV422);
+      candidates.push_back(ColorFormat::YUV420);
+    }
+  }
+  else if (format != ColorFormat::AUTO)
+  {
+    candidates.push_back(format);
+  }
+
+  // Only formats that the driver lists (Intel has no YCbCr 4:2:2 on HDMI), or a colorspace tag
+  // would describe the wrong encoding.
+  candidates.erase(std::remove_if(candidates.begin(), candidates.end(), [&](ColorFormat candidate)
+                                  { return !IsColorFormatOffered(candidate); }),
+                   candidates.end());
+
+  // Auto is the last resort, after the formats refused for this mode
+  candidates.push_back(ColorFormat::AUTO);
+
+  const size_t skip = static_cast<size_t>(std::max(m_colorFormatSkip, 0));
+  return candidates[std::min(skip, candidates.size() - 1)];
+}
+
+bool CWinSystemGbm::IsHdmiFrlLink() const
+{
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector)
+    return false;
+
+  // no property tells: the sink has to do FRL, and a mode above the proof clock shows that the
+  // source does too
+  return connector->GetMaxFrlRate() >= HDMI_FRL_MIN_RATE_RGB_10BIT &&
+         connector->HasModeAboveClock(HDMI_FRL_PROOF_CLOCK_KHZ);
+}
+
+bool CWinSystemGbm::ContentNeedsSubsampling() const
+{
+  if (m_contentBits <= 8 || !m_DRM)
+    return false;
+
+  // DisplayPort has the bandwidth or compresses, leave it to Auto
+  const auto connector = m_DRM->GetConnector();
+  if (!connector || connector->GetType().rfind("HDMI", 0) != 0)
+    return false;
+
+  if (IsHdmiFrlLink())
+    return false;
+
+  // The depth to keep is the one of the video, as far as the driver may go
+  uint64_t depth = MaxBpcForContent(m_contentBits);
+  if (const uint64_t bpc = GetEffectiveMaxBpc(); bpc != 0)
+  {
+    // RGB fits at 8 bit
+    if (bpc < 10)
+      return false;
+
+    depth = std::min(depth, bpc);
+  }
+
+  // RGB needs depth/8 of the pixel clock, YCbCr 4:2:0 half of that, and 4:2:2 the pixel clock
+  // itself, which 4:2:0 never exceeds. Subsampling only helps in between: below RGB fits, above not
+  // even 4:2:0 does, or the link is HDMI 2.1 and carries RGB.
+  const uint64_t clock = m_DRM->GetModeClock();
+
+  return clock * depth / 8 > HDMI_MAX_TMDS_KHZ && clock * depth / 16 <= HDMI_MAX_TMDS_KHZ;
+}
+
+static bool IsYuvFormat(ColorFormat format)
+{
+  return format == ColorFormat::YUV444 || format == ColorFormat::YUV422 ||
+         format == ColorFormat::YUV420;
+}
+
+bool CWinSystemGbm::IsYuvRequested() const
+{
+  return IsYuvFormat(GetRequestedColorFormat());
+}
+
+bool CWinSystemGbm::IsYuvFormatCommitted(const CDRMConnector& connector) const
+{
+  const auto current = connector.GetPropertyValue(COLOR_FORMAT);
+  if (!current)
+    return false;
+
+  for (const ColorFormat format : {ColorFormat::YUV444, ColorFormat::YUV422, ColorFormat::YUV420})
+  {
+    const auto value = connector.GetPropertyEnumValue(
+        COLOR_FORMAT, COLOR_FORMAT_NAMES[static_cast<size_t>(format)]);
+    if (value && *value == *current)
+      return true;
+  }
+
+  return false;
 }
 
 void CWinSystemGbm::ApplyColorRangeSetting(void* userptr)
 {
-  static_cast<CWinSystemGbm*>(userptr)->ApplyBroadcastRange();
+  static_cast<CWinSystemGbm*>(userptr)->ApplyConnectorProperties();
 }
 
 ColorRange CWinSystemGbm::GetColorRange() const
@@ -414,22 +809,18 @@ void CWinSystemGbm::MigrateLimitedRangeSetting()
   settings->SetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE, false);
 }
 
-void CWinSystemGbm::ApplyBroadcastRange(bool retry)
+void CWinSystemGbm::ApplyConnectorProperties(bool retry)
 {
   if (!retry)
-    m_broadcastRangeRetries = 0;
+    m_connectorRetries = 0;
 
-  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
-  if (!drm)
-    return;
+  ApplyBroadcastRange();
+  ApplyMaxBpc();
+  ApplyColorFormat();
+}
 
-  auto connector = drm->GetConnector();
-  if (!connector || !connector->SupportsProperty(BROADCAST_RGB))
-    return;
-
-  if (connector->IsPropertyImmutable(BROADCAST_RGB).value_or(false))
-    return;
-
+void CWinSystemGbm::ApplyBroadcastRange()
+{
   const char* targetName = BROADCAST_RGB_AUTOMATIC;
   switch (GetColorRange())
   {
@@ -443,43 +834,278 @@ void CWinSystemGbm::ApplyBroadcastRange(bool retry)
       break;
   }
 
-  const auto target = connector->GetPropertyEnumValue(BROADCAST_RGB, targetName);
-  if (!target)
-    return;
-
-  // always queue it, to replace a pending value that is not committed yet
-  if (!drm->AddProperty(connector, BROADCAST_RGB, *target))
-    return;
-
-  m_broadcastRangeQueued = true;
-  m_broadcastRangeTarget = *target;
-
-  CLog::LogF(LOGDEBUG, "queued connector \"{}\" = \"{}\"", BROADCAST_RGB, targetName);
-
-  const auto current = connector->GetPropertyValue(BROADCAST_RGB);
-  if (!current || *current != *target)
-    drm->RequestModeset();
+  QueueConnectorProperty(m_rangeRequest, BROADCAST_RGB, targetName);
 }
 
-void CWinSystemGbm::RetryBroadcastRange()
+bool CWinSystemGbm::QueueConnectorProperty(PropertyRequest& request,
+                                           const char* property,
+                                           const char* valueName)
 {
-  if (!m_broadcastRangeQueued)
+  const auto connector = m_DRM ? m_DRM->GetConnector() : nullptr;
+  if (!connector)
+    return false;
+
+  const auto target = connector->GetPropertyEnumValue(property, valueName);
+  if (!target)
+    return false;
+
+  return QueueConnectorProperty(request, property, *target, valueName);
+}
+
+bool CWinSystemGbm::QueueConnectorProperty(PropertyRequest& request,
+                                           const char* property,
+                                           uint64_t target,
+                                           std::string_view label)
+{
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  if (!drm)
+    return false;
+
+  auto connector = drm->GetConnector();
+  if (!connector || !connector->SupportsProperty(property))
+    return false;
+
+  if (connector->IsPropertyImmutable(property).value_or(false))
+    return false;
+
+  // always queue it, to replace a pending value that is not committed yet
+  if (!drm->AddProperty(connector, property, target))
+    return false;
+
+  request.property = property;
+  request.queued = true;
+  request.target = target;
+
+  CLog::LogF(LOGDEBUG, "queued connector \"{}\" = \"{}\"", property, label);
+
+  const auto current = connector->GetPropertyValue(property);
+  if (!current || *current != target)
+    drm->RequestModeset();
+
+  return true;
+}
+
+void CWinSystemGbm::ApplyMaxBpc()
+{
+  const auto value = GetTargetMaxBpc();
+  if (!value)
     return;
 
-  m_broadcastRangeQueued = false;
+  QueueConnectorProperty(m_bpcRequest, MAX_BPC, *value, std::to_string(*value));
+}
+
+void CWinSystemGbm::ApplyColorFormat()
+{
+  const ColorFormat format = GetRequestedColorFormat();
+
+  QueueConnectorProperty(m_formatRequest, COLOR_FORMAT,
+                         COLOR_FORMAT_NAMES[static_cast<size_t>(format)]);
+
+  // the format is read once, so that the tag describes the encoding that is queued with it
+  const bool yuv = IsYuvFormat(format);
+  if (yuv != m_scanoutYuv)
+    ApplyColorspace(yuv);
+}
+
+bool CWinSystemGbm::IsRequestRejected(PropertyRequest& request)
+{
+  if (!request.queued)
+    return false;
+
+  request.queued = false;
 
   const CDRMConnector* connector = m_DRM ? m_DRM->GetConnector() : nullptr;
-  if (!connector || connector->GetPropertyValue(BROADCAST_RGB) == m_broadcastRangeTarget)
+  if (!connector)
+    return false;
+
+  // a refused commit is replaced by the previous request, which may hold the same value (e.g. when
+  // switching modes), so the value alone does not tell
+  return m_DRM->LastCommitFellBack() ||
+         connector->GetPropertyValue(request.property) != request.target;
+}
+
+void CWinSystemGbm::RequeueConnectorProperties()
+{
+  ApplyConnectorProperties(true);
+
+  ApplyColorspace();
+  if (auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+      drm && drm->GetConnector() && drm->GetConnector()->SupportsProperty("HDR_OUTPUT_METADATA"))
+  {
+    if (m_hdrBlob && m_hdrBlob->IsValid())
+    {
+      drm->AddBlobProperty(drm->GetConnector(), "HDR_OUTPUT_METADATA", m_hdrBlob);
+    }
+    else if (m_hdrClearRejected)
+    {
+      // the metadata was cleared and the rejected commit did not carry that
+      drm->AddProperty(drm->GetConnector(), "HDR_OUTPUT_METADATA", m_hdrRequest.target);
+      m_hdrRequest.queued = true;
+    }
+  }
+
+  // The rejected commit took the modeset request along, and queueing only requests one when the
+  // cached value differs from the target, which it may not (same depth, other refresh rate).
+  if (m_DRM)
+    m_DRM->RequestModeset();
+}
+
+bool CWinSystemGbm::RetryDroppedCommit()
+{
+  if (!m_DRM)
+    return false;
+
+  const bool notSubmitted = !m_DRM->LastFlipSubmitted();
+  const bool failed = m_DRM->LastCommitFailed();
+  if (!notSubmitted && !failed)
+    return false;
+
+  const bool modesetLost = m_DRM->LastFlipCarriedModeset();
+  const bool queued =
+      m_rangeRequest.queued || m_formatRequest.queued || m_bpcRequest.queued || m_hdrRequest.queued;
+  const bool propertiesLost = failed && queued;
+
+  if (!modesetLost && !propertiesLost)
+    return notSubmitted; // a plain flip that failed has nothing to replay
+
+  if (propertiesLost)
+  {
+    m_hdrClearRejected = m_hdrRequest.queued;
+    m_rangeRequest.queued = false;
+    m_formatRequest.queued = false;
+    m_bpcRequest.queued = false;
+    m_hdrRequest.queued = false;
+  }
+
+  if (m_connectorRetries++ < 1)
+  {
+    CLog::LogF(LOGWARNING, "the commit did not go through, queueing the modeset {}again",
+               queued ? "and the connector properties " : "");
+
+    // the modeset alone is enough when no property was queued: the active state and the mode are
+    // read when it is committed
+    if (queued)
+      RequeueConnectorProperties();
+    else
+      m_DRM->RequestModeset();
+
+    return true;
+  }
+
+  CLog::LogF(LOGWARNING, "the commit did not go through again, the modeset is not applied");
+
+  // a probe that cannot be evaluated must not stay on
+  if (m_bpcProbe)
+  {
+    m_bpcProbe = false;
+    m_maxBpcFallback = false;
+  }
+
+  return true;
+}
+
+void CWinSystemGbm::RetryConnectorProperties()
+{
+  if (RetryDroppedCommit())
     return;
 
-  // a rejected commit drops the queued property and the modeset request, so queue them again
-  if (m_broadcastRangeRetries++ >= 1)
+  const bool bpcPending = m_bpcRequest.queued;
+  const bool rangeRejected = IsRequestRejected(m_rangeRequest);
+  const bool formatRejected = IsRequestRejected(m_formatRequest);
+  const bool bpcRejected = IsRequestRejected(m_bpcRequest);
+  const bool hdrRejected = IsRequestRejected(m_hdrRequest);
+  m_hdrClearRejected = hdrRejected;
+
+  if (!rangeRejected && !formatRejected && !bpcRejected && !hdrRejected)
   {
-    CLog::LogF(LOGWARNING, "connector \"{}\" could not be committed", BROADCAST_RGB);
+    // the requests went through, a later rejection gets its own retry
+    m_connectorRetries = 0;
+    if (m_bpcProbe && bpcPending)
+    {
+      // the default depth went through, so the chosen one was refused
+      m_bpcProbe = false;
+
+      CLog::LogF(LOGWARNING,
+                 "connector \"{}\" could not be committed with the chosen value, using the default",
+                 MAX_BPC);
+
+      // The probe kept the format that went with the chosen depth. With the default depth that
+      // format may be another one (Adaptive back to Auto), which is not committed yet.
+      ApplyConnectorProperties();
+    }
     return;
   }
 
-  ApplyBroadcastRange(true);
+  // the default depth did not help, so it was not the cause: take the choice back
+  bool probeFailed = false;
+  if (m_bpcProbe)
+  {
+    m_bpcProbe = false;
+    m_maxBpcFallback = false;
+    probeFailed = true;
+  }
+
+  // an explicit format that the display or mode refuses is not worth a retry, likely the cause
+  const bool explicitFormat = formatRejected && GetRequestedColorFormat() != ColorFormat::AUTO;
+  const bool customBpc = bpcRejected && m_maxBpc > 0 && !IsMaxBpcFallback();
+
+  // format and depth are both suspects, try the default depth first so the format is kept
+  if (explicitFormat && customBpc && !probeFailed)
+  {
+    m_probeFormat = GetRequestedColorFormat();
+    m_bpcProbe = true;
+    m_maxBpcFallback = true;
+    m_maxBpcRefused = m_bpcRequest.target;
+    m_maxBpcFailedMode = m_currentModeId;
+    m_connectorRetries = 0;
+    RequeueConnectorProperties();
+    return;
+  }
+
+  // a rejected commit drops the queued properties and the modeset request, so queue them again
+  if (!explicitFormat && m_connectorRetries++ < 1)
+  {
+    RequeueConnectorProperties();
+    return;
+  }
+
+  if (explicitFormat)
+  {
+    const ColorFormat refused = GetRequestedColorFormat();
+    m_colorFormatFailedMode = m_currentModeId;
+    ++m_colorFormatSkip;
+
+    CLog::LogF(LOGWARNING, "connector \"{}\" = \"{}\" could not be committed, using \"{}\"",
+               COLOR_FORMAT, COLOR_FORMAT_NAMES[static_cast<size_t>(refused)],
+               COLOR_FORMAT_NAMES[static_cast<size_t>(GetRequestedColorFormat())]);
+
+    m_connectorRetries = 0;
+    RequeueConnectorProperties();
+    return;
+  }
+
+  // no format left to blame, the chosen depth may be the cause
+  if (bpcRejected && m_maxBpc > 0 && !IsMaxBpcFallback())
+  {
+    CLog::LogF(LOGWARNING, "connector \"{}\" = {} could not be committed, using the default",
+               MAX_BPC, m_bpcRequest.target);
+
+    m_maxBpcFallback = true;
+    m_maxBpcRefused = m_bpcRequest.target;
+    m_maxBpcFailedMode = m_currentModeId;
+    m_connectorRetries = 0;
+    RequeueConnectorProperties();
+    return;
+  }
+
+  if (rangeRejected)
+    CLog::LogF(LOGWARNING, "connector \"{}\" could not be committed", m_rangeRequest.property);
+  if (formatRejected)
+    CLog::LogF(LOGWARNING, "connector \"{}\" could not be committed", m_formatRequest.property);
+  if (bpcRejected)
+    CLog::LogF(LOGWARNING, "connector \"{}\" could not be committed", m_bpcRequest.property);
+  if (hdrRejected)
+    CLog::LogF(LOGWARNING, "connector \"{}\" could not be committed", m_hdrRequest.property);
 }
 
 void CWinSystemGbm::UpdateDriverLimitedRange()
@@ -491,6 +1117,10 @@ void CWinSystemGbm::UpdateDriverLimitedRange()
     const auto current = connector->GetPropertyValue(BROADCAST_RGB);
     const auto limitedValue = connector->GetPropertyEnumValue(BROADCAST_RGB, BROADCAST_RGB_LIMITED);
     limited = current && limitedValue && *current == *limitedValue;
+
+    // the driver's RGB to YCbCr conversion is limited range
+    if (!limited)
+      limited = IsYuvFormatCommitted(*connector);
   }
 
   m_driverLimitedRange = limited;
@@ -539,8 +1169,18 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     return false;
   }
 
-  // keeps the property in the commit of the modeset, and retries it after a rejected commit
-  ApplyBroadcastRange();
+  m_currentModeId = res.strId;
+  // a refusal of a depth or format only holds for the mode it happened in
+  if ((m_maxBpcFallback || m_bpcProbe) && m_maxBpcFailedMode != m_currentModeId)
+  {
+    m_maxBpcFallback = false;
+    m_bpcProbe = false;
+  }
+  if (m_colorFormatSkip != 0 && m_colorFormatFailedMode != m_currentModeId)
+    m_colorFormatSkip = 0;
+
+  // the properties go out with the modeset, and are retried if it is rejected
+  ApplyConnectorProperties();
 
   struct gbm_bo* bo = nullptr;
 
@@ -592,7 +1232,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
   m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
   UpdateDriverLimitedRange();
-  RetryBroadcastRange();
+  RetryConnectorProperties();
 
   // !videoLayer alone cannot gate teardown: FlipPage also runs with videoLayer
   // false during a mode switch or renderer swap. use_count reaches 1 only when
@@ -723,6 +1363,14 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
   if (!drm)
     return;
 
+  // Adaptive follows the video: >8 bit content may need deep colour or YCbCr, so evaluate when it
+  // starts or stops. The depth goes first, as the choice of format depends on it.
+  m_contentBits = videoPicture ? videoPicture->colorBits : 0;
+  if (m_maxBpc == MAX_BPC_ADAPTIVE)
+    ApplyMaxBpc();
+  if (GetColorFormat() == ColorFormat::ADAPTIVE)
+    ApplyColorFormat();
+
   auto connector = drm->GetConnector();
   if (!connector || !connector->SupportsProperty("Colorspace"))
     return;
@@ -734,40 +1382,72 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
 
   m_colorimetry = colorimetry;
 
+  ApplyColorspace();
+}
+
+void CWinSystemGbm::ApplyColorspace()
+{
+  ApplyColorspace(IsYuvRequested());
+}
+
+void CWinSystemGbm::ApplyColorspace(bool yuv)
+{
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  if (!drm)
+    return;
+
+  auto connector = drm->GetConnector();
+  if (!connector || !connector->SupportsProperty("Colorspace"))
+    return;
+
+  const KODI::UTILS::Colorimetry colorimetry = m_colorimetry;
+  m_scanoutYuv = yuv;
+
   // The DRM Colorspace connector property controls what colorimetry tag the
   // driver transmits in the HDMI AVI InfoFrame (or DisplayPort VSC SDP). The
   // transmitted tag must match the pixel encoding actually on the wire.
-  // Kodi scans out to an RGB primary plane (XR24/XR30/AB4H), so we must pick
-  // an RGB-variant Colorspace. Signaling YCC while sending RGB causes most
-  // DP-to-HDMI bridges (incl. LSPCON) to misinterpret the signal.
+  // Kodi scans out to an RGB primary plane (XR24/XR30/AB4H), which the driver sends as RGB or
+  // converts when a YCbCr "color format" is requested. Signaling YCC while sending RGB, or the
+  // opposite, causes most DP-to-HDMI bridges (incl. LSPCON) to misinterpret the signal.
   //
   // The CTA-861 standard (used by both HDMI and DisplayPort for colorimetry
   // signaling) defines explicit RGB variants only for wide-gamut spaces
   // (BT.2020_RGB, DCI-P3_RGB). BT.709 RGB and BT.601 RGB are signaled via
   // "Default", with the sink inferring primaries from the transmitted mode
   // (HD resolution -> BT.709, SD resolution -> BT.601).
+  //
+  // For YCbCr, wide gamut content is tagged BT2020_YCC and the rest BT709_YCC: the driver's
+  // conversion does not depend on the resolution, so "Default" could read an SD mode as BT.601.
   KODI::UTILS::Colorimetry scanoutColorimetry;
   switch (colorimetry)
   {
     case KODI::UTILS::Colorimetry::BT2020_YCC:
     case KODI::UTILS::Colorimetry::BT2020_CYCC:
-      scanoutColorimetry = KODI::UTILS::Colorimetry::BT2020_RGB;
+      scanoutColorimetry =
+          yuv ? KODI::UTILS::Colorimetry::BT2020_YCC : KODI::UTILS::Colorimetry::BT2020_RGB;
       break;
     default:
-      // BT709_YCC, SMPTE_170M_YCC, and all other YCC variants map to Default,
-      // which signals sRGB/BT.709 RGB (HD) or BT.601 RGB (SD) based on the
-      // transmitted resolution.
-      scanoutColorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+      // BT709_YCC, SMPTE_170M_YCC and all other YCC variants map to Default for RGB, see above
+      scanoutColorimetry =
+          yuv ? KODI::UTILS::Colorimetry::BT709_YCC : KODI::UTILS::Colorimetry::DEFAULT;
       break;
   }
 
   std::optional<uint64_t> colorspace =
       connector->GetPropertyEnumValue("Colorspace", ColorimetryMap.at(scanoutColorimetry));
+  if (!colorspace && yuv)
+  {
+    // no YCC variant listed: an untagged signal is better than a wrong one
+    scanoutColorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+    colorspace =
+        connector->GetPropertyEnumValue("Colorspace", ColorimetryMap.at(scanoutColorimetry));
+  }
+
   if (colorspace)
   {
-    CLog::LogF(LOGDEBUG, "setting connector colorspace to {} (source {})",
+    CLog::LogF(LOGDEBUG, "setting connector colorspace to {} (source {}, {} output)",
                KODI::UTILS::ColorimetryToString(scanoutColorimetry),
-               KODI::UTILS::ColorimetryToString(colorimetry));
+               KODI::UTILS::ColorimetryToString(colorimetry), yuv ? "YCbCr" : "RGB");
     drm->AddProperty(connector, "Colorspace", colorspace.value());
     drm->SetActive(true);
   }
@@ -801,6 +1481,12 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       CLog::LogF(LOGDEBUG, "clearing HDR_OUTPUT_METADATA");
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
       drm->SetActive(true);
+
+      // tracked, as a rejected commit falls back to the previous request, which still has the HDR
+      // metadata, and nothing else would send the clear again
+      m_hdrRequest.property = "HDR_OUTPUT_METADATA";
+      m_hdrRequest.queued = true;
+      m_hdrRequest.target = 0;
 
       m_hdrBlob.reset();
     }
@@ -842,6 +1528,9 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     else
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
     drm->SetActive(true);
+
+    // replaces a clear that was not committed yet
+    m_hdrRequest.queued = false;
   }
 
   return m_hdrBlob && m_hdrBlob->IsValid();

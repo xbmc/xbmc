@@ -533,6 +533,7 @@ void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigne
   {
     m_fullRange = fullRange;
     m_reloadShaders = true;
+    m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   }
 
   // if its first pass, just init textures and return
@@ -614,6 +615,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, unsigned int flags, unsig
   {
     m_fullRange = fullRange;
     m_reloadShaders = true;
+    m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   }
 
   if (IsGuiLayer())
@@ -2193,6 +2195,7 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
       tmp.color_space = toneMap ? AVCOL_SPC_UNSPECIFIED : buf.m_srcColSpace;
       tmp.iWidth = m_sourceWidth;
       tmp.iHeight = m_sourceHeight;
+      tmp.colorBits = buf.m_srcBits;
       CServiceBroker::GetWinSystem()->SetColorimetry(&tmp);
     }
 

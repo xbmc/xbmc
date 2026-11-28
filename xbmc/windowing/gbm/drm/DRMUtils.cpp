@@ -47,10 +47,22 @@ CDRMUtils::~CDRMUtils()
 
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
+  // m_mode points into the connector's modes, which CheckConnector() frees when it reloads a
+  // disconnected connector. There is no mode until a new one is found, whatever the outcome.
+  m_mode = nullptr;
+
   if (!m_connector->CheckConnector())
     return false;
 
-  m_mode = m_connector->GetModeForIndex(std::atoi(res.strId.c_str()));
+  // the reloaded connector can list other modes than the one the index was made for
+  const int index = std::atoi(res.strId.c_str());
+  if (index < 0 || index >= m_connector->GetModesCount())
+  {
+    CLog::LogF(LOGERROR, "mode {} is not listed by the connector anymore", res.strId);
+    return false;
+  }
+
+  m_mode = m_connector->GetModeForIndex(index);
   m_width = res.iWidth;
   m_height = res.iHeight;
 
@@ -847,6 +859,12 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
 
 RESOLUTION_INFO CDRMUtils::GetCurrentMode()
 {
+  if (!m_mode)
+  {
+    CLog::LogF(LOGERROR, "there is no current mode");
+    return {};
+  }
+
   return GetResolutionInfo(m_mode);
 }
 

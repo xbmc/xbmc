@@ -37,6 +37,9 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   // referencing an invalid id and the kernel rejects with EINVAL.
   CDRMPropertyBlob modeBlob;
 
+  m_commitFellBack = false;
+  m_commitFailed = false;
+
   if (m_old_crtc != nullptr)
   {
     if (m_old_crtc->GetId() != m_crtc->GetId())
@@ -72,6 +75,9 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     }
     m_old_crtc = nullptr;
   }
+
+  // the modeset request is spent from here on, whether or not the commit goes through
+  m_flipModeset = (flags & DRM_MODE_ATOMIC_ALLOW_MODESET) != 0;
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
@@ -134,6 +140,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWINDOWING))
     m_req->LogAtomicRequest();
 
+  m_flipSubmitted = true;
+
   auto ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
   if (ret < 0)
   {
@@ -141,6 +149,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
                "test commit failed: ({}) - falling back to last successful atomic "
                "request",
                strerror(errno));
+
+    m_commitFellBack = true;
 
     auto oldRequest = m_atomicRequestQueue.front().get();
     CDRMAtomicRequest::LogAtomicDiff(m_req, oldRequest);
@@ -155,6 +165,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   if (ret < 0)
   {
     CLog::LogF(LOGERROR, "atomic commit failed: {}", strerror(errno));
+    m_commitFailed = true;
     m_atomicRequestQueue.pop_back();
   }
   else
@@ -167,7 +178,12 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     m_req->CacheProperties();
 
     if (m_atomicRequestQueue.size() > 1)
-      m_atomicRequestQueue.pop_front();
+    {
+      if (m_commitFellBack)
+        m_atomicRequestQueue.pop_back(); // discard the rejected request
+      else
+        m_atomicRequestQueue.pop_front(); // discard the previous accepted request
+    }
   }
 
   if (m_inFenceFd != -1)
@@ -183,6 +199,25 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
 {
   std::unique_lock lock(m_reqLock);
+
+  m_commitFellBack = false;
+  m_commitFailed = false;
+  m_flipSubmitted = false;
+  m_flipModeset = false;
+
+  // Nothing can be committed without a mode (a mode change failed on a disconnected connector).
+  // The modeset stays pending for the next mode.
+  if (!m_mode)
+  {
+    CLog::LogF(LOGDEBUG, "no mode, skipping commit");
+
+    if (m_inFenceFd != -1)
+    {
+      close(m_inFenceFd);
+      m_inFenceFd = -1;
+    }
+    return;
+  }
 
   struct drm_fb* drm_fb = nullptr;
   uint32_t flags = 0;

@@ -29,6 +29,12 @@ static int flip_happening = 0;
 
 bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)
 {
+  if (!m_mode)
+  {
+    CLog::LogF(LOGERROR, "there is no mode to set");
+    return false;
+  }
+
   struct drm_fb* drm_fb = DrmFbGetFromBo(bo);
 
   auto ret = drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, 0, 0,
