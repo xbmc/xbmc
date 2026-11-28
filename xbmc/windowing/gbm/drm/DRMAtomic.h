@@ -47,6 +47,9 @@ public:
                        const char* name,
                        const std::shared_ptr<CDRMPropertyBlob>& blob);
 
+  //! Commit one property on its own, for when no frame follows to carry it
+  bool CommitProperty(CDRMObject* object, const char* name, uint64_t value);
+
   // Probe whether any DRM device supports atomic modesetting, with no
   // connector required. Used to decide atomic-vs-legacy before falling back.
   static bool SupportsAtomicModesetting();

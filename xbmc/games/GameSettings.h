@@ -42,6 +42,7 @@ public:
   unsigned int MaxRewindTimeSec();
   bool SyncPlaybackToDisplay();
   double SyncToDisplayLimit();
+  bool VariableRefreshRate() const;
   bool RunaheadEnabled() const;
   unsigned int RunaheadFrames() const;
   /*!

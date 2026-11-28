@@ -49,6 +49,7 @@ const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT = "gamesgeneral.synctodisplaylimit";
+const std::string SETTING_GAMES_VARIABLE_REFRESH_RATE = "gamesgeneral.variablerefreshrate";
 const std::string SETTING_GAMES_ENABLERUNAHEAD = "gamesgeneral.enablerunahead";
 const std::string SETTING_GAMES_RUNAHEADFRAMES = "gamesgeneral.runaheadframes";
 const std::string SETTING_GAMES_HDR_VIDEO_FILTERS = "gamesgeneral.hdrvideofilters";
@@ -171,6 +172,11 @@ bool CGameSettings::SyncPlaybackToDisplay()
 double CGameSettings::SyncToDisplayLimit()
 {
   return std::max(m_settings->GetInt(SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT), 0) / 100.0;
+}
+
+bool CGameSettings::VariableRefreshRate() const
+{
+  return m_settings->GetBool(SETTING_GAMES_VARIABLE_REFRESH_RATE);
 }
 
 bool CGameSettings::HdrWithVideoFilters() const
