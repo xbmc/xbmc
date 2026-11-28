@@ -126,8 +126,17 @@ TEST_P(TrailerTest, FindTrailer)
   }
 
   CFileItem item(input_path, false);
-  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true),
-            trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer));
+  const std::string found{trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer)};
+  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true), found);
+
+  // A library item's path is videodb:// and its file the dynamic path; the cases
+  // without a trailer are excluded protocols, never a library item's file
+  if (!trailer.empty())
+  {
+    CFileItem libraryItem("videodb://movies/titles/1", false);
+    libraryItem.SetDynPath(input_path);
+    EXPECT_EQ(VIDEO::UTILS::FindTrailer(libraryItem, true), found);
+  }
 
   if (!temp_root.empty())
     XFILE::CDirectory::RemoveRecursive(temp_root);
@@ -159,6 +168,25 @@ const auto trailer_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, TrailerTest, testing::ValuesIn(trailer_tests));
+
+TEST(TestVideoUtils, FindTrailerOfALibraryItemUsesItsDynamicPath)
+{
+  std::error_code ec;
+  const std::string temp_path{fs::create_temp_directory(ec)};
+  ASSERT_FALSE(ec);
+  const std::string video{URIUtils::AddFileToFolder(temp_path, "movie.mkv")};
+  const std::string trailer{URIUtils::AddFileToFolder(temp_path, "movie-trailer.mkv")};
+  for (const std::string& path : {video, trailer})
+  {
+    std::ofstream of(path);
+  }
+
+  CFileItem item("videodb://movies/titles/1", false);
+  item.SetDynPath(video);
+  EXPECT_EQ(trailer, VIDEO::UTILS::FindTrailer(item, true));
+
+  XFILE::CDirectory::RemoveRecursive(temp_path);
+}
 
 TEST(TestVideoUtils, FindTrailerOfADiscFolderRipPrefersTheOneBesideBDMV)
 {
