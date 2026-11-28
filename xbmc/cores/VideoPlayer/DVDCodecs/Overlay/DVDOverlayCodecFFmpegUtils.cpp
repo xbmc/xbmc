@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 
 namespace KODI::VIDEO::SUBTITLES
 {
