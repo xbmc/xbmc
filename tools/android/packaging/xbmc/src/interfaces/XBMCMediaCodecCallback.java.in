@@ -1,0 +1,76 @@
+package @APP_PACKAGE@.interfaces;
+
+import android.media.MediaCodec;
+import android.media.MediaFormat;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+public class XBMCMediaCodecCallback extends MediaCodec.Callback
+{
+  private final AtomicLong mCurrentGeneration = new AtomicLong(0);
+  private volatile long mActiveGeneration = 0;
+  private final Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+  native void _onInputBufferAvailable(MediaCodec codec, int index);
+  native void _onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info);
+  native void _onOutputFormatChanged(MediaCodec codec, MediaFormat format);
+  native void _onError(MediaCodec codec, MediaCodec.CodecException e);
+  native void _onStartError();
+
+  private static String TAG = "@APP_NAME@";
+
+  public void resetGeneration() {
+    long nextGen = mCurrentGeneration.incrementAndGet();
+    mActiveGeneration = nextGen;
+  }
+
+  public void flushAndRestart(final MediaCodec codec) {
+    final long nextGen = mCurrentGeneration.incrementAndGet();
+    mMainHandler.post(() -> {
+      // only start if there was no subsequent reset/dispose
+      if (mCurrentGeneration.get() != nextGen) {
+        return;
+      }
+      mActiveGeneration = nextGen;
+      try {
+        if (codec != null) {
+          codec.start();
+        }
+      } catch (IllegalStateException e) {
+        Log.e(TAG, "XBMCMediaCodecCallback codec.start() failed " + e.getMessage());
+        _onStartError();
+      }
+    });
+  }
+
+  private boolean isCurrentGeneration() {
+    return mActiveGeneration == mCurrentGeneration.get();
+  }
+
+  @Override
+  public void onInputBufferAvailable(MediaCodec codec, int index) {
+    if (!isCurrentGeneration())
+      return;
+    _onInputBufferAvailable(codec, index);
+  }
+
+  @Override
+  public void onOutputBufferAvailable(MediaCodec codec, int index, MediaCodec.BufferInfo info) {
+    if (!isCurrentGeneration())
+      return;
+    _onOutputBufferAvailable(codec, index, info);
+  }
+
+  @Override
+  public void onOutputFormatChanged(MediaCodec codec, MediaFormat format) {
+    _onOutputFormatChanged(codec, format);
+  }
+
+  @Override
+  public void onError(MediaCodec codec, MediaCodec.CodecException e) {
+    _onError(codec, e);
+  }
+}

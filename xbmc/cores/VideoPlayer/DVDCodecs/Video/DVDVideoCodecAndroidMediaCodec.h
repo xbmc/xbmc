@@ -15,11 +15,15 @@
 #include "threads/Thread.h"
 #include "utils/Geometry.h"
 
+#include "platform/android/activity/JNIXBMCMediaCodecCallback.h"
 #include "platform/android/activity/JNIXBMCVideoView.h"
 
 #include <atomic>
+#include <condition_variable>
 #include <deque>
 #include <memory>
+#include <mutex>
+#include <optional>
 #include <utility>
 #include <vector>
 
@@ -30,6 +34,7 @@
 class CJNISurface;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
+class CJNIMediaCodecCodecException;
 class CJNIMediaCrypto;
 class CJNIMediaFormat;
 class CJNIMediaCodecBufferInfo;
@@ -107,7 +112,9 @@ private:
   std::vector<int> m_freeBuffers;
 };
 
-class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec, public CJNISurfaceHolderCallback
+class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec,
+                                        public CJNISurfaceHolderCallback,
+                                        public jni::CJNIXBMCMediaCodecCallback
 {
 public:
   CDVDVideoCodecAndroidMediaCodec(CProcessInfo& processInfo, bool surface_render = false);
@@ -129,7 +136,6 @@ public:
 
 protected:
   void Dispose();
-  void FlushInternal(void);
   void SignalEndOfStream();
   void InjectExtraData(CJNIMediaFormat& mediaformat);
   std::vector<uint8_t> GetHDRStaticMetadata();
@@ -150,7 +156,7 @@ protected:
   bool m_opened = false;
   bool m_needSecureDecoder = false;
   int m_codecControlFlags;
-  int m_state;
+  std::atomic<int> m_state{0};
 
   std::shared_ptr<jni::CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface m_jnivideosurface;
@@ -171,7 +177,6 @@ protected:
   std::unique_ptr<CBitstreamConverter> m_bitstream;
   VideoPicture m_videobuffer;
 
-  int m_indexInputBuffer;
   bool m_render_surface;
   mpeg2_sequence* m_mpeg2_sequence = nullptr;
   bool m_useDTSforPTS = false;
@@ -181,4 +186,31 @@ public:
   void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
   void surfaceCreated(CJNISurfaceHolder holder) override;
   void surfaceDestroyed(CJNISurfaceHolder holder) override;
+
+  // async mode
+  void onInputBufferAvailable(CJNIMediaCodec codec, int index) override;
+  void onOutputBufferAvailable(CJNIMediaCodec codec,
+                               int index,
+                               CJNIMediaCodecBufferInfo info) override;
+  void onOutputFormatChanged(CJNIMediaCodec codec, CJNIMediaFormat format) override;
+  void onError(CJNIMediaCodec codec, CJNIMediaCodecCodecException e) override;
+  void onStartError() override;
+
+private:
+  bool m_acceptingCallbacks{false};
+  std::mutex m_queueMutex;
+  std::condition_variable m_queueCond;
+
+  std::deque<int> m_inputBuffers;
+
+  struct OutputBuffer
+  {
+    ssize_t index{-1};
+    int64_t pts{AV_NOPTS_VALUE};
+    int flags{0};
+    std::optional<CJNIMediaFormat> format;
+  };
+
+  std::deque<OutputBuffer> m_outputBuffers;
+  std::optional<CJNIMediaFormat> m_pendingOutputFormat;
 };
