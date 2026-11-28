@@ -13,6 +13,7 @@
 #include "utils/Digest.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -70,7 +71,8 @@ private:
                          std::string const& digest,
                          std::vector<AddonInfoPtr>& addons) noexcept;
 
-  static RepositoryDirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
+  static std::optional<RepositoryDirInfo> ParseDirConfiguration(
+      const CAddonExtensions& configuration, bool firstBuild);
 
   RepositoryDirList m_dirs;
 };

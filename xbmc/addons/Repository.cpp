@@ -127,15 +127,17 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, Addo
 
   for (const auto& [_, addonExtensions] : Type(AddonType::REPOSITORY)->GetElements("dir"))
   {
-    RepositoryDirInfo dir = ParseDirConfiguration(addonExtensions);
-    if (firstBuild && dir.hashType == CDigest::Type::MD5)
+    auto dir = ParseDirConfiguration(addonExtensions, firstBuild);
+    if (!dir)
+      continue;
+    if (firstBuild && dir->hashType == CDigest::Type::MD5)
     {
       CLog::LogF(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and "
                              "will only guard against unintentional data corruption");
     }
-    if ((dir.minversion.empty() || version >= dir.minversion) &&
-        (dir.maxversion.empty() || version <= dir.maxversion))
-      m_dirs.emplace_back(std::move(dir));
+    if ((dir->minversion.empty() || version >= dir->minversion) &&
+        (dir->maxversion.empty() || version <= dir->maxversion))
+      m_dirs.emplace_back(std::move(*dir));
   }
 
   if (!firstBuild)
@@ -323,14 +325,25 @@ CRepository::FetchStatus CRepository::FetchIfChanged(std::string_view oldChecksu
   return FetchStatus::OK;
 }
 
-RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& configuration)
+std::optional<RepositoryDirInfo> CRepository::ParseDirConfiguration(
+    const CAddonExtensions& configuration, bool firstBuild)
 {
   RepositoryDirInfo dir;
   dir.checksum = configuration.GetValue("checksum").asString();
   std::string checksumStr = configuration.GetValue("checksum@verify").asString();
   if (!checksumStr.empty())
   {
-    dir.checksumType = CDigest::TypeFromString(checksumStr);
+    try
+    {
+      dir.checksumType = CDigest::TypeFromString(checksumStr);
+    }
+    catch (const std::invalid_argument& e)
+    {
+      if (firstBuild)
+        CLog::Log(LOGERROR, "Repository directory has invalid checksum@verify value '{}': {}",
+                  checksumStr, e.what());
+      return std::nullopt;
+    }
   }
   dir.info = configuration.GetValue("info").asString();
   dir.datadir = configuration.GetValue("datadir").asString();
@@ -349,7 +362,17 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
   }
   if (!hashStr.empty() && hashStr != "false")
   {
-    dir.hashType = CDigest::TypeFromString(hashStr);
+    try
+    {
+      dir.hashType = CDigest::TypeFromString(hashStr);
+    }
+    catch (const std::invalid_argument& e)
+    {
+      if (firstBuild)
+        CLog::Log(LOGERROR, "Repository directory has invalid hashes value '{}': {}", hashStr,
+                  e.what());
+      return std::nullopt;
+    }
   }
 
   dir.minversion = CAddonVersion{configuration.GetValue("@minversion").asString()};
