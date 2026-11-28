@@ -488,7 +488,7 @@ void CSMB::Init()
 {
   std::unique_lock lock(*this);
 
-  if (!m_context)
+  if (!m_context && !IsSleeping())
   {
     const std::shared_ptr<CSettings> settings =
         CServiceBroker::GetSettingsComponent()->GetSettings();

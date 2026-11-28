@@ -318,6 +318,8 @@ bool CSMBDirectory::Create(const CURL& url2)
 {
   std::unique_lock lock(smb);
   smb.Init();
+  if (!smb.IsSmbValid())
+    return false;
 
   CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
@@ -335,6 +337,8 @@ bool CSMBDirectory::Remove(const CURL& url2)
 {
   std::unique_lock lock(smb);
   smb.Init();
+  if (!smb.IsSmbValid())
+    return false;
 
   CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
@@ -355,6 +359,8 @@ bool CSMBDirectory::Exists(const CURL& url2)
 {
   std::unique_lock lock(smb);
   smb.Init();
+  if (!smb.IsSmbValid())
+    return false;
 
   // A bare server URL (smb://server/) has no share to stat, so smbc_stat() fails on it
   // even when the server is up. Count the server as existing if it can list its shares,
@@ -368,7 +374,8 @@ bool CSMBDirectory::Exists(const CURL& url2)
       return false;
 
     lock.lock();
-    smbc_closedir(fd);
+    if (smb.IsSmbValid())
+      smbc_closedir(fd);
     return true;
   }
 

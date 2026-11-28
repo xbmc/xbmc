@@ -38,6 +38,10 @@
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+#include "platform/posix/filesystem/SMBFile.h"
+#endif
+
 #if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
 #include "windowing/WinSystem.h"
 #endif
@@ -214,6 +218,9 @@ void CPowerManager::OnSleep()
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
   appPower->StopShutdownTimer();
   appPower->StopScreenSaverTimer();
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+  smb.OnSleep();
+#endif
   g_application.CloseNetworkShares();
   CServiceBroker::GetActiveAE()->Suspend();
 }
@@ -223,6 +230,9 @@ void CPowerManager::OnWake()
   CLog::Log(LOGINFO, "{}: Running resume jobs", __FUNCTION__);
 
   CServiceBroker::GetNetwork().WaitForNet();
+#if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
+  smb.OnWake();
+#endif
 
   // reset out timers
   auto& components = CServiceBroker::GetAppComponents();
