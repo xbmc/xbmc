@@ -26680,3 +26680,15 @@ msgstr ""
 msgctxt "#40866"
 msgid "What to report for a title whose picture changes shape partway through."
 msgstr ""
+
+#. Setting "lookandfeel.androidhomescreen"
+#: system/settings/android.xml
+msgctxt "#40867"
+msgid "Use as home screen"
+msgstr ""
+
+#. Help of setting "lookandfeel.androidhomescreen"
+#: system/settings/android.xml
+msgctxt "#40868"
+msgid "Offer Kodi as the Android home screen. Once enabled, Android asks which home screen to use the next time the home button is pressed, unless Kodi is the only one."
+msgstr ""

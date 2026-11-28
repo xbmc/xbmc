@@ -38,6 +38,7 @@ public:
   static void runNativeOnUiThread(void (*callback)(void*), void* variant);
 
   CJNIRect getDisplayRect();
+  void setHomeScreen(bool enabled);
 
 private:
   static CJNIMainActivity *m_appInstance;
