@@ -22,7 +22,7 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 bindir="@bindir@"
 bin_name=@APP_NAME_LC@
-APP="${bindir}/${bin_name} --standalone $@"
+APP="${bindir}/${bin_name}"
 
 @XBMC_STANDALONE_SH_PULSE@
 
@@ -32,7 +32,7 @@ LASTSUCCESSFULSTART=$(date +%s)
 
 while [ $LOOP -eq 1 ]
 do
-  $APP
+  "$APP" --standalone "$@"
   RET=$?
   NOW=$(date +%s)
   if [ $RET -ge 64 ] && [ $RET -le 66 ] || [ $RET -eq 0 ]; then # clean exit
@@ -40,13 +40,13 @@ do
   else # crash
     DIFF=$((NOW-LASTSUCCESSFULSTART))
     if [ $DIFF -gt 60 ]; then # Not on startup, ignore
-      LASTSUCESSFULSTART=$NOW
+      LASTSUCCESSFULSTART=$NOW
       CRASHCOUNT=0
     else # at startup, look sharp
       CRASHCOUNT=$((CRASHCOUNT+1))
       if [ $CRASHCOUNT -ge 3 ]; then # Too many, bail out
         LOOP=0
-        echo "${APP} has exited in an unclean state 3 times in the last ${DIFF} seconds."
+        echo "${APP} --standalone $* has exited in an unclean state 3 times in the last ${DIFF} seconds."
         echo "Something is probably wrong"
       fi
     fi

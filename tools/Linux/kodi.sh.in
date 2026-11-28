@@ -20,7 +20,6 @@
 
 APP=@APP_NAME@
 bin_name=@APP_NAME_LC@
-SAVED_ARGS="$@"
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
@@ -35,19 +34,23 @@ export __GL_YIELD=USLEEP
 # Fix wasting RAM due to fragmentation
 export MALLOC_MMAP_THRESHOLD_=131072
 
-# Check for some options used by this script
-while [ "$#" -gt "0" ]
-do
-    case "$1" in
-        --setlibdir)
-            LIBDIR="$2"
-            shift; shift
-            ;;
-        *)
-            shift
-            ;;
-    esac
-done
+# Check for some options used by this script. This is a function so that
+# shifting does not consume the arguments passed on to the application.
+check_options() {
+  while [ "$#" -gt "0" ]
+  do
+      case "$1" in
+          --setlibdir)
+              LIBDIR="$2"
+              shift; shift
+              ;;
+          *)
+              shift
+              ;;
+      esac
+  done
+}
+check_options "$@"
 
 KODI_BINARY=${APP_BINARY}
 
@@ -159,6 +162,8 @@ print_crash_report()
 
 propagate_sigterm() {
   kill -TERM "$CHILD" 2>/dev/null
+  wait "$CHILD" 2>/dev/null
+  exit 143
 }
 
 trap propagate_sigterm TERM
@@ -211,7 +216,7 @@ while [ $(( $LOOP )) = "1" ]
 do
   [ -f "${APPORT_CORE}" ] && rm -f "${APPORT_CORE}"
   LOOP=0
-  ${KODI_BINARY} ${ENV_ARGS} $SAVED_ARGS &
+  "${KODI_BINARY}" ${ENV_ARGS} "$@" &
   CHILD=$!
   wait "${CHILD}"
   RET=$?
