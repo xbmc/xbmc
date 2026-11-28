@@ -19,7 +19,6 @@ SEARCH_EXISTING_PACKAGES()
 if("${libzip_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
   # Check for dependencies
-  find_package(GnuTLS REQUIRED ${SEARCH_QUIET})
   find_package(ZLIB REQUIRED ${SEARCH_QUIET})
 
   # Eventually we will want Find modules for the following deps
@@ -29,13 +28,16 @@ if("${libzip_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
                  -DBUILD_EXAMPLES=OFF
                  -DBUILD_REGRESS=OFF
                  -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_TOOLS=OFF)
+                 -DBUILD_TOOLS=OFF
+                 -DENABLE_COMMONCRYPTO=OFF
+                 -DENABLE_GNUTLS=OFF
+                 -DENABLE_OPENSSL=OFF
+                 -DENABLE_WINDOWS_CRYPTO=OFF)
 
   set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   BUILD_DEP_TARGET()
 
-  # Todo: Gnutls dependency
   add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::ZLIB)
 
   set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::ZLIB)
