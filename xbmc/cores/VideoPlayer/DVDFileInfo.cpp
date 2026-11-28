@@ -285,7 +285,26 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
     converted = ToneMapToTexture(picture, planes, stride, *result);
 
 #if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
-  if (!converted)
+  // color management builds a 3D LUT per call, which takes seconds on ARM, so keep it for
+  // PQ, HLG and gamuts other than BT.709 and BT.601 that the tone mapping above did not convert
+  bool colorManaged = picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67;
+  switch (picture.color_primaries)
+  {
+    case AVCOL_PRI_RESERVED0:
+    case AVCOL_PRI_BT709:
+    case AVCOL_PRI_UNSPECIFIED:
+    case AVCOL_PRI_RESERVED:
+    case AVCOL_PRI_BT470BG:
+    case AVCOL_PRI_SMPTE170M:
+    case AVCOL_PRI_SMPTE240M:
+      break;
+    default:
+      colorManaged = true;
+      break;
+  }
+
+  if (!converted && colorManaged)
   {
     AVFrame* srcFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
@@ -348,7 +367,7 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
   {
     struct SwsContext* context =
         sws_getContext(picture.iWidth, picture.iHeight, picture.videoBuffer->GetFormat(), nWidth,
-                       nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                       nHeight, AV_PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
 
     if (context)
     {
@@ -360,9 +379,12 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       int srcStride[] = {stride[0], stride[1], stride[2], 0};
       uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
       int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
-      sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+      const int rows = sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
       sws_freeContext(context);
-      converted = true;
+      if (rows > 0)
+        converted = true;
+      else
+        CLog::LogF(LOGWARNING, "sws_scale failed ({}), no thumbnail", rows);
     }
   }
 
