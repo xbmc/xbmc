@@ -999,6 +999,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
     CVaapiDecodedPicture *pic = new CVaapiDecodedPicture();
     static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&(pic->DVDPic));
     m_codecControl = pic->DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
+    m_drainFlushed = false;
     pic->videoSurface = surf;
     m_bufferStats.IncDecoded();
     CPayloadWrap<CVaapiDecodedPicture> *payload = new CPayloadWrap<CVaapiDecodedPicture>(pic);
@@ -1016,14 +1017,23 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
       msg->Release();
       return CDVDVideoCodec::VC_ERROR;
     }
+    if (msg->signal == COutputControlProtocol::DRAINED && m_drainsPending > 0)
+      m_drainsPending--;
     msg->Release();
   }
 
   bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
 
   m_bufferStats.Get(decoded, processed, render, vpp);
+  // All pictures reached the postproc, which may still hold some back (e.g. the last picture of a
+  // still frame, waiting for a successor that never comes). Have them released.
+  if (drain && decoded <= 0)
+  {
+    DrainPostproc();
+    m_bufferStats.Get(decoded, processed, render, vpp);
+  }
   // if all pics are drained, break the loop by setting VC_EOF
-  if (drain && decoded <= 0 && processed <= 0 && render <= 0)
+  if (drain && decoded <= 0 && processed <= 0 && render <= 0 && m_drainsPending == 0)
     return CDVDVideoCodec::VC_EOF;
 
   while (true)
@@ -1053,13 +1063,23 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
     }
     else if (m_vaapiOutput.m_controlPort.ReceiveInMessage(&msg))
     {
-      if (msg->signal == COutputControlProtocol::STATS)
+      if (msg->signal == COutputControlProtocol::STATS ||
+          msg->signal == COutputControlProtocol::DRAINED)
       {
+        if (msg->signal == COutputControlProtocol::DRAINED && m_drainsPending > 0)
+          m_drainsPending--;
         msg->Release();
         m_bufferStats.Get(decoded, processed, render, vpp);
         if (!drain && decoded < 2 && processed < 3)
         {
           return CDVDVideoCodec::VC_BUFFER;
+        }
+        if (drain && decoded <= 0)
+        {
+          DrainPostproc();
+          m_bufferStats.Get(decoded, processed, render, vpp);
+          if (processed <= 0 && render <= 0 && m_drainsPending == 0)
+            return CDVDVideoCodec::VC_EOF;
         }
       }
       else
@@ -1081,6 +1101,15 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
   m_DisplayState = VAAPI_ERROR;
 
   return CDVDVideoCodec::VC_ERROR;
+}
+
+void CDecoder::DrainPostproc()
+{
+  if (m_drainFlushed)
+    return;
+  m_drainFlushed = true;
+  m_drainsPending++;
+  m_vaapiOutput.m_controlPort.SendOutMessage(COutputControlProtocol::DRAIN);
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
@@ -1180,7 +1209,10 @@ void CDecoder::Reset()
     else
     {
       m_bufferStats.Reset();
+      m_vaapiOutput.m_controlPort.PurgeIn(COutputControlProtocol::DRAINED);
       m_getBufferError = 0;
+      m_drainFlushed = false;
+      m_drainsPending = 0;
     }
   }
   else
@@ -1706,6 +1738,9 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         case COutputControlProtocol::FLUSH:
           msg->Reply(COutputControlProtocol::ACC);
           return;
+        case COutputControlProtocol::DRAIN:
+          m_controlPort.SendInMessage(COutputControlProtocol::DRAINED);
+          return;
         case COutputControlProtocol::PRECLEANUP:
           msg->Reply(COutputControlProtocol::ACC);
           return;
@@ -1776,6 +1811,11 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           msg->Reply(COutputControlProtocol::ACC);
           m_state = O_TOP_CONFIGURED_IDLE;
           return;
+        case COutputControlProtocol::DRAIN:
+          m_drainRequests++;
+          m_draining = true;
+          m_extTimeout = 0ms;
+          return;
         case COutputControlProtocol::PRECLEANUP:
           Flush();
           ReleaseBufferPool(true);
@@ -1845,7 +1885,14 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          if (PreferPP())
+          if (m_draining && !DrainStep())
+          {
+            m_draining = false;
+            for (; m_drainRequests > 0; m_drainRequests--)
+              m_controlPort.SendInMessage(COutputControlProtocol::DRAINED);
+          }
+
+          if (PreferPP() && !m_draining)
           {
             m_currentPicture = m_bufferPool->decodedPics.front();
             m_bufferPool->decodedPics.pop_front();
@@ -1863,7 +1910,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else
             m_state = O_TOP_CONFIGURED_IDLE;
-          m_extTimeout = 100ms;
+          m_extTimeout = m_draining ? 10ms : 100ms;
           return;
         default:
           break;
@@ -2084,6 +2131,10 @@ bool COutput::Uninit()
 
 void COutput::Flush()
 {
+  m_draining = false;
+  m_drainActive = false;
+  m_drainRequests = 0;
+
   Message *msg;
   while (m_dataPort.ReceiveOutMessage(&msg))
   {
@@ -2133,8 +2184,40 @@ void COutput::Flush()
     m_pp->Flush();
 }
 
+bool COutput::DrainStep()
+{
+  if (!m_pp)
+    return false;
+
+  while (true)
+  {
+    if (!m_drainActive)
+    {
+      if (!m_pp->Drain())
+        return false;
+      m_drainActive = true;
+    }
+
+    CVaapiProcessedPicture outPic;
+    if (m_pp->Filter(outPic))
+    {
+      m_bufferPool->processedPics.push_back(outPic);
+      m_config.stats->IncProcessed();
+      continue;
+    }
+
+    if (m_pp->DrainBlocked())
+      return true;
+
+    m_drainActive = false;
+  }
+}
+
 bool COutput::HasWork()
 {
+  if (m_draining)
+    return true;
+
   // send a pic to renderer
   if (m_bufferPool->HasFree() && !m_bufferPool->processedPics.empty())
     return true;
@@ -2608,6 +2691,8 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_backwardRefs = 0;
   m_currentIdx = 0;
   m_frameCount = 0;
+  m_lastOutIdx = -1;
+  m_drainIdx = -1;
   m_vppMethod = VS_INTERLACEMETHOD_AUTO;
 
   return UpdateDeintMethod(method);
@@ -2730,6 +2815,8 @@ bool CVppPostproc::AddPicture(CVaapiDecodedPicture &pic)
 
 bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
 {
+  m_drainBlocked = false;
+
   if (m_step>1)
   {
     Advance();
@@ -2740,17 +2827,20 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   VASurfaceID surf = m_videoSurfaces.GetFree(VA_INVALID_SURFACE);
   if (surf == VA_INVALID_SURFACE)
   {
-    CLog::Log(LOGERROR, "VAAPI - VPP - no free render target");
+    if (m_drainIdx >= 0)
+      m_drainBlocked = true;
+    else
+      CLog::Log(LOGERROR, "VAAPI - VPP - no free render target");
     return false;
   }
   // clear reference in case we return false
   m_videoSurfaces.ClearReference(surf);
 
   // move window of frames we are looking at to account for backward (=future) refs
-  const auto currentIdx = m_currentIdx - m_backwardRefs;
+  const auto currentIdx = (m_drainIdx >= 0) ? m_drainIdx : m_currentIdx - m_backwardRefs;
 
   // make sure we have all needed forward refs
-  if ((currentIdx - m_forwardRefs) < m_decodedPics.back().index)
+  if (m_drainIdx < 0 && (currentIdx - m_forwardRefs) < m_decodedPics.back().index)
   {
     Advance();
     return false;
@@ -2913,6 +3003,8 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
     return false;
   }
 
+  if (m_step == 0)
+    m_lastOutIdx = currentIdx;
   m_step++;
   outPic.videoSurface = m_videoSurfaces.GetFree(surf);
   outPic.source = this;
@@ -2925,6 +3017,9 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
 
 void CVppPostproc::Advance()
 {
+  if (m_drainIdx >= 0)
+    return;
+
   m_currentIdx++;
 
   // release all unneeded refs
@@ -2958,6 +3053,26 @@ void CVppPostproc::Flush()
     m_config.videoSurfaces->ClearRender(it->videoSurface);
     it = m_decodedPics.erase(it);
   }
+  m_lastOutIdx = m_frameCount - 1;
+  m_drainIdx = -1;
+}
+
+bool CVppPostproc::Drain()
+{
+  const int next = (m_drainIdx >= 0 ? m_drainIdx : m_lastOutIdx) + 1;
+  if (next >= m_frameCount)
+  {
+    if (m_drainIdx >= 0)
+    {
+      Flush();
+      m_currentIdx = m_frameCount;
+    }
+    return false;
+  }
+
+  m_drainIdx = next;
+  m_step = 0;
+  return true;
 }
 
 bool CVppPostproc::DoesSync()
@@ -3206,6 +3321,14 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_DVDPic.SetParams(inPic.DVDPic);
   bool result = false;
 
+  // The graph was drained (see Drain()) and is spent, start a new one
+  if (m_graphEof)
+  {
+    Close();
+    if (!Init(m_diMethod))
+      goto error;
+  }
+
   if (!CheckSuccess(vaSyncSurface(m_config.dpy, surf), "vaSyncSurface"))
     goto error;
 
@@ -3259,6 +3382,7 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
       CLog::Log(LOGERROR, "CFFmpegPostproc::AddPicture - av_buffersrc_add_frame");
       goto error;
     }
+    m_graphFed = true;
   }
   else if (m_diMethod == VS_INTERLACEMETHOD_RENDER_BOB ||
            m_diMethod == VS_INTERLACEMETHOD_NONE)
@@ -3343,6 +3467,8 @@ void CFFmpegPostproc::Close()
   }
   m_pFilterIn = nullptr;
   m_pFilterOut = nullptr;
+  m_graphFed = false;
+  m_graphEof = false;
 
   av_frame_unref(m_pFilterFrameIn);
   av_frame_unref(m_pFilterFrameOut);
@@ -3361,6 +3487,23 @@ bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
   /// \todo switching between certain methods could be done without deinit/init
   return (m_diMethod == method);
+}
+
+bool CFFmpegPostproc::Drain()
+{
+  // bwdif holds back every picture until its successor has arrived. Sending EOF makes it release
+  // the last one. The graph can't take pictures afterwards, AddPicture() rebuilds it.
+  if (m_diMethod != VS_INTERLACEMETHOD_DEINTERLACE || !m_graphFed || m_graphEof || !m_pFilterIn)
+    return false;
+
+  if (av_buffersrc_add_frame(m_pFilterIn, nullptr) < 0)
+  {
+    CLog::Log(LOGERROR, "CFFmpegPostproc::Drain - av_buffersrc_add_frame");
+    return false;
+  }
+  m_graphFed = false;
+  m_graphEof = true;
+  return true;
 }
 
 bool CFFmpegPostproc::DoesSync()
