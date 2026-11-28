@@ -111,6 +111,7 @@ const TestBcp47ValidateTag ValidityBcp47Tests[] = {
   {"es-419", true}, // UN M.49
   {"en-AA", true}, // Private use
   {"en-000", false}, // does not exist
+  {"en-US", false}, // not in the registry the tag is parsed against
   // Variant subtags
   {"en-1606nict", true},
   // as of 2026-02-07 no example in the registry of (DIGIT 3alphanum) form

@@ -20,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "language/Language.h"
 #include "language/LanguageTag.h"
 #include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
@@ -28,7 +29,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/Setting.h"
 #include "utils/ArtTypes.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
@@ -519,6 +519,24 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
   return NPT_SUCCESS;
 }
 
+std::string PickExternalSubtitle(const std::string& videoPath,
+                                 const std::vector<std::string>& subtitles)
+{
+  if (subtitles.empty())
+    return {};
+
+  const KODI::LANGUAGE::CLanguageTag preferredTag{
+      KODI::LANGUAGE::CLanguage::GetInstance().Subtitle()};
+  const auto it =
+      std::ranges::find_if(subtitles,
+                           [&videoPath, &preferredTag](const std::string& subtitle)
+                           {
+                             return CUtil::GetExternalStreamDetailsFromFilename(videoPath, subtitle)
+                                 .language.Matches(preferredTag);
+                           });
+  return it != subtitles.end() ? *it : subtitles[0];
+}
+
 PLT_MediaObject* BuildObject(CFileItem& item,
                              NPT_String& file_path,
                              bool with_count,
@@ -846,43 +864,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
         subtitles.push_back(filename);
     }
 
-    std::string subtitlePath;
-
-    if (subtitles.size() == 1)
-    {
-      subtitlePath = subtitles[0];
-    }
-    else if (!subtitles.empty())
-    {
-      std::string preferredLanguage{"en"};
-
-      /* trying to find subtitle with preferred language settings */
-      auto setting = settings->GetSetting("locale.subtitlelanguage");
-      if (!setting)
-        CLog::Log(LOGERROR, "Failed to load setting for: {}", "locale.subtitlelanguage");
-      else
-        preferredLanguage = setting->ToString();
-
-      // The setting also holds choices that name no language, such as none and original
-      const auto preferredTag{KODI::LANGUAGE::CLanguageTag::TryParse(preferredLanguage)};
-
-      for (const std::string& subtitle : subtitles)
-      {
-        if (preferredTag.has_value() &&
-            CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitle)
-                .language.Matches(*preferredTag))
-        {
-          subtitlePath = subtitle;
-          break;
-        }
-      }
-      /* if not found subtitle with preferred language, get the first one */
-      if (subtitlePath.empty())
-      {
-        subtitlePath = subtitles[0];
-      }
-    }
-
+    const std::string subtitlePath{PickExternalSubtitle(file_path.GetChars(), subtitles)};
     if (!subtitlePath.empty())
     {
       /* subtitles are added as 2 resources, 2 sec resources and 1 addon to video resource, to be compatible with

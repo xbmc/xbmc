@@ -8,6 +8,8 @@
 
 #include "FileItem.h"
 #include "XBDateTime.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnPInternal.h"
 
@@ -295,4 +297,28 @@ TEST(TestUPnPInternal, ALoneUnknownGenreIsNoGenre)
   PopulateTagFromObject(tag, object);
 
   EXPECT_TRUE(tag.GetGenre().empty());
+}
+
+TEST(TestUPnPInternal, ExternalSubtitleFollowsTheResolvedSubtitleLanguage)
+{
+  using KODI::LANGUAGE::CLanguage;
+  using KODI::LANGUAGE::CLanguageTag;
+
+  CLanguage& language = CLanguage::GetInstance();
+  const CLanguage original = language;
+  const std::vector<std::string> subtitles{"/movies/film.en.srt", "/movies/film.fr.srt",
+                                           "/movies/film.de.srt"};
+
+  language.SetUI(CLanguageTag::Parse("de"));
+  language.SetSubtitle("forced_only");
+  language.SetAudio("fr");
+  EXPECT_EQ(PickExternalSubtitle("/movies/film.mkv", subtitles), "/movies/film.fr.srt");
+
+  language.SetAudio("mediadefault");
+  EXPECT_EQ(PickExternalSubtitle("/movies/film.mkv", subtitles), "/movies/film.de.srt");
+
+  language.SetUI(CLanguageTag::Parse("es"));
+  EXPECT_EQ(PickExternalSubtitle("/movies/film.mkv", subtitles), "/movies/film.en.srt");
+
+  language = original;
 }
