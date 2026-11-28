@@ -304,6 +304,9 @@ void CAdvancedSettings::Initialize()
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
 
+  m_videoDebugThreads = false;
+  m_videoDebugThreadsCount = 5;
+
   m_videoDefaultLatency = 0.0;
   m_videoDefaultHdrExtraLatency = 0.0;
 
@@ -927,6 +930,13 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "mintempo", m_minTempo, 0.5, 0.8);
     XMLUtils::GetFloat(pElement, "maxtempo", m_maxTempo, 1.5, 2.0);
     XMLUtils::GetBoolean(pElement, "preferstereostream", m_videoPreferStereoStream);
+
+    const TiXmlElement* pDebugCpu = pElement->FirstChildElement("playerdebugcpu");
+    if (pDebugCpu)
+    {
+      XMLUtils::GetBoolean(pDebugCpu, "threads", m_videoDebugThreads);
+      XMLUtils::GetInt(pDebugCpu, "count", m_videoDebugThreadsCount, 1, 10);
+    }
 
     // Store global display latency settings
     const TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");

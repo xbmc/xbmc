@@ -12,6 +12,7 @@
 #include "utils/Temperature.h"
 
 #include "platform/linux/SysfsPath.h"
+#include "platform/linux/threads/ThreadCpuTimes.h"
 
 #include <array>
 #include <exception>
@@ -377,4 +378,9 @@ bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
   temperature.SetValid(true);
 
   return true;
+}
+
+std::vector<ThreadCpuTime> CCPUInfoLinux::GetThreadCpuTimes()
+{
+  return KODI::LINUX::GetThreadCpuTimes();
 }

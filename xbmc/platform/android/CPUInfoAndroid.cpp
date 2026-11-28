@@ -11,6 +11,8 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 
+#include "platform/linux/threads/ThreadCpuTimes.h"
+
 #include <algorithm>
 #include <array>
 #include <cstdlib>
@@ -165,6 +167,11 @@ int CCPUInfoAndroid::GetUsedPercentage()
   m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
   return m_lastUsedPercentage;
+}
+
+std::vector<ThreadCpuTime> CCPUInfoAndroid::GetThreadCpuTimes()
+{
+  return KODI::LINUX::GetThreadCpuTimes();
 }
 
 float CCPUInfoAndroid::GetCPUFrequency()
