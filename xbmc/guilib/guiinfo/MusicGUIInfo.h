@@ -8,7 +8,12 @@
 
 #pragma once
 
+#include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
+
+#include <memory>
+
+class CApplicationPlayLists;
 
 namespace KODI::GUILIB::GUIINFO
 {
@@ -18,7 +23,7 @@ class CGUIInfo;
 class CMusicGUIInfo : public CGUIInfoProvider
 {
 public:
-  CMusicGUIInfo() = default;
+  CMusicGUIInfo();
   ~CMusicGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
@@ -45,6 +50,9 @@ public:
 private:
   bool GetPartyModeLabel(std::string& value, const CGUIInfo& info) const;
   bool GetPlaylistInfo(std::string& value, const CGUIInfo& info) const;
+
+  const std::shared_ptr<CApplicationPlayLists> m_playLists;
+  mutable CLookedUpItems m_lookedUp;
 };
 
 } // namespace KODI::GUILIB::GUIINFO

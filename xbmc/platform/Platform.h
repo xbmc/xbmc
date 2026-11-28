@@ -91,6 +91,12 @@ public:
    */
   virtual void PlatformSyslog() {}
 
+  /*!
+   * \brief Called on the application thread when playback starts or stops showing video.
+   * \param playingVideo Whether video is now showing.
+   */
+  virtual void OnPlayingVideoChanged(bool playingVideo) {}
+
   /**\brief Get a platform service instance.
    */
   template<class T>

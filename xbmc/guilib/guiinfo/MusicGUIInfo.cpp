@@ -9,13 +9,10 @@
 #include "guilib/guiinfo/MusicGUIInfo.h"
 
 #include "FileItem.h"
-#include "PartyModeManager.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayLists.h"
 #include "application/ApplicationPlayer.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
@@ -33,18 +30,24 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
 #include "utils/DefaultArt.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace MUSIC_INFO;
 
+CMusicGUIInfo::CMusicGUIInfo() : m_playLists(CServiceBroker::GetPlayLists())
+{
+}
+
 bool CMusicGUIInfo::InitCurrentItem(CFileItem* item)
 {
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
   if (item &&
       (MUSIC::IsAudio(*item) || (NETWORK::IsInternetStream(*item) && appPlayer->IsPlayingAudio())))
   {
@@ -59,11 +62,10 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem* item)
     // find a thumb for this file.
     if (NETWORK::IsInternetStream(*item) && !MUSIC::IsMusicDb(*item))
     {
-      if (!g_application.m_strPlayListFile.empty())
+      if (const std::string sourcePath = m_playLists->GetPlayingSourcePath(); !sourcePath.empty())
       {
-        CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
-                  g_application.m_strPlayListFile);
-        CFileItem streamingItem(g_application.m_strPlayListFile, false);
+        CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb", sourcePath);
+        CFileItem streamingItem(sourcePath, false);
 
         CMusicThumbLoader loader;
         loader.FillThumb(streamingItem);
@@ -89,11 +91,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
                              const CGUIInfo& info,
                              std::string* fallback) const
 {
-  // For musicplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && ((info.GetInfo() >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
-                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
+  if (GUIINFO::IsPlayListEntryInfo(info, MUSICPLAYER_OFFSET_POSITION_FIRST,
+                                   MUSICPLAYER_OFFSET_POSITION_LAST))
     return GetPlaylistInfo(value, info);
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
@@ -456,19 +455,15 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
       value = item->GetProperty(info.GetData3()).asString();
       return true;
     case MUSICPLAYER_PLAYLISTLEN:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
+      if (m_playLists->GetPlayingType() == PLAYLIST::Audio)
       {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
+        value = GUIINFO::GetPlayListLengthLabel(*m_playLists, PLAYLIST::Audio);
         return true;
       }
       break;
     case MUSICPLAYER_PLAYLISTPOS:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
-      {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
-        return true;
-      }
-      break;
+      value = GUIINFO::GetPlayListPositionLabel(*m_playLists, PLAYLIST::Audio);
+      return true;
     case MUSICPLAYER_COVER:
     {
       const auto& components = CServiceBroker::GetAppComponents();
@@ -543,35 +538,23 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
 
 bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo& info) const
 {
-  int iSongs = -1;
+  int entries = -1;
 
   switch (info.GetInfo())
   {
-    case MUSICPM_SONGSPLAYED:
-      iSongs = g_partyModeManager.GetSongsPlayed();
+    case MUSICPM_MATCHINGENTRIES:
+      entries = m_playLists->GetFeedTotal();
       break;
-    case MUSICPM_MATCHINGSONGS:
-      iSongs = g_partyModeManager.GetMatchingSongs();
-      break;
-    case MUSICPM_MATCHINGSONGSPICKED:
-      iSongs = g_partyModeManager.GetMatchingSongsPicked();
-      break;
-    case MUSICPM_MATCHINGSONGSLEFT:
-      iSongs = g_partyModeManager.GetMatchingSongsLeft();
-      break;
-    case MUSICPM_RELAXEDSONGSPICKED:
-      iSongs = g_partyModeManager.GetRelaxedSongs();
-      break;
-    case MUSICPM_RANDOMSONGSPICKED:
-      iSongs = g_partyModeManager.GetRandomSongs();
+    case MUSICPM_MATCHINGENTRIESLEFT:
+      entries = m_playLists->GetFeedLeft();
       break;
     default:
       break;
   }
 
-  if (iSongs >= 0)
+  if (entries >= 0)
   {
-    value = std::to_string(iSongs);
+    value = std::to_string(entries);
     return true;
   }
 
@@ -580,60 +563,53 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo& info) 
 
 bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) const
 {
-  const PLAYLIST::CPlayList& playlist =
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
-  if (playlist.size() < 1)
+  const auto found = GUIINFO::GetPlayListEntry(*m_playLists, PLAYLIST::Audio, info);
+  if (!found)
     return false;
 
-  int index = info.GetData2();
-  if (info.GetData1() == 1)
-  { // relative index (requires current playlist is TYPE_MUSIC)
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::Id::TYPE_MUSIC)
-      return false;
-
-    index = CServiceBroker::GetPlaylistPlayer().GetNextItemIdx(index);
-  }
-
-  if (index < 0 || index >= playlist.size())
-    return false;
-
-  const CFileItemPtr playlistItem = playlist[index];
-
-  // The playlist position is known without inspecting the item at all.
   if (info.GetInfo() == MUSICPLAYER_PLAYLISTPOS)
   {
-    value = std::to_string(index + 1);
+    value = std::to_string(
+        m_playLists->GetPlayList(PLAYLIST::Audio).GetPlayOrderPosition(found->entry) + 1);
     return true;
   }
 
   // The path labels are answered from the item itself. Loading the tag for them opens a database
-  // connection, which is expensive on a remote database and yields nothing for items that are not
-  // part of the music library.
-  const bool needsTag = info.GetInfo() != PLAYER_PATH && info.GetInfo() != PLAYER_FILEPATH &&
-                        info.GetInfo() != PLAYER_FILENAME;
-
-  if (needsTag && playlistItem->HasMusicInfoTag() && !playlistItem->GetMusicInfoTag()->Loaded())
+  // connection, which is expensive on a remote database.
+  if (info.GetInfo() == PLAYER_PATH || info.GetInfo() == PLAYER_FILEPATH ||
+      info.GetInfo() == PLAYER_FILENAME)
   {
-    playlistItem->LoadMusicTag();
-    playlistItem->GetMusicInfoTag()->SetLoaded();
+    if (GetLabel(value, found->item.get(), 0, CGUIInfo(info.GetInfo()), nullptr))
+      return true;
+    return GUIINFO::GetFileFallbackLabel(value, *found->item, info.GetInfo());
   }
+
+  const CFileItemPtr playlistItem =
+      GUIINFO::LookUpOnce(*m_playLists, PLAYLIST::Audio, *found, m_lookedUp,
+                          [](CFileItem& item)
+                          {
+                            if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->Loaded())
+                            {
+                              item.LoadMusicTag();
+                              item.GetMusicInfoTag()->SetLoaded();
+                            }
+                            if (!item.HasArt(ART::TYPE::THUMB))
+    {
+      CMusicThumbLoader loader;
+      loader.LoadItem(&item);
+                            }
+                          });
 
   if (info.GetInfo() == MUSICPLAYER_COVER)
   {
-    // try to set a thumbnail
-    if (!playlistItem->HasArt(ART::TYPE::THUMB))
-    {
-      CMusicThumbLoader loader;
-      loader.LoadItem(playlistItem.get());
-      // still no thumb? then just the set the default cover
-      if (!playlistItem->HasArt(ART::TYPE::THUMB))
-        playlistItem->SetArt(ART::TYPE::THUMB, ART::DEFAULT::ALBUM_COVER);
-    }
-    value = playlistItem->GetArt(ART::TYPE::THUMB);
+    value = playlistItem->HasArt(ART::TYPE::THUMB) ? playlistItem->GetArt(ART::TYPE::THUMB)
+                                                   : ART::DEFAULT::ALBUM_COVER;
     return true;
   }
 
-  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr);
+  if (GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr))
+    return true;
+  return GUIINFO::GetFileFallbackLabel(value, *playlistItem, info.GetInfo());
 }
 
 bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
@@ -642,11 +618,8 @@ bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
                                      const CGUIInfo& info,
                                      std::string* fallback)
 {
-  // No fallback for musicplayer "offset" and "position" info labels
-  if (info.GetData1() && ((info.GetInfo() >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
-                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
+  if (GUIINFO::IsPlayListEntryInfo(info, MUSICPLAYER_OFFSET_POSITION_FIRST,
+                                   MUSICPLAYER_OFFSET_POSITION_LAST))
     return false;
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
@@ -658,10 +631,7 @@ bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
       // MUSICPLAYER_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case MUSICPLAYER_TITLE:
-        value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return GUIINFO::GetFileFallbackLabel(value, *item, info.GetInfo());
       default:
         break;
     }
@@ -694,29 +664,14 @@ bool CMusicGUIInfo::GetBool(bool& value,
       value = StringUtils::EqualsNoCase(info.GetData3(), "files");
       return value; // if no match for this provider, other providers shall be asked.
     case MUSICPLAYER_HASPREVIOUS:
-      // requires current playlist be TYPE_MUSIC
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
-      {
-        value = (CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() > 0); // not first song
-        return true;
-      }
-      break;
+      value = m_playLists->HasPrevious(PLAYLIST::Audio);
+      return true;
     case MUSICPLAYER_HASNEXT:
-      // requires current playlist be TYPE_MUSIC
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
-      {
-        value = (CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() <
-                 (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC).size() -
-                  1)); // not last song
-        return true;
-      }
-      break;
+      value = m_playLists->HasNext(PLAYLIST::Audio);
+      return true;
     case MUSICPLAYER_PLAYLISTPLAYING:
     {
-      const auto& components = CServiceBroker::GetAppComponents();
-      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-      if (appPlayer->IsPlayingAudio() &&
-          CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
+      if (m_playLists->GetPlayingType() == PLAYLIST::Audio)
       {
         value = true;
         return true;
@@ -725,20 +680,13 @@ bool CMusicGUIInfo::GetBool(bool& value,
     }
     case MUSICPLAYER_EXISTS:
     {
-      int index = info.GetData2();
+      const int index = info.GetData2();
       if (info.GetData1() == 1)
       { // relative index
-        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::Id::TYPE_MUSIC)
-        {
-          value = false;
-          return true;
-        }
-        index += CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
+        value = m_playLists->HasEntry(PLAYLIST::Audio, index);
+        return true;
       }
-      value =
-          (index >= 0 &&
-           index <
-               CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC).size());
+      value = (index >= 0 && index < m_playLists->GetPlayList(PLAYLIST::Audio).Size());
       return true;
     }
     case MUSICPLAYER_ISMULTIDISC:
@@ -752,7 +700,7 @@ bool CMusicGUIInfo::GetBool(bool& value,
     // MUSICPM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case MUSICPM_ENABLED:
-      value = g_partyModeManager.IsEnabled();
+      value = m_playLists->GetFedType().has_value();
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -36,7 +36,6 @@ private:
   bool Parse(const CFileItem& item, const std::string& contextWindow);
 
   void Build(const std::string& function, const std::vector<std::string>& params);
-  void BuildPlayMedia(const CFileItem& item, const std::string& target);
 
   void SetExecString();
 

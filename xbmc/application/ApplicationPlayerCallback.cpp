@@ -17,6 +17,8 @@
 #include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
+#include "application/PlaybackAnnouncer.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "cores/VideoPlayer/LiveGeometryMonitor.h"
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDirectory.h"
@@ -38,6 +40,7 @@
 #include "utils/SaveFileStateJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
@@ -490,7 +493,7 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 
 void CApplicationPlayerCallback::OnPlayBackError()
 {
-  //@todo Playlists can be continued by calling OnPlaybackEnded instead
+  //! @todo Playlists could continue by calling OnPlayBackEnded() instead
   // open error dialog
   CGUIMessage msg(GUI_MSG_PLAYBACK_ERROR, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -559,6 +562,77 @@ void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+}
+
+namespace
+{
+// Temporary: the streams as JSON-RPC v14 announces them; removed with JSON-RPC v15.
+CVariant V14StreamToObject(int index, const SubtitleStreamInfo& info)
+{
+  CVariant stream(CVariant::VariantTypeObject);
+  stream["index"] = index;
+  stream["codec"] = info.codecDesc;
+  stream["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
+  stream["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) != 0;
+  stream["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
+  stream["language"] = info.language.ToString();
+  stream["name"] = info.name;
+  return stream;
+}
+
+CVariant V14StreamToObject(int index, const AudioStreamInfo& info)
+{
+  CVariant stream(CVariant::VariantTypeObject);
+  stream["index"] = index;
+  stream["bitrate"] = info.bitrate;
+  stream["channels"] = info.channels;
+  stream["codec"] = info.codecDesc;
+  stream["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
+  stream["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0;
+  stream["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
+  stream["language"] = info.language.ToString();
+  stream["name"] = info.name;
+  return stream;
+}
+
+CVariant V14StreamToObject(int index, const VideoStreamInfo& info)
+{
+  CVariant stream(CVariant::VariantTypeObject);
+  stream["index"] = index;
+  stream["codec"] = info.codecName;
+  stream["height"] = info.height;
+  stream["width"] = info.width;
+  stream["language"] = info.language.ToString();
+  stream["name"] = info.name;
+  return stream;
+}
+} // namespace
+
+void CApplicationPlayerCallback::OnSubtitleVisibilityChanged(bool visible)
+{
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->Announce(
+      ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{.subtitleEnabled = visible});
+}
+
+void CApplicationPlayerCallback::OnSubtitleStreamChanged(int index, const SubtitleStreamInfo& info)
+{
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->Announce(
+      ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{.currentSubtitle =
+                                                         V14StreamToObject(index, info)});
+}
+
+void CApplicationPlayerCallback::OnAudioStreamChanged(int index, const AudioStreamInfo& info)
+{
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->Announce(
+      ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{.currentAudioStream =
+                                                         V14StreamToObject(index, info)});
+}
+
+void CApplicationPlayerCallback::OnVideoStreamChanged(int index, const VideoStreamInfo& info)
+{
+  CServiceBroker::GetAppComponents().GetComponent<CPlaybackAnnouncer>()->Announce(
+      ANNOUNCEMENT::EVENT::PLAYER::PropertiesChanged{.currentVideoStream =
+                                                         V14StreamToObject(index, info)});
 }
 
 void CApplicationPlayerCallback::OnContentGeometryChanged(const LiveGeometryUpdate& update)

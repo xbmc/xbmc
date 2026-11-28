@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
+#include "filesystem/File.h"
 #include "filesystem/IDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "test/TestUtils.h"
@@ -47,6 +48,31 @@ TEST(TestDirectory, General)
   EXPECT_TRUE(XFILE::CDirectory::Exists(tmppath1));
   EXPECT_TRUE(XFILE::CDirectory::Remove(tmppath1));
   EXPECT_FALSE(XFILE::CDirectory::Exists(tmppath1));
+}
+
+TEST(TestDirectory, ListingOrderIsKeptForPlayListOrder)
+{
+  const std::string dir =
+      URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://temp/"), "listing");
+  ASSERT_TRUE(XFILE::CDirectory::Create(dir));
+  const std::string m3u = URIUtils::AddFileToFolder(dir, "order.m3u");
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(m3u, true));
+    const std::string body = "#EXTM3U\nc.mp3\na.mp3\nb.mp3\n";
+    file.Write(body.data(), body.size());
+  }
+
+  CFileItemList items;
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(m3u, items, "", XFILE::DIR_FLAG_DEFAULTS));
+  ASSERT_EQ(3, items.Size());
+  items.Sort(SortBy::LABEL, SortOrder::ASCENDING);
+  items.Sort(SortBy::PLAYLIST_ORDER, SortOrder::ASCENDING);
+
+  EXPECT_EQ("c.mp3", URIUtils::GetFileName(items[0]->GetPath()));
+  EXPECT_EQ("a.mp3", URIUtils::GetFileName(items[1]->GetPath()));
+  EXPECT_EQ("b.mp3", URIUtils::GetFileName(items[2]->GetPath()));
+  EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(dir));
 }
 
 TEST(TestDirectory, ExistsAfterCreateInListedFolder)

@@ -170,7 +170,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
         value = XMLUtils::GetAttribute(element, "href");
         if (!value.empty())
         { // found an entryref, let's try loading that url
-          std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
+          std::unique_ptr<CPlayListFile> playlist(CPlayListFactory::Create(value));
           if (nullptr != playlist)
             if (playlist->Load(value))
               Add(*playlist);

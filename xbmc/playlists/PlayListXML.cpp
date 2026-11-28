@@ -155,7 +155,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
 
 void CPlayListXML::Save(const std::string& strFileName) const
 {
-  if (m_vecItems.empty())
+  if (m_items.empty())
     return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
@@ -167,9 +167,9 @@ void CPlayListXML::Save(const std::string& strFileName) const
   std::string write;
   write += StringUtils::Format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
   write += StringUtils::Format("<streams>\n");
-  for (int i = 0; i < (int)m_vecItems.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItemPtr item = m_vecItems[i];
+    CFileItemPtr item = m_items[i];
     write += StringUtils::Format("  <stream>\n" );
     write += StringUtils::Format("    <url>{}</url>", item->GetPath().c_str());
     write += StringUtils::Format("    <name>{}</name>", item->GetLabel());

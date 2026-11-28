@@ -28,7 +28,7 @@ namespace ANNOUNCEMENT::V14
 
 namespace
 {
-using KODI::PLAYLIST::Id;
+using Id = PlaylistId;
 
 constexpr char ON_PROPERTY_CHANGED[] = "OnPropertyChanged";
 constexpr char ON_VOLUME_CHANGED[] = "OnVolumeChanged";
@@ -520,6 +520,22 @@ std::vector<Notification> NotificationsOf(const Announcement& announcement)
     notifications.push_back(
         {FlagOf(announcement), sender, MessageOf(announcement), WithItemOf(announcement, *data)});
   return notifications;
+}
+
+std::optional<KODI::PLAYLIST::Type> PlayListFromId(PlaylistId id)
+{
+  if (id == PlaylistId::TYPE_MUSIC)
+    return KODI::PLAYLIST::Audio;
+  if (id == PlaylistId::TYPE_VIDEO)
+    return KODI::PLAYLIST::Video;
+  return std::nullopt;
+}
+
+PlaylistId IdFromPlayList(std::optional<KODI::PLAYLIST::Type> type)
+{
+  if (!type)
+    return PlaylistId::TYPE_NONE;
+  return *type == KODI::PLAYLIST::Audio ? PlaylistId::TYPE_MUSIC : PlaylistId::TYPE_VIDEO;
 }
 
 } // namespace ANNOUNCEMENT::V14

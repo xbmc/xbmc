@@ -2664,7 +2664,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: xbmc/PlayListPlayer.cpp
+#: xbmc/application/PlayListsGUIListener.cpp
 #: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 #: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#559"
@@ -2858,9 +2858,9 @@ msgid "One"
 msgstr ""
 
 #. Label used for buttons and select options as a reference to match all items or occurrences.
+#: xbmc/application/ApplicationPlayLists.cpp
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
-#: xbmc/PlayListPlayer.cpp
 #: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsDatabase.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
@@ -5613,11 +5613,7 @@ msgctxt "#10213"
 msgid "buffering"
 msgstr ""
 
-msgctxt "#10214"
-msgid "Opening stream"
-msgstr ""
-
-#empty strings from id 10215 to 10499
+#empty strings from id 10214 to 10499
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10500"
@@ -18417,12 +18413,12 @@ msgstr ""
 #empty strings from id 34131 to 34200
 #34131-34200 reserved for future use
 
-#: xbmc/PlayListPlayer.cpp
+#: xbmc/application/PlayListsGUIListener.cpp
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr ""
 
-#: xbmc/PlayListPlayer.cpp
+#: xbmc/application/PlayListsGUIListener.cpp
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr ""

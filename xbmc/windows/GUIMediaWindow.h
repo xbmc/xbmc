@@ -160,6 +160,8 @@ protected:
   virtual void LoadPlayList(const std::string& strFileName) {}
   virtual bool OnPlayMedia(int iItem, const std::string &player = "");
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "");
+  //! Whether playing from an item in a folder plays the folder in order, whatever the shuffle.
+  virtual bool PlaysFolderInOrder() const { return false; }
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);

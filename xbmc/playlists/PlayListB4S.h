@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "PlayList.h"
+#include "PlayListFile.h"
 
 namespace KODI::PLAYLIST
 {
 
-class CPlayListB4S : public CPlayList
+class CPlayListB4S : public CPlayListFile
 {
 public:
   CPlayListB4S(void);

@@ -14,10 +14,10 @@
 class CFileItemList;
 class CVariant;
 
-namespace KODI::PLAYLIST
+namespace ANNOUNCEMENT::V14
 {
-enum class Id;
-} // namespace KODI::PLAYLIST
+enum class PlaylistId;
+} // namespace ANNOUNCEMENT::V14
 
 namespace JSONRPC
 {
@@ -35,12 +35,13 @@ namespace JSONRPC
     static JSONRPC_STATUS Swap(const CVariant& parameterObject, CVariant& result);
 
   private:
-    static KODI::PLAYLIST::Id GetPlaylist(const CVariant& playlist);
-    static JSONRPC_STATUS GetPropertyValue(KODI::PLAYLIST::Id playlistId,
+    static ANNOUNCEMENT::V14::PlaylistId GetPlaylist(const CVariant& playlist);
+    static JSONRPC_STATUS GetPropertyValue(ANNOUNCEMENT::V14::PlaylistId playlistId,
                                            const std::string& property,
                                            CVariant& result);
-    static bool CheckMediaParameter(KODI::PLAYLIST::Id playlistId, const CVariant& itemObject);
-    static bool HandleItemsParameter(KODI::PLAYLIST::Id playlistId,
+    static bool CheckMediaParameter(ANNOUNCEMENT::V14::PlaylistId playlistId,
+                                    const CVariant& itemObject);
+    static bool HandleItemsParameter(ANNOUNCEMENT::V14::PlaylistId playlistId,
                                      const CVariant& itemParam,
                                      CFileItemList& items);
   };

@@ -28,26 +28,29 @@
 #define TMSG_MASK_PERIPHERALS             (1<<26)
 
 // defines here
+// param1: the position to play, or -1 to play from the start. param2: the PLAYLIST::Type, or -1
+// for the playing playlist.
 #define TMSG_PLAYLISTPLAYER_PLAY          TMSG_MASK_PLAYLISTPLAYER + 0
+// param1: the PLAYLIST::Type to move on or back, or -1 for the playing playlist.
 #define TMSG_PLAYLISTPLAYER_NEXT          TMSG_MASK_PLAYLISTPLAYER + 1
 #define TMSG_PLAYLISTPLAYER_PREV          TMSG_MASK_PLAYLISTPLAYER + 2
-#define TMSG_PLAYLISTPLAYER_ADD           TMSG_MASK_PLAYLISTPLAYER + 3
-#define TMSG_PLAYLISTPLAYER_CLEAR         TMSG_MASK_PLAYLISTPLAYER + 4
-#define TMSG_PLAYLISTPLAYER_SHUFFLE       TMSG_MASK_PLAYLISTPLAYER + 5
-#define TMSG_PLAYLISTPLAYER_GET_ITEMS     TMSG_MASK_PLAYLISTPLAYER + 6
-#define TMSG_PLAYLISTPLAYER_PLAY_ITEM_ID  TMSG_MASK_PLAYLISTPLAYER + 7
-#define TMSG_PLAYLISTPLAYER_INSERT        TMSG_MASK_PLAYLISTPLAYER + 8
-#define TMSG_PLAYLISTPLAYER_REMOVE        TMSG_MASK_PLAYLISTPLAYER + 9
-#define TMSG_PLAYLISTPLAYER_SWAP          TMSG_MASK_PLAYLISTPLAYER + 10
-#define TMSG_PLAYLISTPLAYER_REPEAT        TMSG_MASK_PLAYLISTPLAYER + 11
-#define TMSG_MEDIA_PLAY                   TMSG_MASK_PLAYLISTPLAYER + 12
-#define TMSG_MEDIA_STOP                   TMSG_MASK_PLAYLISTPLAYER + 13
-// the PAUSE is indeed a PLAYPAUSE
-#define TMSG_MEDIA_PAUSE                  TMSG_MASK_PLAYLISTPLAYER + 14
-#define TMSG_MEDIA_RESTART                TMSG_MASK_PLAYLISTPLAYER + 15
-#define TMSG_MEDIA_UNPAUSE                TMSG_MASK_PLAYLISTPLAYER + 16
-#define TMSG_MEDIA_PAUSE_IF_PLAYING       TMSG_MASK_PLAYLISTPLAYER + 17
-#define TMSG_MEDIA_SEEK_TIME              TMSG_MASK_PLAYLISTPLAYER + 18
+// param1: a PLAYLIST::Type. param2: 1 shuffles it, 0 does not, -1 turns it the other way.
+#define TMSG_PLAYLISTPLAYER_SHUFFLE       TMSG_MASK_PLAYLISTPLAYER + 3
+// param1: a PLAYLIST::Type. strParam: "off", "one" or "all", or "cycle" for the next of them.
+#define TMSG_PLAYLISTPLAYER_REPEAT        TMSG_MASK_PLAYLISTPLAYER + 4
+// lpVoid: a CFileItem*, played on the playlist it chooses. param1: 1 restarts the playing item,
+// keeping its speed and stack.
+#define TMSG_MEDIA_PLAY_ITEM              TMSG_MASK_PLAYLISTPLAYER + 5
+// lpVoid: a CFileItemList*, played on the playlist it chooses. param1: the position to start at,
+// or -1. strParam: the player.
+#define TMSG_MEDIA_PLAY_ITEMS             TMSG_MASK_PLAYLISTPLAYER + 6
+// param1: a PLAYLIST::Type. param2: the position to start at, or -1. strParam: a repeat to set
+// once it plays, or empty. payload: the APPLICATION::PlayOptions to play with, owned by the
+// handler, or nullptr.
+#define TMSG_MEDIA_PLAY_PLAYLIST          TMSG_MASK_PLAYLISTPLAYER + 7
+// param1: 1 starts party mode afresh, 0 ends it. param2: the PLAYLIST::Type to fill, or -1 for
+// the one strParam's smart playlist names, or with no strParam the Audio playlist.
+#define TMSG_PLAYLISTPLAYER_PARTYMODE     TMSG_MASK_PLAYLISTPLAYER + 8
 
 #define TMSG_SHUTDOWN                     TMSG_MASK_APPLICATION + 0
 #define TMSG_POWERDOWN                    TMSG_MASK_APPLICATION + 1
@@ -93,7 +96,17 @@
 #define TMSG_SET_MUTE                     TMSG_MASK_APPLICATION + 37
 #define TMSG_RESUMEAPP                    TMSG_MASK_APPLICATION + 38
 #define TMSG_PROCESS_DELETE_AFTER_WATCH   TMSG_MASK_APPLICATION + 39
+// lpVoid: a CFileItem*. param1: the PLAYLIST::Type it plays on, or -1 to let it choose.
+// strParam: the player.
 #define TMSG_APPLICATION_PLAY_MEDIA       TMSG_MASK_APPLICATION + 40
+// param1: the CApplication::PlaybackWindow to leave, or -1 for whichever is showing.
+#define TMSG_MEDIA_STOP                   TMSG_MASK_APPLICATION + 41
+// the PAUSE is indeed a PLAYPAUSE
+#define TMSG_MEDIA_PAUSE                  TMSG_MASK_APPLICATION + 42
+#define TMSG_MEDIA_RESTART                TMSG_MASK_APPLICATION + 43
+#define TMSG_MEDIA_UNPAUSE                TMSG_MASK_APPLICATION + 44
+#define TMSG_MEDIA_PAUSE_IF_PLAYING       TMSG_MASK_APPLICATION + 45
+#define TMSG_MEDIA_SEEK_TIME              TMSG_MASK_APPLICATION + 46
 
 #define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1

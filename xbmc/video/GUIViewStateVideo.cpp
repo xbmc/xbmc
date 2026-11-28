@@ -14,6 +14,7 @@
 #include "VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/LibraryPaths.h"
+#include "filesystem/PlaylistDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
@@ -45,9 +46,9 @@ std::string CGUIViewStateWindowVideo::GetExtensions()
   return CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
 }
 
-PLAYLIST::Id CGUIViewStateWindowVideo::GetPlaylist() const
+std::optional<PLAYLIST::Type> CGUIViewStateWindowVideo::GetPlayListType() const
 {
-  return PLAYLIST::Id::TYPE_VIDEO;
+  return PLAYLIST::Video;
 }
 
 std::vector<CMediaSource>& CGUIViewStateWindowVideo::GetSources()
@@ -600,7 +601,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowVideoPlaylist::GetSources()
   m_sources.clear();
   //  Playlist share
   CMediaSource share;
-  share.strPath= "playlistvideo://";
+  share.strPath= XFILE::CPlaylistDirectory::PathOf(PLAYLIST::Video);
   share.m_iDriveType = SourceType::LOCAL;
   m_sources.push_back(share);
 

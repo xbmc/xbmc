@@ -3,6 +3,7 @@ set(SOURCES GUIMediaWindow.cpp
             GUIWindowFileManager.cpp
             GUIWindowHome.cpp
             GUIWindowLoginScreen.cpp
+            GUIWindowPlayList.cpp
             GUIWindowPointer.cpp
             GUIWindowScreensaver.cpp
             GUIWindowScreensaverDim.cpp
@@ -15,6 +16,7 @@ set(HEADERS GUIMediaWindow.h
             GUIWindowFileManager.h
             GUIWindowHome.h
             GUIWindowLoginScreen.h
+            GUIWindowPlayList.h
             GUIWindowPointer.h
             GUIWindowScreensaver.h
             GUIWindowScreensaverDim.h

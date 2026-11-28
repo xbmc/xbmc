@@ -21,4 +21,6 @@ public:
   bool InitStageTwo() override;
 
   bool SupportsUserInstalledBinaryAddons() override;
+
+  void OnPlayingVideoChanged(bool playingVideo) override;
 };

@@ -19,6 +19,7 @@
 #include <vector>
 
 class CApplicationPlayer;
+class CApplicationPlayLists;
 class CApplicationVolumeHandling;
 class CDataCacheCore;
 
@@ -93,6 +94,7 @@ private:
   std::atomic_bool m_playerShowInfo{false};
   const std::shared_ptr<CApplicationPlayer> m_appPlayer;
   const std::shared_ptr<CApplicationVolumeHandling> m_appVolume;
+  const std::shared_ptr<CApplicationPlayLists> m_playLists;
   CEventSource<PlayerShowInfoChangedEvent> m_events;
 };
 

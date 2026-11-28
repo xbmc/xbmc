@@ -106,7 +106,7 @@ bool CPlayListWPL::LoadData(std::istream& stream)
 
 void CPlayListWPL::Save(const std::string& strFileName) const
 {
-  if (m_vecItems.empty())
+  if (m_items.empty())
     return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
@@ -127,9 +127,9 @@ void CPlayListWPL::Save(const std::string& strFileName) const
   write += StringUtils::Format("    </head>\n");
   write += StringUtils::Format("    <body>\n");
   write += StringUtils::Format("        <seq>\n");
-  for (int i = 0; i < (int)m_vecItems.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItemPtr item = m_vecItems[i];
+    CFileItemPtr item = m_items[i];
     write += StringUtils::Format("            <media src={}{}{}/>", 34, item->GetPath(), 34);
   }
   write += StringUtils::Format("        </seq>\n");

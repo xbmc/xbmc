@@ -10,7 +10,6 @@
 
 #include "ContextMenuManager.h"
 #include "DatabaseManager.h"
-#include "PlayListPlayer.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/ExtsMimeSupportList.h"
@@ -118,7 +117,6 @@ bool CServiceManager::InitStageOne()
                                                                             ".py");
 #endif
 
-  m_playlistPlayer = std::make_unique<PLAYLIST::CPlayListPlayer>();
   m_slideShowDelegator = std::make_unique<CSlideShowDelegator>();
 
   m_network = CNetworkBase::GetNetwork();
@@ -319,7 +317,6 @@ void CServiceManager::DeinitStageOne()
   init_level = 0;
 
   m_network.reset();
-  m_playlistPlayer.reset();
   m_slideShowDelegator.reset();
 #ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
@@ -408,11 +405,6 @@ CDataCacheCore& CServiceManager::GetDataCacheCore()
 CPlatform& CServiceManager::GetPlatform()
 {
   return *m_Platform;
-}
-
-PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
-{
-  return *m_playlistPlayer;
 }
 
 GAME::CControllerManager& CServiceManager::GetGameControllerManager()

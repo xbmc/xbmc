@@ -18,7 +18,7 @@ public:
 protected:
   std::vector<CMediaSource>& GetSources() override;
   std::optional<KODI::MEDIA::MediaSection> GetLockType() override;
-  KODI::PLAYLIST::Id GetPlaylist() const override;
+  std::optional<KODI::PLAYLIST::Type> GetPlayListType() const override;
   std::string GetExtensions() override;
   bool AutoPlayNextItem() override;
 };

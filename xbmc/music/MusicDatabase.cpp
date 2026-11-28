@@ -6427,7 +6427,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
     int songId = -1;
     std::vector<CArtistCredit> artistCredits;
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
-    int count = 0;
     for (const auto& i : results)
     {
       const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
@@ -6446,9 +6445,6 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
           songId = record->at(song_idSong).get_asInt();
           auto item{std::make_shared<CFileItem>()};
           GetFileItemFromDataset(record, item.get(), musicUrl);
-          //! @todo remove hack to use program count for sorting by database returned order
-          count++;
-          item->SetProgramCount(count);
           // Set icon now to avoid slow per item processing in FillInDefaultIcon later
           item->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
           item->SetArt(ART::TYPE::ICON, ART::DEFAULT::AUDIO);
@@ -9578,45 +9574,6 @@ std::string CMusicDatabase::GetAlbumsLastModified() const
 std::string CMusicDatabase::GetArtistsLastModified() const
 {
   return GetSingleValue("SELECT MAX(dateModified) FROM artist");
-}
-
-unsigned int CMusicDatabase::GetRandomSongIDs(const Filter& filter,
-                                              std::vector<std::pair<int, int>>& songIDs)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return 0;
-    if (nullptr == m_pDS)
-      return 0;
-
-    std::string strSQL = "SELECT idSong FROM songview ";
-    if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
-      return false;
-    strSQL += PrepareSQL(" ORDER BY RANDOM()");
-
-    if (!m_pDS->query(strSQL))
-      return 0;
-    songIDs.clear();
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      return 0;
-    }
-    songIDs.reserve(m_pDS->num_rows());
-    while (!m_pDS->eof())
-    {
-      songIDs.push_back(std::make_pair<int, int>(1, m_pDS->fv(song_idSong).get_asInt()));
-      m_pDS->next();
-    } // cleanup
-    m_pDS->close();
-    return static_cast<unsigned int>(songIDs.size());
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}) failed", filter.where);
-  }
-  return 0;
 }
 
 int CMusicDatabase::GetSongsCount(const Filter& filter)

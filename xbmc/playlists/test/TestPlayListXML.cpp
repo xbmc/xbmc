@@ -26,7 +26,7 @@ TEST(TestPlayListXML, LoadData)
 
   EXPECT_TRUE(playlist.Load(filename));
 
-  EXPECT_EQ(playlist.size(), 3);
+  EXPECT_EQ(playlist.Size(), 3);
 
   // Test name and lang
   EXPECT_STREQ(playlist[0]->GetLabel().c_str(), "Евроспорт [RU]");
@@ -36,14 +36,4 @@ TEST(TestPlayListXML, LoadData)
 
   // Test name and no lang
   EXPECT_STREQ(playlist[2]->GetLabel().c_str(), "Test Name");
-
-  /*
-    std::string url = GetString( pSet, "url" );
-    std::string name = GetString( pSet, "name" );
-    std::string category = GetString( pSet, "category" );
-    std::string lang = GetString( pSet, "lang" );
-    std::string channel = GetString( pSet, "channel" );
-    std::string lockpass = GetString( pSet, "lockpassword" );
-*/
-  //  EXPECT_STREQ(playlist[1]->GetLabel().c_str(), "demo 2");
 }

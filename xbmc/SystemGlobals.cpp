@@ -7,7 +7,6 @@
  */
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
-#include "PartyModeManager.h"
 #include "SectionLoader.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DllLibCurl.h"
@@ -27,7 +26,6 @@ XFILE::CDirectoryCache g_directoryCache;
 CGUIPassword g_passwordManager;
 
 XCURL::DllLibCurlGlobal g_curlInterface;
-CPartyModeManager g_partyModeManager;
 
 CAlarmClock g_alarmClock;
 CSectionLoader g_sectionLoader;

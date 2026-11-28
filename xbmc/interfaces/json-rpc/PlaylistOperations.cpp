@@ -11,20 +11,23 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationPlayLists.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "interfaces/AnnouncementV14.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/MessengerPayload.h"
 #include "pictures/PictureInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayList.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace KODI;
+using ANNOUNCEMENT::V14::PlaylistId;
 using KODI::MESSAGING::TransferToMessenger;
 
 JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const CVariant& parameterObject, CVariant& result)
@@ -32,15 +35,15 @@ JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const CVariant& parameterObject
   result = CVariant(CVariant::VariantTypeArray);
   CVariant playlist = CVariant(CVariant::VariantTypeObject);
 
-  playlist["playlistid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+  playlist["playlistid"] = static_cast<int>(PlaylistId::TYPE_MUSIC);
   playlist["type"] = "audio";
   result.append(playlist);
 
-  playlist["playlistid"] = static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
+  playlist["playlistid"] = static_cast<int>(PlaylistId::TYPE_VIDEO);
   playlist["type"] = "video";
   result.append(playlist);
 
-  playlist["playlistid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+  playlist["playlistid"] = static_cast<int>(PlaylistId::TYPE_PICTURE);
   playlist["type"] = "picture";
   result.append(playlist);
 
@@ -49,7 +52,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const CVariant& parameterObject
 
 JSONRPC_STATUS CPlaylistOperations::GetProperties(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     std::string propertyName = parameterObject["properties"][index].asString();
@@ -67,18 +70,20 @@ JSONRPC_STATUS CPlaylistOperations::GetProperties(const CVariant& parameterObjec
 JSONRPC_STATUS CPlaylistOperations::GetItems(const CVariant& parameterObject, CVariant& result)
 {
   CFileItemList list;
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
 
   switch (playlistId)
   {
-    case PLAYLIST::Id::TYPE_VIDEO:
-    case PLAYLIST::Id::TYPE_MUSIC:
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS,
-                                                 static_cast<int>(playlistId), -1,
-                                                 static_cast<void*>(&list));
+    case PlaylistId::TYPE_VIDEO:
+    case PlaylistId::TYPE_MUSIC:
+      for (const PLAYLIST::PlayListEntry& entry :
+           CServiceBroker::GetPlayLists()
+               ->GetPlayList(*ANNOUNCEMENT::V14::PlayListFromId(playlistId))
+               .GetEntries())
+        list.Add(std::make_shared<CFileItem>(*entry.item));
       break;
 
-    case PLAYLIST::Id::TYPE_PICTURE:
+    case PlaylistId::TYPE_PICTURE:
     {
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       slideShow.GetSlideShowContents(list);
@@ -93,17 +98,17 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const CVariant& parameterObject, CV
   return OK;
 }
 
-bool CPlaylistOperations::CheckMediaParameter(PLAYLIST::Id playlistId, const CVariant& itemObject)
+bool CPlaylistOperations::CheckMediaParameter(PlaylistId playlistId, const CVariant& itemObject)
 {
   if (itemObject.isMember("media") && itemObject["media"].asString().compare("files") != 0)
   {
-    if (playlistId == PLAYLIST::Id::TYPE_VIDEO &&
+    if (playlistId == PlaylistId::TYPE_VIDEO &&
         itemObject["media"].asString().compare("video") != 0)
       return false;
-    if (playlistId == PLAYLIST::Id::TYPE_MUSIC &&
+    if (playlistId == PlaylistId::TYPE_MUSIC &&
         itemObject["media"].asString().compare("music") != 0)
       return false;
-    if (playlistId == PLAYLIST::Id::TYPE_PICTURE &&
+    if (playlistId == PlaylistId::TYPE_PICTURE &&
         itemObject["media"].asString().compare("video") != 0 &&
         itemObject["media"].asString().compare("pictures") != 0)
       return false;
@@ -113,7 +118,7 @@ bool CPlaylistOperations::CheckMediaParameter(PLAYLIST::Id playlistId, const CVa
 
 JSONRPC_STATUS CPlaylistOperations::Add(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
 
   CFileItemList list;
   if (!HandleItemsParameter(playlistId, parameterObject["item"], list))
@@ -121,16 +126,12 @@ JSONRPC_STATUS CPlaylistOperations::Add(const CVariant& parameterObject, CVarian
 
   switch (playlistId)
   {
-    case PLAYLIST::Id::TYPE_VIDEO:
-    case PLAYLIST::Id::TYPE_MUSIC:
-    {
-      auto tmpList = new CFileItemList();
-      tmpList->Copy(list);
-      CServiceBroker::GetAppMessenger()->PostMsg(
-          TMSG_PLAYLISTPLAYER_ADD, static_cast<int>(playlistId), -1, static_cast<void*>(tmpList));
+    case PlaylistId::TYPE_VIDEO:
+    case PlaylistId::TYPE_MUSIC:
+      CServiceBroker::GetPlayLists()->Insert(*ANNOUNCEMENT::V14::PlayListFromId(playlistId), list,
+                                             -1);
       break;
-    }
-    case PLAYLIST::Id::TYPE_PICTURE:
+    case PlaylistId::TYPE_PICTURE:
     {
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       for (int index = 0; index < list.Size(); index++)
@@ -153,52 +154,52 @@ JSONRPC_STATUS CPlaylistOperations::Add(const CVariant& parameterObject, CVarian
 
 JSONRPC_STATUS CPlaylistOperations::Insert(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
-  if (playlistId == PLAYLIST::Id::TYPE_PICTURE)
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
+  if (playlistId == PlaylistId::TYPE_PICTURE)
     return FailedToExecute;
 
   CFileItemList list;
   if (!HandleItemsParameter(playlistId, parameterObject["item"], list))
     return InvalidParams;
 
-  auto tmpList = new CFileItemList();
-  tmpList->Copy(list);
-  CServiceBroker::GetAppMessenger()->PostMsg(
-      TMSG_PLAYLISTPLAYER_INSERT, static_cast<int>(playlistId),
-      static_cast<int>(parameterObject["position"].asInteger()), static_cast<void*>(tmpList));
+  if (const auto type = ANNOUNCEMENT::V14::PlayListFromId(playlistId); type)
+    CServiceBroker::GetPlayLists()->Insert(
+        *type, list, static_cast<int>(parameterObject["position"].asInteger()));
 
   return ACK;
 }
 
 JSONRPC_STATUS CPlaylistOperations::Remove(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
-  if (playlistId == PLAYLIST::Id::TYPE_PICTURE)
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
+  if (playlistId == PlaylistId::TYPE_PICTURE)
     return FailedToExecute;
 
+  const auto type = ANNOUNCEMENT::V14::PlayListFromId(playlistId);
+  if (!type)
+    return ACK;
+
   int position = (int)parameterObject["position"].asInteger();
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == playlistId &&
-      CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() == position)
+  const auto playLists = CServiceBroker::GetPlayLists();
+  if (playLists->GetPlayingType() == type && playLists->GetPlayingPosition(*type) == position)
     return InvalidParams;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_REMOVE,
-                                             static_cast<int>(playlistId), position);
+  playLists->Remove(*type, position);
 
   return ACK;
 }
 
 JSONRPC_STATUS CPlaylistOperations::Clear(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
   switch (playlistId)
   {
-    case PLAYLIST::Id::TYPE_MUSIC:
-    case PLAYLIST::Id::TYPE_VIDEO:
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_CLEAR,
-                                                 static_cast<int>(playlistId));
+    case PlaylistId::TYPE_MUSIC:
+    case PlaylistId::TYPE_VIDEO:
+      CServiceBroker::GetPlayLists()->Clear(*ANNOUNCEMENT::V14::PlayListFromId(playlistId));
       break;
 
-    case PLAYLIST::Id::TYPE_PICTURE:
+    case PlaylistId::TYPE_PICTURE:
     {
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       //! @todo: Stop should be a delegator method to void GUI coupling! Same goes for other player controls.
@@ -217,30 +218,28 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const CVariant& parameterObject, CVari
 
 JSONRPC_STATUS CPlaylistOperations::Swap(const CVariant& parameterObject, CVariant& result)
 {
-  PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
-  if (playlistId == PLAYLIST::Id::TYPE_PICTURE)
+  PlaylistId playlistId = GetPlaylist(parameterObject["playlistid"]);
+  if (playlistId == PlaylistId::TYPE_PICTURE)
     return FailedToExecute;
 
-  auto tmpVec = new std::vector<int>();
-  tmpVec->push_back(static_cast<int>(parameterObject["position1"].asInteger()));
-  tmpVec->push_back(static_cast<int>(parameterObject["position2"].asInteger()));
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_SWAP, static_cast<int>(playlistId),
-                                             -1, static_cast<void*>(tmpVec));
+  if (const auto type = ANNOUNCEMENT::V14::PlayListFromId(playlistId); type)
+    CServiceBroker::GetPlayLists()->Swap(
+        *type, static_cast<int>(parameterObject["position1"].asInteger()),
+        static_cast<int>(parameterObject["position2"].asInteger()));
 
   return ACK;
 }
 
-PLAYLIST::Id CPlaylistOperations::GetPlaylist(const CVariant& playlist)
+PlaylistId CPlaylistOperations::GetPlaylist(const CVariant& playlist)
 {
-  PLAYLIST::Id playlistId =
-      PLAYLIST::Id{playlist.asInteger32(static_cast<int>(PLAYLIST::Id::TYPE_NONE))};
-  if (playlistId != PLAYLIST::Id::TYPE_NONE)
+  PlaylistId playlistId = PlaylistId{playlist.asInteger32(static_cast<int>(PlaylistId::TYPE_NONE))};
+  if (playlistId != PlaylistId::TYPE_NONE)
     return playlistId;
 
-  return PLAYLIST::Id::TYPE_NONE;
+  return PlaylistId::TYPE_NONE;
 }
 
-JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
+JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PlaylistId playlistId,
                                                      const std::string& property,
                                                      CVariant& result)
 {
@@ -248,15 +247,15 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
   {
     switch (playlistId)
     {
-      case PLAYLIST::Id::TYPE_MUSIC:
+      case PlaylistId::TYPE_MUSIC:
         result = "audio";
         break;
 
-      case PLAYLIST::Id::TYPE_VIDEO:
+      case PlaylistId::TYPE_VIDEO:
         result = "video";
         break;
 
-      case PLAYLIST::Id::TYPE_PICTURE:
+      case PlaylistId::TYPE_PICTURE:
         result = "pictures";
         break;
 
@@ -267,19 +266,17 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
   }
   else if (property == "size")
   {
-    CFileItemList list;
     switch (playlistId)
     {
-      case PLAYLIST::Id::TYPE_MUSIC:
-      case PLAYLIST::Id::TYPE_VIDEO:
+      case PlaylistId::TYPE_MUSIC:
+      case PlaylistId::TYPE_VIDEO:
       {
-        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS,
-                                                   static_cast<int>(playlistId), -1,
-                                                   static_cast<void*>(&list));
-        result = list.Size();
+        result = CServiceBroker::GetPlayLists()
+                     ->GetPlayList(*ANNOUNCEMENT::V14::PlayListFromId(playlistId))
+                     .Size();
         break;
       }
-      case PLAYLIST::Id::TYPE_PICTURE:
+      case PlaylistId::TYPE_PICTURE:
       {
         CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
         const int numSlides = slideShow.NumSlides();
@@ -302,7 +299,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
   return OK;
 }
 
-bool CPlaylistOperations::HandleItemsParameter(PLAYLIST::Id playlistId,
+bool CPlaylistOperations::HandleItemsParameter(PlaylistId playlistId,
                                                const CVariant& itemParam,
                                                CFileItemList& items)
 {
@@ -320,13 +317,13 @@ bool CPlaylistOperations::HandleItemsParameter(PLAYLIST::Id playlistId,
 
     switch (playlistId)
     {
-      case PLAYLIST::Id::TYPE_VIDEO:
+      case PlaylistId::TYPE_VIDEO:
         itemIt["media"] = "video";
         break;
-      case PLAYLIST::Id::TYPE_MUSIC:
+      case PlaylistId::TYPE_MUSIC:
         itemIt["media"] = "music";
         break;
-      case PLAYLIST::Id::TYPE_PICTURE:
+      case PlaylistId::TYPE_PICTURE:
         itemIt["media"] = "pictures";
         break;
       default:

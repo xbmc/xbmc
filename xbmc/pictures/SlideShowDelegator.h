@@ -57,5 +57,5 @@ public:
                    const std::string& strExtensions = "") override;
 
 private:
-  ISlideShowDelegate* m_delegate;
+  ISlideShowDelegate* m_delegate{nullptr};
 };

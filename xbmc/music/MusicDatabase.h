@@ -657,16 +657,6 @@ public:
   int GetOrderFilter(KODI::MEDIA::TYPE type, const SortDescription& sorting, Filter& filter) const;
 
   /////////////////////////////////////////////////
-  // Party Mode
-  /////////////////////////////////////////////////
-  /*! \brief Gets song IDs in random order that match the filter criteria
-  \param filter the criteria to apply in the query
-  \param songIDs a vector of <1, id> pairs suited to party mode use
-  \return count of song ids found.
-  */
-  unsigned int GetRandomSongIDs(const Filter& filter, std::vector<std::pair<int, int>>& songIDs);
-
-  /////////////////////////////////////////////////
   // JSON-RPC
   /////////////////////////////////////////////////
   bool GetGenresJSON(CFileItemList& items, bool bSources = false);

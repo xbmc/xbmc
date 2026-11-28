@@ -60,7 +60,7 @@ namespace XBMCAddon
     class Player : public AddonCallback, public IPlayerCallback
     {
     private:
-      int iPlayList;
+      KODI::PLAYLIST::Type m_playList{KODI::PLAYLIST::Audio};
 
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
       void playPlaylist(const PlayList* playlist = NULL,

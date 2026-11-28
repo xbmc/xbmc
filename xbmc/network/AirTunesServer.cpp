@@ -95,7 +95,8 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
     uint32_t length = Endian_SwapBE32(*(const uint32_t *)(buffer + offset));
     offset += sizeof(uint32_t);
     std::string content;
-    content.append(buffer + offset, length);//possible fixme - utf8?
+    //! @todo is the content UTF-8?
+    content.append(buffer + offset, length);
     offset += length;
     result[tag] = content;
   }
@@ -407,7 +408,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   m_streamStarted = true;
   m_sampleRate = samplerate;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY_ITEM, 0, 0, static_cast<void*>(item));
 
   // Not all airplay streams will provide metadata (e.g. if using mirroring,
   // no metadata will be sent).  If there *is* metadata, it will be received

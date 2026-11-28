@@ -30,6 +30,6 @@ TEST(TestPlayListPLS, AnUnnamedPlayListIsNamedAfterItsFile)
   EXPECT_TRUE(playlist.Load(path));
   std::remove(path.c_str());
 
-  EXPECT_EQ(playlist.size(), 1);
+  EXPECT_EQ(playlist.Size(), 1);
   EXPECT_EQ(playlist.GetName(), "unnamed.pls");
 }

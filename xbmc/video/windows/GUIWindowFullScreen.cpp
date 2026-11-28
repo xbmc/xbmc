@@ -153,18 +153,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
-  case ACTION_SHOW_PLAYLIST:
-    {
-      CFileItem item(g_application.CurrentFileItem());
-      if (item.HasPVRChannelInfoTag())
-        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
-      else if (item.HasVideoInfoTag())
-        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-      else if (item.HasMusicInfoTag())
-        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    }
-    return true;
-    break;
   case ACTION_BROWSE_SUBTITLE:
     {
       std::string path = CGUIDialogSubtitleSettings::BrowseForSubtitle();

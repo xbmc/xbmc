@@ -31,25 +31,7 @@ constexpr const int GUI_MSG_PLAYBACK_ENDED         = GUI_MSG_USER + 6;
 //  Playback stopped by user
 constexpr const int GUI_MSG_PLAYBACK_STOPPED       = GUI_MSG_USER + 7;
 
-//  Message is send by the playlistplayer when it starts a playlist
-//  Parameter:
-//  dwParam1 = Current Playlist, can be PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO
-//  dwParam2 = Item started in the playlist
-//  lpVoid = Playlistitem started playing
-constexpr const int GUI_MSG_PLAYLISTPLAYER_STARTED  = GUI_MSG_USER + 8;
-
-//  Message is send by playlistplayer when next/previous item is started
-//  Parameter:
-//  dwParam1 = Current Playlist, can be PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO
-//  dwParam2 = LOWORD Position of the current playlistitem
-//             HIWORD Position of the previous playlistitem
-//  lpVoid = Current Playlistitem
-constexpr const int GUI_MSG_PLAYLISTPLAYER_CHANGED  = GUI_MSG_USER + 9;
-
-//  Message is send by the playlistplayer when the last item to play ended
-//  Parameter:
-//  dwParam1 = Current Playlist, can be PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO
-//  dwParam2 = Playlistitem played when stopping
+//  Sent by the playlists when a playlist stops playing
 constexpr const int GUI_MSG_PLAYLISTPLAYER_STOPPED  = GUI_MSG_USER + 10;
 
 constexpr const int GUI_MSG_LOAD_SKIN               = GUI_MSG_USER + 11;
@@ -75,18 +57,6 @@ constexpr const int GUI_MSG_VISUALISATION_ACTION    = GUI_MSG_USER + 120; // req
 constexpr const int GUI_MSG_VISUALISATION_RELOAD    = GUI_MSG_USER + 121; // request the vis to reload
 
 constexpr const int GUI_MSG_VIDEO_MENU_STARTED      = GUI_MSG_USER + 21; // sent by VideoPlayer on entry to the menu
-
-//  Message is sent by built-in function to alert the playlist window
-//  that the user has initiated Random playback
-//  dwParam1 = Current Playlist (PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO)
-//  dwParam2 = 0 or 1 (Enabled or Disabled)
-constexpr const int GUI_MSG_PLAYLISTPLAYER_RANDOM   = GUI_MSG_USER + 22;
-
-//  Message is sent by built-in function to alert the playlist window
-//  that the user has initiated Repeat playback
-//  dwParam1 = Current Playlist (PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO)
-//  dwParam2 = 0 or 1 or 2 (Off, Repeat All, Repeat One)
-constexpr const int GUI_MSG_PLAYLISTPLAYER_REPEAT   = GUI_MSG_USER + 23;
 
 // Message is sent by the background info loader when it is finished with fetching a weather location.
 constexpr const int GUI_MSG_WEATHER_FETCHED         = GUI_MSG_USER + 24;

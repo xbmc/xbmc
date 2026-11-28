@@ -10,6 +10,8 @@
 
 #include "Util.h"
 
+#include "platform/darwin/DarwinUtils.h"
+
 // clang-format off
 #if defined(TARGET_DARWIN_IOS)
 #include "windowing/ios/WinSystemIOS.h"
@@ -57,4 +59,9 @@ bool CPlatformDarwinEmbedded::InitStageTwo()
 bool CPlatformDarwinEmbedded::SupportsUserInstalledBinaryAddons()
 {
   return false;
+}
+
+void CPlatformDarwinEmbedded::OnPlayingVideoChanged(bool playingVideo)
+{
+  CDarwinUtils::SetScheduling(playingVideo);
 }

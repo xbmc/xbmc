@@ -9,13 +9,11 @@
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
 #include "FileItem.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationContentGeometry.h"
+#include "application/ApplicationPlayLists.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
@@ -50,6 +48,7 @@
 #include "video/VideoUtils.h"
 
 #include <math.h>
+#include <memory>
 #include <mutex>
 #include <string>
 
@@ -59,7 +58,8 @@ using namespace KODI;
 using KODI::MEDIA::PluralNameOf;
 
 CVideoGUIInfo::CVideoGUIInfo()
-  : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
+  : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()),
+    m_playLists(CServiceBroker::GetPlayLists())
 {
 }
 
@@ -157,11 +157,12 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem* item)
     // find a thumb for this stream
     if (NETWORK::IsInternetStream(*item))
     {
-      if (!g_application.m_strPlayListFile.empty())
+      if (const std::string playlistFile = m_playLists->GetPlayingSourcePath();
+          !playlistFile.empty())
       {
         CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
-                  g_application.m_strPlayListFile);
-        CFileItem thumbItem(g_application.m_strPlayListFile, false);
+                  CURL::GetRedacted(playlistFile));
+        CFileItem thumbItem(playlistFile, false);
 
         CVideoThumbLoader loader;
         if (loader.FillThumb(thumbItem))
@@ -179,11 +180,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
                              const CGUIInfo& info,
                              std::string* fallback) const
 {
-  // For videoplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && ((info.GetInfo() >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
-                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
+  if (GUIINFO::IsPlayListEntryInfo(info, VIDEOPLAYER_OFFSET_POSITION_FIRST,
+                                   VIDEOPLAYER_OFFSET_POSITION_LAST))
     return GetPlaylistInfo(value, info);
 
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
@@ -703,19 +701,15 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case VIDEOPLAYER_PLAYLISTLEN:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_VIDEO)
+      if (m_playLists->GetPlayingType() == PLAYLIST::Video)
       {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
+        value = GUIINFO::GetPlayListLengthLabel(*m_playLists, PLAYLIST::Video);
         return true;
       }
       break;
     case VIDEOPLAYER_PLAYLISTPOS:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_VIDEO)
-      {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
-        return true;
-      }
-      break;
+      value = GUIINFO::GetPlayListPositionLabel(*m_playLists, PLAYLIST::Video);
+      return true;
     case VIDEOPLAYER_VIDEO_ASPECT:
       value = CStreamDetails::VideoAspectToAspectDescription(
           CServiceBroker::GetDataCacheCore().GetVideoDAR());
@@ -841,33 +835,24 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
 
 bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) const
 {
-  const PLAYLIST::CPlayList& playlist =
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_VIDEO);
-  if (playlist.size() < 1)
+  const auto found = GUIINFO::GetPlayListEntry(*m_playLists, PLAYLIST::Video, info);
+  if (!found)
     return false;
 
-  int index = info.GetData2();
-  if (info.GetData1() == 1)
-  { // relative index (requires current playlist is TYPE_VIDEO)
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::Id::TYPE_VIDEO)
-      return false;
-
-    index = CServiceBroker::GetPlaylistPlayer().GetNextItemIdx(index);
-  }
-
-  if (index < 0 || index >= playlist.size())
-    return false;
-
-  const CFileItemPtr playlistItem = playlist[index];
-  // try to set a thumbnail
-  if (!playlistItem->HasArt(ART::TYPE::THUMB))
-  {
-    CVideoThumbLoader loader;
-    loader.LoadItem(playlistItem.get());
-  }
+  const CFileItemPtr playlistItem =
+      GUIINFO::LookUpOnce(*m_playLists, PLAYLIST::Video, *found, m_lookedUp,
+                          [](CFileItem& item)
+                          {
+                            if (!item.HasArt(ART::TYPE::THUMB))
+                            {
+                              CVideoThumbLoader loader;
+                              loader.LoadItem(&item);
+                            }
+                          });
   if (info.GetInfo() == VIDEOPLAYER_PLAYLISTPOS)
   {
-    value = std::to_string(index + 1);
+    value = std::to_string(
+        m_playLists->GetPlayList(PLAYLIST::Video).GetPlayOrderPosition(found->entry) + 1);
     return true;
   }
   else if (info.GetInfo() == VIDEOPLAYER_COVER)
@@ -881,7 +866,9 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
     return true;
   }
 
-  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr);
+  if (GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr))
+    return true;
+  return GUIINFO::GetFileFallbackLabel(value, *playlistItem, info.GetInfo());
 }
 
 bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
@@ -890,11 +877,8 @@ bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
                                      const CGUIInfo& info,
                                      std::string* fallback)
 {
-  // No fallback for videoplayer "offset" and "position" info labels
-  if (info.GetData1() && ((info.GetInfo() >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
-                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
-                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
+  if (GUIINFO::IsPlayListEntryInfo(info, VIDEOPLAYER_OFFSET_POSITION_FIRST,
+                                   VIDEOPLAYER_OFFSET_POSITION_LAST))
     return false;
 
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
@@ -906,10 +890,7 @@ bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
       // VIDEOPLAYER_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case VIDEOPLAYER_TITLE:
-        value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return GUIINFO::GetFileFallbackLabel(value, *item, info.GetInfo());
       default:
         break;
     }
@@ -1060,6 +1041,12 @@ bool CVideoGUIInfo::GetBool(bool& value,
       return true;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
       value = !CServiceBroker::GetDataCacheCore().GetVideoStereoMode().empty();
+      return true;
+    case VIDEOPLAYER_HASPREVIOUS:
+      value = m_playLists->HasPrevious(PLAYLIST::Video);
+      return true;
+    case VIDEOPLAYER_HASNEXT:
+      value = m_playLists->HasNext(PLAYLIST::Video);
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

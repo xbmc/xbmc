@@ -12,12 +12,19 @@
 #include "Exception.h"
 #include "ListItem.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 
 namespace XBMCAddon
 {
   namespace xbmc
   {
     XBMCCOMMONS_STANDARD_EXCEPTION(PlayListException);
+
+#ifndef SWIG
+    // the values of xbmc.PLAYLIST_MUSIC and xbmc.PLAYLIST_VIDEO
+    constexpr int PLAYLIST_MUSIC_ID = 0;
+    constexpr int PLAYLIST_VIDEO_ID = 1;
+#endif
 
     //
     /// \defgroup python_PlayList PlayList
@@ -48,8 +55,8 @@ namespace XBMCAddon
     //
     class PlayList : public AddonClass
     {
-      int iPlayList;
-      KODI::PLAYLIST::CPlayList* pPlayList;
+      KODI::PLAYLIST::Type m_type;
+      const KODI::PLAYLIST::CPlayList* pPlayList;
 
     public:
       explicit PlayList(int playList);
@@ -65,7 +72,11 @@ namespace XBMCAddon
       ///
       getPlayListId();
 #else
-      inline int getPlayListId() const { return iPlayList; }
+      int getPlayListId() const;
+#endif
+
+#ifndef SWIG
+      KODI::PLAYLIST::Type GetType() const { return m_type; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -158,7 +169,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ shuffle() }
-      /// Shuffle the playlist.
+      /// Turn on shuffled play order. The items keep their positions.
       ///
       shuffle();
 #else
@@ -169,7 +180,7 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ unshuffle() }
-      /// Unshuffle the playlist.
+      /// Turn off shuffled play order. The items keep their positions.
       ///
       unshuffle();
 #else
@@ -180,9 +191,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_PlayList
       /// @brief \python_func{ getposition() }
-      /// Returns the position of the current song in this playlist.
+      /// Returns the position of the current entry in this playlist.
       ///
-      /// @return                    Position of the current song
+      /// @return                    Position of the current entry
       ///
       getposition();
 #else

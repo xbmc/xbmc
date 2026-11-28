@@ -12,6 +12,7 @@
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationSettingsHandling.h"
+#include "application/PlaybackOptions.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
@@ -24,6 +25,7 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -57,11 +59,6 @@ namespace ANNOUNCEMENT
 namespace MEDIA_DETECT
 {
   class CAutorun;
-}
-
-namespace KODI::PLAYLIST
-{
-  class CPlayList;
 }
 
 namespace ActiveAE
@@ -114,6 +111,7 @@ public:
 
   bool Stop(int exitCode);
   const std::string& CurrentFile();
+  //! For the GUI thread; any other thread holds the item with CurrentFileItemPtr().
   CFileItem& CurrentFileItem();
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
   const CFileItem& CurrentUnstackedItem();
@@ -123,13 +121,56 @@ public:
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
-  bool PlayMedia(CFileItem& item, const std::string& player, KODI::PLAYLIST::Id playlistId);
-  bool ProcessAndStartPlaylist(const std::string& strPlayList,
-                               KODI::PLAYLIST::CPlayList& playlist,
-                               KODI::PLAYLIST::Id playlistId,
-                               int track = 0);
-  bool PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
+  /*!
+   * \brief Play the item, whatever it is: an add-on item once it resolves, a PVR item through PVR
+   * playback, and anything else on the named playlist, or with none on the one it chooses: its own
+   * kind, or what a smart playlist or a playlist file holds.
+   * \param player The player to use; empty for the default.
+   * \param type The playlist to play on; none lets the item choose.
+   * \param position Where to start in what a smart playlist or playlist file holds.
+   * \return false if nothing could be played, or the user cancelled reading a playlist. An add-on
+   * item that does not resolve is reported as a failed play.
+   */
+  bool PlayMedia(const CFileItem& item, const std::string& player = "",
+                 std::optional<KODI::PLAYLIST::Type> type = std::nullopt,
+                 std::optional<int> position = std::nullopt);
+
+  enum class PlayResult
+  {
+    Started,
+    Failed,
+    //! The user cancelled a choice the file needed, such as a disc's playlist.
+    Cancelled
+  };
+
+  using Reopen = KODI::APPLICATION::Reopen;
+  using StartsRun = KODI::APPLICATION::StartsRun;
+
+  /*!
+   * \brief Open a file in the player, as it stands: nothing is added to a playlist.
+   * \param player The player to use; empty for the default.
+   */
+  PlayResult PlayFile(const CFileItem& item, const std::string& player = "",
+                      Reopen reopen = Reopen::No,
+                      StartsRun startsRun = StartsRun::Yes);
   void StopPlaying();
+
+  /*!
+   * \brief The full-screen windows playback is shown in.
+   */
+  enum class PlaybackWindow
+  {
+    SlideShow,
+    Video, // full-screen video, or a game
+    Visualisation
+  };
+
+  /*!
+   * \brief Go back from the full-screen playback window that is showing.
+   * \param window Leave only this window; nullopt for whichever is showing.
+   * \return Whether a window was left.
+   */
+  bool LeavePlaybackWindow(std::optional<PlaybackWindow> window = std::nullopt);
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
@@ -168,13 +209,9 @@ public:
 
   bool ExecuteXBMCAction(std::string action, const std::shared_ptr<CGUIListItem>& item = NULL);
 
-  bool WasPlaybackCancelled() const { return m_cancelPlayback; }
-
 #ifdef HAS_OPTICAL_DRIVE
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
 #endif
-
-  std::string m_strPlayListFile;
 
   bool IsAppFocused() const { return m_AppFocused; }
 
@@ -201,8 +238,6 @@ protected:
   bool OnSettingsSaving() const override;
   void PlaybackCleanup();
 
-  void SetCurrentFileItem(std::shared_ptr<CFileItem> item) { m_itemCurrentFile = std::move(item); }
-
   void ResetPlayerEvent() { m_playerEvent.Reset(); }
 
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -219,9 +254,6 @@ protected:
 
   std::string m_prevMedia;
   bool m_bInitializing = true;
-
-  int m_nextPlaylistItem = -1;
-  bool m_cancelPlayback{false};
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
@@ -265,7 +297,6 @@ private:
   unsigned int m_ProcessedExternalCalls = 0;      /*!< counts calls which are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
   int m_ExitCode{EXITCODE_QUIT};
-  std::shared_ptr<CFileItem> m_itemCurrentFile; //!< Currently playing file
   CEvent m_playerEvent;
 };
 

@@ -192,7 +192,7 @@ static int RunAddon(const std::vector<std::string>& params)
       else
         item = CFileItem(addon);
 
-      if (!g_application.PlayMedia(item, "", PLAYLIST::Id::TYPE_NONE))
+      if (!g_application.PlayMedia(item))
       {
         CLog::Log(LOGERROR, "RunAddon could not start {}", addonid);
         return false;

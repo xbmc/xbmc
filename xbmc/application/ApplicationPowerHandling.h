@@ -63,6 +63,8 @@ public:
 
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
+  //! \brief Restart the idle timers and wake from the screensaver and DPMS.
+  void WakeScreen();
 
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
