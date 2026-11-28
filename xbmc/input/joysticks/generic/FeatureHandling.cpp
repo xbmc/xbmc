@@ -207,7 +207,7 @@ void CScalarFeature::ProcessAnalogMotion()
   unsigned int elapsed = MotionTimeMs();
 
   // If analog value is discrete, ramp up magnitude
-  if (m_bActivated && m_bDiscrete)
+  if (m_bActivated && m_bDiscrete && magnitude > 0.0f)
   {
     if (elapsed < DISCRETE_ANALOG_RAMPUP_TIME_MS)
     {

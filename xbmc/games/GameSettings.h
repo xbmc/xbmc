@@ -52,6 +52,11 @@ public:
    * scanlines and phosphor mask take away.
    */
   bool HdrWithVideoFilters() const;
+
+  /*!
+   * \brief Whether a controller's right stick moves the mouse of a game that has one
+   */
+  bool RightStickMouse() const;
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 

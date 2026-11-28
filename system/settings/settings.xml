@@ -2947,6 +2947,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesgeneral.rightstickmouse" type="boolean" label="35704" help="35705">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="35320">
         <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">

@@ -6,6 +6,7 @@ set(SOURCES GameClientController.cpp
             GameClientKeyboard.cpp
             GameClientMouse.cpp
             GameClientPort.cpp
+            GameClientStickMouse.cpp
             GameClientTopology.cpp
 )
 
@@ -17,6 +18,7 @@ set(HEADERS GameClientController.h
             GameClientKeyboard.h
             GameClientMouse.h
             GameClientPort.h
+            GameClientStickMouse.h
             GameClientTopology.h
 )
 

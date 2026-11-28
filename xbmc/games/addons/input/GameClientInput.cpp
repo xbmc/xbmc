@@ -628,6 +628,11 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller)
       SetChanged();
     }
 
+    {
+      std::lock_guard<std::mutex> lock(m_mouseControllerIdMutex);
+      m_mouseControllerId = controller->ID();
+    }
+
     // Open input handler
     PERIPHERALS::PeripheralVector mice;
     CServiceBroker::GetPeripherals().GetPeripheralsWithFeature(mice, PERIPHERALS::FEATURE_MOUSE);
@@ -677,6 +682,11 @@ bool CGameClientInput::CloseMouse()
 {
   bool bSuccess = false;
 
+  {
+    std::lock_guard<std::mutex> lock(m_mouseControllerIdMutex);
+    m_mouseControllerId.clear();
+  }
+
   if (m_mouse && !m_mouseControllerPort.empty())
   {
     // The controller stays connected to its port
@@ -717,6 +727,55 @@ bool CGameClientInput::CloseMouse()
   }
 
   return bSuccess;
+}
+
+bool CGameClientInput::CanMoveMouse() const
+{
+  std::lock_guard<std::mutex> lock(m_mouseControllerIdMutex);
+  return !m_mouseControllerId.empty();
+}
+
+void CGameClientInput::MoveMouse(int x, int y)
+{
+  std::string controllerId;
+  {
+    std::lock_guard<std::mutex> lock(m_mouseControllerIdMutex);
+    controllerId = m_mouseControllerId;
+  }
+  if (controllerId.empty())
+    return;
+
+  game_input_event event{};
+  event.type = GAME_INPUT_EVENT_RELATIVE_POINTER;
+  event.controller_id = controllerId.c_str();
+  event.port_type = CGameClientTopology::GetPortType(MOUSE_PORT_ADDRESS);
+  event.port_address = MOUSE_PORT_ADDRESS;
+  event.feature_name = "pointer";
+  event.rel_pointer.x = x;
+  event.rel_pointer.y = y;
+
+  InputEvent(event);
+}
+
+void CGameClientInput::PressMouseButton(const std::string& button, bool pressed)
+{
+  std::string controllerId;
+  {
+    std::lock_guard<std::mutex> lock(m_mouseControllerIdMutex);
+    controllerId = m_mouseControllerId;
+  }
+  if (controllerId.empty())
+    return;
+
+  game_input_event event{};
+  event.type = GAME_INPUT_EVENT_DIGITAL_BUTTON;
+  event.controller_id = controllerId.c_str();
+  event.port_type = CGameClientTopology::GetPortType(MOUSE_PORT_ADDRESS);
+  event.port_address = MOUSE_PORT_ADDRESS;
+  event.feature_name = button.c_str();
+  event.digital_button.pressed = pressed;
+
+  InputEvent(event);
 }
 
 bool CGameClientInput::OpenJoystick(const std::string& portAddress, const ControllerPtr& controller)

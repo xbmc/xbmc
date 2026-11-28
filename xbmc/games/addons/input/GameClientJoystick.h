@@ -27,6 +27,7 @@ class IInputProvider;
 namespace GAME
 {
 class CGameClient;
+class CGameClientStickMouse;
 class CPortInput;
 
 /*!
@@ -103,6 +104,7 @@ private:
   const ControllerPtr m_controller;
 
   // Input parameters
+  std::unique_ptr<CGameClientStickMouse> m_stickMouse;
   std::unique_ptr<CPortInput> m_portInput;
   PERIPHERALS::PeripheralPtr m_sourcePeripheral;
 
