@@ -95,6 +95,19 @@ int DiscNumber(const std::string& number)
   return first.size() <= 4 ? std::stoi(first) : 0;
 }
 
+// "(Tape 1) (Side B)": a side tag after the tape or disk it belongs to
+bool ParseSide(std::string_view tag, ParsedGameName& out)
+{
+  int side{0};
+  int sides{0};
+  if (out.disc == 0 || !StringUtils::StartsWithNoCase(tag, "side") ||
+      !CNoIntroNaming::ParseDisc(tag, side, sides))
+    return false;
+
+  out.side = side;
+  return true;
+}
+
 ParsedGameName FromTosec(const TOSEC::Name& tosec)
 {
   ParsedGameName out;
@@ -137,6 +150,8 @@ ParsedGameName FromTosec(const TOSEC::Name& tosec)
     out.disc = DiscNumber(tosec.media.number);
     if (!tosec.media.total.empty() && tosec.media.total.size() <= 4)
       out.discs = std::stoi(tosec.media.total);
+    if (!tosec.media.side.empty())
+      out.side = DiscNumber(tosec.media.side);
   }
 
   for (const TOSEC::DumpFlag& flag : tosec.dumpFlags)
@@ -186,6 +201,8 @@ ParsedGameName FromTosec(const TOSEC::Name& tosec)
   {
     if (out.revision.empty() && CNoIntroNaming::IsRevision(tag))
       out.revision = tag;
+    else if (ParseSide(tag, out))
+      continue;
     else if (out.disc == 0 && CNoIntroNaming::ParseDisc(tag, out.disc, out.discs))
       continue;
     else if (CNeoKobeNaming::IsDataDisk(tag))
@@ -320,15 +337,8 @@ std::string CGameNameParser::ParseWhdLoadName(std::string_view fileName)
 
 ParsedGameName CGameNameParser::Parse(std::string_view fileName, bool hasExtension)
 {
-  if (const std::string whdload = ParseWhdLoadName(fileName); !whdload.empty())
-  {
-    ParsedGameName out;
-    out.title = whdload;
-    out.displayTitle = DisplayTitle(whdload);
-    return out;
-  }
-
   std::string name(fileName);
+  std::string extension;
   if (hasExtension)
   {
     const size_t dot = name.rfind('.');
@@ -336,17 +346,32 @@ ParsedGameName CGameNameParser::Parse(std::string_view fileName, bool hasExtensi
         std::all_of(name.begin() + dot + 1, name.end(),
                     [](char c) { return std::isalnum(static_cast<unsigned char>(c)); }))
     {
-      const std::string ext = StringUtils::ToLower(name.substr(dot + 1));
+      extension = StringUtils::ToLower(name.substr(dot + 1));
       name.erase(dot);
       // A compressed tar archive has two extensions
-      if ((ext == "gz" || ext == "bz2" || ext == "xz") && StringUtils::EndsWithNoCase(name, ".tar"))
+      if ((extension == "gz" || extension == "bz2" || extension == "xz") &&
+          StringUtils::EndsWithNoCase(name, ".tar"))
         name.erase(name.size() - 4);
     }
   }
+
+  if (const std::string whdload = ParseWhdLoadName(fileName); !whdload.empty())
+  {
+    ParsedGameName out;
+    out.title = whdload;
+    out.displayTitle = DisplayTitle(whdload);
+    out.extension = std::move(extension);
+    return out;
+  }
+
   name = CNeoKobeNaming::RemoveLoadingInstructions(name);
 
   if (const std::optional<TOSEC::Name> tosec = CTosecNaming::Parse(name))
-    return FromTosec(*tosec);
+  {
+    ParsedGameName out = FromTosec(*tosec);
+    out.extension = std::move(extension);
+    return out;
+  }
 
   ParsedGameName out;
 
@@ -468,7 +493,7 @@ ParsedGameName CGameNameParser::Parse(std::string_view fileName, bool hasExtensi
       out.dataDisk = true;
       continue;
     }
-    if (CNoIntroNaming::ParseDisc(tag, out.disc, out.discs))
+    if (ParseSide(tag, out) || CNoIntroNaming::ParseDisc(tag, out.disc, out.discs))
       continue;
     if (const std::optional<ReleaseStatus> status = CNoIntroNaming::Status(tag))
     {
@@ -506,6 +531,7 @@ ParsedGameName CGameNameParser::Parse(std::string_view fileName, bool hasExtensi
   StringUtils::Trim(title, " -_");
   out.title = title;
   out.displayTitle = DisplayTitle(title);
+  out.extension = std::move(extension);
   return out;
 }
 
