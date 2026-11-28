@@ -1,0 +1,93 @@
+name: 'Label pull requests opened outside the team'
+
+# Pull requests from outside the xbmc organisation rarely need the full Jenkins
+# platform matrix before review, and every one of them occupies the single
+# serialised BuildMulti-PR slot while it builds. Jenkins' ghprb already skips
+# anything labelled No-Jenkins (xbmc/infrastructure,
+# jenkins.kodi.tv/jobs/BuildMulti-PR/config.xml), so labelling those pull
+# requests takes them out of the queue.
+#
+# No-Jenkins is deliberately not one of the labels .github/mergeable.yml
+# rejects, so this skips the build without blocking the merge the way
+# "Jenkins: Ignore" does.
+on:
+  # Only the events where the decision is first made. Not `synchronize` or
+  # `ready_for_review`: re-adding the label on every push would undo a
+  # maintainer who removed it on purpose to get the pull request built.
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  # addLabels on a pull request is refused with only `issues: write`
+  # ("Resource not accessible by integration"), so both scopes are needed:
+  # `pull-requests: write` for the label on the PR, `issues: write` to create
+  # the label definition on the repository.
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: 'no-jenkins-label-${{ github.event.pull_request.number }}'
+  cancel-in-progress: true
+
+jobs:
+  label:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add No-Jenkins to pull requests from outside the organisation
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const name = 'No-Jenkins';
+
+            // author_association is the membership signal available to a
+            // workflow token without organisation admin scope. OWNER is the
+            // repository owner, MEMBER an organisation member, COLLABORATOR
+            // anyone with write access. CONTRIBUTOR (a merged commit at some
+            // point), FIRST_TIME_CONTRIBUTOR and NONE are all treated as
+            // outside the team.
+            const team = ['OWNER', 'MEMBER', 'COLLABORATOR'];
+            if (team.includes(pr.author_association)) {
+              core.info(`#${pr.number} by ${pr.user.login} is ${pr.author_association}; not labelling.`);
+              return;
+            }
+
+            // Label creation through addLabels would leave a grey label with no
+            // description, so create it deliberately the first time. Two pull
+            // requests opened at once both miss it and both try to create it;
+            // GitHub rejects the duplicate name, which means the other run has
+            // already made the label and this one should carry on.
+            try {
+              await github.rest.issues.getLabel({ owner, repo, name });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              try {
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name,
+                  color: 'a68a64',
+                  description: 'Jenkins does not build this pull request. A merge is still allowed.',
+                });
+                core.info(`Created the ${name} label.`);
+              } catch (createError) {
+                if (createError.status !== 422) throw createError;
+                core.info(`The ${name} label was created by another run.`);
+              }
+            }
+
+            if ((pr.labels ?? []).some((label) => label.name === name)) {
+              core.info(`#${pr.number} already has ${name}.`);
+              return;
+            }
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: pr.number,
+              labels: [name],
+            });
+            core.info(`Added ${name} to #${pr.number} by ${pr.user.login} (${pr.author_association}).`);
