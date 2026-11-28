@@ -135,6 +135,31 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVR_DRIVE_SPACE_UNIT enum PVR_DRIVE_SPACE_UNIT
+  /// @ingroup cpp_kodi_addon_pvr_Defs_General
+  /// @brief **PVR add-on drive space unit**\n
+  /// Unit of the values returned by GetDriveSpace().
+  ///
+  /// Set with @ref kodi::addon::PVRCapabilities::SetDriveSpaceUnit().
+  ///
+  /// - @ref kodi::addon::CInstancePVRClient::GetDriveSpace()
+  ///
+  /// @note Added in PVR API 9.3.0
+  ///
+  ///@{
+  typedef enum PVR_DRIVE_SPACE_UNIT
+  {
+    /// @brief __0__ : Disk space in KiB (default).
+    PVR_DRIVE_SPACE_UNIT_KIB = 0,
+
+    /// @brief __1__ : Recording time in seconds, for backends limiting recordings
+    /// by duration instead of size.
+    PVR_DRIVE_SPACE_UNIT_SECONDS = 1,
+  } PVR_DRIVE_SPACE_UNIT;
+  ///@}
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVR_SETTING_READONLY_CONDITION enum PVR_SETTING_READONLY_CONDITION
   /// @ingroup cpp_kodi_addon_pvr_Defs_General
   /// @brief **Read-only conditions for settings**\n
@@ -374,6 +399,11 @@ extern "C"
 
     unsigned int iRecordingsLifetimesSize;
     struct PVR_ATTRIBUTE_INT_VALUE* recordingsLifetimeValues;
+
+    /*!
+     * Added in 9.3.0, so an older Kodi's capabilities end before it.
+     */
+    enum PVR_DRIVE_SPACE_UNIT driveSpaceUnit;
   } PVR_ADDON_CAPABILITIES;
 
   /*!

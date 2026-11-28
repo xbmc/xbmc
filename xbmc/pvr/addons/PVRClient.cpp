@@ -805,8 +805,12 @@ SBackendProperties CPVRClient::GetBackendProperties() const
 
   if (GetDriveSpace(properties.diskTotal, properties.diskUsed) == PVR_ERROR_NO_ERROR)
   {
-    properties.diskTotal *= 1024;
-    properties.diskUsed *= 1024;
+    properties.diskUnit = m_clientCapabilities.GetDriveSpaceUnit();
+    if (properties.diskUnit == PVR_DRIVE_SPACE_UNIT_KIB)
+    {
+      properties.diskTotal *= 1024;
+      properties.diskUsed *= 1024;
+    }
   }
 
   int iAmount{0};

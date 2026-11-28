@@ -66,8 +66,9 @@ struct SBackendProperties
   int numProviders{0};
   int numChannelGroups{0};
   int numChannels{0};
-  uint64_t diskUsed{0};
-  uint64_t diskTotal{0};
+  uint64_t diskUsed{0}; //!< in bytes, or in seconds if diskUnit is PVR_DRIVE_SPACE_UNIT_SECONDS
+  uint64_t diskTotal{0}; //!< in bytes, or in seconds if diskUnit is PVR_DRIVE_SPACE_UNIT_SECONDS
+  PVR_DRIVE_SPACE_UNIT diskUnit{PVR_DRIVE_SPACE_UNIT_KIB};
 };
 
 /*!

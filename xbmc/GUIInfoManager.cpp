@@ -8966,7 +8966,12 @@ constexpr std::array<InfoMap, 7> playlist = {{
 ///   \table_row3{   <b>`PVR.BackendDiskSpace`</b>,
 ///                  \anchor PVR_BackendDiskSpace
 ///                  _string_,
-///     @return The available diskspace on the backend as string with size.
+///     @return The available diskspace on the backend as string with size\, or
+///     with the recording time in hours if the backend limits recordings by
+///     duration.
+///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link PVR_BackendDiskSpace `PVR.BackendDiskSpace`\endlink
+///     reports hours for backends limiting recordings by duration.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendDiskSpaceProgr`</b>,
@@ -9010,7 +9015,12 @@ constexpr std::array<InfoMap, 7> playlist = {{
 ///   \table_row3{   <b>`PVR.TotalDiscSpace`</b>,
 ///                  \anchor PVR_TotalDiscSpace
 ///                  _string_,
-///     @return The total diskspace available for recordings.
+///     @return The total diskspace available for recordings as string with
+///     size\, or the total recording time in hours if the backend limits
+///     recordings by duration.
+///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link PVR_TotalDiscSpace `PVR.TotalDiscSpace`\endlink
+///     reports hours for backends limiting recordings by duration.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextTimer`</b>,

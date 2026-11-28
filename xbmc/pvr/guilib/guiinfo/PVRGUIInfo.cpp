@@ -69,6 +69,17 @@ std::tuple<int, unsigned int, CDateTime, CDateTime> MakePlayableCacheKey(const C
 {
   return {tag.EpgID(), tag.UniqueBroadcastID(), tag.StartAsUTC(), tag.EndAsUTC()};
 }
+
+std::string DriveSpaceToString(long long value, PVR_DRIVE_SPACE_UNIT unit)
+{
+  if (unit == PVR_DRIVE_SPACE_UNIT_SECONDS)
+  {
+    return StringUtils::Format(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(17998),
+        value / 3600); // "{0:d} hours"
+  }
+  return StringUtils::SizeToString(value);
+}
 } // unnamed namespace
 
 CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
@@ -101,6 +112,7 @@ void CPVRGUIInfo::ResetProperties()
   m_strBackendChannels.clear();
   m_iBackendDiskTotal = 0;
   m_iBackendDiskUsed = 0;
+  m_backendDiskUnit = PVR_DRIVE_SPACE_UNIT_KIB;
   m_bIsPlayingTV = false;
   m_bIsPlayingRadio = false;
   m_bIsPlayingRecording = false;
@@ -2056,7 +2068,7 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string& strValue) const
 {
-  strValue = StringUtils::SizeToString(m_iBackendDiskTotal).c_str();
+  strValue = DriveSpaceToString(m_iBackendDiskTotal, m_backendDiskUnit);
 }
 
 void CPVRGUIInfo::CharInfoSignal(std::string& strValue) const
@@ -2132,9 +2144,10 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
 
   if (diskTotal > 0)
   {
-    strValue = StringUtils::Format(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(802),
-        StringUtils::SizeToString(diskTotal - diskUsed), StringUtils::SizeToString(diskTotal));
+    strValue =
+        StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(802),
+                            DriveSpaceToString(diskTotal - diskUsed, m_backendDiskUnit),
+                            DriveSpaceToString(diskTotal, m_backendDiskUnit));
   }
   else
     strValue = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205);
@@ -2261,6 +2274,7 @@ void CPVRGUIInfo::UpdateBackendCache()
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205);
   m_iBackendDiskTotal = 0;
   m_iBackendDiskUsed = 0;
+  m_backendDiskUnit = PVR_DRIVE_SPACE_UNIT_KIB;
 
   // Update with values from the current client when we have at least one
   if (!m_backendProperties.empty())
@@ -2294,6 +2308,7 @@ void CPVRGUIInfo::UpdateBackendCache()
 
     m_iBackendDiskTotal = backend.diskTotal;
     m_iBackendDiskUsed = backend.diskUsed;
+    m_backendDiskUnit = backend.diskUnit;
   }
 
   // Update the current active client, eventually wrapping around

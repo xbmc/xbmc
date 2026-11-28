@@ -1114,6 +1114,7 @@ public:
   /// | **Supports recordings delete** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingsDelete "SetSupportsRecordingsDelete" | @ref PVRCapabilities::GetSupportsRecordingsDelete "SetSupportsRecordingsDelete"
   /// | **Supports multiple recorded streams** | `boolean` | @ref PVRCapabilities::SetSupportsMultipleRecordedStreams "SetSupportsMultipleRecordedStreams" | @ref PVRCapabilities::GetSupportsMultipleRecordedStreams "GetSupportsMultipleRecordedStreams"
   /// | **Recordings lifetime values** | @ref cpp_kodi_addon_pvr_Defs_PVRTypeIntValue "PVRTypeIntValue" | @ref PVRCapabilities::SetRecordingsLifetimeValues "SetRecordingsLifetimeValues" | @ref PVRCapabilities::GetRecordingsLifetimeValues "GetRecordingsLifetimeValues"
+  /// | **Drive space unit** | @ref cpp_kodi_addon_pvr_Defs_General_PVR_DRIVE_SPACE_UNIT "PVR_DRIVE_SPACE_UNIT" | @ref PVRCapabilities::SetDriveSpaceUnit "SetDriveSpaceUnit" | @ref PVRCapabilities::GetDriveSpaceUnit "GetDriveSpaceUnit"
   ///
   /// @warning This class can not be used outside of @ref kodi::addon::CInstancePVRClient::GetCapabilities()
   ///
@@ -1374,6 +1375,21 @@ public:
           m_cStructure->recordingsLifetimeValues[i].strDescription);
     return recordingsLifetimeValues;
   }
+
+  /// @brief **optional**\n
+  /// Set the unit of the values returned by
+  /// @ref kodi::addon::CInstancePVRClient::GetDriveSpace().
+  ///
+  /// Defaults to @ref PVR_DRIVE_SPACE_UNIT_KIB.
+  ///
+  /// @note Added in PVR API 9.3.0. A Kodi older than that ignores the unit.
+  void SetDriveSpaceUnit(PVR_DRIVE_SPACE_UNIT driveSpaceUnit)
+  {
+    m_cStructure->driveSpaceUnit = driveSpaceUnit;
+  }
+
+  /// @brief To get with @ref SetDriveSpaceUnit changed values.
+  PVR_DRIVE_SPACE_UNIT GetDriveSpaceUnit() const { return m_cStructure->driveSpaceUnit; }
   ///@}
 
   static void AllocResources(const PVR_ADDON_CAPABILITIES* source, PVR_ADDON_CAPABILITIES* target)

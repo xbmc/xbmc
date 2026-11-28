@@ -253,6 +253,15 @@ public:
            m_addonCapabilities->bSupportsMultipleRecordedStreams;
   }
 
+  /*!
+   * @brief Get the unit of the drive space values reported by this add-on.
+   * @return The unit.
+   */
+  PVR_DRIVE_SPACE_UNIT GetDriveSpaceUnit() const
+  {
+    return m_addonCapabilities ? m_addonCapabilities->driveSpaceUnit : PVR_DRIVE_SPACE_UNIT_KIB;
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Streams
