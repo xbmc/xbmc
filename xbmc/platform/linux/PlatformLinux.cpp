@@ -116,6 +116,10 @@ bool CPlatformLinux::InitStageOne()
     OPTIONALS::ALSARegister();
     OPTIONALS::PulseAudioRegister(true);
   }
+  else if (sink == "null")
+  {
+    // with no sink registered, ActiveAE discards output through CAESinkNULL
+  }
   else
   {
     if (!OPTIONALS::PulseAudioRegister(false))

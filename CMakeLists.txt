@@ -361,6 +361,7 @@ find_addon_xml_in_files(${outputFilterRegex})
 if(TARGET ${APP_NAME_LC}::Alsa AND TARGET ${APP_NAME_LC}::PulseAudio)
   list(APPEND AUDIO_BACKENDS_LIST "alsa+pulseaudio")
 endif()
+list(APPEND AUDIO_BACKENDS_LIST "null")
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
