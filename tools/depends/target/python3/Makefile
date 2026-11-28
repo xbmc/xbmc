@@ -119,7 +119,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --disable-shared \
                       --without-ensurepip \
                       --disable-framework \
-                      --without-pymalloc \
                       --enable-ipv6 \
                       --with-build-python=$(NATIVEPREFIX)/bin/python3 \
                       --with-system-expat=yes \
