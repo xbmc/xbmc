@@ -127,6 +127,11 @@ bool CPortInput::OnAccelerometerMotion(const std::string& feature, float x, floa
   return m_gameInput->OnAccelerometerMotion(feature, x, y, z);
 }
 
+bool CPortInput::OnMotion(const JOYSTICK::MotionState& state)
+{
+  return m_gameInput->OnMotion(state);
+}
+
 bool CPortInput::OnWheelMotion(const std::string& feature,
                                float position,
                                unsigned int motionTimeMs)

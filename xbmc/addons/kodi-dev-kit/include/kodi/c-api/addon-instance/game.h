@@ -846,6 +846,9 @@ extern "C"
 
     /// @brief Motor vibration
     GAME_INPUT_EVENT_MOTOR,
+
+    /// @brief Motion sensor reading, from a controller's accelerometer and gyroscope
+    GAME_INPUT_EVENT_MOTION,
   } GAME_INPUT_EVENT_SOURCE;
   //----------------------------------------------------------------------------
 
@@ -1115,6 +1118,33 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief A motion sensor reading
+  ///
+  /// The axes follow SDL's sensor coordinate system: for a controller held in
+  /// front of you, X points right, Y points up and Z points towards you.
+  typedef struct game_motion_event
+  {
+    /// @brief Acceleration on the X axis, in m/s², including gravity
+    float accel_x;
+
+    /// @brief Acceleration on the Y axis, in m/s², including gravity
+    float accel_y;
+
+    /// @brief Acceleration on the Z axis, in m/s², including gravity
+    float accel_z;
+
+    /// @brief Rotation around the X axis, in rad/s, counter-clockwise positive
+    float gyro_x;
+
+    /// @brief Rotation around the Y axis, in rad/s, counter-clockwise positive
+    float gyro_y;
+
+    /// @brief Rotation around the Z axis, in rad/s, counter-clockwise positive
+    float gyro_z;
+  } ATTR_PACKED game_motion_event;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @brief An input event
   typedef struct game_input_event
   {
@@ -1161,6 +1191,9 @@ extern "C"
 
       /// @brief Motor vibration event
       struct game_motor_event motor;
+
+      /// @brief Motion sensor event
+      struct game_motion_event motion;
     };
   } ATTR_PACKED game_input_event;
   //----------------------------------------------------------------------------

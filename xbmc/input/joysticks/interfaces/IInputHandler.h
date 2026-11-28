@@ -154,6 +154,17 @@ public:
                                 unsigned int motionTimeMs) = 0;
 
   /*!
+   * \brief The joystick's motion sensor has a new reading
+   *
+   * Motion sensors are reported by the driver and need no mapping.
+   *
+   * \param state The accelerometer and gyroscope reading
+   *
+   * \return True if the event was handled otherwise false
+   */
+  virtual bool OnMotion(const MotionState& state) { return false; }
+
+  /*!
    * \brief Called at the end of the frame that provided input
    */
   virtual void OnInputFrame() = 0;

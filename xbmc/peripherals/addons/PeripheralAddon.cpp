@@ -464,6 +464,11 @@ bool CPeripheralAddon::ProcessEvents(void)
               joystickDevice->OnAxisMotion(event.DriverIndex(), event.AxisState());
               break;
             }
+            case PERIPHERAL_EVENT_TYPE_DRIVER_MOTION:
+            {
+              joystickDevice->OnMotion(event.DriverIndex(), event.AxisState());
+              break;
+            }
             default:
               break;
           }

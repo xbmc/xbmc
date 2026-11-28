@@ -69,6 +69,7 @@ public:
                            float y,
                            unsigned int motionTimeMs) override;
   bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
+  bool OnMotion(const KODI::JOYSTICK::MotionState& state) override;
   bool OnWheelMotion(const std::string& feature,
                      float position,
                      unsigned int motionTimeMs) override;

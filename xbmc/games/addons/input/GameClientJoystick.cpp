@@ -163,6 +163,30 @@ bool CGameClientJoystick::OnAccelerometerMotion(const std::string& feature,
   return m_gameClient.Input().InputEvent(event);
 }
 
+bool CGameClientJoystick::OnMotion(const JOYSTICK::MotionState& state)
+{
+  if (!m_gameClient.Input().AcceptsInput())
+    return false;
+
+  game_input_event event;
+
+  std::string controllerId = m_controller->ID();
+
+  event.type = GAME_INPUT_EVENT_MOTION;
+  event.controller_id = controllerId.c_str();
+  event.port_type = GAME_PORT_CONTROLLER;
+  event.port_address = m_portAddress.c_str();
+  event.feature_name = "";
+  event.motion.accel_x = state.accelerometer[0];
+  event.motion.accel_y = state.accelerometer[1];
+  event.motion.accel_z = state.accelerometer[2];
+  event.motion.gyro_x = state.gyroscope[0];
+  event.motion.gyro_y = state.gyroscope[1];
+  event.motion.gyro_z = state.gyroscope[2];
+
+  return m_gameClient.Input().InputEvent(event);
+}
+
 bool CGameClientJoystick::OnWheelMotion(const std::string& feature,
                                         float position,
                                         unsigned int motionTimeMs)

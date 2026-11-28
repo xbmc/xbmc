@@ -147,6 +147,13 @@ void CAddonInputHandling::OnInputFrame(void)
     m_joystickDriverHandler->OnInputFrame();
 }
 
+void CAddonInputHandling::OnMotion(const KODI::JOYSTICK::MotionState& state)
+{
+  // Motion sensors are tagged by the driver, so they skip the button map
+  if (m_joystickInputHandler)
+    m_joystickInputHandler->OnMotion(state);
+}
+
 bool CAddonInputHandling::OnKeyPress(const CKey& key)
 {
   if (m_keyboardDriverHandler)

@@ -74,6 +74,16 @@ public:
    *    dispatched every frame.
    */
   virtual void OnInputFrame(void) = 0;
+
+  /*!
+   * \brief Handle a new reading from the joystick's motion sensor
+   *
+   * Called at the end of a frame in which the sensor reported, before
+   * OnInputFrame().
+   *
+   * \param state The accelerometer and gyroscope reading
+   */
+  virtual void OnMotion(const MotionState& state) {}
 };
 } // namespace JOYSTICK
 } // namespace KODI
