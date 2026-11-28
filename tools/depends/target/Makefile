@@ -174,7 +174,7 @@ libplist: $(ZLIB)
 libpng: $(ZLIB)
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
-libzip: bzip2 gnutls $(ZLIB)
+libzip: bzip2 $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB) zstd
 mesa: libdrm $(MESA_DEPS) $(ZLIB)
 nettle: gmp
