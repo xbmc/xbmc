@@ -5,7 +5,7 @@ DEPS = ../../Makefile.include Makefile OPENSSL-VERSION ../../download-files.incl
 # configuration settings
 ifeq ($(OS), linux)
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
-  CONFIGURE=./Configure no-shared zlib no-tests no-asm no-module  $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
+  CONFIGURE=./Configure no-shared zlib no-tests no-module  $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
   ifeq ($(TARGET_PLATFORM),webos)
     CONFIGURE+= linux-armv4
     # Need to add "no-async" to avoid "setcontext is not implemented and will always fail" warning
@@ -53,8 +53,7 @@ else
   endif
 
   # Openssl 3.2.0 allows no-apps no-docs as options. Use when we update further
-  # We explicitly use no-asm as there is a symbol clash with gnutls
-  CONFIGURE=./Configure no-shared zlib no-tests no-asm no-module  $(TARGETOPT) --prefix=$(PREFIX) $(OPENSSLPLATFORM)
+  CONFIGURE=./Configure no-shared zlib no-tests no-module  $(TARGETOPT) --prefix=$(PREFIX) $(OPENSSLPLATFORM)
 endif
 
 export CC CXX AR RANLIB
