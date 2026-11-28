@@ -833,7 +833,7 @@ CVideoPlayer::~CVideoPlayer()
 
   while (m_outboundEvents->IsProcessing())
   {
-    CThread::Sleep(10ms);
+    m_outboundEvents->WaitForCompletion(10ms);
   }
 }
 
