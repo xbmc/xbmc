@@ -25,7 +25,7 @@ CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item, bool forceRe
   // Preserve CFileItem video info and art to avoid info loss between creating VideoInfoTagLoaderFactory and calling Load()
   if (m_item.HasVideoInfoTag())
     m_tag = std::make_unique<CVideoInfoTag>(*m_item.GetVideoInfoTag());
-  auto& art = item.GetArt();
+  const auto art = item.GetArt();
   if (!art.empty())
     m_art = std::make_unique<KODI::ART::Artwork>(art);
 }
