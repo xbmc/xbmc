@@ -859,10 +859,19 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
   return NULL;
 }
 
+EVENT_RESULT CGUIBaseContainer::SendMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
+{
+  m_touchMove =
+      event.m_id == ACTION_MOUSE_MOVE && event.m_offsetX == 0.0f && event.m_offsetY == 0.0f;
+  const EVENT_RESULT result = CGUIControl::SendMouseEvent(point, event);
+  m_touchMove = false;
+  return result;
+}
+
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
-  // select the item under the pointer
-  if (!m_waitForScrollEnd)
+  // Select the item under the pointer, a touch selects its item in OnMouseEvent
+  if (!m_waitForScrollEnd && !m_touchMove)
     SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
@@ -875,22 +884,24 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
   {
     // Cancel touch
     m_waitForScrollEnd = false;
+    // A touch that selected an item the position doesn't lead to any more keeps its selection
+    const bool keepSelection = m_keepTouchSelection;
+    m_keepTouchSelection = false;
     int select = GetSelectedItem();
-    if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
+    if (keepSelection || SelectItemFromClick(point - CPoint(m_posX, m_posY)))
     {
       if (event.m_id != ACTION_MOUSE_RIGHT_CLICK || select == GetSelectedItem())
         OnClick(event.m_id);
       return EVENT_RESULT_HANDLED;
     }
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    Scroll(-1);
-    return EVENT_RESULT_HANDLED;
-  }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
-  {
-    Scroll(1);
+    Scroll(event.m_id == ACTION_MOUSE_WHEEL_UP ? -1 : 1);
+    // The list moves under a pointer that doesn't, so the item under it is selected
+    const int cursor = GetCursorFromPoint(point - CPoint(m_posX, m_posY));
+    if (cursor >= 0)
+      SetCursor(cursor);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
@@ -902,6 +913,8 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
     m_gestureActive = true;
+    // The finger takes over from a scroll that started with the touch
+    m_scroller.Stop();
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
     return EVENT_RESULT_HANDLED;
@@ -951,14 +964,37 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
     SetCursor(GetCursor());
     SetFocus(true);
     m_waitForScrollEnd = false;
+    m_keepTouchSelection = false;
     m_gestureActive = false;
     return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_MOUSE_MOVE)
+  {
+    m_keepTouchSelection = false;
+    if (m_touchMove)
+    {
+      // A touch focuses the control with a mouse move that doesn't move. Hovering is suppressed
+      // while the touch can still turn into a scroll gesture, but the touched item is selected
+      // right away.
+      const CPoint itemPoint = point - CPoint(m_posX, m_posY);
+      if (SelectItemFromClick(itemPoint))
+      {
+        // Scrolling the list or moving the focus can change which item is at the position
+        const int cursor = GetCursorFromPoint(itemPoint);
+        m_keepTouchSelection =
+            cursor < 0 || CorrectOffset(GetOffset(), cursor) != GetSelectedItem();
+      }
+      // A touch doesn't hover, so it must not count towards auto scrolling
+      m_analogScrollCount = 0;
+    }
   }
   return EVENT_RESULT_UNHANDLED;
 }
 
 bool CGUIBaseContainer::OnClick(int actionID)
 {
+  // A tap that is mapped to Select ends the touch as well
+  m_keepTouchSelection = false;
   int subItem = 0;
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
   {

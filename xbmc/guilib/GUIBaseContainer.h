@@ -103,6 +103,7 @@ public:
   void DumpTextureUse() override;
 #endif
 protected:
+  EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool OnClick(int actionID);
 
@@ -128,6 +129,13 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {}
   virtual bool SelectItemFromPoint(const CPoint& point) { return false; }
+  /*!
+   \brief Select the item at the position of a click, or where a touch started.
+   A touch doesn't hover over the list first, so the touched item has to be selected right away.
+   \param point the position, relative to the container
+   \return true if the point was handled
+   */
+  virtual bool SelectItemFromClick(const CPoint& point) { return SelectItemFromPoint(point); }
   virtual int GetCursorFromPoint(const CPoint& point, CPoint* itemPoint = NULL) const { return -1; }
   virtual void Reset();
   virtual size_t GetNumItems() const { return m_items.size(); }
@@ -294,4 +302,10 @@ private:
   // early inertial scroll cancellation
   bool m_waitForScrollEnd = false;
   float m_lastScrollValue = 0.0f;
+
+  // The mouse move that is sent has no movement, which is what a touch sends
+  bool m_touchMove = false;
+
+  // The position of the touch doesn't lead to the item it selected any more
+  bool m_keepTouchSelection = false;
 };

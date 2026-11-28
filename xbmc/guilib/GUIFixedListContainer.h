@@ -47,6 +47,7 @@ public:
 
   bool OnAction(const CAction &action) override;
   bool OnMessage(CGUIMessage& message) override;
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
 
 protected:
   void Scroll(int amount) override;
@@ -55,6 +56,8 @@ protected:
   bool GetOffsetRange(int &minOffset, int &maxOffset) const override;
   void ValidateOffset() override;
   bool SelectItemFromPoint(const CPoint &point) override;
+  bool SelectItemFromClick(const CPoint& point) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
   void SelectItem(int item) override;
   void UpdatePageControl(int offset) override;
@@ -75,9 +78,22 @@ private:
    */
   void GetCursorRange(int &minCursor, int &maxCursor) const;
 
+  /*!
+   \brief Get the speed the list scrolls at while the pointer is at a point
+   \param point the position of the pointer, relative to the container
+   \return the speed in rows per second, negative backward, or 0 if the pointer doesn't scroll
+   */
+  float GetHoverScrollSpeed(const CPoint& point) const;
+  void UpdateHoverScrolling(unsigned int currentTime);
+
   int m_fixedCursor; ///< default position the skinner wishes to use for the focused item
   int m_startCursorRange; ///< range that the focused item can vary when at the beginning end of the list
   int m_endCursorRange; ///< range that the focused item can vary when at the end of the list
   FixedListAlignY m_alignY; //!< Vertical alignment of the items
+
+  // The pointer scrolls the list while it stays at m_hoverPoint
+  bool m_hoverScrolling = false;
+  CPoint m_hoverPoint;
+  unsigned int m_hoverScrollTime = 0;
 };
 

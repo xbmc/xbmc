@@ -16,7 +16,7 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>vertical</orientation>
 					<pagecontrol>531</pagecontrol>
-					<movement>3</movement>
+					<movement>8</movement>
 					<focusposition>3</focusposition>
 					<onleft>9000</onleft>
 					<onright>531</onright>

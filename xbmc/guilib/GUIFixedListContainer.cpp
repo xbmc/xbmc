@@ -10,11 +10,25 @@
 
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
+#include "ServiceBroker.h"
+#include "input/InputManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
+
+namespace
+{
+// Speed in rows per second the list scrolls at when the pointer is at its edge
+constexpr float HOVER_SCROLL_MAX_SPEED = 10.0f;
+// Rows at either end of the list in which the pointer scrolls it
+constexpr float HOVER_SCROLL_EDGE = 3.0f;
+// A longer frame doesn't scroll any further
+constexpr unsigned int HOVER_SCROLL_MAX_FRAME_TIME = 100;
+} // namespace
 
 CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
                                                int controlID,
@@ -108,6 +122,22 @@ bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
   }
 
   return CGUIBaseContainer::OnMessage(message);
+}
+
+void CGUIFixedListContainer::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
+{
+  if (m_hoverScrolling)
+    UpdateHoverScrolling(currentTime);
+  CGUIBaseContainer::Process(currentTime, dirtyregions);
+}
+
+EVENT_RESULT CGUIFixedListContainer::OnMouseEvent(const CPoint& point,
+                                                  const KODI::MOUSE::CMouseEvent& event)
+{
+  // Only a move of the pointer goes on with the scrolling
+  if (event.m_id != ACTION_MOUSE_MOVE)
+    m_hoverScrolling = false;
+  return CGUIBaseContainer::OnMouseEvent(point, event);
 }
 
 bool CGUIFixedListContainer::MoveUp(bool wrapAround)
@@ -226,58 +256,136 @@ int CGUIFixedListContainer::GetCursorFromPoint(const CPoint &point, CPoint *item
   return -1;
 }
 
-bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
+float CGUIFixedListContainer::GetHoverScrollSpeed(const CPoint& point) const
+{
+  if (!m_focusedLayout || !m_layout)
+    return 0.0f;
+
+  const float sizeOfItem = m_layout->Size(m_orientation);
+  const float edge = HOVER_SCROLL_EDGE * sizeOfItem;
+  const float length = (m_orientation == VERTICAL) ? m_height : m_width;
+  int minCursor, maxCursor;
+  GetCursorRange(minCursor, maxCursor);
+  // The cursor can't leave its range, so the list scrolls while the pointer is outside of it.
+  // A range that reaches an end of the list leaves no row there to scroll it, so the rows
+  // at that end of the container scroll it instead.
+  const float start = (minCursor == 0) ? edge : (minCursor + 0.2f) * sizeOfItem;
+  const float end = (maxCursor >= m_itemsPerPage - 1)
+                        ? length - edge
+                        : (maxCursor - 0.2f) * sizeOfItem + m_focusedLayout->Size(m_orientation);
+  const float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+
+  int minOffset, maxOffset;
+  GetOffsetRange(minOffset, maxOffset);
+  float distance; // into the scrolling area, in rows
+  float direction;
+  if (pos < start && GetOffset() > minOffset)
+  {
+    distance = (start - pos) / sizeOfItem;
+    direction = -1.0f;
+  }
+  else if (pos > end && GetOffset() < maxOffset)
+  {
+    distance = (pos - end) / sizeOfItem;
+    direction = 1.0f;
+  }
+  else
+    return 0.0f;
+
+  distance = std::min(distance, 1.0f);
+  return direction * distance * distance * HOVER_SCROLL_MAX_SPEED;
+}
+
+void CGUIFixedListContainer::UpdateHoverScrolling(unsigned int currentTime)
+{
+  // The pointer is where it was seen last, as long as it is in use and over the list
+  const float speed = (HasFocus() && CServiceBroker::GetInputManager().IsMouseActive())
+                          ? GetHoverScrollSpeed(m_hoverPoint)
+                          : 0.0f;
+  if (speed == 0.0f)
+  {
+    m_hoverScrolling = false;
+    return;
+  }
+
+  if (m_hoverScrollTime != 0)
+  {
+    const unsigned int elapsed =
+        std::min(currentTime - m_hoverScrollTime, HOVER_SCROLL_MAX_FRAME_TIME);
+    m_analogScrollCount += std::abs(speed) * static_cast<float>(elapsed) / 1000.0f;
+    for (; m_analogScrollCount >= 1.0f; m_analogScrollCount -= 1.0f)
+      ScrollToOffset(GetOffset() + (speed < 0.0f ? -1 : 1));
+  }
+  m_hoverScrollTime = currentTime;
+}
+
+bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint& point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;
 
   MarkDirtyRegion();
 
-  const float mouse_scroll_speed = 0.25f;
-  const float mouse_max_amount = 1.5f;
-  float sizeOfItem = m_layout->Size(m_orientation);
+  const int cursor = GetCursorFromPoint(point);
+  if (GetHoverScrollSpeed(point) != 0.0f)
+  { // the list scrolls while the pointer stays here, see Process()
+    if (!InsideLayout(m_layout, point))
+    {
+      m_hoverScrolling = false;
+      return false;
+    }
+    if (!m_hoverScrolling)
+    {
+      m_analogScrollCount = 0.0f;
+      m_hoverScrollTime = 0;
+    }
+    m_hoverScrolling = true;
+    m_hoverPoint = point;
+    // A row inside of the cursor range stays selected as the list scrolls under the pointer
+    if (cursor >= 0)
+      SetCursor(cursor);
+    return true;
+  }
+
+  m_hoverScrolling = false;
+  // Select the appropriate item
+  if (cursor < 0)
+    return false;
+  // Calling SelectItem() here will focus the item and scroll, which isn't really what we're after
+  SetCursor(cursor);
+  return true;
+}
+
+bool CGUIFixedListContainer::SelectItemFromClick(const CPoint& point)
+{
+  if (!m_focusedLayout || !m_layout)
+    return false;
+
+  // Find the row at the point, it can be outside of the cursor range. The row after the last one
+  // that fits is only partly visible.
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  const CGUIListItemLayout* layout = nullptr;
+  int row = 0;
+  for (; row <= m_itemsPerPage; ++row)
+  {
+    layout = (row == GetCursor()) ? m_focusedLayout : m_layout;
+    if (pos < layout->Size(m_orientation))
+      break;
+    pos -= layout->Size(m_orientation);
+  }
+  const int item = CorrectOffset(GetOffset(), row);
+  if (row > m_itemsPerPage || item < 0 || item >= static_cast<int>(m_items.size()) ||
+      !InsideLayout(layout, point))
+    return false;
+
+  // The cursor has to stay in its range, so an item outside of it is scrolled into it
   int minCursor, maxCursor;
   GetCursorRange(minCursor, maxCursor);
-  // see if the point is either side of our focus range
-  float start = (minCursor + 0.2f) * sizeOfItem;
-  float end = (maxCursor - 0.2f) * sizeOfItem + m_focusedLayout->Size(m_orientation);
-  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
-  if (pos < start && GetOffset() > -minCursor)
-  { // scroll backward
-    if (!InsideLayout(m_layout, point))
-      return false;
-    float amount = std::min((start - pos) / sizeOfItem, mouse_max_amount);
-    m_analogScrollCount += amount * amount * mouse_scroll_speed;
-    if (m_analogScrollCount > 1)
-    {
-      ScrollToOffset(GetOffset() - 1);
-      m_analogScrollCount = 0;
-    }
-    return true;
-  }
-  else if (pos > end && GetOffset() + maxCursor < (int)m_items.size() - 1)
-  {
-    if (!InsideLayout(m_layout, point))
-      return false;
-    // scroll forward
-    float amount = std::min((pos - end) / sizeOfItem, mouse_max_amount);
-    m_analogScrollCount += amount * amount * mouse_scroll_speed;
-    if (m_analogScrollCount > 1)
-    {
-      ScrollToOffset(GetOffset() + 1);
-      m_analogScrollCount = 0;
-    }
-    return true;
-  }
-  else
-  { // select the appropriate item
-    int cursor = GetCursorFromPoint(point);
-    if (cursor < 0)
-      return false;
-    // calling SelectItem() here will focus the item and scroll, which isn't really what we're after
-    SetCursor(cursor);
-    return true;
-  }
+  const int cursor = std::clamp(row, minCursor, maxCursor);
+  SetCursor(cursor);
+  if (cursor != row)
+    ScrollToOffset(item - cursor);
+  return true;
 }
 
 void CGUIFixedListContainer::SelectItem(int item)
@@ -344,7 +452,8 @@ int CGUIFixedListContainer::GetCurrentPage() const
 void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) const
 {
   minCursor = std::max(m_fixedCursor - m_startCursorRange, 0);
-  maxCursor = std::min(m_fixedCursor + m_endCursorRange, m_itemsPerPage);
+  // The last row of the container is only partly visible sometimes, but the cursor can be there
+  maxCursor = std::min(m_fixedCursor + m_endCursorRange, std::max(m_itemsPerPage - 1, 0));
 
   if (m_items.empty())
   {
