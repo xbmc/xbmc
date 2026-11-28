@@ -13,12 +13,14 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
@@ -30,6 +32,7 @@
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoThumbLoader.h"
 
 #include <memory>
 #include <string>
@@ -1064,4 +1067,56 @@ TEST_F(TestVideoInfoScannerArtTvShows, ASeasonsArtIsCountedInTheCaseItIsMatchedI
   AdvancedSettings()->m_caseSensitiveLocalArtMatch = false;
   KODI::ART::SeasonsArtwork matchedInAnyCase{seasonsArt()};
   EXPECT_EQ(poster2, matchedInAnyCase[2]["poster"]);
+}
+
+// A thumb made from a frame of the video is told from the rest of the art shown in the library, as
+// decoding the frame competes with a scan
+TEST(TestVideoInfoScannerArtPriority, AThumbMadeFromAFrameOfTheVideoIsAFrame)
+{
+  const std::string video{"smb://host/TV/Show/Show S01E01.mkv"};
+
+  EXPECT_EQ(ArtPriority::FRAME,
+            PriorityOfArt(KODI::ART::TYPE::THUMB,
+                          CVideoThumbLoader::GetEmbeddedThumbURL(CFileItem{video, false})));
+  EXPECT_EQ(ArtPriority::LIST,
+            PriorityOfArt(KODI::ART::TYPE::THUMB, "https://image.tmdb.org/t/p/original/still.jpg"));
+  EXPECT_EQ(ArtPriority::LIST,
+            PriorityOfArt(KODI::ART::TYPE::THUMB, "smb://host/TV/Show/Show S01E01-thumb.jpg"));
+  // An image the video holds is read from it, not decoded
+  EXPECT_EQ(ArtPriority::LIST, PriorityOfArt(KODI::ART::TYPE::POSTER,
+                                             IMAGE_FILES::URLFromFile(video, "video_poster")));
+  EXPECT_EQ(
+      ArtPriority::BACKGROUND,
+      PriorityOfArt(KODI::ART::TYPE::FANART, "https://image.tmdb.org/t/p/original/fanart.jpg"));
+}
+
+// A scan caches a thumb made from a frame of the video as it finds it, as it does the rest of the
+// art shown in the library, unless the frames are to be extracted after the scrape
+TEST(TestVideoInfoScannerArtPriority, AFrameIsCachedAsFoundUnlessFramesAreExtractedAfterTheScrape)
+{
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const auto advanced{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const int timing{settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING)};
+  const bool framesAfterScrape{advanced->m_bVideoLibraryExtractFramesAfterScrape};
+  // In the background, after the scrape
+  settings->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING, 1);
+
+  advanced->m_bVideoLibraryExtractFramesAfterScrape = false;
+  {
+    const CVideoInfoScannerArt art;
+    EXPECT_TRUE(art.CachedAsFound(ArtPriority::FRAME));
+    EXPECT_TRUE(art.CachedAsFound(ArtPriority::LIST));
+    EXPECT_FALSE(art.CachedAsFound(ArtPriority::BACKGROUND));
+  }
+
+  advanced->m_bVideoLibraryExtractFramesAfterScrape = true;
+  {
+    const CVideoInfoScannerArt art;
+    EXPECT_FALSE(art.CachedAsFound(ArtPriority::FRAME));
+    EXPECT_TRUE(art.CachedAsFound(ArtPriority::LIST));
+    EXPECT_FALSE(art.CachedAsFound(ArtPriority::BACKGROUND));
+  }
+
+  advanced->m_bVideoLibraryExtractFramesAfterScrape = framesAfterScrape;
+  settings->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING, timing);
 }

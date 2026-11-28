@@ -483,6 +483,7 @@ void CAdvancedSettings::Initialize()
   m_iVideoLibraryRecentlyAddedItems = 25;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
+  m_bVideoLibraryExtractFramesAfterScrape = false;
   m_bVideoScannerIgnoreErrors = false;
   m_metadataSourcesPriv = "tmdb|imdb|tvdb|anidb|";
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
@@ -1013,6 +1014,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
+    XMLUtils::GetBoolean(pElement, "extractframesafterscrape",
+                         m_bVideoLibraryExtractFramesAfterScrape);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
     XMLUtils::GetBoolean(pElement, "casesensitivelocalartmatch", m_caseSensitiveLocalArtMatch);
     XMLUtils::GetInt(pElement, "minimumepisodeplaylistduration", m_minimumEpisodePlaylistDuration);
