@@ -33,6 +33,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --without-idn \
                       --without-brotli \
                       --without-zstd \
+                      --disable-hardware-acceleration \
                       $(CONFIGURE_OPTIONS)
 
 # LLVM 15 has raised this to error by default. drop back to warning
