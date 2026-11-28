@@ -22,6 +22,8 @@ extern "C"
 //! \brief Export film grain parameters as side data instead of applying them.
 #define CODEC_EXPORT_FILM_GRAIN 0x04
 
+#define CODEC_SKIP_HW_CODECS 0x08
+
 class CDemuxStream;
 struct DemuxCryptoSession;
 
