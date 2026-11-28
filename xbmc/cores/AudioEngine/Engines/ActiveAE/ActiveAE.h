@@ -188,7 +188,7 @@ struct MsgStreamFFmpegInfo
 class CEngineStats
 {
 public:
-  void Reset(unsigned int sampleRate, bool pcm);
+  void Reset(unsigned int sampleRate, bool pcm, const AEDelayStatus& sinkDelay = {});
   void UpdateSinkDelay(const AEDelayStatus& status, int samples);
   void AddSamples(int samples, const std::list<CActiveAEStream*>& streams, double mediaSpeed = 1.0);
   void GetDelay(AEDelayStatus& status);
@@ -436,6 +436,7 @@ protected:
   float m_volumeScaled; // multiplier to scale samples in order to achieve the volume specified in m_volume
   bool m_muted;
   bool m_sinkHasVolume;
+  AEDelayStatus m_sinkOpenDelay; // delay of the sink right after opening
 
   // viz
   std::vector<IAudioCallback*> m_audioCallback;

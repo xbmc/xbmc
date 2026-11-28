@@ -839,6 +839,10 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     startup_raw_delay = GetRawStartupDelay();
 
   status.SetDelay(d + startup_raw_delay);
+  // Between updates the latency below the AudioTrack does not play out, nor the start-up lag
+  // before the first write
+  const double startupCountdown{m_startWriteCounter != 0 ? startup_raw_delay : 0.0};
+  status.maxcorrection = std::clamp(d - m_hw_delay + startupCountdown, 0.0, status.delay);
 }
 
 // RAW passthrough: after a flush the output starts ~100 ms after the first write, with the

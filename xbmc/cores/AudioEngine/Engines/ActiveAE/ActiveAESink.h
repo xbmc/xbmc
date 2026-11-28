@@ -43,6 +43,7 @@ struct SinkReply
   float latency;
   bool hasVolume;
   bool fallback;
+  AEDelayStatus delay;
 };
 
 class CSinkControlProtocol : public Protocol
