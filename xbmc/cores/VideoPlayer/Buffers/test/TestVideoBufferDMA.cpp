@@ -51,6 +51,20 @@ private:
   std::unique_ptr<uint8_t[]> m_memory;
 };
 
+// mirrors CDumbBufferObject and CGBMBufferObject, which only allocate by format
+class FormatOnlyBufferObject : public CBufferObject
+{
+public:
+  bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) override
+  {
+    return true;
+  }
+  void DestroyBufferObject() override {}
+  uint8_t* GetMemory() override { return nullptr; }
+  void ReleaseMemory() override {}
+  std::string GetName() const override { return "FormatOnlyBufferObject"; }
+};
+
 struct CountingStat
 {
   std::map<int, uint64_t> inodes;
@@ -78,6 +92,13 @@ protected:
     CBufferObjectFactory::ClearBufferObjects();
     CBufferObjectFactory::RegisterBufferObject([] { return std::make_unique<FakeBufferObject>(); });
   }
+  void TearDown() override { CBufferObjectFactory::ClearBufferObjects(); }
+};
+
+class TestVideoBufferDMANoBackend : public ::testing::Test
+{
+protected:
+  void SetUp() override { CBufferObjectFactory::ClearBufferObjects(); }
   void TearDown() override { CBufferObjectFactory::ClearBufferObjects(); }
 };
 
@@ -124,4 +145,19 @@ TEST_F(TestVideoBufferDMA, IsValidGateSurvivesCollapse)
   const int offsets[YuvImage::MAX_PLANES] = {0, 1920 * 1080, 0};
   buffer->SetDimensions(1920, 1080, strides, offsets);
   EXPECT_TRUE(buffer->IsValid());
+}
+
+TEST_F(TestVideoBufferDMANoBackend, AllocFailsWithNothingRegistered)
+{
+  auto buffer = std::make_unique<CVideoBufferDMA>(0, FOURCC_NV12, 2, 1920 * 1080 * 3 / 2);
+  EXPECT_FALSE(buffer->Alloc());
+}
+
+TEST_F(TestVideoBufferDMANoBackend, AllocFailsWhenNoBackendAllocatesBySize)
+{
+  CBufferObjectFactory::RegisterBufferObject(
+      [] { return std::make_unique<FormatOnlyBufferObject>(); });
+
+  auto buffer = std::make_unique<CVideoBufferDMA>(0, FOURCC_NV12, 2, 1920 * 1080 * 3 / 2);
+  EXPECT_FALSE(buffer->Alloc());
 }

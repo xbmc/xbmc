@@ -106,6 +106,13 @@ void CVideoBufferDMA::SetDimensions(int width,
 
 bool CVideoBufferDMA::Alloc()
 {
+  if (!m_bo)
+  {
+    CLog::Log(LOGERROR, "CVideoBufferDMA::{} - no buffer object able to allocate by size",
+              __FUNCTION__);
+    return false;
+  }
+
   if (!m_bo->CreateBufferObject(m_size))
     return false;
 
@@ -177,8 +184,11 @@ void CVideoBufferDMA::SyncEnd()
 
 void CVideoBufferDMA::Destroy()
 {
-  m_bo->ReleaseMemory();
-  m_bo->DestroyBufferObject();
+  if (m_bo)
+  {
+    m_bo->ReleaseMemory();
+    m_bo->DestroyBufferObject();
+  }
 
   for (auto& offset : m_offsets)
     offset = 0;
