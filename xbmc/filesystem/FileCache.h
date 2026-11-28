@@ -105,6 +105,7 @@ public:
     int64_t m_nSeekResult = 0;
     DWORD m_seekError = 0;
     std::atomic<bool> m_sourcePositionValid{true};
+    std::atomic<bool> m_bReadError{false};
     int64_t m_seekPos = 0;
     int64_t m_readPos = 0;
     int64_t m_writePos = 0;
