@@ -270,6 +270,12 @@ void CSlideShowPic::SetGainMap(std::unique_ptr<CTexture> gainMap,
   m_gainMapParams = params;
 }
 
+bool CSlideShowPic::HasColorMatrix()
+{
+  std::unique_lock lock(m_textureAccess);
+  return m_pImage && m_pImage->GetColorMatrix();
+}
+
 bool CSlideShowPic::HasGainMap()
 {
   std::unique_lock lock(m_textureAccess);

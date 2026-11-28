@@ -43,6 +43,8 @@ public:
   void UpdateTexture(std::unique_ptr<CTexture> pTexture);
   void SetGainMap(std::unique_ptr<CTexture> gainMap, const KODI::PICTURE::GainMapParams& params);
   bool HasGainMap();
+  //! The picture kept its colours beyond sRGB, see CTexture::GetColorMatrix()
+  bool HasColorMatrix();
 
   bool IsLoaded() const { return m_bIsLoaded; }
   void UnLoad() { m_bIsLoaded = false; }
