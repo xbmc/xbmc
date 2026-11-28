@@ -43,7 +43,13 @@ COutput::COutput(std::uint32_t globalName,
     m_model = model;
   };
   m_output.on_mode() = [this](const wayland::output_mode& flags, std::int32_t width,
-                              std::int32_t height, std::int32_t refresh) {
+                              std::int32_t height, std::int32_t refresh)
+  {
+#ifdef TARGET_WEBOS
+    // Some webOS versions report the refresh rate in Hz instead of mHz
+    if (refresh > 0 && refresh < 1000)
+      refresh *= 1000;
+#endif
     // std::set.emplace returns pair of iterator to the (possibly) inserted
     // element and boolean information whether the element was actually added
     // which we do not need
