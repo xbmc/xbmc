@@ -38,6 +38,7 @@ struct PipelineGStreamerElements;
 } // namespace mediapipeline
 
 class CAEEncoderFFmpeg;
+class CAudioBypassWebOS;
 class CBitstreamConverter;
 class CRenderManager;
 class CDVDOverlayContainer;
@@ -387,6 +388,9 @@ private:
    */
   bool Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHint);
 
+  void OpenAudioBypass(CDVDStreamInfo& audioHint);
+  void UpdateAudioBypass();
+
   /**
    * @brief Updates the render picture from the video hint and (re)configures the renderer.
    * @param videoHint Video stream information.
@@ -507,6 +511,9 @@ private:
   std::unique_ptr<ActiveAE::CActiveAEBufferPool> m_encoderBuffers{nullptr};
   std::unique_ptr<ActiveAE::CActiveAEBufferPoolResample> m_audioResample{nullptr};
   std::unique_ptr<CAEEncoderFFmpeg> m_audioEncoder{nullptr};
+  std::unique_ptr<CAudioBypassWebOS> m_audioBypass{nullptr};
+  bool m_audioBypassable{true};
+  std::atomic<bool> m_paused{false};
   CAELimiter m_audioLimiter;
   std::atomic<unsigned long> m_droppedFrames{0};
   std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>> m_audioClock{0.0};

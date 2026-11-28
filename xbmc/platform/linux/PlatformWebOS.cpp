@@ -80,6 +80,7 @@ bool CPlatformWebOS::InitStageTwo()
 
   WebOSTVPlatformConfig::Load();
   WebOSTVPlatformConfig::LoadARCStatus();
+  WebOSTVPlatformConfig::LoadSoundOutputStatus();
   return CPlatformLinux::InitStageTwo();
 }
 
