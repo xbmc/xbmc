@@ -52,15 +52,19 @@
 #include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
+#include <algorithm>
 #include <chrono>
+#include <condition_variable>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -2440,4 +2444,279 @@ TEST_F(TestVideoInfoScannerTvShows, AnExistingShowKeepsItsScraperWhenItsNfoNames
 
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+}
+
+namespace
+{
+constexpr const char* PYTHON_SHOW_SCRAPER_ID = "metadata.test.videoinfoscanner.python.tvshows";
+
+constexpr const char* PYTHON_SHOW_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UTF-8"?>
+<addon id="metadata.test.videoinfoscanner.python.tvshows" name="Test python show scraper"
+       version="1.0.0" provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.metadata" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.tvshows" library="scraper.py"/>
+  <extension point="xbmc.addon.metadata">
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <platform>all</platform>
+  </extension>
+</addon>)";
+
+//! What the runs of the python scraper share: the threads they ran on, the options each was given,
+//! as "?action=getepisodelist&url=...", and how they answer
+struct SPythonRuns
+{
+  std::mutex lock;
+  std::vector<int> threads;
+  std::vector<std::string> calls;
+  std::function<void(int, const CURL&)> answer;
+};
+
+//! Stands in for the python interpreter running the scraper, answering each call as the test says
+class CPythonScraperInvoker : public ILanguageInvoker
+{
+public:
+  CPythonScraperInvoker(ILanguageInvocationHandler* handler, SPythonRuns& runs)
+    : ILanguageInvoker(handler),
+      m_runs(runs)
+  {
+  }
+
+protected:
+  bool execute(const std::string& script, const std::vector<std::string>& arguments) override
+  {
+    setState(InvokerStateRunning);
+    // As a plugin is run: its url, handle and options
+    const int handle{std::stoi(arguments[1])};
+    const std::string options{arguments.size() > 2 ? arguments[2] : std::string{}};
+    std::function<void(int, const CURL&)> answer;
+    {
+      std::unique_lock lock(m_runs.lock);
+      m_runs.calls.push_back(options);
+      if (std::ranges::find(m_runs.threads, GetId()) == m_runs.threads.end())
+        m_runs.threads.push_back(GetId());
+      answer = m_runs.answer;
+    }
+    answer(handle, CURL{"plugin://" + std::string{PYTHON_SHOW_SCRAPER_ID} + "/" + options});
+    setState(InvokerStateScriptDone);
+    return true;
+  }
+
+  bool stop(bool abort) override { return true; }
+
+private:
+  SPythonRuns& m_runs;
+};
+
+class CPythonScraperHandler : public ILanguageInvocationHandler
+{
+public:
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override
+  {
+    return std::make_shared<CPythonScraperInvoker>(this, m_runs);
+  }
+
+  SPythonRuns m_runs;
+};
+
+/*!
+ \brief Answers as a tv show scraper: a search finds the show, whose guide lists episodes 1 and 2
+ of season 1 and episode 1 of season 2, each of whose details it gives when asked. It has no art to
+ give.
+ */
+void AnswerAsAShowScraper(int handle, const CURL& call)
+{
+  const std::string action{call.GetOption("action")};
+  if (action == "find")
+  {
+    CFileItem show{"show", false};
+    show.SetLabel("Show");
+    XFILE::CPluginDirectory::AddItem(handle, &show, 1);
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getdetails")
+  {
+    CFileItem show{"show", false};
+    show.GetVideoInfoTag()->SetTitle("Show");
+    show.GetVideoInfoTag()->SetUniqueID("1", "tmdb", true);
+    show.GetVideoInfoTag()->SetEpisodeGuide("guide");
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &show);
+  }
+  else if (action == "getepisodelist")
+  {
+    for (const auto& [path, season, number] :
+         {std::tuple{"first", 1, 1}, std::tuple{"second", 1, 2}, std::tuple{"third", 2, 1}})
+    {
+      CFileItem episode{path, false};
+      episode.GetVideoInfoTag()->m_iSeason = season;
+      episode.GetVideoInfoTag()->m_iEpisode = number;
+      episode.GetVideoInfoTag()->SetTitle(path);
+      XFILE::CPluginDirectory::AddItem(handle, &episode, 3);
+    }
+    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+  }
+  else if (action == "getepisodedetails")
+  {
+    CFileItem episode{call.GetOption("url"), false};
+    episode.GetVideoInfoTag()->SetTitle(call.GetOption("url"));
+    XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &episode);
+  }
+  else
+    XFILE::CPluginDirectory::EndOfDirectory(handle, false, false, false);
+}
+
+//! A tv show source looked up with a python scraper, whose scripts a stand-in runs
+class TestVideoInfoScannerPythonShows : public TestVideoInfoScanner
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScanner::SetUp();
+    // Python itself isn't run by the tests, so its scripts can be run by the stand-in
+    if (Scripts().HasLanguageInvoker("scraper.py"))
+      GTEST_SKIP() << "python scripts are run by python";
+    {
+      std::unique_lock lock(m_handler.m_runs.lock);
+      m_handler.m_runs.answer = AnswerAsAShowScraper;
+    }
+    Scripts().RegisterLanguageInvocationHandler(&m_handler, ".py");
+    m_registered = true;
+
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    static_cast<void>(XFILE::CDirectory::Create(addons));
+    m_showScraper = Folder(addons, PYTHON_SHOW_SCRAPER_ID);
+    File(m_showScraper, "addon.xml", PYTHON_SHOW_SCRAPER_ADDON);
+    File(m_showScraper, "scraper.py");
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(
+        PYTHON_SHOW_SCRAPER_ID, ADDON::ORIGIN_SYSTEM, ADDON::CAddonVersion{"1.0.0"}));
+    // Each of the source's folders holds a show
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='tvshows', strScraper='%s', strSettings='', useFolderNames=0, "
+        "scanRecursive=0 WHERE idPath=%i",
+        PYTHON_SHOW_SCRAPER_ID, m_db.GetPathId(m_root))));
+    // An episode is given a thumbnail generated from the video, which a test has no use for
+    Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, false);
+    // A show's season art is cached as it is written
+    m_previousJobManager = CServiceBroker::GetJobManager();
+    CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+    CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
+    m_textureCache = true;
+  }
+
+  void TearDown() override
+  {
+    if (m_textureCache)
+    {
+      // First, as its jobs are cancelled with the job manager
+      CServiceBroker::UnregisterTextureCache();
+      CServiceBroker::GetJobManager()->CancelJobs();
+      CServiceBroker::GetJobManager()->Restart();
+      CServiceBroker::UnregisterJobManager();
+      if (m_previousJobManager)
+        CServiceBroker::RegisterJobManager(m_previousJobManager);
+    }
+    if (m_registered)
+    {
+      Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
+      // The threads kept to run the scraper again go once another script is run
+      static_cast<void>(Scripts().GetReusablePluginHandle("another.py"));
+      std::vector<int> threads;
+      {
+        std::unique_lock lock(m_handler.m_runs.lock);
+        threads = m_handler.m_runs.threads;
+      }
+      const auto end{std::chrono::steady_clock::now() + std::chrono::seconds{5}};
+      for (const int id : threads)
+      {
+        while (Scripts().IsRunning(id) && std::chrono::steady_clock::now() < end)
+          std::this_thread::sleep_for(std::chrono::milliseconds{1});
+        EXPECT_FALSE(Scripts().IsRunning(id));
+      }
+      Scripts().UnregisterLanguageInvocationHandler(&m_handler);
+      CServiceBroker::GetAddonMgr().UnloadAddon(PYTHON_SHOW_SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_showScraper);
+    }
+    TestVideoInfoScanner::TearDown();
+  }
+
+  static CScriptInvocationManager& Scripts() { return CScriptInvocationManager::GetInstance(); }
+
+  static std::shared_ptr<CSettings> Settings()
+  {
+    return CServiceBroker::GetSettingsComponent()->GetSettings();
+  }
+
+  //! How many of the scraper's calls hold each of \p parts
+  size_t Calls(const std::vector<std::string>& parts)
+  {
+    std::unique_lock lock(m_handler.m_runs.lock);
+    return std::ranges::count_if(m_handler.m_runs.calls,
+                                 [&parts](const std::string& call)
+                                 {
+                                   return std::ranges::all_of(
+                                       parts, [&call](const std::string& part)
+                                       { return call.find(part) != std::string::npos; });
+                                 });
+  }
+
+  CPythonScraperHandler m_handler;
+  bool m_registered{false};
+  const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
+  std::string m_showScraper;
+  bool m_textureCache{false};
+  std::shared_ptr<CJobManager> m_previousJobManager;
+};
+} // namespace
+
+// A show just added keeps the season art it was added with: the scraper isn't asked for its art
+// again, though a season of its episodes has none
+TEST_F(TestVideoInfoScannerPythonShows, AShowJustAddedIsNotAskedForItsArtAgain)
+{
+  File(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv");
+
+  TestScanner scanner{m_settings};
+  scanner.Scan(m_root);
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(0u, Calls({"action=getartwork"}));
+}
+
+// A known show given an episode is asked for art again only where a season it has episodes of has
+// none, not for the row for all seasons, which scrapers seldom give any
+TEST_F(TestVideoInfoScannerPythonShows, AKnownShowIsAskedForArtOnlyForASeasonOfItsEpisodesWithout)
+{
+  const std::string show{Folder(m_root, "Show")};
+  // The first season has art of its own, in the show's folder
+  File(show, "season01-poster.jpg");
+  const std::string season{Folder(show, "Season 1")};
+  File(season, "Show S01E01.mkv");
+  TestScanner first{m_settings};
+  first.Scan(m_root);
+  const int idShow{m_db.GetSingleValueInt("SELECT idShow FROM tvshow")};
+  ASSERT_GT(idShow, 0);
+  // The first season has its art, and the row for all seasons none
+  const auto hasArt{[this, idShow](int season)
+                    {
+                      KODI::ART::Artwork art;
+                      return m_db.GetArtForItem(m_db.GetSeasonId(idShow, season),
+                                                KODI::MEDIA::TYPE::SEASON, art) &&
+                             !art.empty();
+                    }};
+  ASSERT_TRUE(hasArt(1));
+  ASSERT_FALSE(hasArt(-1));
+
+  const std::string second{File(season, "Show S01E02.mkv")};
+  Touch(season);
+  TestScanner again{m_settings};
+  again.Scan(m_root);
+  ASSERT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+  EXPECT_EQ(0u, Calls({"action=getartwork"}));
+
+  const std::string third{File(Folder(show, "Season 2"), "Show S02E01.mkv")};
+  Touch(show);
+  TestScanner later{m_settings};
+  later.Scan(m_root);
+  ASSERT_GT(m_db.GetEpisodeId(third, 1, 2), 0);
+  EXPECT_EQ(1u, Calls({"action=getartwork"}));
 }
