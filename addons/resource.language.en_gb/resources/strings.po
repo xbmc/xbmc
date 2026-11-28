@@ -25455,7 +25455,21 @@ msgctxt "#39221"
 msgid "Play videos through the browser's own video player when it supports the format. It can decode in hardware and show HDR on an HDR display, but Kodi's video settings do not apply to it."
 msgstr ""
 
-#empty strings from id 39222 to 39899
+#. Label for an Android setting that makes Kodi treat the display as Dolby Vision
+#. capable when Android says it is not. "Dolby Vision" is a trademark, left untranslated.
+#: system/settings/settings.xml
+msgctxt "#39222"
+msgid "Force Dolby Vision display support"
+msgstr ""
+
+#. Help text for label #39222. The quoted string is the "Adjust display refresh rate"
+#. setting, #170, and must match its translation.
+#: system/settings/settings.xml
+msgctxt "#39223"
+msgid "For first generation Dolby Vision TVs, treat the display as Dolby Vision capable when Android reports otherwise. This requires \"Adjust display refresh rate\"."
+msgstr ""
+
+#empty strings from id 39224 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

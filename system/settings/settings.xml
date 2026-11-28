@@ -70,6 +70,21 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.forcedolbyvision" type="boolean" label="39222" help="39223">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="supportsdolbyvision" operator="!is" />
+                <condition on="setting" setting="videoplayer.forcedolbyvision" operator="is">true</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>1</level>
           <default>false</default>
@@ -230,6 +245,7 @@
             <dependency type="visible">
               <or>
                 <condition on="property" name="supportsdolbyvision" />
+                <condition on="setting" setting="videoplayer.forcedolbyvision" operator="is">true</condition>
                 <condition>HAVE_WEBOS</condition>
               </or>
             </dependency>
@@ -280,6 +296,7 @@
             <dependency type="visible">
               <or>
                 <condition on="property" name="supportsdolbyvision" />
+                <condition on="setting" setting="videoplayer.forcedolbyvision" operator="is">true</condition>
                 <condition>HAVE_WEBOS</condition>
               </or>
             </dependency>
