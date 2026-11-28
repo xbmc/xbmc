@@ -173,7 +173,10 @@ namespace XBMCAddon { namespace xbmc {
 
 %include "interfaces/legacy/WindowXML.h"
 
+// As constants: SWIG wraps const variables as linked globals, which every import adds again
+#define constexpr %constant
 %include "input/actions/ActionIDs.h"
+#undef constexpr
 %include "input/keymaps/keyboard/KeyIDs.h"
 
 // for ContextItemAddonInvoker; %wrapper has C linkage; owned!=0: dealloc Releases the caller's Acquire
