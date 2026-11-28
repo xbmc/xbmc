@@ -89,5 +89,8 @@ void GetMemoryStatus(MemoryStatus* buffer)
   }
 }
 
+void TrimHeap()
+{
+}
 }
 }
