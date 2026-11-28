@@ -32,8 +32,9 @@ bool COSScreenSaverFreedesktop::IsAvailable()
   CDBusError error;
   dummyMessage.SendSession(error);
   // We do not care whether GetActive() is actually supported, we're just checking for the name to be there
-  // (GNOME for example does not support GetActive)
-  return !error || error.Name() == DBUS_ERROR_NOT_SUPPORTED;
+  // (GNOME and Steam for example do not support GetActive)
+  return !error || error.Name() == DBUS_ERROR_NOT_SUPPORTED ||
+         error.Name() == DBUS_ERROR_UNKNOWN_METHOD;
 }
 
 void COSScreenSaverFreedesktop::Inhibit()
