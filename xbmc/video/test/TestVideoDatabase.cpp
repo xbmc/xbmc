@@ -49,6 +49,7 @@
 #include "video/test/VideoDatabaseTestBase.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <filesystem>
 #include <iterator>
@@ -56,6 +57,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -1460,9 +1462,8 @@ protected:
 
   std::string PathHash(const std::string& path)
   {
-    std::string hash;
-    m_db.GetPathHash(path, hash);
-    return hash;
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT strHash FROM path WHERE strPath='%s'", path.c_str()));
   }
 
   void Clean() { m_db.CleanDatabase(nullptr, {}, false); }
@@ -2307,6 +2308,38 @@ TEST_F(TestPlayStateAnnouncements, UpdatingTheLastPlayedDateAnnouncesNoPlayCount
   EXPECT_TRUE(m_announcements->Files().empty());
 }
 
+// A clean stopped, as with the scan it is part of, removes nothing and ends its transaction
+TEST_F(TestVideoDatabaseClean, AStoppedCleanRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{File(Folder(movies, "Film (2010)"), "Film (2010).mkv")};
+  const int idMovie{AddMovie(gone)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_EQ(idMovie, m_db.GetMovieId(gone));
+}
+
+TEST_F(TestVideoDatabaseClean, AStoppedCleanOfALibraryWithoutFilesRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{Folder(movies, "Film (2010)")};
+  ASSERT_TRUE(m_db.SetPathHash(gone, "hash"));
+  ASSERT_TRUE(XFILE::CDirectory::Remove(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_GE(m_db.GetPathId(gone), 0);
+}
+
 // Writes made later on the connection would otherwise never be committed
 TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
 {
@@ -2601,9 +2634,8 @@ TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
 
   ASSERT_TRUE(m_db.UnlinkVideoAsset(idFile, DeleteMovieHashAction::HASH_PRESERVE));
 
-  std::string hash;
-  ASSERT_TRUE(m_db.GetPathHash(folder, hash));
-  EXPECT_EQ("hash", hash);
+  EXPECT_EQ("hash", m_db.GetSingleValue(m_db.PrepareSQL(
+                        "SELECT strHash FROM path WHERE strPath='%s'", folder.c_str())));
 }
 
 // An actor, genre, studio, country or tag is the one of that name, whatever its case, and _ and %
@@ -2685,7 +2717,7 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(path);
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CFile::Delete(path));
   const int idFile{m_db.AddFile(path)};
@@ -2695,6 +2727,45 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   EXPECT_EQ(modified.GetAsDBDateTime(),
             m_db.GetSingleValue(
                 m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)));
+}
+
+// A file dated with the time it is added is dated when it is written, not when its date was read,
+// which a look-up does ahead of the write
+TEST_F(TestVideoDatabase, AFileDatedWhenAddedIsDatedWhenItIsWritten)
+{
+  const CDateAddedPolicy dateAdded{0}; // the time it is added
+  const std::string path{"/movies/Film.mkv"};
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
+  std::this_thread::sleep_for(std::chrono::milliseconds{1100});
+  const std::string written{CDateTime::GetCurrentDateTime().GetAsDBDateTime()};
+  const int idFile{m_db.AddFile(path)};
+  m_db.ForgetPreparedDatesAdded();
+
+  ASSERT_GT(idFile, 0);
+  EXPECT_GE(
+      m_db.GetSingleValue(m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)),
+      written);
+}
+
+// A scan reads the movies of a folder at once, and finds the same movie for each file as it would
+// one at a time
+TEST_F(TestVideoDatabase, TheMoviesOfAFolderAreThoseOfItsFiles)
+{
+  const int first{AddMovie("/movies/First.mkv")};
+  const int second{AddMovie("/movies/Second.mkv")};
+  const int other{AddMovie("/other/Third.mkv")};
+  ASSERT_GT(first, 0);
+  ASSERT_GT(second, 0);
+  ASSERT_GT(other, 0);
+
+  const CVideoDatabase::FolderMovies movies{m_db.GetFolderMovies("/movies/")};
+
+  EXPECT_EQ(2U, movies.byFile.size());
+  EXPECT_EQ(first, m_db.GetMovieId("/movies/First.mkv", movies));
+  EXPECT_EQ(second, m_db.GetMovieId("/movies/Second.mkv", movies));
+  // A file of another folder, or one not in the library, is looked up on its own
+  EXPECT_EQ(other, m_db.GetMovieId("/other/Third.mkv", movies));
+  EXPECT_EQ(-1, m_db.GetMovieId("/movies/New.mkv", movies));
 }
 
 // A new show's folder is dated before the show is added too
@@ -2707,7 +2778,7 @@ TEST_F(TestVideoDatabase, AShowsFolderDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(folder);
+  m_db.PrepareDateAdded(folder, CVideoDatabase::ReadDateAdded(folder));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(m_root));
   const int idShow{AddTvShow("Show", {folder})};

@@ -17,6 +17,7 @@ class CFileItem;
 class CDVDDemux;
 class CStreamDetails;
 class CStreamDetailSubtitle;
+class CFolderListings;
 class CDVDInputStream;
 class CTexture;
 class CTextureDetails;
@@ -24,8 +25,10 @@ class CTextureDetails;
 class CDVDFileInfo
 {
 public:
+  //! \param fileFlags as for GetFileStreamDetails()
   static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem,
-                                                         int chapterNumber = 0);
+                                                         int chapterNumber = 0,
+                                                         unsigned int fileFlags = 0);
 
   /*!
    * @brief Can a thumbnail image and file stream details be extracted from this file item?
@@ -44,17 +47,22 @@ public:
    * another video of the same file (eg. another episode of it) can be given by AddExternalSubtitles()
    * @param fileFlags added to the flags (XFILE::READ_*) the file, and each part of a stack, is
    * opened with
+   * @param listings as for CUtil::ScanForExternalSubtitles()
    */
   static bool GetFileStreamDetails(CFileItem* pItem,
                                    int listingFlags = 0,
                                    CStreamDetails* probed = nullptr,
-                                   unsigned int fileFlags = 0);
+                                   unsigned int fileFlags = 0,
+                                   CFolderListings* listings = nullptr);
 
   /*!
    * @brief Store streams probed already in an item's tag, with the item's own external subtitles
    * @param streams the streams of the item's file, as GetFileStreamDetails() probed them
    */
-  static void AddExternalSubtitles(CFileItem& item, CStreamDetails streams, int listingFlags = 0);
+  static void AddExternalSubtitles(CFileItem& item,
+                                   CStreamDetails streams,
+                                   int listingFlags = 0,
+                                   CFolderListings* listings = nullptr);
 
   //! \param fileFlags as for GetFileStreamDetails()
   static bool GetFileDuration(const std::string& path, int& duration, unsigned int fileFlags = 0);
@@ -87,5 +95,6 @@ private:
   */
   static void ProcessExternalSubtitles(const CFileItem& item,
                                        CStreamDetails& details,
-                                       int listingFlags = 0);
+                                       int listingFlags = 0,
+                                       CFolderListings* listings = nullptr);
 };

@@ -8,11 +8,18 @@
 
 #pragma once
 
+#include "Util.h"
 #include "addons/Scraper.h"
 #include "utils/Artwork.h"
 #include "utils/RegExp.h"
+#include "video/SetInfoTag.h"
 
 #include <cstdint>
+#include <functional>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -27,6 +34,8 @@ namespace KODI::VIDEO
 enum class ArtPriority : uint8_t
 {
   LIST = 0, //!< poster - shown in library
+  //! a thumb made from a frame of the video \sa CVideoInfoScannerArt::CachedAsFound()
+  FRAME,
   BACKGROUND, //!< fanart - shown behind a list
   DETAIL, //!< shown once an item is opened
   ACTOR, //!< shown once a cast list is opened
@@ -42,6 +51,10 @@ struct ArtToCache
 
 //! \brief When art of the given type (a "poster", a "set.fanart") is first seen
 ArtPriority PriorityOfArtType(std::string_view artType);
+
+//! \brief When an image is to be cached: as its art type is first seen, but for a thumb made from a
+//! frame of the video \sa ArtPriority::FRAME
+ArtPriority PriorityOfArt(std::string_view artType, const std::string& url);
 
 /*! \brief The artwork side of a video scan
 
@@ -113,10 +126,10 @@ public:
   /*! \brief Hand the artwork held back during the scan to the texture cache
 
    Caching an image competes with the scan for the cpu to decode and store what it fetched, so
-   with ArtRetrievalTiming::BACKGROUND all but ArtPriority::LIST is collected as it is found and
-   queued here instead, once the library is browsable. The texture cache's own queue outlives this
-   object, so the images are still cached from that point rather than being left for something to
-   ask for them.
+   with ArtRetrievalTiming::BACKGROUND all but the art cached as found (CachedAsFound()) is
+   collected as it is found and queued here instead, once the library is browsable. The texture cache's own queue
+   outlives this object, so the images are still cached from that point rather than being left for
+   something to ask for them.
 
    Queued in ArtPriority order, so that what the user comes to first is fetched first.
 
@@ -124,6 +137,13 @@ public:
    each would otherwise cost a lookup to find it already cached.
    */
   void FlushDeferred();
+
+  /*!
+   \brief Whether art of a priority is cached as the scan finds it, rather than once it is done:
+   with ArtRetrievalTiming::BACKGROUND, the art shown in the library, and a thumb made from a frame
+   of the video unless videolibrary/extractframesafterscrape says to extract the frames after it
+   */
+  bool CachedAsFound(ArtPriority priority) const;
 
   /*! \brief Get season thumbs for a tvshow.
    All seasons (regardless of whether the user has episodes) are added to the art map.
@@ -145,6 +165,22 @@ public:
 
   static void ApplyThumbToFolder(const std::string& folder, const std::string& imdbThumb);
 
+  struct MovieSetFolder
+  {
+    std::string path; //!< The folder, or empty where the set has none
+    std::optional<CSetInfoTag> nfo; //!< Its set.nfo, where that holds anything
+  };
+
+  //! A movie set's information folder, read once per set title for the life of this object;
+  //! thread-safe.
+  const MovieSetFolder& GetMovieSetFolder(const std::string& setTitle) const;
+
+  //! A movie set's information folder, read each time \sa GetMovieSetFolder
+  static MovieSetFolder ReadMovieSetFolder(const std::string& setTitle);
+
+  //! \brief Drop the listings of \p folder and of the folders below it, which the scan has left
+  void ForgetFolder(const std::string& folder);
+
 private:
   enum class ArtRetrievalTiming : uint8_t
   {
@@ -156,10 +192,45 @@ private:
   void Cache(std::vector<ArtToCache> art) const;
 
   ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
+  //! videolibrary/extractframesafterscrape
+  bool m_framesAfterScan{false};
 
   //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
   //! Mutable, as the art is found by the const methods that gather it
   mutable std::vector<ArtToCache> m_deferredArt;
+  //! Art is gathered from several look-up threads
+  mutable std::mutex m_deferredArtLock;
+
+  //! The thumbs of an actors folder by name, and the hashes its listing gave them by path
+  struct ActorThumbs
+  {
+    std::map<std::string, std::string, std::less<>> thumbs;
+    std::map<std::string, std::string, std::less<>> listedHashes;
+  };
+
+  //! Each actors folder's thumbs, listed once; thread-safe.
+  std::shared_ptr<const ActorThumbs> GetActorThumbs(const std::string& actorsDir) const;
+  static void ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs);
+  struct ListedActorThumbs
+  {
+    std::once_flag listed;
+    ActorThumbs thumbs;
+  };
+  mutable std::map<std::string, std::shared_ptr<ListedActorThumbs>, std::less<>> m_actorThumbs;
+  //! Held only to find a folder's entry, not while the folder is listed
+  mutable std::mutex m_actorThumbsLock;
+
+  struct ReadMovieSet
+  {
+    std::once_flag read;
+    MovieSetFolder folder;
+  };
+  //! By set title \sa GetMovieSetFolder
+  mutable std::map<std::string, ReadMovieSet, std::less<>> m_movieSets;
+  //! Held only to find a set's entry, not while its folder is read
+  mutable std::mutex m_movieSetsLock;
+
+  mutable CFolderListings m_artFolders;
 };
 
 } // namespace KODI::VIDEO

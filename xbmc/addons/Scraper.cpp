@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <array>
 #include <map>
+#include <mutex>
 #include <sstream>
 
 using namespace XFILE;
@@ -176,6 +177,7 @@ bool CScraper::IsSupported(const CAddonInfo& info)
 
 bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 {
+  std::unique_lock lock(m_stateSection);
   m_pathContent = content;
   if (!LoadSettings(false, false))
     return false;
@@ -190,6 +192,7 @@ bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 
 std::string CScraper::GetPathSettings()
 {
+  std::unique_lock lock(m_stateSection);
   if (!LoadSettings(false, true))
     return "";
 
@@ -204,6 +207,7 @@ std::string CScraper::GetPathSettings()
 
 std::string CScraper::GetPathSettingsAsJSON()
 {
+  std::unique_lock lock(m_stateSection);
   static const std::string EmptyPathSettings = "{}";
 
   if (!LoadSettings(false, true))
@@ -258,6 +262,7 @@ bool RunForResult(const CScraper& scraper, const std::string& url, CFileItem& it
 // pass in contents of .nfo file; returns URL (possibly empty if none found)
 CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 {
+  std::unique_lock lock(m_callSection);
   CScraperUrl scurlRet;
 
   std::stringstream str;
@@ -279,6 +284,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
 CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 {
+  std::unique_lock lock(m_callSection);
   CScraperUrl scurlRet;
 
   std::stringstream str;
@@ -634,6 +640,7 @@ std::string SerialiseUniqueIDs(const ADDON::CScraper::UniqueIDs& uniqueIDs)
 
 std::vector<CScraperUrl> CScraper::FindMovie(const std::string& movieTitle, int movieYear)
 {
+  std::unique_lock lock(m_callSection);
   // The title is cleaned below, so the arguments as given identify the search
   const std::string key{StringUtils::Format("{}\n{}", movieTitle, movieYear)};
   if (const auto it = m_findCache.find(key); it != m_findCache.end())
@@ -695,6 +702,7 @@ std::vector<CScraperUrl> CScraper::FindMovieUncached(const std::string& movieTit
 std::vector<CMusicAlbumInfo> CScraper::FindAlbum(const std::string& sAlbum,
                                                  const std::string& sArtist)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
              sArtist, sAlbum, Name(), Path(), Content(), Version().asString());
@@ -709,6 +717,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(const std::string& sAlbum,
 
 std::vector<CMusicArtistInfo> CScraper::FindArtist(const std::string& sArtist)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              sArtist, Name(), Path(), Content(), Version().asString());
@@ -720,8 +729,10 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(const std::string& sArtist)
 }
 
 // fetch list of episodes from URL (from video database)
-VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl,
+                                            const std::set<int>& seasons /* = {} */)
 {
+  std::unique_lock lock(m_callSection);
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
     return vcep;
@@ -729,10 +740,22 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
   CLog::LogF(LOGDEBUG, "Searching '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
+  // complete=1: an item may carry its episode's details (video.complete)
   std::stringstream str;
   str << "plugin://" << ID()
       << "?action=getepisodelist&url=" << CURL::Encode(scurl.GetFirstThumbUrl())
-      << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON());
+      << "&pathSettings=" << CURL::Encode(GetPathSettingsAsJSON()) << "&complete=1";
+  if (!seasons.empty())
+  {
+    std::string numbers;
+    const char* separator{""};
+    for (const int season : seasons)
+    {
+      numbers += separator + std::to_string(season);
+      separator = ",";
+    }
+    str << "&seasons=" << CURL::Encode(numbers);
+  }
 
   CFileItemList items;
   if (!RunForListing(*this, str.str(), items))
@@ -749,6 +772,8 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(const CScraperUrl& scurl)
     ep.cDate = tag.m_firstAired;
     ep.iSubepisode = static_cast<int>(items[i]->GetProperty("video.sub_episode").asInteger());
     ep.cScraperUrl.AppendUrl(CScraperUrl::SUrlEntry(items[i]->GetURL().Get()));
+    if (items[i]->GetProperty("video.complete").asBoolean())
+      ep.item = items[i];
   }
 
   return vcep;
@@ -760,6 +785,7 @@ bool CScraper::GetVideoDetails(const UniqueIDs& uniqueIDs,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
 {
+  std::unique_lock lock(m_callSection);
   const std::string key{Keyed(scurl.GetFirstThumbUrl()) + (fMovie ? "m" : "e") +
                         SerialiseUniqueIDs(uniqueIDs)};
   if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
@@ -803,6 +829,7 @@ bool CScraper::GetVideoDetailsUncached(const UniqueIDs& uniqueIDs,
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(const CScraperUrl& scurl, CAlbum& album)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
@@ -812,6 +839,7 @@ bool CScraper::GetAlbumDetails(const CScraperUrl& scurl, CAlbum& album)
 
 bool CScraper::GetArtistDetails(const CScraperUrl& scurl, CArtist& artist)
 {
+  std::unique_lock lock(m_callSection);
   if (!scurl.HasUrls())
     return false;
 
@@ -824,6 +852,7 @@ bool CScraper::GetArtistDetails(const CScraperUrl& scurl, CArtist& artist)
 
 bool CScraper::GetArtwork(CVideoInfoTag& details)
 {
+  std::unique_lock lock(m_callSection);
   if (!details.HasUniqueID())
     return false;
 

@@ -15,8 +15,11 @@
 #include "utils/RegExp.h"
 
 #include <cstdint>
+#include <functional>
+#include <memory>
 #include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
 //! \brief Enumeration of filesystem types for LegalPath/FileName
@@ -41,6 +44,38 @@ struct ExternalStreamInfo
   std::string name;
   KODI::LANGUAGE::CLanguageTag language;
   unsigned int flag = 0;
+};
+
+/*!
+ \brief Folder listings, each made once by the first caller and shared by later ones, from any
+ thread.
+ */
+class CFolderListings
+{
+public:
+  CFolderListings();
+  ~CFolderListings();
+  CFolderListings(const CFolderListings&) = delete;
+  CFolderListings& operator=(const CFolderListings&) = delete;
+
+  /*!
+   \brief Append a folder's listing to \p items, made by \p list for the first to ask for it only
+   \param listings where the listing is kept, or nullptr to list the folder afresh
+   \param what what the folder is listed for, as one folder's listings for different things differ
+   \param list lists the folder, and returns false if it couldn't, which the next to ask lists again
+   */
+  static void Get(CFolderListings* listings,
+                  const std::string& folder,
+                  std::string_view what,
+                  CFileItemList& items,
+                  const std::function<bool(CFileItemList&)>& list);
+
+  //! \brief Drop the listings of \p folder and of the folders below it
+  void Forget(const std::string& folder);
+
+private:
+  struct Listings;
+  std::unique_ptr<Listings> m_listings;
 };
 
 class CUtil
@@ -109,11 +144,13 @@ public:
   *   \param[in] listingFlags added to the flags the video's folder is listed with, eg.
   *   DIR_FLAG_READ_CACHE by a scan that has just listed it. The folders of subtitles in it, archives
   *   and the custom folder are listed as without them.
+  *   \param[in] listings shared listings of the folders, or nullptr to list them afresh
   */
   static void ScanForExternalSubtitles(const std::string& strMovie,
                                        std::vector<std::string>& vecSubtitles,
                                        const CVideoInfoTag* tag = nullptr,
-                                       int listingFlags = 0);
+                                       int listingFlags = 0,
+                                       CFolderListings* listings = nullptr);
 
   /** \brief Retrieves stream info of external associated files, e.g., subtitles, for a given video.
   *   \param[in] videoPath The full path of the video file.
@@ -205,8 +242,10 @@ public:
   static bool IsInPlaylistsFolder(const std::string& path, KODI::MEDIA::MediaSection section);
 
   static void GetSkinThemes(std::vector<std::string>& vecTheme);
-  static void GetRecursiveListing(const std::string& strPath, CFileItemList& items, const std::string& strMask, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
-  static void GetRecursiveDirsListing(const std::string& strPath, CFileItemList& items, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
+  static void GetRecursiveListing(const std::string& strPath,
+                                  CFileItemList& items,
+                                  const std::string& strMask,
+                                  unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void ForceForwardSlashes(std::string& strPath);
 
   static double AlbumRelevance(const std::string& strAlbumTemp1, const std::string& strAlbum1, const std::string& strArtistTemp1, const std::string& strArtist1);
@@ -340,8 +379,9 @@ protected:
     *   \param[in]  item_exts A | separated string of extensions specifying the associated files.
     *   \param[in]  sub_dirs A vector of sub directory names to look for.
     *   \param[out] items A List of FileItems to scan for associated files.
+    *   \return Whether every folder could be listed.
     */
-  static void GetItemsToScan(const std::string& videoPath,
+  static bool GetItemsToScan(const std::string& videoPath,
                              const std::string& item_exts,
                              const std::vector<std::string>& sub_dirs,
                              CFileItemList& items,

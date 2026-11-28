@@ -23,13 +23,14 @@
 
 std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileItem,
                                                          int codecOptions,
-                                                         const std::string& redactPath)
+                                                         const std::string& redactPath,
+                                                         unsigned int fileFlags /* = 0 */)
 {
   CFileItem item(fileItem);
   item.SetMimeTypeForInternetFile();
 
   VideoDecodeSession session;
-  session.inputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
+  session.inputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, item, false, fileFlags);
   if (!session.inputStream || !session.inputStream->Open())
   {
     CLog::Log(LOGERROR, "VideoDecodeSession: error opening input stream for {}", redactPath);

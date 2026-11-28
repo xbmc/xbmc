@@ -18,11 +18,14 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
+#include <mutex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 
 #include <sqlite3.h>
@@ -202,11 +205,19 @@ int callback(void* res_ptr, int ncol, char** result, char** cols)
   return 0;
 }
 
-int busy_callback(void*, int /*busyCount*/)
+int busy_callback(void* database, int /*busyCount*/)
 {
+  if (database)
+    static_cast<dbiplus::SqliteDatabase*>(database)->waited();
   KODI::TIME::Sleep(100ms);
   return 1;
 }
+
+//! When each connection to a database file last had to wait for a lock
+std::mutex lockWaitsMutex;
+std::unordered_map<std::string,
+                   std::unordered_map<const void*, std::chrono::steady_clock::time_point>>
+    lockWaits;
 } // unnamed namespace
 
 namespace dbiplus
@@ -354,7 +365,7 @@ int SqliteDatabase::connect(bool create)
     else if (errorCode == SQLITE_OK)
     {
       sqlite3_extended_result_codes(conn, 1);
-      sqlite3_busy_handler(conn, busy_callback, nullptr);
+      sqlite3_busy_handler(conn, busy_callback, this);
       static const char* sqlcmd{"PRAGMA empty_result_callbacks=ON"};
       if (setErr(sqlite3_exec(getHandle(), sqlcmd, nullptr, nullptr, nullptr), sqlcmd) != SQLITE_OK)
       {
@@ -593,39 +604,102 @@ long SqliteDatabase::nextid(const char* sname)
 // ---------------------------------------------
 void SqliteDatabase::start_transaction()
 {
-  if (active)
+  assert(!_in_transaction);
+  if (_in_transaction)
   {
-    assert(!_in_transaction);
-    sqlite3_exec(conn, "begin IMMEDIATE", nullptr, nullptr, nullptr);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite start transaction");
+    CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
+    return;
+  }
 
-    if (_in_transaction)
-      CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
-    else
-      _in_transaction = true;
+  // A database that couldn't be opened has no connection to begin it on
+  const int result{active ? sqlite3_exec(conn, "begin IMMEDIATE", nullptr, nullptr, nullptr)
+                          : SQLITE_CANTOPEN};
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite start transaction");
+
+  // Begun or not, its caller writes in it and ends it. One that couldn't be begun takes nothing,
+  // rather than have each statement committed alone, and fails its commit.
+  _in_transaction = true;
+  _transaction_lost = result != SQLITE_OK;
+  if (_transaction_lost)
+  {
+    if (!active)
+      throw DbErrors("No Database Connection");
+    setErr(result, "begin IMMEDIATE");
+    throw DbErrors("%s", getErrorMsg());
   }
 }
 
 void SqliteDatabase::commit_transaction()
 {
-  if (active)
+  assert(_in_transaction);
+  if (!_in_transaction)
+    return;
+
+  if (!active || transaction_lost())
   {
-    assert(_in_transaction);
-    sqlite3_exec(conn, "commit", nullptr, nullptr, nullptr);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite commit transaction");
     _in_transaction = false;
+    _transaction_lost = false;
+    throw DbErrors("[%s] The transaction can't be committed, as it was rolled back", db.c_str());
+  }
+
+  const int result{sqlite3_exec(conn, "commit", nullptr, nullptr, nullptr)};
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite commit transaction");
+  _in_transaction = false;
+  if (result != SQLITE_OK)
+  {
+    setErr(result, "commit");
+    const std::string error{getErrorMsg()};
+    // A commit that fails can leave the transaction open: none of it was committed
+    if (sqlite3_get_autocommit(conn) == 0)
+      sqlite3_exec(conn, "rollback", nullptr, nullptr, nullptr);
+    throw DbErrors("%s", error.c_str());
   }
 }
 
 void SqliteDatabase::rollback_transaction()
 {
-  if (active)
-  {
-    assert(_in_transaction);
+  // A commit that failed has ended its transaction already
+  if (!_in_transaction)
+    return;
+
+  // One the engine rolled back, or that couldn't be begun, has nothing to roll back
+  if (active && !transaction_lost())
     sqlite3_exec(conn, "rollback", nullptr, nullptr, nullptr);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite rollback transaction");
-    _in_transaction = false;
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite rollback transaction");
+  _in_transaction = false;
+  _transaction_lost = false;
+}
+
+bool SqliteDatabase::transaction_lost()
+{
+  // The engine rolls a transaction back on some errors (SQLITE_FULL, SQLITE_IOERR, SQLITE_BUSY,
+  // SQLITE_NOMEM), and runs each statement after it in a transaction of its own
+  if (_in_transaction && !_transaction_lost && conn && sqlite3_get_autocommit(conn) != 0)
+  {
+    CLog::LogF(LOGERROR, "[{}] The transaction was rolled back by an error", db);
+    _transaction_lost = true;
   }
+  return _in_transaction && _transaction_lost;
+}
+
+void SqliteDatabase::waited()
+{
+  const auto now{std::chrono::steady_clock::now()};
+  std::unique_lock lock(lockWaitsMutex);
+  auto& waits{lockWaits[host + db]};
+  // Connections that have gone, or haven't waited for a while, are of no interest
+  std::erase_if(waits,
+                [&now](const auto& wait) { return now - wait.second > std::chrono::minutes{1}; });
+  waits.insert_or_assign(this, now);
+}
+
+bool SqliteDatabase::others_waited_since(std::chrono::steady_clock::time_point since)
+{
+  std::unique_lock lock(lockWaitsMutex);
+  const auto waits{lockWaits.find(host + db)};
+  return waits != lockWaits.end() &&
+         std::ranges::any_of(waits->second, [this, since](const auto& wait)
+                             { return wait.first != this && wait.second >= since; });
 }
 
 // methods for formatting
@@ -731,6 +805,8 @@ void SqliteDataset::make_query(StringList& _sql)
   std::string query;
   if (!db)
     throw DbErrors("No Database Connection");
+  if (static_cast<SqliteDatabase*>(db)->transaction_lost())
+    throw DbErrors("Can't write in a transaction that was rolled back");
 
   try
   {
@@ -844,6 +920,9 @@ int SqliteDataset::exec(const std::string& sql)
 {
   if (!handle())
     throw DbErrors("No Database Connection");
+  // Run alone, it would be committed alone
+  if (static_cast<SqliteDatabase*>(db)->transaction_lost())
+    throw DbErrors("Can't write in a transaction that was rolled back: %s", sql.c_str());
   std::string qry = sql;
 
   exec_res.clear();

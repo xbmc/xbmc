@@ -9,10 +9,12 @@
 #pragma once
 
 #include "addons/Addon.h"
+#include "threads/CriticalSection.h"
 #include "utils/ScraperUrl.h"
 #include "video/Episode.h"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -117,7 +119,12 @@ public:
   std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(const std::string& sAlbum,
                                                         const std::string& sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(const std::string& sArtist);
-  KODI::VIDEO::EPISODELIST GetEpisodeList(const CScraperUrl& scurl);
+  /*!
+   \param seasons the seasons the episodes are wanted of, which the scraper is told, and may list
+   alone; all if empty
+   */
+  KODI::VIDEO::EPISODELIST GetEpisodeList(const CScraperUrl& scurl,
+                                          const std::set<int>& seasons = {});
 
   struct StringHash
   {
@@ -168,8 +175,7 @@ private:
 
    Lifetime is this instance.
    Repeats come from versions, discs and folders of the same title, which are scraped close together.
-   Not synchronised, matching the rest of CScraper: a scraper shared between threads needs the
-   caller to provide that.
+   Guarded by m_callSection, as a scan shares a scraper between its look-up threads.
    */
   static constexpr size_t MAX_CACHED_RESULTS{50};
   std::unordered_map<std::string, std::vector<CScraperUrl>, StringHash, std::equal_to<>>
@@ -179,6 +185,12 @@ private:
 
   bool m_requiressettings = false;
   ContentType m_pathContent = ContentType::NONE;
+
+  //! A scraper is called by one thread at a time, as its caches are its own.
+  mutable CCriticalSection m_callSection;
+  //! Held briefly while the scraper's settings are read or set, so that they can be read while a
+  //! call holds m_callSection. Taken inside m_callSection, never the other way round.
+  mutable CCriticalSection m_stateSection;
 };
 
 } // namespace ADDON

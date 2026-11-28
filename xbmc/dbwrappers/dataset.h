@@ -14,6 +14,7 @@
 
 #include "qry_dat.h"
 
+#include <chrono>
 #include <cstdarg>
 #include <list>
 #include <map>
@@ -173,6 +174,8 @@ public:
   virtual std::string vprepare(std::string_view format, va_list args) = 0;
 
   virtual bool in_transaction() { return false; }
+
+  virtual bool others_waited_since(std::chrono::steady_clock::time_point since) { return false; }
 
 protected:
   /*! \brief Rewrite each "%s" conversion sequence to "%q", the quote-escaping form.

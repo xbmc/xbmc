@@ -22,6 +22,7 @@
 #include "video/geometry/ContentGeometryRecord.h"
 
 #include <array>
+#include <atomic>
 #include <functional>
 #include <map>
 #include <memory>
@@ -829,6 +830,40 @@ public:
                                       bool& foundDirectly,
                                       ScraperCache* scraperCache = nullptr);
 
+  //! \brief What a row of the path table stores for scanning a path
+  struct PathScanRow
+  {
+    int idPath{-1};
+    std::string path;
+    std::string content;
+    std::string scraper;
+    std::string settings;
+    int scanRecursive{0};
+    bool useFolderNames{false};
+    bool noUpdate{false};
+    bool exclude{false};
+    bool allAudio{false};
+    std::string hash;
+  };
+
+  //! \brief The row stored for a path, as GetScraperForPath() looks it up
+  using PathScanRowLookup = std::function<std::optional<PathScanRow>(const std::string& path)>;
+
+  //! GetScraperForPath(), with the path rows looked up by \p lookup
+  static ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             KODI::VIDEO::SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache);
+
+  //! \param path the path, with a slash at its end
+  std::optional<PathScanRow> GetPathScanRow(const std::string& path);
+
+  /*! \brief The rows of a path and of those below it, as GetSubPaths() finds them
+   \return true if read, which may be none
+   */
+  bool GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows);
+
   /*! \brief Determine whether the path is using lookup using folders: its source has its items in
    folders of their own, and it isn't in the source's root. A disc's is that of its file, not of its
    playlist.
@@ -867,8 +902,7 @@ public:
   bool ScraperInUse(const std::string &scraperID) const;
 
   // scanning hashes and paths scanned
-  bool SetPathHash(const std::string &path, const std::string &hash);
-  bool GetPathHash(const std::string &path, std::string &hash);
+  bool SetPathHash(const std::string& path, const std::string& hash);
   /*! \brief Clear the hash of the folder of a video's path, and of the folder above it
    where that is what names the video, so that the next scan looks at them again.
    */
@@ -1044,9 +1078,13 @@ public:
   bool HasContent(VideoDbContentType type);
   bool HasSets() const;
 
+  /*!
+   \param stop if given, whether to give the clean up, as its progress dialog's cancel does
+   */
   void CleanDatabase(CGUIDialogProgressBarHandle* handle = nullptr,
                      const std::set<int>& paths = std::set<int>(),
-                     bool showProgress = true);
+                     bool showProgress = true,
+                     const std::atomic<bool>* stop = nullptr);
 
   enum class FileExistsAction
   {
@@ -1430,14 +1468,37 @@ public:
    */
   int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
 
+  //! \brief The movies the files of a folder are versions of, by file name
+  struct FolderMovies
+  {
+    std::string folder;
+    std::map<std::string, int, std::less<>> byFile;
+  };
+
   /*!
-   \brief Work out the date a file, or a show's folder, is added to the library with, where nothing
-   gives it one, before the transaction it is added in, so that the file system isn't asked while the
-   database is held
+   \brief The movies the files of a folder are versions of
+   \param folder the folder, with a slash at its end
+   */
+  FolderMovies GetFolderMovies(const std::string& folder);
+
+  /*!
+   \brief As GetMovieId(), from the movies of the file's folder where it is one of them
+   \param known the movies of a folder, which may not be the file's
+   */
+  int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
+
+  /*!
+   \brief Give a file, or a show's folder, the date it is added to the library with where nothing
+   gives it one, read (ReadDateAdded()) before the transaction it is added in, so that the file
+   system isn't asked while the database is held
    \param fileAndPath the file or folder, as it is added
    */
-  void PrepareDateAdded(const std::string& fileAndPath);
+  void PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded);
   void ForgetPreparedDatesAdded();
+
+  //! \brief The date a file is added with where nothing gives it one, read from the file system;
+  //! invalid where it is added with the time it is written
+  static CDateTime ReadDateAdded(const std::string& fileAndPath);
 
   std::string GetMovieTitle(int idMovie);
 

@@ -19,6 +19,7 @@
 #include "commons/Exception.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -207,7 +208,9 @@ bool CDirectory::GetDirectory(const CURL& url,
             continue;
           }
 
-          CLog::Log(LOGERROR, "{} - Error getting {}", __FUNCTION__, url.GetRedacted());
+          // An add-on's run given up as its caller stopped is no error
+          CLog::Log(CScriptRunner::CAbandonWhen::IsSet() ? LOGDEBUG : LOGERROR,
+                    "{} - Error getting {}", __FUNCTION__, url.GetRedacted());
           return false;
         }
       }

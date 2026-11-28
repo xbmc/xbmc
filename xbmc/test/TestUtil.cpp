@@ -7,6 +7,7 @@
  */
 
 #include "DatabaseManager.h"
+#include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -32,8 +33,11 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
+#include <memory>
 #include <set>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <gtest/gtest-param-test.h>
@@ -1745,6 +1749,143 @@ TEST_F(TestCustomSubtitleFolder, AScanListsTheFolderAfresh)
 
   EXPECT_TRUE(before.empty());
   EXPECT_EQ(1U, found.size());
+}
+
+namespace
+{
+void CreateFiles(const std::vector<std::string>& paths)
+{
+  for (const std::string& path : paths)
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(path, true)) << path;
+    file.Close();
+  }
+}
+
+std::vector<std::string> SortedNames(const std::vector<std::string>& paths)
+{
+  std::vector<std::string> names;
+  std::ranges::transform(paths, std::back_inserter(names),
+                         [](const std::string& path) { return URIUtils::GetFileName(path); });
+  std::ranges::sort(names);
+  return names;
+}
+} // namespace
+
+// Each video of a folder finds its own subtitles, beside it and in its folder of subtitles, in the
+// listings the scan took for the first of them
+TEST_F(TestCustomSubtitleFolder, EachVideoFindsItsOwnSubtitlesInTheScansListings)
+{
+  std::string subs{URIUtils::AddFileToFolder(m_folder, "Subs")};
+  URIUtils::AddSlashAtEnd(subs);
+  ASSERT_TRUE(XFILE::CDirectory::Create(subs));
+  const std::string other{URIUtils::AddFileToFolder(m_folder, "Other.mkv")};
+  ASSERT_NO_FATAL_FAILURE(CreateFiles({other, URIUtils::AddFileToFolder(m_folder, "Film.en.srt"),
+                                       URIUtils::AddFileToFolder(m_folder, "Other.en.srt"),
+                                       URIUtils::AddFileToFolder(subs, "Other.fr.srt")}));
+
+  CFolderListings folders;
+  std::vector<std::string> film;
+  CUtil::ScanForExternalSubtitles(m_video, film, nullptr, 0, &folders);
+  std::vector<std::string> others;
+  CUtil::ScanForExternalSubtitles(other, others, nullptr, 0, &folders);
+
+  EXPECT_EQ(std::vector<std::string>{"Film.en.srt"}, SortedNames(film));
+  EXPECT_EQ((std::vector<std::string>{"Other.en.srt", "Other.fr.srt"}), SortedNames(others));
+}
+
+// A folder, and the folder of subtitles in it, are listed for the first video of a scan only
+TEST_F(TestCustomSubtitleFolder, AScanListsAFolderForItsFirstVideoOnly)
+{
+  std::string subs{URIUtils::AddFileToFolder(m_folder, "Subs")};
+  URIUtils::AddSlashAtEnd(subs);
+  ASSERT_TRUE(XFILE::CDirectory::Create(subs));
+  CFolderListings folders;
+  std::vector<std::string> film;
+  CUtil::ScanForExternalSubtitles(m_video, film, nullptr, 0, &folders);
+  ASSERT_NO_FATAL_FAILURE(CreateFiles({URIUtils::AddFileToFolder(m_folder, "Other.en.srt"),
+                                       URIUtils::AddFileToFolder(subs, "Other.fr.srt")}));
+  const std::string other{URIUtils::AddFileToFolder(m_folder, "Other.mkv")};
+
+  std::vector<std::string> inTheScan;
+  CUtil::ScanForExternalSubtitles(other, inTheScan, nullptr, 0, &folders);
+  std::vector<std::string> listedAgain;
+  CUtil::ScanForExternalSubtitles(other, listedAgain);
+
+  EXPECT_TRUE(inTheScan.empty());
+  EXPECT_EQ(2U, listedAgain.size());
+}
+
+// A folder that couldn't be listed isn't taken as empty: the next to ask lists it again
+TEST(TestFolderListings, AFolderThatCouldntBeListedIsListedAgain)
+{
+  CFolderListings listings;
+  int lists{0};
+  const auto list{[&lists](CFileItemList& listed)
+                  {
+                    listed.Add(std::make_shared<CFileItem>("item", false));
+                    return ++lists > 1;
+                  }};
+  std::vector<CFileItemList> got(3);
+  for (CFileItemList& items : got)
+    CFolderListings::Get(&listings, "folder/", "art", items, list);
+
+  EXPECT_EQ(2, lists);
+  EXPECT_EQ(1, got[2].Size());
+}
+
+// A folder forgotten is listed again by the next to ask, as are the folders below it
+TEST(TestFolderListings, AFolderForgottenIsListedAgain)
+{
+  CFolderListings listings;
+  std::vector<std::string> listed;
+  const auto get{[&listings, &listed](const std::string& folder)
+                 {
+                   CFileItemList items;
+                   CFolderListings::Get(&listings, folder, "art", items,
+                                        [&listed, &folder](CFileItemList&)
+                                        {
+                                          listed.push_back(folder);
+                                          return true;
+                                        });
+                 }};
+  for (const std::string folder : {"a/", "a/b/", "c/"})
+    get(folder);
+  listings.Forget("a/");
+  for (const std::string folder : {"a/", "a/b/", "c/"})
+    get(folder);
+
+  EXPECT_EQ((std::vector<std::string>{"a/", "a/b/", "c/", "a/", "a/b/"}), listed);
+}
+
+// Videos looked up on several threads at once share the one listing of their folder
+TEST_F(TestCustomSubtitleFolder, VideosLookedUpAtOnceShareTheListing)
+{
+  constexpr size_t VIDEOS{8};
+  std::vector<std::string> subtitles;
+  for (size_t i = 0; i < VIDEOS; ++i)
+    subtitles.emplace_back(
+        URIUtils::AddFileToFolder(m_folder, StringUtils::Format("Video{}.en.srt", i)));
+  ASSERT_NO_FATAL_FAILURE(CreateFiles(subtitles));
+
+  CFolderListings folders;
+  std::vector<std::vector<std::string>> found(VIDEOS);
+  std::vector<std::thread> threads;
+  for (size_t i = 0; i < VIDEOS; ++i)
+    threads.emplace_back(
+        [this, &folders, &found, i]
+        {
+          CUtil::ScanForExternalSubtitles(
+              URIUtils::AddFileToFolder(m_folder, StringUtils::Format("Video{}.mkv", i)), found[i],
+              nullptr, 0, &folders);
+        });
+  for (std::thread& thread : threads)
+    thread.join();
+
+  for (size_t i = 0; i < VIDEOS; ++i)
+    EXPECT_EQ(std::vector<std::string>{URIUtils::GetFileName(subtitles[i])}, SortedNames(found[i]))
+        << i;
 }
 
 //! An episode's info, of season 2, episode 1 by default

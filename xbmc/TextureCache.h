@@ -79,6 +79,12 @@ public:
    */
   void BackgroundCacheImage(const std::string& image, const std::string& knownHash = "");
 
+  /*! \brief Whether images handed to BackgroundCacheImage() are still waiting to be cached, or being
+   cached. While pausable jobs are paused, as they are during playback, those waiting stay so.
+   \sa BackgroundCacheImage
+   */
+  bool IsCaching() const;
+
   /*! \brief Updates the in-process list.
 
    Inserts the image url into the currently processing list 

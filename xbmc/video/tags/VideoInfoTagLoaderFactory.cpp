@@ -17,10 +17,12 @@
 namespace KODI::VIDEO
 {
 
-IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& item,
-                                                              const ADDON::ScraperPtr& info,
-                                                              bool lookInFolder,
-                                                              bool forceRefresh)
+IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(
+    const CFileItem& item,
+    const ADDON::ScraperPtr& info,
+    bool lookInFolder,
+    bool forceRefresh,
+    const std::function<bool(const std::string& folder)>& listed)
 {
   if (item.IsPlugin() && info && info->IsLocalInformationOnly())
   {
@@ -31,7 +33,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     delete plugin;
   }
 
-  CVideoTagLoaderNFO* nfo = new CVideoTagLoaderNFO(item, info, lookInFolder);
+  CVideoTagLoaderNFO* nfo = new CVideoTagLoaderNFO(item, info, lookInFolder, listed);
   if (nfo->HasInfo())
     return nfo;
   delete nfo;

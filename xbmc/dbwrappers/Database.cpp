@@ -789,25 +789,31 @@ void CDatabase::Interrupt()
   m_pDS->interrupt();
 }
 
-void CDatabase::BeginTransaction()
+bool CDatabase::BeginTransaction()
 {
   try
   {
     if (nullptr != m_pDB)
+    {
       m_pDB->start_transaction();
+      return true;
+    }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "database:begintransaction failed");
   }
+  return false;
 }
 
 bool CDatabase::CommitTransaction()
 {
+  // Without a database, nothing was begun or written
+  if (nullptr == m_pDB)
+    return false;
   try
   {
-    if (nullptr != m_pDB)
-      m_pDB->commit_transaction();
+    m_pDB->commit_transaction();
   }
   catch (...)
   {
@@ -842,6 +848,62 @@ bool CDatabase::InTransaction() const
     CLog::Log(LOGERROR, "database:in_transaction failed");
   }
   return false;
+}
+
+bool CDatabase::BeginSavepoint(const std::string& name)
+{
+  // Outside a transaction, SQLite would begin one
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::ReleaseSavepoint(const std::string& name)
+{
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("RELEASE SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "release of savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::RollbackToSavepoint(const std::string& name)
+{
+  if (!InTransaction() || nullptr == m_pDS)
+    return false;
+  try
+  {
+    m_pDS->exec("ROLLBACK TO SAVEPOINT " + name);
+    // A savepoint rolled back to is kept, until released
+    m_pDS->exec("RELEASE SAVEPOINT " + name);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "rollback to savepoint {} failed", name);
+  }
+  return false;
+}
+
+bool CDatabase::OthersWaitedSince(std::chrono::steady_clock::time_point since) const
+{
+  return nullptr != m_pDB && m_pDB->others_waited_since(since);
 }
 
 bool CDatabase::CreateDatabase()
