@@ -252,6 +252,7 @@ bool CCircularCache::Reset(int64_t pos)
 
 int64_t CCircularCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 {
+  std::unique_lock lock(m_sync);
   if (IsCachedPosition(iFilePosition))
     return m_end;
   return iFilePosition;
@@ -259,16 +260,19 @@ int64_t CCircularCache::CachedDataEndPosIfSeekTo(int64_t iFilePosition)
 
 int64_t CCircularCache::CachedDataStartPos()
 {
+  std::unique_lock lock(m_sync);
   return m_beg;
 }
 
 int64_t CCircularCache::CachedDataEndPos()
 {
+  std::unique_lock lock(m_sync);
   return m_end;
 }
 
 bool CCircularCache::IsCachedPosition(int64_t iFilePosition)
 {
+  std::unique_lock lock(m_sync);
   return iFilePosition >= m_beg && iFilePosition <= m_end;
 }
 
