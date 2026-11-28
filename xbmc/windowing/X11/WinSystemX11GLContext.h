@@ -35,6 +35,7 @@ public:
   ~CWinSystemX11GLContext() override;
 
   static void Register();
+  using CWinSystemX11::Register;
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   // Implementation of CWinSystem via CWinSystemX11

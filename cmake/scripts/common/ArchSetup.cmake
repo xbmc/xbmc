@@ -181,6 +181,8 @@ if(NOT MSVC)
       -Werror=double-promotion
       -Werror=missing-field-initializers
       -Werror=sign-compare
+      # level 1 needs GCC 13
+      $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU>,$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,13>>:-Werror=overloaded-virtual=1>
     )
   endif()
 endif()

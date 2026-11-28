@@ -93,6 +93,7 @@ public:
   static bool ValidateDate(const std::string& input, void* data);
 
 protected:
+  using CDatabaseQueryRuleOf::GetFieldName;
   std::string GetField(Field field, const CLibraryQueryContext& context) const override;
   Field TranslateField(const char* field) const override;
   std::string TranslateField(Field field) const override;
