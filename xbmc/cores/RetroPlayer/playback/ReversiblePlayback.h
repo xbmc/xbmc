@@ -21,6 +21,7 @@
 #include "utils/Observer.h"
 
 #include <atomic>
+#include <chrono>
 #include <memory>
 #include <optional>
 #include <stddef.h>
@@ -105,6 +106,12 @@ private:
   const uint8_t* RunaheadFrame(unsigned int frames);
 
   /*!
+   * \brief Hold run-ahead off if, over about a second of frames run ahead, they
+   * took longer than the frames last
+   */
+  void CheckRunaheadSpeed(std::chrono::steady_clock::duration cost);
+
+  /*!
    * \brief Run a frame as it is while the client refuses a state for run-ahead,
    * then ask it again
    */
@@ -174,6 +181,7 @@ private:
     Unsupported,
     NotDeterministic,
     AudioOffFrameThread,
+    TooSlow,
   };
   RunaheadStatus m_runaheadStatus{RunaheadStatus::Ready};
   //! Whether the client has loaded back a state it saved, which some can't
@@ -181,6 +189,11 @@ private:
   //! Whether the client refused its last state for run-ahead
   bool m_runaheadHeld{false};
   std::vector<uint8_t> m_runaheadState;
+  //! Time taken by frames run ahead, how many, and the frame rate they ran at, since their
+  //! speed was last checked
+  std::chrono::steady_clock::duration m_runaheadCost{};
+  unsigned int m_runaheadCostFrames{0};
+  double m_runaheadCostFrameRate{0.0};
 
   // Savestate functionality
   CAutosaveCapture m_autosaveCapture;

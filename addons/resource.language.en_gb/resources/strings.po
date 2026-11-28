@@ -20048,7 +20048,7 @@ msgstr ""
 #. Help text for setting "Enable run-ahead" of label #35378
 #: system/settings/settings.xml
 msgctxt "#35379"
-msgid "Make games respond sooner to the controller by running the emulator ahead and showing a frame from the future. This suits 8-bit and 16-bit systems. Systems with large save states, such as the PlayStation, may slow down."
+msgid "Make games respond sooner to the controller by running the emulator ahead and showing a frame from the future. This suits 8-bit and 16-bit systems. An emulator that can't run ahead at full speed, such as the Saturn's, is left alone."
 msgstr ""
 
 #. Setting for how many frames to run ahead
