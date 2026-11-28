@@ -292,7 +292,6 @@ class PVRIntSettingDefinition
 public:
   /*! \cond PRIVATE */
   PVRIntSettingDefinition() { m_cStructure->iStep = 1; }
-  PVRIntSettingDefinition(const PVRIntSettingDefinition& def) : DynamicCStructHdl(def) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVRIntSettingDefinition_Help Value Help
@@ -459,7 +458,6 @@ class PVRStringSettingDefinition
 public:
   /*! \cond PRIVATE */
   PVRStringSettingDefinition() { m_cStructure->bAllowEmptyValue = true; }
-  PVRStringSettingDefinition(const PVRStringSettingDefinition& def) : DynamicCStructHdl(def) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVRStringSettingDefinition_Help Value Help

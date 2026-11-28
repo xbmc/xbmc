@@ -86,6 +86,14 @@ public:
   void StartPlayback(std::unique_ptr<CFileItem>& item, ContentUtils::PlayMode mode) const;
 
   /*!
+   * @brief Inform that the backend of a client changed the channel it is playing by itself.
+   * Starts playback of that channel if another channel of the client is playing.
+   * @param clientId The id of the client.
+   * @param channelUid The unique id of the channel on the client.
+   */
+  void OnBackendChannelChange(int clientId, int channelUid) const;
+
+  /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
    * @return True if it's playing, false otherwise.
    */
