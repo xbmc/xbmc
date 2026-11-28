@@ -15,7 +15,9 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/AddonsPaths.h"
 #include "filesystem/File.h"
+#include "filesystem/LibraryPaths.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -37,7 +39,9 @@
 #include "utils/CharsetConverter.h"
 #endif
 
+#include <algorithm>
 #include <array>
+#include <string_view>
 #include <vector>
 
 using namespace XFILE;
@@ -103,6 +107,23 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   return false;
 }
 
+namespace
+{
+//! The paths remote clients may always access, by prefix
+constexpr std::array<std::string_view, 10> ALWAYS_ALLOWED_PREFIXES{
+    "virtualpath://upnproot/",
+    "sources://video/",
+    KODI::MEDIA::LIBRARY_PATH::VIDEO,
+    KODI::MEDIA::LIBRARY_PATH::VIDEO_FLAT,
+    KODI::MEDIA::LIBRARY_PATH::MUSIC,
+    KODI::ADDONS::SOURCES,
+    "special://skin",
+    "special://profile/addon_data",
+    "upnp://",
+    "plugin://",
+};
+} // namespace
+
 bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
 {
   constexpr std::array sections{MediaSection::PROGRAMS, MediaSection::FILES, MediaSection::VIDEO,
@@ -114,40 +135,25 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   while (URIUtils::IsInArchive(realPath))
     realPath = CURL(realPath).GetHostName();
 
-  if (StringUtils::StartsWithNoCase(realPath, "virtualpath://upnproot/"))
+  // A root is allowed with or without its trailing slash
+  std::string folderPath{realPath};
+  URIUtils::AddSlashAtEnd(folderPath);
+  if (std::ranges::any_of(ALWAYS_ALLOWED_PREFIXES, [&folderPath](std::string_view prefix)
+                          { return StringUtils::StartsWithNoCase(folderPath, prefix); }))
     return true;
-  else if (CScreenShot::IsScreenshotPath(realPath))
+
+  if (URIUtils::IsMusicDb(realPath) || URIUtils::IsVideoDb(realPath) ||
+      CUtil::IsInPlaylistsFolder(realPath, MediaSection::MUSIC) ||
+      CUtil::IsInPlaylistsFolder(realPath, MediaSection::VIDEO) ||
+      CScreenShot::IsScreenshotPath(realPath))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "musicdb://"))
+
+  std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
+  if (!strPlaylistsPath.empty() && StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
     return true;
-  else if (URIUtils::IsVideoDb(realPath))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "library://video"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "library://music"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "sources://video"))
-    return true;
-  else if (CUtil::IsInPlaylistsFolder(realPath, MediaSection::MUSIC) ||
-           CUtil::IsInPlaylistsFolder(realPath, MediaSection::VIDEO))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://skin"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://profile/addon_data"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "addons://sources"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "upnp://"))
-    return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "plugin://"))
-    return true;
-  else
-  {
-    std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
-    URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
-    if (!strPlaylistsPath.empty() && StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
-      return true;
-  }
+
   bool isSource;
   // Check manually added sources (held in sources.xml)
   for (const MediaSection section : sections)

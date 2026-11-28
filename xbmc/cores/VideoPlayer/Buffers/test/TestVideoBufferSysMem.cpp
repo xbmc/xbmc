@@ -60,7 +60,9 @@ TEST(TestVideoBufferSysMem, PlacesThePlanesOfEachLayoutOneAfterAnother)
 
     EXPECT_EQ(planes[1] - planes[0], layout.second);
     if (layout.third >= 0)
+    {
       EXPECT_EQ(planes[2] - planes[0], layout.third);
+    }
 
     buffer->Release();
   }

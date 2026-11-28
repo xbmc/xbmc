@@ -342,6 +342,7 @@ std::string CUtil::GetTitleFromPath(const std::string& strFileNameAndPath, bool 
 
 std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   // use above to get the filename
   std::string path(url.Get());
   URIUtils::RemoveSlashAtEnd(path);
@@ -375,10 +376,9 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     const std::string strFileNameAndPath = url.Get();
     const size_t genre = strFileNameAndPath.find_first_of('=');
     if(genre == std::string::npos)
-      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(260);
+      strFilename = localizeStrings.Get(260);
     else
-      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(260) + " - " +
-                    strFileNameAndPath.substr(genre + 1).c_str();
+      strFilename = localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre + 1).c_str();
   }
 
   // Windows SMB Network (SMB)
@@ -386,7 +386,7 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   {
     if (url.GetHostName().empty())
     {
-      strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20171);
+      strFilename = localizeStrings.Get(20171);
     }
     else
     {
@@ -396,15 +396,15 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
 
   // Root file views
   else if (url.IsProtocol("sources"))
-    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744);
+    strFilename = localizeStrings.Get(744);
 
   // Music Playlists
   else if (URIUtils::PathHasParent(path + "/", PlaylistsPathOf(KODI::MEDIA::MediaSection::MUSIC)))
-    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
+    strFilename = localizeStrings.Get(136);
 
   // Video Playlists
   else if (URIUtils::PathHasParent(path + "/", PlaylistsPathOf(KODI::MEDIA::MediaSection::VIDEO)))
-    strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
+    strFilename = localizeStrings.Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
   {
