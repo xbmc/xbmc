@@ -3,6 +3,13 @@
   <section id="player">
     <category id="videoplayer">
       <group id="3">
+        <setting id="videoplayer.usenvdec" type="boolean" label="13428" help="36159">
+          <requirement>HAVE_NVDEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
           <visible>false</visible>

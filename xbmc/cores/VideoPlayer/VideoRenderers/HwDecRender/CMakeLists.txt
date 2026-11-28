@@ -20,6 +20,11 @@ if(TARGET ${APP_NAME_LC}::VAAPI)
   endif()
 endif()
 
+if(TARGET ${APP_NAME_LC}::NVDEC AND TARGET ${APP_NAME_LC}::OpenGl)
+  list(APPEND SOURCES RendererNVDECGL.cpp)
+  list(APPEND HEADERS RendererNVDECGL.h)
+endif()
+
 if(TARGET ${APP_NAME_LC}::VDPAU)
   list(APPEND SOURCES RendererVDPAU.cpp
                       VdpauGL.cpp)
