@@ -115,6 +115,7 @@ protected:
   std::unique_ptr<CLibInputHandler> m_libinput;
 
 private:
+  void HoldAfterHdrChange();
   static void ApplyLimitGuiSize(void* userptr);
   static void ApplyColorRangeSetting(void* userptr);
 
@@ -144,6 +145,7 @@ private:
   std::shared_ptr<CDRMPropertyBlob> m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+  bool m_hdrOutput = false;
 
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };
