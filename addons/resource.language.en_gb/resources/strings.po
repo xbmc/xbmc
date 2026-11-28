@@ -26680,3 +26680,9 @@ msgstr ""
 msgctxt "#40866"
 msgid "What to report for a title whose picture changes shape partway through."
 msgstr ""
+
+#. Context menu item for navigating to an album from a music library artist or song
+#: xbmc/music/ContextMenus.cpp
+msgctxt "#40867"
+msgid "Go to album"
+msgstr ""
