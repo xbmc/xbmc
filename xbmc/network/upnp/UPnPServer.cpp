@@ -48,7 +48,6 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbPaths.h"
@@ -372,7 +371,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         }
 
         // all items apart from songs (artists, albums, etc) are folders
-        if (!item->HasMusicInfoTag() || item->GetMusicInfoTag()->GetMediaType() != KODI::MEDIA::TYPE::SONG)
+        if (!item->HasMusicInfoTag() ||
+            item->GetMusicInfoTag()->GetMediaType() != MEDIA::TYPE::SONG)
         {
           item->SetFolder(true);
         }
@@ -430,8 +430,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           }
         }
 
-        if (item->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW ||
-            item->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::SEASON)
+        const MEDIA::TYPE type = item->GetVideoInfoTag()->GetMediaType();
+        if (type == MEDIA::TYPE::TV_SHOW || type == MEDIA::TYPE::SEASON)
         {
           // for tvshows and seasons, iEpisode and playCount are
           // invalid
@@ -528,9 +528,8 @@ void CUPnPServer::OnAudioLibraryEvent(const AudioLibraryEvent& event)
 void CUPnPServer::OnLibraryEvent(const LibraryEvent& event, AnnouncementFlag flag)
 {
   namespace LIBRARY = EVENT::LIBRARY;
-  NPT_String path;
   int item_id;
-  std::string item_type;
+  MEDIA::TYPE item_type{MEDIA::TYPE::NONE};
 
   if (std::holds_alternative<LIBRARY::ScanStarted>(event))
   {
@@ -543,31 +542,15 @@ void CUPnPServer::OnLibraryEvent(const LibraryEvent& event, AnnouncementFlag fla
   else
   {
     // handle both updates & removals
-    if (const auto* update = std::get_if<LIBRARY::Update>(&event); update && update->item)
-    {
-      // an item names itself
-      if (update->item->HasVideoInfoTag())
-      {
-        item_id = update->item->GetVideoInfoTag()->m_iDbId;
-        item_type = update->item->GetVideoInfoTag()->m_type;
-      }
-      else if (update->item->HasMusicInfoTag())
-      {
-        item_id = update->item->GetMusicInfoTag()->GetDatabaseId();
-        item_type = KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG);
-      }
-      else
-        return;
-    }
-    else if (update)
+    if (const auto* update = std::get_if<LIBRARY::Update>(&event))
     {
       item_id = update->id;
-      item_type = update->otherType.empty() ? KODI::MEDIA::NameOf(update->type) : update->otherType;
+      item_type = update->type;
     }
     else if (const auto* remove = std::get_if<LIBRARY::Remove>(&event))
     {
       item_id = remove->id;
-      item_type = KODI::MEDIA::NameOf(remove->type);
+      item_type = remove->type;
     }
     else
       return;
@@ -576,35 +559,38 @@ void CUPnPServer::OnLibraryEvent(const LibraryEvent& event, AnnouncementFlag fla
     // as we don't differentiate 'updates' from 'adds' in RPC interface
     if (flag == VideoLibrary)
     {
-      if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::EPISODE))
+      switch (item_type)
       {
-        CVideoDatabase db;
-        if (!db.Open())
-          return;
-        int show_id = db.GetTvShowForEpisode(item_id);
-        int season_id = db.GetSeasonForEpisode(item_id);
-        UpdateContainer(StringUtils::Format("{}{}/", VIDEO::DB_PATH::TVSHOW_TITLES, show_id));
-        UpdateContainer(StringUtils::Format("{}{}/{}/?tvshowid={}", VIDEO::DB_PATH::TVSHOW_TITLES, show_id,
-                                            season_id, show_id));
-        UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
-      }
-      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::TV_SHOW))
-      {
-        UpdateContainer(MEDIA::LIBRARY_PATH::TVSHOW_TITLES);
-        UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
-      }
-      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE))
-      {
-        UpdateContainer(MEDIA::LIBRARY_PATH::MOVIE_TITLES);
-        UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES);
-      }
-      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MUSIC_VIDEO))
-      {
-        UpdateContainer(MEDIA::LIBRARY_PATH::MUSICVIDEO_TITLES);
-        UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS);
+        case MEDIA::TYPE::EPISODE:
+        {
+          CVideoDatabase db;
+          if (!db.Open())
+            return;
+          int show_id = db.GetTvShowForEpisode(item_id);
+          int season_id = db.GetSeasonForEpisode(item_id);
+          UpdateContainer(StringUtils::Format("{}{}/", VIDEO::DB_PATH::TVSHOW_TITLES, show_id));
+          UpdateContainer(StringUtils::Format("{}{}/{}/?tvshowid={}", VIDEO::DB_PATH::TVSHOW_TITLES,
+                                              show_id, season_id, show_id));
+          UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
+          break;
+        }
+        case MEDIA::TYPE::TV_SHOW:
+          UpdateContainer(MEDIA::LIBRARY_PATH::TVSHOW_TITLES);
+          UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
+          break;
+        case MEDIA::TYPE::MOVIE:
+          UpdateContainer(MEDIA::LIBRARY_PATH::MOVIE_TITLES);
+          UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES);
+          break;
+        case MEDIA::TYPE::MUSIC_VIDEO:
+          UpdateContainer(MEDIA::LIBRARY_PATH::MUSICVIDEO_TITLES);
+          UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS);
+          break;
+        default:
+          break;
       }
     }
-    else if (flag == AudioLibrary && item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG))
+    else if (flag == AudioLibrary && item_type == MEDIA::TYPE::SONG)
     {
       // we also update the 'songs' container is maybe a performance drop too
       // high? would need to check if slow clients even cache at all anyway

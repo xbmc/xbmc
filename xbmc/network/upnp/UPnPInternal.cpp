@@ -412,35 +412,31 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
 
   if (tag.m_iDbId != -1)
   {
-    if (tag.GetMediaType() == KODI::MEDIA::TYPE::MUSIC_VIDEO)
+    switch (tag.GetMediaType())
     {
-      object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
-      object.m_Creator =
-          StringUtils::Join(
-              tag.m_artist,
-              CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)
-              .c_str();
-      AddAll(object.m_People.artists, tag.m_artist);
-      object.m_Affiliation.album = tag.m_strAlbum.c_str();
-      object.m_Title = tag.m_strTitle.c_str();
-      object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
-      object.m_ReferenceID =
-          EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MUSICVIDEO_TITLES, tag.m_iDbId));
-    }
-    else if (tag.GetMediaType() == KODI::MEDIA::TYPE::MOVIE)
-    {
-      object.m_ObjectClass.type = "object.item.videoItem.movie";
-      object.m_Title = tag.m_strTitle.c_str();
-      object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
-      object.m_ReferenceID =
-          EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_TITLES, tag.m_iDbId));
-    }
-    else
-    {
-      object.m_Recorded.series_title = tag.m_strShowTitle.c_str();
-
-      if (tag.GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW)
-      {
+      case MEDIA::TYPE::MUSIC_VIDEO:
+        object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
+        object.m_Creator =
+            StringUtils::Join(
+                tag.m_artist,
+                CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)
+                .c_str();
+        AddAll(object.m_People.artists, tag.m_artist);
+        object.m_Affiliation.album = tag.m_strAlbum.c_str();
+        object.m_Title = tag.m_strTitle.c_str();
+        object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
+        object.m_ReferenceID = EncodeObjectId(
+            StringUtils::Format("{}{}", VIDEO::DB_PATH::MUSICVIDEO_TITLES, tag.m_iDbId));
+        break;
+      case MEDIA::TYPE::MOVIE:
+        object.m_ObjectClass.type = "object.item.videoItem.movie";
+        object.m_Title = tag.m_strTitle.c_str();
+        object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
+        object.m_ReferenceID =
+            EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_TITLES, tag.m_iDbId));
+        break;
+      case MEDIA::TYPE::TV_SHOW:
+        object.m_Recorded.series_title = tag.m_strShowTitle.c_str();
         object.m_ObjectClass.type = "object.container.album.videoAlbum.videoBroadcastShow";
         object.m_Title = tag.m_strTitle.c_str();
         object.m_Recorded.episode_number = tag.m_iEpisode;
@@ -448,20 +444,19 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Date = PremieredOrYear(tag).GetAsW3CDate().c_str();
         object.m_ReferenceID =
             EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iDbId));
-      }
-      else if (tag.GetMediaType() == KODI::MEDIA::TYPE::SEASON)
-      {
+        break;
+      case MEDIA::TYPE::SEASON:
+        object.m_Recorded.series_title = tag.m_strShowTitle.c_str();
         object.m_ObjectClass.type = "object.container.album.videoAlbum.videoBroadcastSeason";
         object.m_Title = tag.m_strTitle.c_str();
         object.m_Recorded.episode_season = tag.m_iSeason;
         object.m_Recorded.episode_count = tag.m_iEpisode;
         object.m_Date = PremieredOrYear(tag).GetAsW3CDate().c_str();
-        object.m_ReferenceID = EncodeObjectId(
-            StringUtils::Format(
+        object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
             "{}{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason));
-      }
-      else
-      {
+        break;
+      default:
+        object.m_Recorded.series_title = tag.m_strShowTitle.c_str();
         object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
         object.m_Recorded.program_title =
             StringUtils::Format("S{:02}E{:02} : {}", tag.m_iSeason, tag.m_iEpisode, tag.m_strTitle)
@@ -471,7 +466,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
         object.m_ReferenceID = EncodeObjectId(StringUtils::Format("{}{}/{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
         object.m_Date = tag.m_firstAired.GetAsW3CDate().c_str();
-      }
+        break;
     }
   }
 
@@ -993,8 +988,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
   if (!object.m_Recorded.program_title.IsEmpty() ||
       object.m_ObjectClass.type == "object.item.videoItem.videoBroadcast")
   {
-    tag.SetMediaType(KODI::MEDIA::TYPE::EPISODE);
-    tag.m_strShowTitle = object.m_Recorded.series_title;
+    tag.SetMediaType(MEDIA::TYPE::EPISODE);
     if (date.IsValid())
       tag.m_firstAired = date;
 
@@ -1025,23 +1019,15 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
   }
   else
   {
-    tag.m_strTitle = object.m_Title;
-    if (date.IsValid())
-      tag.m_premiered = date;
-
     if (!object.m_Recorded.series_title.IsEmpty())
     {
       if (object.m_ObjectClass.type == "object.container.album.videoAlbum.videoBroadcastSeason")
       {
-        tag.SetMediaType(KODI::MEDIA::TYPE::SEASON);
+        tag.SetMediaType(MEDIA::TYPE::SEASON);
         tag.m_iSeason = object.m_Recorded.episode_season;
-        tag.m_strShowTitle = object.m_Recorded.series_title;
       }
       else
-      {
-        tag.SetMediaType(KODI::MEDIA::TYPE::TV_SHOW);
-        tag.m_strShowTitle = object.m_Title;
-      }
+        tag.SetMediaType(MEDIA::TYPE::TV_SHOW);
 
       if (object.m_Recorded.episode_count > 0)
         tag.m_iEpisode = object.m_Recorded.episode_count;
@@ -1050,7 +1036,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
     }
     else if (object.m_ObjectClass.type == "object.item.videoItem.musicVideoClip")
     {
-      tag.SetMediaType(KODI::MEDIA::TYPE::MUSIC_VIDEO);
+      tag.SetMediaType(MEDIA::TYPE::MUSIC_VIDEO);
 
       if (object.m_People.artists.GetItemCount() > 0)
         tag.m_artist = NamesOf(object.m_People.artists);
@@ -1061,7 +1047,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
       tag.m_strAlbum = object.m_Affiliation.album;
     }
     else
-      tag.SetMediaType(KODI::MEDIA::TYPE::MOVIE);
+      tag.SetMediaType(MEDIA::TYPE::MOVIE);
 
     tag.m_strTitle = object.m_Title;
     if (date.IsValid())
@@ -1222,15 +1208,15 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
   {
     int episodes = pItem->GetVideoInfoTag()->m_iEpisode;
     int played = pItem->GetVideoInfoTag()->GetPlayCount();
-    const KODI::MEDIA::TYPE type = pItem->GetVideoInfoTag()->GetMediaType();
+    const MEDIA::TYPE type = pItem->GetVideoInfoTag()->GetMediaType();
     bool watched(false);
-    if (type == KODI::MEDIA::TYPE::TV_SHOW || type == KODI::MEDIA::TYPE::SEASON)
+    if (type == MEDIA::TYPE::TV_SHOW || type == MEDIA::TYPE::SEASON)
     {
       VIDEO::UTILS::SetEpisodeCounts(*pItem, episodes, played);
       watched = (episodes && played >= episodes);
       pItem->GetVideoInfoTag()->SetPlayCount(watched ? 1 : 0);
     }
-    else if (type == KODI::MEDIA::TYPE::EPISODE || type == KODI::MEDIA::TYPE::MOVIE)
+    else if (type == MEDIA::TYPE::EPISODE || type == MEDIA::TYPE::MOVIE)
       watched = (played > 0);
     pItem->SetOverlayImage(watched ? CGUIListItem::ICON_OVERLAY_WATCHED
                                    : CGUIListItem::ICON_OVERLAY_UNWATCHED);

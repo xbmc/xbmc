@@ -111,6 +111,10 @@ bool IsKnownLanguage(const CLanguageTag& language)
 }
 } // unnamed namespace
 
+/*!
+ * \brief Decides whether a (subtitle) SelectionStream can match the user settings, and so is
+ * relevant: operator() returns false for a relevant subtitle.
+ */
 class PredicateSubtitleFilter
 {
 private:
@@ -126,11 +130,11 @@ private:
   int m_subStream;
 
 public:
-  /*
-   * \brief The class' operator() decides if the given (subtitle) SelectionStream can match user settings, so relevant.
-   *        If the subtitle is relevant "false" is returned.
+  /*!
+   * \brief Read the subtitle settings once, for the audio language actually playing.
    * \param[in] playedAudioLang The language actually playing, which may differ from the language
    *            setting where the movie does not carry the desired one.
+   * \param[in] subStream The subtitle stream currently selected
    */
   explicit PredicateSubtitleFilter(const CLanguageTag& playedAudioLang, int subStream)
     : m_playedAudioLang(playedAudioLang),
@@ -161,35 +165,33 @@ public:
       m_isPrefForced = false;
   };
 
-  // \brief Whether a stream is in the language the settings ask for
+  // Whether a stream is in the language the settings ask for
   bool MatchesSubtitleLanguage(const CLanguageTag& language) const
   {
     return language.Matches(m_subLang);
   }
 
-  // \brief Whether a stream is in the language of the audio being played. Both languages must be
-  //        declared, a stream that states none is never assumed to match.
+  // Whether a stream is in the language of the audio being played. Both languages must be
+  // declared, a stream that states none is never assumed to match.
   bool MatchesPlayedAudioLanguage(const CLanguageTag& language) const
   {
     return IsKnownLanguage(m_playedAudioLang) && IsKnownLanguage(language) &&
            language.Matches(m_playedAudioLang);
   }
 
-  // \brief Whether a stream is a forced one that takes the place of the subtitles hidden for being
-  //        in the audio language, which is also the language the settings ask for
+  // Whether a stream is a forced one that takes the place of the subtitles hidden for being
+  // in the audio language, which is also the language the settings ask for
   bool IsForcedForHiddenAudioLanguage(const SelectionStream& ss) const
   {
     return m_hideSameAudioLang && (ss.flags & FLAG_FORCED) &&
            MatchesPlayedAudioLanguage(ss.language) && MatchesSubtitleLanguage(ss.language);
   }
 
-  // \brief Whether subtitles in the audio language are hidden
   bool HidesSameAudioLanguage() const { return m_hideSameAudioLang; }
-  // \brief Whether the subtitle language setting is "original"
+  // Whether the subtitle language setting is "original"
   bool IsPreferredOriginal() const { return m_isPrefOriginal; }
-  // \brief Whether the subtitle language setting is "forced_only"
+  // Whether the subtitle language setting is "forced_only"
   bool IsPreferredForced() const { return m_isPrefForced; }
-  // \brief Whether subtitles for the hearing impaired are preferred
   bool IsPreferredHearingImpaired() const { return m_isPrefHearingImp; }
 
   bool operator()(const SelectionStream& ss) const
@@ -300,13 +302,13 @@ public:
   };
 };
 
-/*
+/*!
  * \brief The class' operator() decides if the given (subtitle) SelectionStream lh is 'better than'
  *        the given (subtitle) SelectionStream rh.
  *        If lh is 'better than' rh the return value is true, false otherwise.
  *        The priority sequence is exactly as shown by the code sequence of the operator() method.
  *
- *        NOTE: Dont exists a "default" setting for subtitles, as there is for audio (media default),
+ *        NOTE: There is no "default" setting for subtitles, as there is for audio (media default),
  *              so the default flag will give a priority over another only when two streams
  *              have same properties (e.g. same language with a same flag, but a different codec, author, etc...).
  */
@@ -325,7 +327,7 @@ public:
   {
   }
 
-  // \brief Check if a stream can match the user settings
+  // Check if a stream can match the user settings
   bool relevant(const SelectionStream& ss) const { return !m_filter(ss); }
 
   bool operator()(const SelectionStream& lh, const SelectionStream& rh) const
@@ -2011,7 +2013,7 @@ bool CVideoPlayer::IsReplayedPacket(CDemuxStream* stream, DemuxPacket* packet)
 void CVideoPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
   // process packet if it belongs to selected stream.
-  // for dvd's don't allow automatic opening of streams*/
+  // for dvd's don't allow automatic opening of streams
 
   if (CheckIsCurrent(m_CurrentAudio, pStream, pPacket))
     ProcessAudioData(pStream, pPacket);
@@ -5267,8 +5269,6 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     {
     case DVDNAV_STILL_FRAME:
       {
-        //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
-
         dvdnav_still_event_t *still_event = static_cast<dvdnav_still_event_t*>(pData);
         // should wait the specified time here while we let the player running
         // after that call dvdnav_still_skip(m_dvdnav);
@@ -5333,7 +5333,6 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_HIGHLIGHT:
       {
-        //dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
         int iButton = pStream->GetCurrentButton();
         CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button {}", iButton);
         m_VideoPlayerSubtitle->UpdateOverlayInfo(std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream), LIBDVDNAV_BUTTON_NORMAL);
@@ -5341,7 +5340,6 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_VTS_CHANGE:
       {
-        //dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_VTS_CHANGE");
 
         //Make sure we clear all the old overlays here, or else old forced items are left.
@@ -5362,7 +5360,6 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_CELL_CHANGE:
       {
-        //dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
 
         if (m_dvd.state != DVDSTATE_STILL)
@@ -5374,8 +5371,6 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_NAV_PACKET:
       {
-          //pci_t* pci = (pci_t*)pData;
-
           // this should be possible to use to make sure we get
           // seamless transitions over these boundaries
           // if we remember the old vobunits boundaries
@@ -5473,27 +5468,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
 
     switch (action.GetID())
     {
-/* this code is disabled to allow switching playlist items (dvdimage "stacks") */
-#if 0
-    case ACTION_PREV_ITEM:  // SKIP-:
-      {
-        THREAD_ACTION(action);
-        CLog::Log(LOGDEBUG, " - pushed prev");
-        pMenus->OnPrevious();
-        m_processInfo->SeekFinished(0);
-        return true;
-      }
-      break;
-    case ACTION_NEXT_ITEM:  // SKIP+:
-      {
-        THREAD_ACTION(action);
-        CLog::Log(LOGDEBUG, " - pushed next");
-        pMenus->OnNext();
-        m_processInfo->SeekFinished(0);
-        return true;
-      }
-      break;
-#endif
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
         THREAD_ACTION(action);
