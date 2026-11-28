@@ -5166,7 +5166,8 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAl
 }
 
 // The streams a playlist starts on are named alongside its chapters and duration, so that two
-// playlists presenting the same content can be told apart when a disc is browsed
+// playlists presenting the same content can be told apart when a disc is browsed. A person reads
+// this, so the languages are named rather than coded.
 TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelNamesTheDefaultStreams)
 {
   CDiscDirectoryHelper helper;
@@ -5186,7 +5187,7 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_LabelNamesTheDefaultStreams)
   EXPECT_TRUE(
       helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
   ASSERT_EQ(items.Size(), 1);
-  EXPECT_TRUE(items[0]->GetLabel2().ends_with("jpn | jpn")) << items[0]->GetLabel2();
+  EXPECT_TRUE(items[0]->GetLabel2().ends_with("Japanese | Japanese")) << items[0]->GetLabel2();
 }
 
 // A playlist naming no language for the streams it starts on says nothing to add to its label
