@@ -323,6 +323,117 @@ TEST(TestVideoInfoTag, WriteStreamLanguagesAsTheirWholeTag)
                streams->FirstChildElement("subtitle")->FirstChildElement("language")->GetText());
 }
 
+TEST(TestVideoInfoTag, EpisodeBookmarkAbsentIsNotExported)
+{
+  for (const std::string xml :
+       {"<episodedetails/>", "<episodedetails><episodebookmark/></episodedetails>",
+        "<episodedetails><episodebookmark><playerstate><libbluraystate version=\"1\">"
+        "<playlistId>800</playlistId></libbluraystate></playerstate>"
+        "</episodebookmark></episodedetails>"})
+  {
+    SCOPED_TRACE(xml);
+    CXBMCTinyXML source;
+    source.Parse(xml);
+    CVideoInfoTag details;
+    ASSERT_TRUE(details.Load(source.RootElement()));
+    EXPECT_FALSE(details.HasEpisodeBookmark());
+    CXBMCTinyXML saved;
+    ASSERT_TRUE(details.Save(&saved, "episodedetails"));
+    EXPECT_EQ(nullptr, saved.RootElement()->FirstChildElement("episodebookmark"));
+  }
+}
+
+TEST(TestVideoInfoTag, EpisodeBookmarkZeroRoundTripsWithPlayerState)
+{
+  for (const std::string time : {"0", "12.5"})
+  {
+    SCOPED_TRACE(time);
+    const std::string state =
+        "<libbluraystate version=\"1\"><playlistId>800</playlistId></libbluraystate>";
+    CXBMCTinyXML source;
+    source.Parse("<episodedetails><episodebookmark><position>" + time + "</position><playerstate>" +
+                 state + "</playerstate></episodebookmark></episodedetails>");
+    CVideoInfoTag details;
+    ASSERT_TRUE(details.Load(source.RootElement()));
+    ASSERT_TRUE(details.HasEpisodeBookmark());
+    EXPECT_EQ(CBookmark::EPISODE, details.m_EpBookmark.type);
+    // NFO bookmarks need no total duration to be valid or mergeable.
+    EXPECT_DOUBLE_EQ(0.0, details.m_EpBookmark.totalTimeInSeconds);
+    EXPECT_EQ(state, details.m_EpBookmark.playerState);
+
+    CXBMCTinyXML saved;
+    ASSERT_TRUE(details.Save(&saved, "episodedetails"));
+    ASSERT_NE(nullptr, saved.RootElement()->FirstChildElement("episodebookmark"));
+    CVideoInfoTag reloaded;
+    ASSERT_TRUE(reloaded.Load(saved.RootElement()));
+    ASSERT_TRUE(reloaded.HasEpisodeBookmark());
+    EXPECT_DOUBLE_EQ(std::stod(time), reloaded.m_EpBookmark.timeInSeconds);
+    EXPECT_EQ(state, reloaded.m_EpBookmark.playerState);
+  }
+}
+
+TEST(TestVideoInfoTag, EpisodeBookmarkZeroWithoutPlayerStateAndLegacyTag)
+{
+  for (const std::string bookmark :
+       {"<episodebookmark><position>0</position></episodebookmark>", "<epbookmark>0</epbookmark>",
+        "<epbookmark> 0 </epbookmark>", "<epbookmark>+0</epbookmark>"})
+  {
+    SCOPED_TRACE(bookmark);
+    CXBMCTinyXML source;
+    source.Parse("<episodedetails>" + bookmark + "</episodedetails>");
+    CVideoInfoTag details;
+    ASSERT_TRUE(details.Load(source.RootElement()));
+    EXPECT_TRUE(details.HasEpisodeBookmark());
+    EXPECT_DOUBLE_EQ(0.0, details.m_EpBookmark.timeInSeconds);
+    CXBMCTinyXML saved;
+    ASSERT_TRUE(details.Save(&saved, "episodedetails"));
+    EXPECT_NE(nullptr, saved.RootElement()->FirstChildElement("episodebookmark"));
+  }
+}
+
+TEST(TestVideoInfoTag, EpisodeBookmarkRejectsInvalidPosition)
+{
+  for (const std::string time : {"", " ", "garbage", "12oops", "-1", "nan", "inf", "1e9999"})
+  {
+    for (const bool legacy : {false, true})
+    {
+      SCOPED_TRACE(time);
+      SCOPED_TRACE(legacy);
+      const std::string bookmark =
+          legacy ? "<epbookmark>" + time + "</epbookmark>"
+                 : "<episodebookmark><position>" + time + "</position></episodebookmark>";
+      CXBMCTinyXML source;
+      source.Parse("<episodedetails>" + bookmark + "</episodedetails>");
+      CVideoInfoTag details;
+      ASSERT_TRUE(details.Load(source.RootElement()));
+      EXPECT_FALSE(details.HasEpisodeBookmark());
+      CXBMCTinyXML saved;
+      ASSERT_TRUE(details.Save(&saved, "episodedetails"));
+      EXPECT_EQ(nullptr, saved.RootElement()->FirstChildElement("episodebookmark"));
+    }
+  }
+}
+
+TEST(TestVideoInfoTag, EpisodeBookmarkMergePreservesZeroWithoutDuration)
+{
+  CVideoInfoTag existing;
+  existing.m_EpBookmark.timeInSeconds = 42.0;
+  CVideoInfoTag replacement;
+  replacement.m_EpBookmark.timeInSeconds = 0.0;
+  replacement.m_EpBookmark.playerState =
+      "<libbluraystate version=\"1\"><playlistId>800</playlistId></libbluraystate>";
+  existing.Merge(replacement);
+  EXPECT_TRUE(existing.HasEpisodeBookmark());
+  EXPECT_DOUBLE_EQ(0.0, existing.m_EpBookmark.timeInSeconds);
+  EXPECT_EQ(replacement.m_EpBookmark.playerState, existing.m_EpBookmark.playerState);
+
+  CVideoInfoTag absent;
+  existing.Merge(absent);
+  EXPECT_TRUE(existing.HasEpisodeBookmark());
+  EXPECT_DOUBLE_EQ(0.0, existing.m_EpBookmark.timeInSeconds);
+  EXPECT_EQ(replacement.m_EpBookmark.playerState, existing.m_EpBookmark.playerState);
+}
+
 TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)
 {
   CVideoInfoTag details;
@@ -364,6 +475,25 @@ protected:
   XFILE::CFile* m_file;
 };
 } // unnamed namespace
+
+TEST_F(TestVideoInfoTagArchive, AnAbsentEpisodeBookmarkStaysAbsent)
+{
+  ASSERT_NE(nullptr, m_file);
+  EXPECT_FALSE(StoredAndLoaded(CVideoInfoTag{}).HasEpisodeBookmark());
+}
+
+TEST_F(TestVideoInfoTagArchive, EpisodeBookmarkAtZeroRetainsPlayerState)
+{
+  ASSERT_NE(nullptr, m_file);
+  CVideoInfoTag details;
+  details.m_EpBookmark.timeInSeconds = 0.0;
+  details.m_EpBookmark.playerState =
+      "<libbluraystate version=\"1\"><playlistId>800</playlistId></libbluraystate>";
+  const CVideoInfoTag loaded{StoredAndLoaded(details)};
+  EXPECT_TRUE(loaded.HasEpisodeBookmark());
+  EXPECT_DOUBLE_EQ(0.0, loaded.m_EpBookmark.timeInSeconds);
+  EXPECT_EQ(details.m_EpBookmark.playerState, loaded.m_EpBookmark.playerState);
+}
 
 TEST_F(TestVideoInfoTagArchive, AnUnsetPlayCountStaysUnset)
 {

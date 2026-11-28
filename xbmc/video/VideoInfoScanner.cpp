@@ -2714,7 +2714,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         movieDetails.m_iDbId = lResult;
         movieDetails.SetMediaType(MEDIA::TYPE::EPISODE);
         movieDetails.m_strShowTitle = showInfo ? showInfo->m_strTitle : "";
-        if (movieDetails.m_EpBookmark.timeInSeconds > 0)
+        if (movieDetails.HasEpisodeBookmark())
         {
           movieDetails.m_strFileNameAndPath = path;
           movieDetails.m_EpBookmark.seasonNumber = movieDetails.m_iSeason;

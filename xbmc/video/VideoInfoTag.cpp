@@ -28,6 +28,8 @@
 #include "video/geometry/GeometrySettings.h"
 
 #include <algorithm>
+#include <cmath>
+#include <locale>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -35,6 +37,22 @@
 
 namespace
 {
+// Unlike atof, do not interpret malformed positions as a bookmark at the beginning.
+bool ReadEpisodeBookmarkPosition(const TiXmlElement* element, double& position)
+{
+  if (!element || !element->GetText())
+    return false;
+
+  std::istringstream text{element->GetText()};
+  text.imbue(std::locale::classic());
+  double parsed{};
+  if (!(text >> parsed) || !(text >> std::ws).eof() || !std::isfinite(parsed) || parsed < 0.0)
+    return false;
+
+  position = parsed;
+  return true;
+}
+
 /*!
  * \brief Read the <language> of one stream in an NFO.
  * \note Text naming no language is read as und, as it is from a container. The warning is the
@@ -142,6 +160,7 @@ void CVideoInfoTag::Reset()
   m_contentGeometry.Set({});
   m_playCount = PLAYCOUNT_NOT_SET;
   m_EpBookmark.Reset();
+  m_EpBookmark.timeInSeconds = -1.0;
   m_EpBookmark.type = CBookmark::EPISODE;
   m_basePath.clear();
   m_parentPathID = -1;
@@ -193,7 +212,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }
   XMLUtils::SetInt(movie, "userrating", m_iUserRating);
 
-  if (m_EpBookmark.timeInSeconds > 0)
+  if (HasEpisodeBookmark())
   {
     TiXmlElement epbookmark("episodebookmark");
     XMLUtils::SetDouble(&epbookmark, "position", m_EpBookmark.timeInSeconds);
@@ -574,7 +593,7 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
   if (other.IsPlayCountSet())
     SetPlayCount(other.GetPlayCount());
 
-  if (other.m_EpBookmark.IsSet())
+  if (other.HasEpisodeBookmark())
     m_EpBookmark = other.m_EpBookmark;
 
   if (!other.m_basePath.empty())
@@ -1220,6 +1239,11 @@ const std::string& CVideoInfoTag::GetDefaultUniqueID() const
   return m_strDefaultUniqueID;
 }
 
+bool CVideoInfoTag::HasEpisodeBookmark() const
+{
+  return std::isfinite(m_EpBookmark.timeInSeconds) && m_EpBookmark.timeInSeconds >= 0.0;
+}
+
 bool CVideoInfoTag::HasUniqueID() const
 {
   return !m_uniqueIDs.empty();
@@ -1318,21 +1342,24 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
 
-  const TiXmlElement *epbookmark = movie->FirstChildElement("episodebookmark");
+  const TiXmlElement* epbookmark = movie->FirstChildElement("episodebookmark");
   if (epbookmark)
   {
-    XMLUtils::GetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
-    XMLUtils::GetDouble(epbookmark, "total", m_EpBookmark.totalTimeInSeconds);
-    const TiXmlElement *playerstate = epbookmark->FirstChildElement("playerstate");
-    if (playerstate)
+    if (ReadEpisodeBookmarkPosition(epbookmark->FirstChildElement("position"),
+                                    m_EpBookmark.timeInSeconds))
     {
-      const TiXmlElement *value = playerstate->FirstChildElement();
-      if (value)
-        m_EpBookmark.playerState << *value;
+      XMLUtils::GetDouble(epbookmark, "total", m_EpBookmark.totalTimeInSeconds);
+      const TiXmlElement* playerstate = epbookmark->FirstChildElement("playerstate");
+      if (playerstate)
+      {
+        const TiXmlElement* value = playerstate->FirstChildElement();
+        if (value)
+          m_EpBookmark.playerState << *value;
+      }
     }
   }
   else
-    XMLUtils::GetDouble(movie, "epbookmark", m_EpBookmark.timeInSeconds);
+    ReadEpisodeBookmarkPosition(movie->FirstChildElement("epbookmark"), m_EpBookmark.timeInSeconds);
 
   int max_value = 10;
   const TiXmlElement* urElement = movie->FirstChildElement("userrating");

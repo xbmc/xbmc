@@ -102,6 +102,8 @@ public:
   const std::map<std::string, std::string, std::less<>>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
   bool HasUniqueID() const;
+  //! An episode bookmark can start at zero and need not have a known total duration.
+  bool HasEpisodeBookmark() const;
   bool HasConflictingUniqueID(const CVideoInfoTag& other) const;
   virtual bool HasYear() const;
   virtual int GetYear() const;
@@ -438,6 +440,7 @@ public:
   RatingMap m_ratings;
   int m_iIdRating;
   int m_iUserRating;
+  // A negative position denotes an absent episode bookmark; zero is a valid start.
   CBookmark m_EpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;
