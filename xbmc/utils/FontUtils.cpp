@@ -103,6 +103,7 @@ bool GetFontFamilyNames(const std::vector<uint8_t>& buffer, std::set<std::string
   FT_Long numInstances{0};
   FT_Long faceIndex{0};
   FT_Long instanceIndex{0};
+  bool found{false};
 
   // Iterate over all font faces, files like .ttc (TrueType Collection) contains multiple fonts
   do
@@ -114,36 +115,29 @@ bool GetFontFamilyNames(const std::vector<uint8_t>& buffer, std::set<std::string
     if (error)
     {
       CLog::LogF(LOGERROR, "Failed to open font face at index {} error code {}", idx, error);
-      break;
+      faceIndex++;
+      instanceIndex = 0;
+      continue;
     }
 
     std::string familyName = GetFamilyNameFromSfnt(face);
-    if (familyName.empty())
+    if (familyName.empty() && face->family_name)
     {
-      if (!face->family_name)
-      {
-        CLog::LogF(LOGERROR, "Family name missing in the font");
-        FT_Done_Face(face);
-        FT_Done_FreeType(m_library);
-        return false;
-      }
-
       CLog::LogF(LOGWARNING, "Failed to get the unicode family name for \"{}\", fallback to ASCII",
                  face->family_name);
       // ASCII font family name may differ from the unicode one, use this as fallback only
       familyName = std::string{face->family_name};
-      if (familyName.empty())
-      {
-        CLog::LogF(LOGERROR, "Family name missing in the font");
-        FT_Done_Face(face);
-        FT_Done_FreeType(m_library);
-        return false;
-      }
     }
 
     // We use the "set" container to avoid duplicate names that can happens
     // for example when a font have each style on different files
-    familyNames.insert(familyName);
+    if (familyName.empty())
+      CLog::LogF(LOGERROR, "Family name missing in the font face at index {}", idx);
+    else
+    {
+      familyNames.insert(familyName);
+      found = true;
+    }
 
     numFaces = face->num_faces;
     numInstances = face->style_flags >> 16;
@@ -161,7 +155,7 @@ bool GetFontFamilyNames(const std::vector<uint8_t>& buffer, std::set<std::string
   } while (faceIndex < numFaces);
 
   FT_Done_FreeType(m_library);
-  return true;
+  return found;
 }
 
 bool GetFontFamilyNames(const std::string& filepath, std::set<std::string>& familyNames)
