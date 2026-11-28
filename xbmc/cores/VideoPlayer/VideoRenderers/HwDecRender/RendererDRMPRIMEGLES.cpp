@@ -321,7 +321,13 @@ void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
 
 bool CRendererDRMPRIMEGLES::NeedBuffer(int index)
 {
-  return !m_buffers[index].fence->IsSignaled();
+  BUFFER& buf = m_buffers[index];
+
+  // Creating a fence flushes, which must not happen before eglSwapBuffers; this runs between frames
+  if (!buf.fence->HasFence())
+    buf.fence->CreateFence();
+
+  return !buf.fence->IsSignaled();
 }
 
 CRenderInfo CRendererDRMPRIMEGLES::GetRenderInfo()
@@ -510,7 +516,6 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
     glBindTexture(GL_TEXTURE_2D, 0);
 
     buf.fence->DestroyFence();
-    buf.fence->CreateFence();
     return;
   }
 
@@ -522,7 +527,6 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   DrawTexture(*renderSystem, texture->GetTexture(), m_rotatedDestCoords);
 
   buf.fence->DestroyFence();
-  buf.fence->CreateFence();
 }
 
 void CRendererDRMPRIMEGLES::DrawTexture(CRenderSystemGLES& renderSystem,
